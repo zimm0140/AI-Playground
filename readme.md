@@ -36,8 +36,19 @@ This second phase of installation **will take several minutes** and require a st
 1. Create and switch the conda environment and go to the service directory.
 ```cmd
 conda create -n aipg_xpu python=3.10 -y
-activate aipg_xpu
-pip install -r requirements.txt
+conda activate aipg_xpu
+```
+
+2. Depending on your configuration, install the necessary dependencies:
+
+For Core Ultra-H:
+```cmd
+pip install -r service/requirements-ultra.txt
+```
+
+For Arc A - Series dGPUs:
+```cmd
+pip install -r service/requirements-arc.txt
 ```
 
 3. Download the Intel Extension For Pytorch* AOT Packages. Depending on your hardware, download cp310 whl files from the links below.
@@ -109,4 +120,3 @@ For information on AI Playground terms, license and disclaimers, visit the proje
 [License](https://github.com/intel/ai-playground/blob/main/LICENSE) | [Notices & Disclaimers](https://github.com/intel/ai-playground/blob/main/notices-disclaimers.md)
 
 The software may include third party components with separate legal notices or governed by other agreements, as may be described in the Third Party Notices file accompanying the software.
-
