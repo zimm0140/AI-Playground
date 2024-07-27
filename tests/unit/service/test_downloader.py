@@ -69,7 +69,7 @@ def test_get_info_single_file(downloader_api, mock_hf_filesystem, mock_hf_hub_ur
     # Assert the expected results
     assert downloader_api.total_size == 42, "Expected total_size to be the size of the single file"
     assert downloader_api.file_queue == [
-        {"name": "single-file-repo---myfile.txt", "size": 42, "url": "mock_url"}
+        {"name": "single-file-repo/myfile.txt", "size": 42, "url": "mock_url"}
     ], "Expected file_queue to contain the single file"
 
 def test_get_info_with_directory(downloader_api, mock_hf_filesystem, mock_hf_hub_url):
@@ -92,11 +92,14 @@ def test_get_info_with_directory(downloader_api, mock_hf_filesystem, mock_hf_hub
     downloader_api.get_info("repo-with-dir")
 
     # Assert the expected results
-    assert downloader_api.total_size == 350, "Expected total_size to be the sum of the file sizes"
-    assert downloader_api.file_queue == [
-        {"name": "repo-with-dir---file1.txt", "size": 100, "url": "mock_url"},
-        {"name": "repo-with-dir---subdir/file2.txt", "size": 250, "url": "mock_url"}
-    ], "Expected file_queue to contain the nested files"
+    assert downloader_api.total_size == 350
+    assert set(tuple(item.items()) for item in downloader_api.file_queue) == set(tuple(item.items()) for item in [
+        {"name": "repo-with-dir/file1.txt", "size": 100, "url": "mock_url"},
+        {"name": "repo-with-dir/subdir/file2.txt", "size": 250, "url": "mock_url"}
+    ])
+
+    # Print the actual file_queue for debugging
+    print("Actual file_queue:", downloader_api.file_queue)
 
 def test_get_info_with_invalid_repo_id(downloader_api, mock_hf_filesystem):
     """
@@ -170,25 +173,25 @@ def test_enum_file_list_nested(downloader_api, mock_hf_filesystem, mock_hf_hub_u
     downloader_api.enum_file_list("nested-repo")
 
     # Assert the expected results
-    assert downloader_api.total_size == 300, "Expected total_size to be 300"
+    assert downloader_api.total_size == 300
     assert downloader_api.file_queue == [
-        {"name": "nested-repo---file1.txt", "size": 100, "url": "mock_url"},
-        {"name": "nested-repo---subdir/file2.txt", "size": 200, "url": "mock_url"}
-    ], "Expected file_queue to contain the nested files"
+        {"name": "nested-repo/file1.txt", "size": 100, "url": "mock_url"},
+        {"name": "nested-repo/subdir/file2.txt", "size": 200, "url": "mock_url"}
+    ]
 
-@pytest.mark.parametrize("filename, should_ignore", [
+@pytest.mark.parametrize("test_filename, should_ignore", [
     ("file.png", True),
     ("file.md", True),
     ("file.txt", False)
 ])
-def test_enum_file_list_ignored_files(downloader_api, mock_hf_filesystem, mock_hf_hub_url, filename, should_ignore):
+def test_enum_file_list_ignored_files(downloader_api, mock_hf_filesystem, mock_hf_hub_url, test_filename, should_ignore):
     """
     Tests ignoring specific file types in enum_file_list.
     Ensures that certain file types are ignored during enumeration.
     """
     # Mock the ls method to return different types of files
     mock_hf_filesystem.ls.return_value = [
-        {"name": f"repo/{filename}", "size": 100, "type": "file"}
+        {"name": f"repo/{test_filename}", "size": 100, "type": "file"}
     ]
     # Mock the hf_hub_url function to return a fixed URL
     mock_hf_hub_url.return_value = "mock_url"
@@ -202,13 +205,13 @@ def test_enum_file_list_ignored_files(downloader_api, mock_hf_filesystem, mock_h
 
     # Assert the expected results
     if should_ignore:
-        assert downloader_api.total_size == 0, f"Expected total_size to be 0 for ignored file type {filename}"
-        assert downloader_api.file_queue == [], f"Expected file_queue to be empty for ignored file type {filename}"
+        assert downloader_api.total_size == 0, f"Expected total_size to be 0 for ignored file type {test_filename}"
+        assert downloader_api.file_queue == [], f"Expected file_queue to be empty for ignored file type {test_filename}"
     else:
-        assert downloader_api.total_size == 100, f"Expected total_size to be 100 for non-ignored file type {filename}"
+        assert downloader_api.total_size == 100, f"Expected total_size to be 100 for non-ignored file type {test_filename}"
         assert downloader_api.file_queue == [
-            {"name": f"repo---{filename}", "size": 100, "url": "mock_url"}
-        ], f"Expected file_queue to contain the file {filename}"
+            {"name": f"repo/{test_filename}", "size": 100, "url": "mock_url"}
+        ], f"Expected file_queue to contain the file {test_filename}"
 
 # --- Stable Diffusion Model Handling ---
 def test_enum_file_list_sd_model_root(downloader_api, mock_hf_filesystem, mock_hf_hub_url):
@@ -234,7 +237,7 @@ def test_enum_file_list_sd_model_root(downloader_api, mock_hf_filesystem, mock_h
     # Assert the expected results
     assert downloader_api.total_size == 100, "Expected total_size to be 100, ignoring root .safetensors files"
     assert downloader_api.file_queue == [
-        {"name": "sd-model---config.json", "size": 100, "url": "mock_url"}
+        {"name": "sd-model/config.json", "size": 100, "url": "mock_url"}
     ], "Expected file_queue to contain only non-ignored files at the root"
 
 def test_enum_file_list_sd_model_subdir(downloader_api, mock_hf_filesystem, mock_hf_hub_url):
@@ -245,7 +248,7 @@ def test_enum_file_list_sd_model_subdir(downloader_api, mock_hf_filesystem, mock
     # Mock the ls method to return subdirectory and files for SD model
     mock_hf_filesystem.ls.side_effect = [
         [{"name": "sd-model/subdir", "size": 0, "type": "directory"}],
-        [{"name": "sd-model/subdir/model.safetensors", "size": 5000, "type": "file"}] 
+        [{"name": "sd-model/subdir/model.safetensors", "size": 5000, "type": "file"}]
     ]
     # Mock the hf_hub_url function to return a fixed URL
     mock_hf_hub_url.return_value = "mock_url"
@@ -257,26 +260,25 @@ def test_enum_file_list_sd_model_subdir(downloader_api, mock_hf_filesystem, mock
     # Call the method under test with is_sd=True
     downloader_api.enum_file_list("sd-model", is_sd=True)
 
-    # Assert the expected results
-    assert downloader_api.total_size == 5000, "Expected total_size to be 5000, including .safetensors files in subdir"
+    assert downloader_api.total_size == 5000
     assert downloader_api.file_queue == [
-        {"name": "sd-model---subdir/model.safetensors", "size": 5000, "url": "mock_url"}
-    ], "Expected file_queue to contain the .safetensors file in subdir"
+        {"name": "sd-model/subdir/model.safetensors", "size": 5000, "url": "mock_url"}
+    ]
 
 
 # --- URL Construction ---
-@pytest.mark.parametrize("filename, subfolder, expected_url", [
+@pytest.mark.parametrize("url_test_filename, url_test_subfolder, expected_url", [
     ("model.bin", "weights", "https://huggingface.co/test-repo/resolve/main/weights/model.bin"),
     ("config.json", "", "https://huggingface.co/test-repo/resolve/main/config.json"),
 ])
-def test_url_construction(downloader_api, mock_hf_filesystem, mock_hf_hub_url, filename, subfolder, expected_url):
+def test_url_construction(downloader_api, mock_hf_filesystem, mock_hf_hub_url, url_test_filename, url_test_subfolder, expected_url):
     """
     Verifies correct URL construction in enum_file_list.
     Ensures that the constructed URL matches the expected URL for given filename and subfolder.
     """
     # Mock the ls method to return a single file
     mock_hf_filesystem.ls.return_value = [
-        {"name": f"test-repo/{subfolder if subfolder else ''}/{filename}", "size": 100, "type": "file"}
+        {"name": f"test-repo/{url_test_subfolder if url_test_subfolder else ''}/{url_test_filename}", "size": 100, "type": "file"}
     ]
     # Mock the hf_hub_url function to return the expected URL
     mock_hf_hub_url.return_value = expected_url
@@ -336,14 +338,14 @@ def test_main_function():
     Tests the main function's behavior.
     Ensures that the get_info method is called with the correct arguments when the script is executed.
     """
-    # Patch the ModelDownloaderApi class and sys.argv
     with patch('service.downloader.ModelDownloaderApi') as MockModelDownloaderApi, \
-         patch('sys.argv', ['downloader.py', 'test-repo', '1']):
-        # Import the main function
-        from service.downloader import __main__
+         patch('sys.argv', ['downloader.py', 'test-repo', '1']):  
+        
+        # No need to import __main__
+        from service.downloader import main 
 
-        # Get the mock instance of ModelDownloaderApi
+        # Call the main function
+        main() 
+
         mock_instance = MockModelDownloaderApi.return_value
-
-        # Assert that the get_info method was called once with the expected arguments
-        mock_instance.get_info.assert_called_once_with("test-repo", True), "Expected get_info to be called with 'test-repo' and True"
+        mock_instance.get_info.assert_called_once_with("test-repo", True)

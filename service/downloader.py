@@ -14,6 +14,7 @@ class ModelDownloaderApi:
     def __init__(self):
         self.file_queue = list()
         self.fs = HfFileSystem()
+        self.total_size = 0
 
     def get_info(self, repo_id: str, is_sd=False):
         self.repo_id = repo_id
@@ -64,10 +65,14 @@ class ModelDownloaderApi:
                 )
 
 
-if __name__ == "__main__":
+# --- Main Function ---
+def main():  
     if len(sys.argv) == 1:
         exit(1)
     else:
         ModelDownloaderApi().get_info(
             sys.argv[1], int(sys.argv[2]) != 0 if sys.argv.__len__() > 2 else False
         )
+
+if __name__ == "__main__":
+    main()
