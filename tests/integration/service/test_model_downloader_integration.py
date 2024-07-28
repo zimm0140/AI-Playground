@@ -3,6 +3,7 @@ from pathlib import Path
 import json
 from unittest.mock import patch, MagicMock
 from service.downloader import ModelDownloaderApi
+import time
 
 @pytest.fixture(scope="module")
 def setup_test_environment():
@@ -34,35 +35,27 @@ def setup_test_environment():
 
     Code:
     """
-    # Create the main test directory
     test_repo = Path('test-repo')
     test_repo.mkdir(parents=True, exist_ok=True)
-    
-    # Create and write to file1.txt
+
     (test_repo / "file1.txt").write_text("This is a test file.")
     
-    # Create the subdirectory and file2.txt within it
     subdir = test_repo / "subdir"
     subdir.mkdir(parents=True, exist_ok=True)
     (subdir / "file2.txt").write_text("This is another test file.")
     
-    # Yield control back to the test, allowing the test to execute
     yield
     
-    # Cleanup: Remove the files and directories created for the test
-    (test_repo / "file1.txt").unlink()  # Remove file1.txt
-    (subdir / "file2.txt").unlink()     # Remove file2.txt
-    subdir.rmdir()                      # Remove the subdir directory
-    test_repo.rmdir()                   # Remove the main test-repo directory
+    (test_repo / "file1.txt").unlink()
+    (subdir / "file2.txt").unlink()
+    subdir.rmdir()
+    time.sleep(1)  # Adding a delay to ensure the directory is not being accessed
+    test_repo.rmdir()
 
-    # Post-cleanup verification (optional, for debugging purposes)
-    # Ensure the directories and files are removed correctly
     assert not test_repo.exists(), "test-repo directory was not removed"
     assert not subdir.exists(), "subdir directory was not removed"
     assert not (test_repo / "file1.txt").exists(), "file1.txt was not removed"
     assert not (subdir / "file2.txt").exists(), "file2.txt was not removed"
-
-
 
 
 @pytest.fixture
@@ -95,12 +88,10 @@ def mock_hf_hub_url():
     Code:
     """
     with patch('service.downloader.hf_hub_url') as mock_url:
-        # Define the side effect to mock URL generation
         mock_url.side_effect = lambda repo_id, filename, subfolder: (
             f"https://huggingface.co/{repo_id}/resolve/main/{subfolder}/{filename}"
             if subfolder else f"https://huggingface.co/{repo_id}/resolve/main/{filename}"
         )
-        # Provide the mock to the test
         yield mock_url
 
 @pytest.fixture
@@ -135,8 +126,6 @@ def mock_hf_filesystem():
     """
     with patch('service.downloader.HfFileSystem') as mock_fs_class:
         mock_fs_instance = mock_fs_class.return_value
-        
-        # Define the side effect to mock directory listings
         mock_fs_instance.ls = MagicMock(
             side_effect=lambda path, detail=True: [
                 {"type": "file", "name": f"{path}/config.json", "size": 100},
@@ -150,11 +139,7 @@ def mock_hf_filesystem():
                 {"type": "file", "name": f"{path}/file.txt", "size": 200},
             ] if path == "ignored-files-repo" else []
         )
-        
-        # Provide the mock to the test
         yield mock_fs_instance
-
-
 
 @pytest.fixture
 def downloader_api(mock_hf_filesystem):
@@ -182,8 +167,7 @@ def downloader_api(mock_hf_filesystem):
     """
     return ModelDownloaderApi()
 
-
-def test_get_info_integration_with_real_filesystem(setup_test_environment, capsys):
+def test_get_info_integration_with_real_filesystem(setup_test_environment):
     """
     Objective:
     - Verify that the get_info method of the ModelDownloaderApi correctly calculates the total size and file list 
@@ -196,9 +180,7 @@ def test_get_info_integration_with_real_filesystem(setup_test_environment, capsy
     1. Patch the HfFileSystem class to simulate the specific file system structure.
     2. Create an instance of ModelDownloaderApi.
     3. Call the get_info method with "test-repo".
-    4. Capture the output printed by the get_info method.
-    5. Parse the captured output as JSON.
-    6. Verify the total size and file list against expected values.
+    4. Verify the total size and file list against expected values.
 
     Mocked File System Structure:
     - test-repo/file1.txt (size: 19 bytes)
@@ -213,15 +195,13 @@ def test_get_info_integration_with_real_filesystem(setup_test_environment, capsy
 
     Potential Issues:
     - Ensure that the patched HfFileSystem correctly simulates the intended directory structure.
-    - Verify that the output captured matches the expected total size and file list.
+    - Verify that the output matches the expected total size and file list.
     - Handle any discrepancies between the expected and actual results, and identify the cause.
 
     Code:
     """
     with patch('service.downloader.HfFileSystem') as mock_fs_class:
         mock_fs_instance = mock_fs_class.return_value
-
-        # Define the side effect to simulate the directory structure
         mock_fs_instance.ls.side_effect = [
             [
                 {"type": "file", "name": "test-repo/file1.txt", "size": 19},
@@ -232,15 +212,9 @@ def test_get_info_integration_with_real_filesystem(setup_test_environment, capsy
             ],
         ]
 
-        # Create an instance of the API and call get_info
         api = ModelDownloaderApi()
-        api.get_info("test-repo")
+        output = api.get_info("test-repo")
 
-        # Capture the printed output
-        captured = capsys.readouterr()
-        output = json.loads(captured.out.splitlines()[-1])
-
-        # Verify the output
         assert output['total_size'] == 35, f"Expected total_size to be 35, got {output['total_size']}"
         assert len(output['file_list']) == 2, f"Expected file_queue length to be 2, got {len(output['file_list'])}"
         assert output['file_list'][0]['name'] == 'test-repo/file1.txt', f"Expected file name 'test-repo/file1.txt', got {output['file_list'][0]['name']}"
@@ -287,8 +261,6 @@ def test_model_downloader_api_empty_repo(mock_hf_filesystem):
     assert downloader.total_size == 0, "Expected total_size to be 0 for an empty repository"
     assert len(downloader.file_queue) == 0, "Expected file_queue to be empty for an empty repository"
 
-
-
 def test_model_downloader_api_invalid_repo(mock_hf_filesystem):
     """
     Objective:
@@ -322,8 +294,6 @@ def test_model_downloader_api_invalid_repo(mock_hf_filesystem):
     # Assert that calling get_info with an invalid repository raises a FileNotFoundError
     with pytest.raises(FileNotFoundError):
         downloader.get_info("test-user/invalid-repo")
-
-
 
 @pytest.mark.parametrize("test_filename, file_size, should_ignore", [
     ("file.png", 100, True),
@@ -382,7 +352,6 @@ def test_enum_file_list_ignored_files(downloader_api, mock_hf_filesystem, mock_h
         assert downloader_api.file_queue[0]["name"] == f"ignored-files-repo/{test_filename}", f"Expected the file_queue to contain {test_filename}"
         assert downloader_api.file_queue[0]["size"] == file_size, f"Expected file size to be {file_size} for {test_filename}"
         assert downloader_api.file_queue[0]["url"] == f"https://huggingface.co/ignored-files-repo/resolve/main/{test_filename}", f"Expected the URL to be correct for {test_filename}"
-
 
 def test_enum_file_list_ignored_files_integration(mock_hf_filesystem, mock_hf_hub_url):
     """

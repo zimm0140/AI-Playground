@@ -344,8 +344,11 @@ def test_main_function():
         # No need to import __main__
         from service.downloader import main 
 
+        # Mock the return value of get_info to be JSON serializable
+        mock_instance = MockModelDownloaderApi.return_value
+        mock_instance.get_info.return_value = {"total_size": 100, "file_list": [{"name": "test-repo/file.txt", "size": 100, "url": "mock_url"}]}
+
         # Call the main function
         main() 
 
-        mock_instance = MockModelDownloaderApi.return_value
         mock_instance.get_info.assert_called_once_with("test-repo", True)
