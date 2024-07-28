@@ -38,12 +38,15 @@ This second phase of installation **will take several minutes** and require a st
     - Download and install the latest Intel oneAPI Base Toolkit from [Intel oneAPI Base Toolkit](https://www.intel.com/content/www/us/en/developer/tools/oneapi/base-toolkit.html).
     - Ensure you select all the necessary components, including the **Intel® oneAPI DPC++/C++ Compiler** and **Intel® oneAPI Math Kernel Library (oneMKL)**.
 
-2.  **Create and Activate the Conda Environment:**
+2. **Create and Activate the Conda Environment:**
 
-    ```bash
-    conda create -n aipg_xpu python=3.10 -y 
-    conda activate aipg_xpu
-    ```
+   - Open a terminal or command prompt and navigate to the project root directory (AI-Playground).
+   - Run the following command to create and activate the environment:
+
+     ```bash
+     conda env create -f environment.yml 
+     conda activate aipg_xpu
+     ```
 
 3.  **Install Dependencies:**
 
