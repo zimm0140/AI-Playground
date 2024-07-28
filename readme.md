@@ -31,70 +31,97 @@ This second phase of installation **will take several minutes** and require a st
 
 
 ## Project Development
-### Dev Environment Setup (backend, python)
+### Dev Environment Setup (Backend, Python)
 
-1. Create and switch the conda environment and go to the service directory.
-```cmd
-conda create -n aipg_xpu python=3.10 -y
-conda activate aipg_xpu
-```
+1.  **Install Intel oneAPI Base Toolkit:**
 
-2. Depending on your configuration, install the necessary dependencies:
+    - Download and install the latest Intel oneAPI Base Toolkit from [Intel oneAPI Base Toolkit](https://www.intel.com/content/www/us/en/developer/tools/oneapi/base-toolkit.html).
+    - Ensure you select all the necessary components, including the **Intel® oneAPI DPC++/C++ Compiler** and **Intel® oneAPI Math Kernel Library (oneMKL)**.
 
-For Core Ultra-H:
-```cmd
-pip install -r service/requirements-ultra.txt
-```
+2.  **Create and Activate the Conda Environment:**
 
-For Arc A - Series dGPUs:
-```cmd
-pip install -r service/requirements-arc.txt
-```
+    ```bash
+    conda create -n aipg_xpu python=3.10 -y 
+    conda activate aipg_xpu
+    ```
 
-3. Download the Intel Extension For Pytorch* AOT Packages. Depending on your hardware, download cp310 whl files from the links below.
+3.  **Install Dependencies:**
 
-Core Ultra-H https://github.com/Nuullll/intel-extension-for-pytorch/releases/tag/v2.1.20%2Bmtl%2Boneapi
+    - **For Core Ultra-H:**
+        ```bash
+        pip install -r service/requirements-ultra.txt
+        ```
 
-The Arc A - Series dGPU https://github.com/Nuullll/intel-extension-for-pytorch/releases/tag/v2.1.10%2Bxpu
+    - **For Arc A-Series dGPUs:**
+        ```bash
+        pip install -r service/requirements-arc.txt
+        ```
 
-Install all downloaded whl files using the pip install command
+4.  **Download and Install the Intel Extension for PyTorch AOT Packages:**
 
-4. Check whether the XPU environment is correct
-```cmd
-python -c "import torch; import intel_extension_for_pytorch as ipex; print(torch.version); print(ipex.version); [print(f'[{i}]: {torch.xpu.get_device_properties(i)}') for i in range(torch.xpu.device_count())];"
-```
+    - **Important:** Make sure to select the correct wheel file corresponding to your hardware and Python version from the [Intel Extension for PyTorch releases page](https://github.com/intel/intel-extension-for-pytorch/releases):
 
+    - **For Core Ultra-H:**
+        ```bash
+        pip install https://github.com/Nuullll/intel-extension-for-pytorch/releases/download/v2.1.20%2Bmtl%2Boneapi/intel_extension_for_pytorch-2.1.20+mtl-cp310-cp310-win_amd64.whl
+        pip install https://github.com/Nuullll/intel-extension-for-pytorch/releases/download/v2.1.20%2Bmtl%2Boneapi/torch-2.1.0a0+git7bcf7da-cp310-cp310-win_amd64.whl
+        pip install https://github.com/Nuullll/intel-extension-for-pytorch/releases/download/v2.1.20%2Bmtl%2Boneapi/torchaudio-2.1.0+6ea1133-cp310-cp310-win_amd64.whl
+        pip install https://github.com/Nuullll/intel-extension-for-pytorch/releases/download/v2.1.20%2Bmtl%2Boneapi/torchvision-0.16.0+fbb4cc5-cp310-cp310-win_amd64.whl
+        ```
+
+    - **For Arc A-Series dGPU:**
+        ```bash
+        pip install https://github.com/Nuullll/intel-extension-for-pytorch/releases/download/v2.1.10%2Bxpu/intel_extension_for_pytorch-2.1.10+xpu-cp310-cp310-win_amd64.whl
+        pip install https://github.com/Nuullll/intel-extension-for-pytorch/releases/download/v2.1.10%2Bxpu/torch-2.1.0a0+cxx11.abi-cp310-cp310-win_amd64.whl
+        pip install https://github.com/Nuullll/intel-extension-for-pytorch/releases/download/v2.1.10%2Bxpu/torchaudio-2.1.0a0+cxx11.abi-cp310-cp310-win_amd64.whl
+        pip install https://github.com/Nuullll/intel-extension-for-pytorch/releases/download/v2.1.10%2Bxpu/torchvision-0.16.0a0+cxx11.abi-cp310-cp310-win_amd64.whl
+        ```
+
+5.  **Verify the XPU Environment Setup:**
+
+    ```bash
+    python -c "import torch; import intel_extension_for_pytorch as ipex; print(torch.__version__); print(ipex.__version__); [print(f'[{i}]: {torch.xpu.get_device_properties(i)}') for i in range(torch.xpu.device_count())]"
+    ```
 
 ### Linking Dev Environment to Project Environment
 
-1. Switch to the root directory of the project. (AI-Playground)
+1.  **Switch to the project root directory:** (AI-Playground)
+    ```bash
+    cd AI-Playground 
+    ```
 
-2. Run the following command to view the path of the conda virtual environment
+2.  **View the Conda environment path (on Windows):** 
+    ```powershell
+    conda env list | findstr aipg_xpu
+    ```
+    This command will show the path to your `aipg_xpu` environment.
 
-on windows
-```
-conda env list|findstr aipg_xpu
-```
+3.  **Create a symbolic link:**
 
-3. Based on the obtained environment path, run the following command to create an env file link
-on windows
-```
-mklink /J "./env" "{aipg_xpu_env_path}"
-```
+    - **Using PowerShell:**
+        ```powershell
+        New-Item -ItemType Junction -Path ".\env" -Target "C:\Users\YourUserName\.conda\envs\aipg_xpu"
+        ```
+        (Replace `"C:\Users\YourUserName\.conda\envs\aipg_xpu"` with the actual path obtained from the previous step.)
 
-### WebUI (nodejs + electron)
+    - **Using Command Prompt (cmd):**
+        ```cmd
+        mklink /J ".\env" "C:\Users\YourUserName\.conda\envs\aipg_xpu"
+        ```
+        (Replace `"C:\Users\YourUserName\.conda\envs\aipg_xpu"` with the actual path obtained from the previous step.)
 
-1. Install Nodejs development environment, you can get it from https://nodejs.org/en/download.
+### WebUI (Node.js + electron)
 
-2. Switch to the WebUI directory and install all Nodejs dependencies. 
-```
-npm install
-```
-
-3. In the WebUI directory, run the below command to get started with development
-```
-npm run dev
-```
+1.  **Install Node.js development environment:** Download and install from [Node.js download page](https://nodejs.org/).
+2.  **Switch to the WebUI directory and install all Node.js dependencies.**
+    ```bash
+    cd WebUI
+    npm install
+    ```
+3.  **In the WebUI directory, run the below command to get started with development**
+    ```bash
+    npm run dev
+    ```
 
 ## Model Support
 AI Playground supports PyTorch LLM, SD1.5, and SDXL models. AI Playground does not ship with any models but does make  models available for all features either directly from the interface or indirectly by the users downloading models from HuggingFace.com of CivitAI.com and placing them in the appropriate model folder. 
