@@ -27,30 +27,34 @@ class ModelDownloaderApi:
             self.repo_folder = repo_id.replace('/', '---')
             self.file_queue.clear()
             self.total_size = 0
-            self.enum_file_list(repo_id, is_sd, True)
+            self.process_repository(repo_id, is_sd)
             return {"total_size": self.total_size, "file_list": self.file_queue}
         except Exception as e:
             logger.error(f"An error occurred while fetching info for repo '{repo_id}': {e}")
             raise
 
+    def process_repository(self, repo_id: str, is_sd: bool) -> None:
+        self.enum_file_list(repo_id, is_sd, True)
+
     def enum_file_list(self, enum_path: str, is_sd: bool = False, is_root: bool = True) -> None:
         try:
             items = self.fs.ls(enum_path, detail=True)
             for item in items:
-                name = self.normalize_path(item.get("name"))
-                size = item.get("size")
-                item_type = item.get("type")
-                if item_type == "directory":
-                    self.enum_file_list(name, is_sd, False)
-                else:
-                    if self.should_ignore_file(name, is_sd, is_root):
-                        continue
-                    self.total_size += size
-                    url = self.construct_url(name)
-                    self.file_queue.append({"name": name.replace(self.repo_id, self.repo_folder), "size": size, "url": url})
+                self.process_item(item, is_sd, is_root)
         except Exception as e:
             logger.error(f"An error occurred while enumerating files in '{enum_path}': {e}")
             raise
+
+    def process_item(self, item: Dict[str, Any], is_sd: bool, is_root: bool) -> None:
+        name = self.normalize_path(item.get("name"))
+        size = item.get("size")
+        item_type = item.get("type")
+
+        if item_type == "directory":
+            self.enum_file_list(name, is_sd, False)
+        else:
+            if not self.should_ignore_file(name, is_sd, is_root):
+                self.add_file_to_queue(name, size)
 
     def should_ignore_file(self, name: str, is_sd: bool, is_root: bool) -> bool:
         sd_ignored_extensions = [".safetensors", ".pt", ".ckpt"]
@@ -61,6 +65,11 @@ class ModelDownloaderApi:
         if any(name.endswith(ext) for ext in common_ignored_extensions):
             return True
         return False
+
+    def add_file_to_queue(self, name: str, size: int) -> None:
+        self.total_size += size
+        url = self.construct_url(name)
+        self.file_queue.append({"name": name.replace(self.repo_id, self.repo_folder), "size": size, "url": url})
 
     def construct_url(self, name: str) -> str:
         try:
