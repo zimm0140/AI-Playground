@@ -3,7 +3,6 @@ import sys
 from huggingface_hub import HfFileSystem, hf_hub_url
 from pathlib import Path
 
-
 class ModelDownloaderApi:
     repo_id: str
     file_queue: list
@@ -27,40 +26,34 @@ class ModelDownloaderApi:
     def enum_file_list(self, enum_path: str, is_sd=False, is_root=True):
         items = self.fs.ls(enum_path, detail=True)
         for item in items:
-            name = Path(item.get("name")).as_posix()  # Normalize path to use forward slashes
+            name = self.normalize_path(item.get("name"))
             size = item.get("size")
             item_type = item.get("type")
             if item_type == "directory":
                 self.enum_file_list(name, is_sd, False)
             else:
-                # sd model ignore root .safetensors .pt .ckpt files
-                if (
-                    is_sd
-                    and is_root
-                    and (
-                        name.endswith(".safetensors")
-                        or name.endswith(".pt")
-                        or name.endswith(".ckpt")
-                    )
-                ):
+                if self.should_ignore_file(name, is_sd, is_root):
                     continue
-                # ignore no used files
-                elif any(name.endswith(ext) for ext in [".png", ".gitattributes", ".md", ".jpg"]):
-                    continue
-
                 self.total_size += size
-                relative_path = Path(name).relative_to(self.repo_id).as_posix()
-                subfolder = Path(relative_path).parent.as_posix()
-                filename = Path(relative_path).name
-                # Ensure subfolder is empty string if it's '.'
-                subfolder = '' if subfolder == '.' else subfolder
-                url = hf_hub_url(
-                    repo_id=self.repo_id, filename=filename, subfolder=subfolder
-                )
-                self.file_queue.append(
-                    {"name": name.replace(self.repo_id, self.repo_folder), "size": size, "url": url}
-                )
+                url = self.construct_url(name)
+                self.file_queue.append({"name": name.replace(self.repo_id, self.repo_folder), "size": size, "url": url})
 
+    def should_ignore_file(self, name: str, is_sd: bool, is_root: bool) -> bool:
+        if is_sd and is_root and any(name.endswith(ext) for ext in [".safetensors", ".pt", ".ckpt"]):
+            return True
+        if any(name.endswith(ext) for ext in [".png", ".gitattributes", ".md", ".jpg"]):
+            return True
+        return False
+
+    def construct_url(self, name: str) -> str:
+        relative_path = Path(name).relative_to(self.repo_id).as_posix()
+        subfolder = Path(relative_path).parent.as_posix()
+        filename = Path(relative_path).name
+        subfolder = '' if subfolder == '.' else subfolder
+        return hf_hub_url(repo_id=self.repo_id, filename=filename, subfolder=subfolder)
+
+    def normalize_path(self, name: str) -> str:
+        return Path(name).as_posix()
 
 # --- Main Function ---
 def main():
@@ -70,7 +63,6 @@ def main():
         ModelDownloaderApi().get_info(
             sys.argv[1], int(sys.argv[2]) != 0 if len(sys.argv) > 2 else False
         )
-
 
 if __name__ == "__main__":
     main()
