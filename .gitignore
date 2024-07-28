@@ -39,6 +39,7 @@ db/
 __pycache__/
 *.cpython-3*
 *.so
+*.pyc
 
 # C extensions
 *.so
