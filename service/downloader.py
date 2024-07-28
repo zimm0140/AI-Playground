@@ -11,9 +11,9 @@ class ModelDownloaderApi:
     fs: HfFileSystem
     repo_folder: str
 
-    def __init__(self):
+    def __init__(self, fs: HfFileSystem = None):
         self.file_queue = []
-        self.fs = HfFileSystem()
+        self.fs = fs if fs else HfFileSystem()
         self.total_size = 0
 
     def get_info(self, repo_id: str, is_sd: bool = False) -> Dict[str, Any]:

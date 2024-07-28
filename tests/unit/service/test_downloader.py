@@ -17,7 +17,7 @@ def mock_hf_hub_url():
 
 @pytest.fixture
 def downloader_api(mock_hf_filesystem):
-    return ModelDownloaderApi()
+    return ModelDownloaderApi(fs=mock_hf_filesystem)
 
 # --- Initialization ---
 def test_init(downloader_api):

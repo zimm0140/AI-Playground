@@ -31,3 +31,14 @@ c4v/
 db/
 
 # Do not ignore tests
+
+# Ignore compiled Python files
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.cpython-3*
+*.so
+
+# C extensions
+*.so
