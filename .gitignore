@@ -1,0 +1,33 @@
+# Ignore the virtual environment directory
+env/
+.env/
+
+# Ignore Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore IDE/editor specific files
+.vscode/
+.idea/
+
+# Ignore build directories
+build/
+dist/
+
+# Ignore other directories
+*.egg-info/
+*.log
+
+# Ignore cache directories
+cache/
+c4v/
+
+# Ignore database files
+db/
+
+# Do not ignore tests
