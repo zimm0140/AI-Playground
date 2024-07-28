@@ -48,9 +48,12 @@ class ModelDownloaderApi:
             raise
 
     def should_ignore_file(self, name: str, is_sd: bool, is_root: bool) -> bool:
-        if is_sd and is_root and any(name.endswith(ext) for ext in [".safetensors", ".pt", ".ckpt"]):
+        sd_ignored_extensions = [".safetensors", ".pt", ".ckpt"]
+        common_ignored_extensions = [".png", ".gitattributes", ".md", ".jpg"]
+
+        if is_sd and is_root and any(name.endswith(ext) for ext in sd_ignored_extensions):
             return True
-        if any(name.endswith(ext) for ext in [".png", ".gitattributes", ".md", ".jpg"]):
+        if any(name.endswith(ext) for ext in common_ignored_extensions):
             return True
         return False
 
