@@ -2,20 +2,21 @@ from json import dumps
 import sys
 from huggingface_hub import HfFileSystem, hf_hub_url
 from pathlib import Path
+from typing import List, Dict, Any
 
 class ModelDownloaderApi:
     repo_id: str
-    file_queue: list
+    file_queue: List[Dict[str, Any]]
     total_size: int
     fs: HfFileSystem
     repo_folder: str
 
     def __init__(self):
-        self.file_queue = list()
+        self.file_queue = []
         self.fs = HfFileSystem()
         self.total_size = 0
 
-    def get_info(self, repo_id: str, is_sd=False):
+    def get_info(self, repo_id: str, is_sd: bool = False) -> Dict[str, Any]:
         self.repo_id = repo_id
         self.repo_folder = repo_id.replace('/', '---')
         self.file_queue.clear()
@@ -23,7 +24,7 @@ class ModelDownloaderApi:
         self.enum_file_list(repo_id, is_sd, True)
         return {"total_size": self.total_size, "file_list": self.file_queue}
 
-    def enum_file_list(self, enum_path: str, is_sd=False, is_root=True):
+    def enum_file_list(self, enum_path: str, is_sd: bool = False, is_root: bool = True) -> None:
         items = self.fs.ls(enum_path, detail=True)
         for item in items:
             name = self.normalize_path(item.get("name"))
@@ -56,7 +57,7 @@ class ModelDownloaderApi:
         return Path(name).as_posix()
 
 # --- Main Function ---
-def main():
+def main() -> None:
     if len(sys.argv) == 1:
         exit(1)
     else:
