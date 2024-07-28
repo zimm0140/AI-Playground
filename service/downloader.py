@@ -1,8 +1,13 @@
+import logging
 from json import dumps
 import sys
 from huggingface_hub import HfFileSystem, hf_hub_url
 from pathlib import Path
 from typing import List, Dict, Any
+
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 class ModelDownloaderApi:
     repo_id: str
@@ -25,7 +30,7 @@ class ModelDownloaderApi:
             self.enum_file_list(repo_id, is_sd, True)
             return {"total_size": self.total_size, "file_list": self.file_queue}
         except Exception as e:
-            print(f"An error occurred while fetching info for repo '{repo_id}': {e}", file=sys.stderr)
+            logger.error(f"An error occurred while fetching info for repo '{repo_id}': {e}")
             raise
 
     def enum_file_list(self, enum_path: str, is_sd: bool = False, is_root: bool = True) -> None:
@@ -44,7 +49,7 @@ class ModelDownloaderApi:
                     url = self.construct_url(name)
                     self.file_queue.append({"name": name.replace(self.repo_id, self.repo_folder), "size": size, "url": url})
         except Exception as e:
-            print(f"An error occurred while enumerating files in '{enum_path}': {e}", file=sys.stderr)
+            logger.error(f"An error occurred while enumerating files in '{enum_path}': {e}")
             raise
 
     def should_ignore_file(self, name: str, is_sd: bool, is_root: bool) -> bool:
@@ -65,20 +70,20 @@ class ModelDownloaderApi:
             subfolder = '' if subfolder == '.' else subfolder
             return hf_hub_url(repo_id=self.repo_id, filename=filename, subfolder=subfolder)
         except Exception as e:
-            print(f"An error occurred while constructing URL for '{name}': {e}", file=sys.stderr)
+            logger.error(f"An error occurred while constructing URL for '{name}': {e}")
             raise
 
     def normalize_path(self, name: str) -> str:
         try:
             return Path(name).as_posix()
         except Exception as e:
-            print(f"An error occurred while normalizing path '{name}': {e}", file=sys.stderr)
+            logger.error(f"An error occurred while normalizing path '{name}': {e}")
             raise
 
 # --- Main Function ---
 def main() -> None:
     if len(sys.argv) < 2:
-        print("Usage: downloader.py <repo_id> [is_sd]", file=sys.stderr)
+        logger.error("Usage: downloader.py <repo_id> [is_sd]")
         exit(1)
     else:
         try:
@@ -88,10 +93,10 @@ def main() -> None:
             info = downloader.get_info(repo_id, is_sd)
             print(dumps(info))
         except ValueError as e:
-            print(f"Invalid argument: {e}", file=sys.stderr)
+            logger.error(f"Invalid argument: {e}")
             exit(1)
         except Exception as e:
-            print(f"An error occurred: {e}", file=sys.stderr)
+            logger.error(f"An error occurred: {e}")
             exit(1)
 
 if __name__ == "__main__":
