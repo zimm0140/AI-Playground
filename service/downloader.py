@@ -21,7 +21,7 @@ class ModelDownloaderApi:
         self.file_queue.clear()
         self.total_size = 0
         self.enum_file_list(repo_id, is_sd, True)
-        print(dumps({"total_size": self.total_size, "file_list": self.file_queue}))
+        return {"total_size": self.total_size, "file_list": self.file_queue}
 
     def enum_file_list(self, enum_path: str, is_sd=False, is_root=True):
         items = self.fs.ls(enum_path, detail=True)
@@ -60,9 +60,11 @@ def main():
     if len(sys.argv) == 1:
         exit(1)
     else:
-        ModelDownloaderApi().get_info(
+        downloader = ModelDownloaderApi()
+        info = downloader.get_info(
             sys.argv[1], int(sys.argv[2]) != 0 if len(sys.argv) > 2 else False
         )
+        print(dumps(info))
 
 if __name__ == "__main__":
     main()
