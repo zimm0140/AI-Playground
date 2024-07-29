@@ -1,16 +1,16 @@
 from io import BufferedWriter
-import os
 import time
 import traceback
-from typing import Callable
+from typing import Callable, Optional, Tuple
 import requests
 from threading import Thread
 from exceptions import DownloadException
+from pathlib import Path
 
 
 class FileDownloader:
-    on_download_progress: Callable[[str, int, int, int], None] = None
-    on_download_completed: Callable[[str, Exception], None] = None
+    on_download_progress: Optional[Callable[[str, int, int, int], None]] = None
+    on_download_completed: Optional[Callable[[str, Optional[Exception]], None]] = None
     url: str
     filename: str
     basename: str
@@ -25,22 +25,22 @@ class FileDownloader:
         self.completed = False
         self.total_size = 0
         self.prev_sec_download_size = 0
-        self.report_thread = None
+        self.report_thread: Optional[Thread] = None
 
-    def download_file(self, url: str, file_path: str):
+    def download_file(self, url: str, file_path: str) -> None:
         self.url = url
-        self.basename = os.path.basename(file_path)
+        self.basename = Path(file_path).name
         self.download_stop = False
         self.filename = file_path
         self.prev_sec_download_size = 0
         self.download_size = 0
         self.completed = False
         self.report_thread = None
-        error = None
-        report_thread = None
+        error: Optional[Exception] = None
+        report_thread: Optional[Thread] = None
         try:
             response, fw = self.__init_download(self.url, self.filename)
-            self.total_size = int(response.headers.get("Content-Length"))
+            self.total_size = int(response.headers.get("Content-Length", 0))
             if self.on_download_progress is not None:
                 report_thread = self.__start_report_download_progress()
             self.__start_download(response, fw)
@@ -54,17 +54,15 @@ class FileDownloader:
         if self.on_download_completed is not None:
             self.on_download_completed(self.basename, error)
 
-    def __init_download(
-        self, url: str, file_path: str
-    ) -> tuple[requests.Response, BufferedWriter]:
-        if os.path.exists(file_path):
-            start_pos = os.path.getsize(file_path)
+    def __init_download(self, url: str, file_path: str) -> Tuple[requests.Response, BufferedWriter]:
+        file_path = Path(file_path)
+        if file_path.exists():
+            start_pos = file_path.stat().st_size
         else:
-            os.makedirs(os.path.dirname(file_path), exist_ok=True)
+            file_path.parent.mkdir(parents=True, exist_ok=True)
             start_pos = 0
 
         if start_pos > 0:
-            # download skip exists part
             response = requests.get(
                 url,
                 stream=True,
@@ -78,21 +76,18 @@ class FileDownloader:
 
         return response, fw
 
-    def __start_download(self, response: requests.Response, fw: BufferedWriter):
+    def __start_download(self, response: requests.Response, fw: BufferedWriter) -> None:
         retry = 0
         while True:
             try:
-                with response:
-                    with fw:
-                        for bytes in response.iter_content(chunk_size=4096):
-                            self.download_size += bytes.__len__()
-                            fw.write(bytes)
+                with response, fw:
+                    for bytes in response.iter_content(chunk_size=4096):
+                        self.download_size += len(bytes)
+                        fw.write(bytes)
 
-                            if self.download_stop:
-                                print(
-                                    f"FileDownloader thread {Thread.native_id} exit by stop"
-                                )
-                                break
+                        if self.download_stop:
+                            print(f"FileDownloader thread {Thread.native_id} exit by stop")
+                            break
                 break
             except Exception:
                 traceback.print_exc()
@@ -100,23 +95,17 @@ class FileDownloader:
                 if retry > 3:
                     raise DownloadException(self.url)
                 else:
-                    print(
-                        f"FileDownloader thread {Thread.native_id} retry {retry} times"
-                    )
+                    print(f"FileDownloader thread {Thread.native_id} retry {retry} times")
                     time.sleep(1)
                     response, fw = self.__init_download(self.url, self.filename)
 
-
-    def __start_report_download_progress(self):
+    def __start_report_download_progress(self) -> Thread:
         report_thread = Thread(target=self.__report_download_progress)
         report_thread.start()
         return report_thread
 
-    def __report_download_progress(self):
-        while (
-            not self.download_stop
-            and not self.completed
-        ):
+    def __report_download_progress(self) -> None:
+        while not self.download_stop and not self.completed:
             self.on_download_progress(
                 self.basename,
                 self.download_size,
@@ -127,5 +116,5 @@ class FileDownloader:
             self.prev_sec_download_size = self.download_size
             time.sleep(1)
 
-    def stop_download(self):
+    def stop_download(self) -> None:
         self.download_stop = True
