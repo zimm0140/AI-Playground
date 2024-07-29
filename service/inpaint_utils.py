@@ -153,39 +153,77 @@ class UnsupportedFormat(Exception):
 
 
 class MatteMatting:
+    """
+    Handles image matting, including transparency management and exporting images.
+
+    Attributes:
+        image (np.ndarray): The input image in OpenCV format.
+        mask_image (np.ndarray): The mask image in OpenCV format.
+    """
     def __init__(self, image: Image.Image, mask_image: Image.Image):
+        """
+        Initializes the MatteMatting instance.
+
+        Args:
+            image (Image.Image): The input image.
+            mask_image (Image.Image): The mask image.
+        """
         self.image = self.__image_to_opencv(image)
         self.mask_image = self.__image_to_opencv(mask_image)
 
     @staticmethod
-    def __transparent_back(img: Image.Image):
+    def __transparent_back(img: Image.Image, transparent_color=(255, 255, 255, 255)) -> Image.Image:
         """
+        Replaces the specified color with transparency.
+
+        Args:
+            img (Image.Image): The input image.
+            transparent_color (tuple): The color to replace with transparency.
+
+        Returns:
+            Image.Image: The image with the specified color replaced by transparency.
+            
         :param img: 传入图片地址
         :return: 返回替换白色后的透明图
         """
         img = img.convert("RGBA")
         L, H = img.size
-        color_0 = (255, 255, 255, 255)  # 要替换的颜色
         for h in range(H):
             for l in range(L):
                 dot = (l, h)
                 color_1 = img.getpixel(dot)
-                if color_1 == color_0:
+                if color_1 == transparent_color:
                     color_1 = color_1[:-1] + (0,)
                     img.putpixel(dot, color_1)
         return img
 
-    def export_image(self, mask_flip=False):
+    def export_image(self, mask_flip=False) -> Image.Image:
+        """
+        Exports the matted image, optionally flipping the mask.
+
+        Args:
+            mask_flip (bool): Whether to flip the mask colors.
+
+        Returns:
+            Image.Image: The exported image.
+        """
         if mask_flip:
-            self.mask_image = cv2.bitwise_not(self.mask_image)  # 黑白翻转
+            self.mask_image = cv2.bitwise_not(self.mask_image)
         image = cv2.add(self.image, self.mask_image)
-        image = Image.fromarray(
-            cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        )  # OpenCV转换成PIL.Image格式
+        image = Image.fromarray(cv2.cvtColor(image, cv2.COLOR_BGR2RGB)) # OpenCV转换成PIL.Image格式
         return self.__transparent_back(image)
 
     @staticmethod
-    def __image_to_opencv(image: Image.Image):
+    def __image_to_opencv(image: Image.Image) -> np.ndarray:
+        """
+        Converts a PIL image to an OpenCV image.
+
+        Args:
+            image (Image.Image): The PIL image to convert.
+
+        Returns:
+            np.ndarray: The image in OpenCV format.
+        """
         return cv2.cvtColor(np.asarray(image), cv2.COLOR_RGB2BGR)
 
 
