@@ -1,4 +1,4 @@
-from typing import Tuple, Union
+from typing import Tuple, Union, List
 import numpy as np
 from PIL import Image
 import cv2
@@ -19,7 +19,14 @@ def get_image_ndarray(image: Union[Image.Image, np.ndarray]) -> np.ndarray:
     
     Raises:
         TypeError: If the input is neither a PIL Image nor a numpy array.
+
+    Example:
+        >>> img = Image.open('path_to_image.jpg')
+        >>> arr = get_image_ndarray(img)
+        >>> print(arr.shape)
+        (height, width, 3)
     """
+
     if isinstance(image, Image.Image):
         return np.array(image)
     elif isinstance(image, np.ndarray):
@@ -42,20 +49,23 @@ def detect_mask_valid_edge(mask_image: Union[Image.Image, np.ndarray]) -> Tuple[
         ValueError: If the mask has no non-zero values.
     """
     mask = get_image_ndarray(mask_image)
-    
+
     # Ensure mask is binary
     mask = np.where(mask > 0, 1, 0)
 
     indices = np.where(mask > 0)
     if indices[0].size == 0 or indices[1].size == 0:
         raise ValueError("The mask has no non-zero values.")
-    
-    top, bottom = np.min(indices[0]), np.max(indices[0])
-    left, right = np.min(indices[1]), np.max(indices[1])
-    logger.info(f"detect top:{top}, bottom:{bottom}, left:{left}, right:{right}")
-    return left, top, right + 1, bottom + 1
 
-def pre_input_and_mask(image: Image.Image, mask: Image.Image, slice_increment=128) -> Tuple[Image.Image, Image.Image, Tuple[int, int, int, int]]:
+    top = np.min(indices[0])
+    bottom = np.max(indices[0]) + 1  # Add 1 for exclusive bound
+    left = np.min(indices[1])
+    right = np.max(indices[1]) + 1  # Add 1 for exclusive bound
+
+    logger.info(f"Detected bounding box - top: {top}, bottom: {bottom}, left: {left}, right: {right}")
+    return left, top, right, bottom
+
+def pre_input_and_mask(image: Image.Image, mask: Image.Image, slice_increment=128, force_multiple_of_slice_increment=False) -> Tuple[Image.Image, Image.Image, Tuple[int, int, int, int]]:
     """
     Prepares the input image and mask for inpainting.
 
@@ -63,6 +73,7 @@ def pre_input_and_mask(image: Image.Image, mask: Image.Image, slice_increment=12
         image: The input image.
         mask: The mask image.
         slice_increment: The increment to adjust slice dimensions to, typically required by the model.
+        force_multiple_of_slice_increment: Whether to force slice dimensions to be multiples of slice_increment.
 
     Returns:
         Tuple containing cropped image, cropped mask, and the slice box coordinates.
@@ -70,23 +81,63 @@ def pre_input_and_mask(image: Image.Image, mask: Image.Image, slice_increment=12
     Raises:
         ValueError: If the image and mask sizes do not match.
     """
-    if image.size != mask.size:
-        raise ValueError("The image and mask sizes must match.")
-    
+    validate_image_and_mask_size(image, mask)
+
     iw, ih = image.size
     mask_resize = mask.resize(image.size)
     ml, mt, mr, mb = detect_mask_valid_edge(mask_resize)
 
-    # If mask covers the entire image, no slicing is needed
-    if (ml, mt, mr, mb) == (0, 0, iw, ih):
+    if mask_covers_entire_image(ml, mt, mr, mb, iw, ih):
         logger.info("Mask covers the entire image. No slicing needed.")
-        return image, mask_resize, (0, 0, iw, ih) 
+        return image, mask_resize, (0, 0, iw, ih)
 
+    if mr - ml > iw * 0.9 and mb - mt > ih * 0.9:
+        logger.info("Mask covers a significant portion of the image. Returning full image.")
+        return image, mask_resize, (0, 0, iw, ih)
+
+    slice_box = calculate_slice_box(ml, mt, mr, mb, iw, ih, slice_increment, force_multiple_of_slice_increment)
+
+    if not force_multiple_of_slice_increment:
+        left, top, right, bottom = ml, mt, mr, mb
+    else:
+        # Adjust slice box for minimum size and image bounds
+        left, top, right, bottom = slice_box
+        min_size = max(64, slice_increment)
+        if right - left < min_size:
+            center = (left + right) // 2
+            half_size = min_size // 2
+            left = max(0, center - half_size)
+            right = min(iw, center + half_size)
+        if bottom - top < min_size:
+            center = (top + bottom) // 2
+            half_size = min_size // 2
+            top = max(0, center - half_size)
+            bottom = min(ih, center + half_size)
+
+    logger.info(f"Cropping image and mask to box: {left, top, right, bottom}")
+    return image.crop((left, top, right, bottom)), mask_resize.crop((left, top, right, bottom)), (left, top, right, bottom)
+
+
+
+
+
+def validate_image_and_mask_size(image: Image.Image, mask: Image.Image):
+    if image.size != mask.size:
+        raise ValueError("The image and mask sizes must match.")
+
+def mask_covers_entire_image(ml, mt, mr, mb, iw, ih):
+    return (ml, mt, mr, mb) == (0, 0, iw, ih)
+
+def calculate_slice_box(ml, mt, mr, mb, iw, ih, slice_increment, force_multiple_of_slice_increment) -> Tuple[int, int, int, int]:
     mask_width_half = (mr - ml) // 2
     mask_height_half = (mb - mt) // 2
 
-    slice_width_half = ((mask_width_half + slice_increment - 1) // slice_increment) * slice_increment
-    slice_height_half = ((mask_height_half + slice_increment - 1) // slice_increment) * slice_increment
+    if force_multiple_of_slice_increment:
+        slice_width_half = ((mask_width_half + slice_increment - 1) // slice_increment) * slice_increment
+        slice_height_half = ((mask_height_half + slice_increment - 1) // slice_increment) * slice_increment
+    else:
+        slice_width_half = mask_width_half
+        slice_height_half = mask_height_half
 
     center_x = ml + mask_width_half
     center_y = mt + mask_height_half
@@ -96,9 +147,21 @@ def pre_input_and_mask(image: Image.Image, mask: Image.Image, slice_increment=12
     right = min(iw, center_x + slice_width_half)
     bottom = min(ih, center_y + slice_height_half)
 
-    slice_box = (left, top, right, bottom)
-    logger.info(f"Cropping image and mask to box: {slice_box}")
-    return image.crop(slice_box), mask_resize.crop(slice_box), slice_box
+    # Adjust right and bottom to ensure they are within image bounds and consistent
+    if force_multiple_of_slice_increment:
+        right = min(iw, left + ((right - left + slice_increment - 1) // slice_increment) * slice_increment)
+        bottom = min(ih, top + ((bottom - top + slice_increment - 1) // slice_increment) * slice_increment)
+
+    if right > iw:
+        right = iw
+        left = max(0, right - 2 * slice_width_half)
+    if bottom > ih:
+        bottom = ih
+        top = max(0, bottom - 2 * slice_height_half)
+
+    return left, top, right, bottom
+
+
 
 
 def calc_out_size(width: int, height: int, max_size: int = 768) -> Tuple[int, int, float]:
@@ -154,10 +217,11 @@ def resize_by_max(image: Image.Image, max_size: int = 768) -> Tuple[Image.Image,
         new_width = int(image.width / ratio)
         new_height = int(image.height / ratio)
         resized_image = image.resize((new_width, new_height), Image.Resampling.LANCZOS)
-        logger.info(f"Resized image to {new_width}x{new_height} with ratio {ratio:.2f} to fit within max size {max_size}.")
+        logger.info(f"Resized image from {image.size} to {new_width}x{new_height} with ratio {ratio:.2f} to fit within max size {max_size}.")
         return resized_image, ratio
     logger.info(f"No resizing needed. Original size {image.width}x{image.height} is within max size {max_size}.")
     return image, 1.0
+
 
 
 # def resize_by_max(image: Image.Image, max_size):
@@ -174,10 +238,6 @@ def resize_by_max(image: Image.Image, max_size: int = 768) -> Tuple[Image.Image,
 #     return image, 1
 
 
-import logging
-from typing import Union, List
-
-logger = logging.getLogger(__name__)
 
 def slice_image(image: Union[np.ndarray, Image.Image]) -> List[np.ndarray]: 
     """
@@ -203,16 +263,11 @@ def slice_image(image: Union[np.ndarray, Image.Image]) -> List[np.ndarray]:
     slice_width = width // 2
     slice_height = height // 3
 
-    slices = []
-    for h in range(3):
-        for w in range(2):
-            left = w * slice_width
-            upper = h * slice_height
-            right = min(left + slice_width, width)
-            lower = min(upper + slice_height, height)
-            slices.append(image[upper:lower, left:right])
-            logger.debug(f"Slice {h*2 + w + 1}: ({upper}, {left}) to ({lower}, {right})")
-
+    slices = [
+        image[y:y + slice_height, x:x + slice_width]
+        for y in range(0, height, slice_height)
+        for x in range(0, width, slice_width)
+    ]
     return slices
 
 class UnsupportedFormat(Exception):
@@ -225,7 +280,6 @@ class UnsupportedFormat(Exception):
     def __init__(self, input_type: str):
         super().__init__(f"Unsupported format: '{input_type}'. Use PIL.Image or numpy array.")
         logger.error(f"Unsupported format encountered: {input_type}")
-
 
 class MatteMatting:
     """Applies a mask to an image for transparency."""
@@ -240,7 +294,7 @@ class MatteMatting:
         """
         self.image = self._image_to_opencv(image)
         self.mask_image = self._image_to_opencv(mask_image)
-        logger.info("MatteMatting instance created.")
+        logger.info(f"MatteMatting instance created with image size {image.size} and mask size {mask_image.size}")
 
     @staticmethod
     def _transparent_back(img: Image.Image, transparent_color=(255, 255, 255, 255)) -> Image.Image:
