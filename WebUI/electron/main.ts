@@ -128,12 +128,10 @@ async function createWindow() {
 }
 
 function logMessage(message: string) {
+  logger.info(message); // Log to console always
   if (app.isPackaged) {
-    logger.info(message);
-    fs.appendFileSync(path.join(externalRes, "debug.log"), message + "\r\n");
-  } else {
-    logger.info(message);
-  }
+    fs.appendFileSync(path.join(externalRes, "debug.log"), message + "\r\n"); // Append to file if packaged
+  } 
 }
 
 app.on("quit", async () => {
