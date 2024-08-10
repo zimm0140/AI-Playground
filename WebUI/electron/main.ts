@@ -454,26 +454,42 @@ function isProcessRunning(pid: number) {
 function wakeupApiService() {
   const wordkDir = path.resolve(app.isPackaged ? path.join(process.resourcesPath, "service") : path.join(__dirname, "../../../service"));
   const baseDir = app.isPackaged ? process.resourcesPath : path.join(__dirname, "../../../");
-  const pythonExe = path.resolve(path.join(baseDir, "env/python.exe"));
+
+  // Cross-platform Python executable path
+  const pythonExe = process.platform === 'win32'
+    ? path.resolve(path.join(baseDir, "env/python.exe"))
+    : path.resolve(path.join(baseDir, "env/bin/python3")); // Assuming a similar env structure on Linux/macOS
+
   const newEnv = {
     "SYCL_ENABLE_DEFAULT_CONTEXTS": "1",
     "SYCL_CACHE_PERSISTENT": "1",
-    "PYTHONIOENCODING": "utf-8"
+    "PYTHONIOENCODING": "utf-8",
+    ...process.env // Merge with existing environment variables
   };
 
-  if (settings.debug) {
-    apiService.webProcess = spawn("cmd.exe", ["/c", pytonExe, "web_api.py", "--port", settings.port.toString()], {
-      cwd: wordkDir,
-      detached: true,
-      windowsHide: false,
-      env: Object.assign(process.env, newEnv)
+  const options = settings.debug ? {
+    cwd: wordkDir,
+    detached: true,
+    windowsHide: false,
+    env: newEnv
+  } : {
+    cwd: wordkDir,
+    windowsHide: true,
+    env: newEnv
+  };
+
+  // Cross-platform shell command
+  const isWindows = process.platform === 'win32';
+  const shell = isWindows ? 'cmd.exe' : '/bin/sh';
+  const shellArgs = isWindows ? ['/c', pythonExe, 'web_api.py'] : ['-c', `${pythonExe} web_api.py`];
+
+  try {
+    apiService.webProcess = spawn(shell, shellArgs, options);
+    apiService.webProcess.on('error', (err) => {
+      console.error('Failed to start subprocess:', err);
     });
-  } else {
-    apiService.webProcess = spawn(pytonExe, ["web_api.py", "--port", settings.port.toString()], {
-      cwd: wordkDir,
-      windowsHide: true,
-      env: Object.assign(process.env, newEnv)
-    });
+  } catch (err) {
+    console.error('Error spawning process:', err);
   }
 }
 
@@ -526,33 +542,47 @@ ipcMain.handle('showSaveDialog', async (event, options: Electron.SaveDialogOptio
   });
 });
 
-function needAdminPermission() {
+function needAdminPermission(): Promise<boolean> {
   return new Promise<boolean>((resolve) => {
-    const filename = path.join(externalRes, `${randomUUID()}.txt`);
-    fs.writeFile(filename, '', (err) => {
-      if (err) {
-        if (err && err.code == 'EPERM') {
-          if (path.parse(externalRes).root == path.parse(process.env.windir!).root) {
-            resolve && resolve(!isAdmin());
+    if (process.platform === 'win32') {
+      // Windows-specific check (original logic - no changes)
+      const filename = path.join(externalRes, `${randomUUID()}.txt`);
+      fs.writeFile(filename, '', (err) => {
+        if (err) {
+          if (err && err.code == 'EPERM') {
+            if (path.parse(externalRes).root == path.parse(process.env.windir!).root) {
+              resolve(true); // Needs admin
+            }
+          } else {
+            resolve(false); 
           }
         } else {
-          resolve && resolve(false);
+          fs.rmSync(filename);
+          resolve(false); 
         }
-      } else {
-        fs.rmSync(filename);
-        resolve && resolve(false);
-      }
-    });
-  })
+      });
+    } else {
+      // Linux/macOS check 
+      fs.access(externalRes, fs.constants.W_OK, (err) => {
+        resolve(!!err); // Needs admin if there's an error
+      });
+    }
+  });
 }
 
 function isAdmin(): boolean {
-  const lib = koffi.load("Shell32.dll");
-  try {
-    const IsUserAnAdmin = lib.func("IsUserAnAdmin", "bool", []);
-    return IsUserAnAdmin();
-  } finally {
-    lib.unload();
+  if (process.platform === 'win32') {
+    // Windows-specific implementation
+    const lib = koffi.load("Shell32.dll");
+    try {
+      const IsUserAnAdmin = lib.func("IsUserAnAdmin", "bool", []);
+      return IsUserAnAdmin();
+    } finally {
+      lib.unload();
+    }
+  } else {
+    // Linux/macOS implementation
+    return process.getuid() === 0; 
   }
 }
 
@@ -566,12 +596,13 @@ app.whenReady().then(async () => {
       app.releaseSingleInstanceLock();
     }
     //It is possible that the program is installed in a directory that requires administrator privileges
-    const message = `start "" "${process.argv.join(' ').trim()}`;
+    const message = process.argv.join(' ').trim();
     sudo.exec(message, (err, stdout, stderr) => {
       app.exit(0);
     });
     return;
   }
+
 
 
 
