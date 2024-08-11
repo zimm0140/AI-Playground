@@ -23,9 +23,9 @@ This second phase of installation **will take several minutes** and require a st
 3. On first run, the load screen will take up to a minute
 4. Download the Users Guide for application information
 
-*	AI Playground for Desktop-dGPU - [Release Notes](https://github.com/intel/AI-Playground/releases/tag/v1.0beta) | [Download](https://github.com/intel/AI-Playground/releases/download/v1.0beta/AI.Playground-v1.0b-Desktop_dGPU.exe)
+*	AI Playground for Desktop-dGPU - [Release Notes](https://github.com/intel/AI-Playground/releases/tag/v1.01beta) | [Download](https://github.com/intel/AI-Playground/releases/download/v1.01beta/AI.Playground-v1.01b-Desktop_dGPU.exe) 
 
-*	AI Playground for Intel Core Ultra-H  - coming soon.
+*	AI Playground for Intel Core Ultra-H  - [Release Notes](https://github.com/intel/AI-Playground/releases/tag/v1.01beta.mtl) | [Download](https://github.com/intel/AI-Playground/releases/download/v1.01beta.mtl/AI.Playground-v1.01b-Mobile_MTL-H.exe) 
 
 *	[AI Playground Users Guide](https://github.com/intel/ai-playground/blob/main/AI%20Playground%20Users%20Guide.pdf)
 
@@ -123,7 +123,7 @@ This second phase of installation **will take several minutes** and require a st
     ```
 
 ## Model Support
-AI Playground supports PyTorch LLM, SD1.5, and SDXL models. AI Playground does not ship with any models but does make  models available for all features either directly from the interface or indirectly by the users downloading models from HuggingFace.com or CivitAI.com and placing them in the appropriate model folder. 
+AI Playground supports PyTorch LLM, SD1.5, and SDXL models. AI Playground does not ship with any models but does make  models available for all features either directly from the interface or indirectly by the users downloading models from HuggingFace.co or CivitAI.com and placing them in the appropriate model folder. 
 
 Models currently linked from the application 
 | Model                                      | License                                                                                                                                                                      | Background Information/Model Card                                                                                      |
