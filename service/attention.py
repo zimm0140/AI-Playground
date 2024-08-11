@@ -332,6 +332,11 @@ def scaled_dot_product_attention_32_bit(query: torch.Tensor, key: torch.Tensor, 
         batch_size_attention, query_tokens, shape_three = query.shape[0], query.shape[1], query.shape[2]
         hidden_states = torch.zeros(query.shape, device=query.device, dtype=query.dtype)
 
+        # Calculate slicing for attention mask if provided
+        if attn_mask is not None:
+            (do_split_mask, do_split_2_mask, _, split_slice_size_mask, 
+             split_2_slice_size_mask, _) = find_sdpa_slice_sizes(attn_mask.shape, attn_mask.element_size())
+
         for i in range(batch_size_attention // split_slice_size_query):
             start_idx_query = i * split_slice_size_query
             end_idx_query = (i + 1) * split_slice_size_query
@@ -364,30 +369,56 @@ def scaled_dot_product_attention_32_bit(query: torch.Tensor, key: torch.Tensor, 
                             start_idx_3_value = k * split_3_slice_size_value
                             end_idx_3_value = (k + 1) * split_3_slice_size_value
 
+                            # Slice attn_mask using its own slicing parameters
+                            if attn_mask is not None:
+                                start_idx_mask = i * split_slice_size_mask
+                                end_idx_mask = (i + 1) * split_slice_size_mask
+                                start_idx_2_mask = j * split_2_slice_size_mask
+                                end_idx_2_mask = (j + 1) * split_2_slice_size_mask
+                                sliced_attn_mask = attn_mask[start_idx_mask:end_idx_mask, start_idx_2_mask:end_idx_2_mask, :] 
+                            else:
+                                sliced_attn_mask = None
+
                             # Perform scaled dot-product attention on sliced tensors
                             hidden_states[start_idx_query:end_idx_query, start_idx_2_query:end_idx_2_query, start_idx_3_query:end_idx_3_query] = original_scaled_dot_product_attention(
                                 query[start_idx_query:end_idx_query, start_idx_2_query:end_idx_2_query, start_idx_3_query:end_idx_3_query],
                                 key[start_idx_key:end_idx_key, start_idx_2_key:end_idx_2_key, start_idx_3_key:end_idx_3_key], 
                                 value[start_idx_value:end_idx_value, start_idx_2_value:end_idx_2_value, start_idx_3_value:end_idx_3_value],
-                                attn_mask=attn_mask[start_idx_query:end_idx_query, start_idx_2_query:end_idx_2_query, start_idx_3_query:end_idx_3_query] if attn_mask is not None else attn_mask,
+                                attn_mask=sliced_attn_mask, # Use the sliced attention mask
                                 dropout_p=dropout_p, is_causal=is_causal, **kwargs
                             )
                     else:
                         # Perform scaled dot-product attention on the first two dimensions
+                        if attn_mask is not None:
+                            start_idx_mask = i * split_slice_size_mask
+                            end_idx_mask = (i + 1) * split_slice_size_mask
+                            start_idx_2_mask = j * split_2_slice_size_mask
+                            end_idx_2_mask = (j + 1) * split_2_slice_size_mask
+                            sliced_attn_mask = attn_mask[start_idx_mask:end_idx_mask, start_idx_2_mask:end_idx_2_mask]
+                        else:
+                            sliced_attn_mask = None
+
                         hidden_states[start_idx_query:end_idx_query, start_idx_2_query:end_idx_2_query] = original_scaled_dot_product_attention(
                             query[start_idx_query:end_idx_query, start_idx_2_query:end_idx_2_query],
                             key[start_idx_key:end_idx_key, start_idx_2_key:end_idx_2_key], 
                             value[start_idx_value:end_idx_value, start_idx_2_value:end_idx_2_value],
-                            attn_mask=attn_mask[start_idx_query:end_idx_query, start_idx_2_query:end_idx_2_query] if attn_mask is not None else attn_mask, 
+                            attn_mask=sliced_attn_mask, # Use the sliced attention mask
                             dropout_p=dropout_p, is_causal=is_causal, **kwargs
                         )
             else:
                 # Perform scaled dot-product attention on the first dimension
+                if attn_mask is not None:
+                    start_idx_mask = i * split_slice_size_mask
+                    end_idx_mask = (i + 1) * split_slice_size_mask
+                    sliced_attn_mask = attn_mask[start_idx_mask:end_idx_mask] 
+                else:
+                    sliced_attn_mask = None
+
                 hidden_states[start_idx_query:end_idx_query] = original_scaled_dot_product_attention(
                     query[start_idx_query:end_idx_query],
                     key[start_idx_key:end_idx_key],
                     value[start_idx_value:end_idx_value],
-                    attn_mask=attn_mask[start_idx_query:end_idx_query] if attn_mask is not None else attn_mask,
+                    attn_mask=sliced_attn_mask, # Use the sliced attention mask
                     dropout_p=dropout_p, is_causal=is_causal, **kwargs
                 )
         if out is not None:
