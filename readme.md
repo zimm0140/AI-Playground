@@ -41,46 +41,42 @@ This second phase of installation **will take several minutes** and require a st
 2. **Create and Activate the Conda Environment:**
 
    - Open a terminal or command prompt and navigate to the project root directory (AI-Playground).
-   - Run the following command to create and activate the environment:
+   - Run the following command to create and activate the environment based on your hardware:
 
+     **For Core Ultra-H:**
      ```bash
-     conda env create -f environment.yml
-     conda activate aipg_xpu
+     conda env create -f environment-ultra.yml
+     conda activate aipg_xpu_ultra
      ```
 
-3. **Install Additional Dependencies:**
+     **For Arc A-Series dGPUs:**
+     ```bash
+     conda env create -f environment-arc.yml
+     conda activate aipg_xpu_arc
+     ```
+
+
+3. **Download and Install the Intel Extension for PyTorch AOT Packages:**
+
+    - **Important:** Ensure you select the correct wheel file corresponding to your hardware and Python version from the [Intel Extension for PyTorch releases page](https://github.com/intel/intel-extension-for-pytorch/releases).
 
     - **For Core Ultra-H:**
       ```bash
-      pip install -r service/requirements-ultra.txt
-      ```
-
-    - **For Arc A-Series dGPUs:**
-      ```bash
-      pip install -r service/requirements-arc.txt
-      ```
-
-4. **Download and Install the Intel Extension for PyTorch AOT Packages:**
-
-    - **Important:** Make sure to select the correct wheel file corresponding to your hardware and Python version from the [Intel Extension for PyTorch releases page](https://github.com/intel/intel-extension-for-pytorch/releases):
-
-    - **For Core Ultra-H:**
-      ```bash
-      pip install https://github.com/Nuullll/intel-extension-for-pytorch/releases/download/v2.1.20%2Bmtl%2Boneapi/intel_extension_for_pytorch-2.1.20+mtl-cp310-cp310-win_amd64.whl
-      pip install https://github.com/Nuullll/intel-extension-for-pytorch/releases/download/v2.1.20%2Bmtl%2Boneapi/torch-2.1.0a0+git7bcf7da-cp310-cp310-win_amd64.whl
-      pip install https://github.com/Nuullll/intel-extension-for-pytorch/releases/download/v2.1.20%2Bmtl%2Boneapi/torchaudio-2.1.0+6ea1133-cp310-cp310-win_amd64.whl
+      pip install https://github.com/Nuullll/intel-extension-for-pytorch/releases/download/v2.1.20%2Bmtl%2Boneapi/intel_extension_for_pytorch-2.1.20+mtl-cp310-cp310-win_amd64.whl & \
+      pip install https://github.com/Nuullll/intel-extension-for-pytorch/releases/download/v2.1.20%2Bmtl%2Boneapi/torch-2.1.0a0+git7bcf7da-cp310-cp310-win_amd64.whl & \
+      pip install https://github.com/Nuullll/intel-extension-for-pytorch/releases/download/v2.1.20%2Bmtl%2Boneapi/torchaudio-2.1.0+6ea1133-cp310-cp310-win_amd64.whl & \
       pip install https://github.com/Nuullll/intel-extension-for-pytorch/releases/download/v2.1.20%2Bmtl%2Boneapi/torchvision-0.16.0+fbb4cc5-cp310-cp310-win_amd64.whl
       ```
 
     - **For Arc A-Series dGPU:**
       ```bash
-      pip install https://github.com/Nuullll/intel-extension-for-pytorch/releases/download/v2.1.10%2Bxpu/intel_extension_for_pytorch-2.1.10+xpu-cp310-cp310-win_amd64.whl
-      pip install https://github.com/Nuullll/intel-extension-for-pytorch/releases/download/v2.1.10%2Bxpu/torch-2.1.0a0+cxx11.abi-cp310-cp310-win_amd64.whl
+      pip install https://github.com/Nuullll/intel-extension-for-pytorch/releases/download/v2.1.10%2Bxpu/torch-2.1.0a0+cxx11.abi-cp310-cp310-win_amd64.whl & \
+      pip install https://github.com/Nuullll/intel-extension-for-pytorch/releases/download/v2.1.10%2Bxpu/intel_extension_for_pytorch-2.1.10+xpu-cp310-cp310-win_amd64.whl & \
+      pip install https://github.com/Nuullll/intel-extension-for-pytorch/releases/download/v2.1.10%2Bxpu/torchvision-0.16.0a0+cxx11.abi-cp310-cp310-win_amd64.whl & \
       pip install https://github.com/Nuullll/intel-extension-for-pytorch/releases/download/v2.1.10%2Bxpu/torchaudio-2.1.0a0+cxx11.abi-cp310-cp310-win_amd64.whl
-      pip install https://github.com/Nuullll/intel-extension-for-pytorch/releases/download/v2.1.10%2Bxpu/torchvision-0.16.0a0+cxx11.abi-cp310-cp310-win_amd64.whl
       ```
 
-5. **Verify the XPU Environment Setup:**
+4. **Verify the XPU Environment Setup:**
 
     ```bash
     python -c "import torch; import intel_extension_for_pytorch as ipex; print(torch.__version__); print(ipex.__version__); [print(f'[{i}]: {torch.xpu.get_device_properties(i)}') for i in range(torch.xpu.device_count())]"
