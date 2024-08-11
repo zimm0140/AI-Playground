@@ -17,11 +17,6 @@ class ModelDownloaderApi:
     including the total size of the files and a list of individual files with their metadata. It also provides
     functionality for constructing download URLs and filtering out unnecessary files based on specified criteria.
     """
-    repo_id: str  # Repository ID on Hugging Face Hub
-    file_queue: List[Dict[str, Any]]  # Queue to store file metadata
-    total_size: int  # Total size of all files in the repository
-    fs: HfFileSystem  # File system interface for interacting with the Hugging Face Hub
-    repo_folder: str  # Local folder name corresponding to the repository
 
     def __init__(self, fs: HfFileSystem = None):
         """
@@ -31,9 +26,11 @@ class ModelDownloaderApi:
             fs (HfFileSystem, optional): A Hugging Face file system object. If not provided, a new instance
                 of `HfFileSystem` is created.
         """
-        self.file_queue = []  # Initialize the file queue
-        self.fs = fs if fs else HfFileSystem()  # Use provided file system or default to HfFileSystem
-        self.total_size = 0  # Initialize the total size counter
+        self.repo_id: str = ""  # Repository ID on Hugging Face Hub
+        self.file_queue: List[Dict[str, Any]] = []  # Queue to store file metadata
+        self.total_size: int = 0  # Total size of all files in the repository
+        self.fs: HfFileSystem = fs if fs else HfFileSystem()  # File system interface for interacting with the Hugging Face Hub
+        self.repo_folder: str = ""  # Local folder name corresponding to the repository
 
     def get_info(self, repo_id: str, is_sd: bool = False) -> Dict[str, Any]:
         """
@@ -44,25 +41,32 @@ class ModelDownloaderApi:
         based on the `is_sd` flag.
 
         Args:
-            repo_id (str): The ID of the repository on the Hugging Face Hub. 
-            is_sd (bool, optional): A flag indicating if the model is a Stable Diffusion model. 
+            repo_id (str): The ID of the repository on the Hugging Face Hub.
+            is_sd (bool, optional): A flag indicating if the model is a Stable Diffusion model.
                 If True, specific files associated with Stable Diffusion models are excluded. Defaults to False.
 
         Returns:
-            Dict[str, Any]: A dictionary containing the 'total_size' (in bytes) and a 'file_list' of the 
-                model repository. The 'file_list' is a list of dictionaries, each representing a file 
+            Dict[str, Any]: A dictionary containing the 'total_size' (in bytes) and a 'file_list' of the
+                model repository. The 'file_list' is a list of dictionaries, each representing a file
                 and containing its 'name', 'size', and 'url'.
 
         Raises:
-            Exception: If an error occurs during the information retrieval process, it is logged and re-raised.
+            FileNotFoundError: If the specified repository is not found.
+            ValueError: If the provided repository ID is invalid.
+            Exception: If any other error occurs during the information retrieval process. 
         """
         try:
+            if not repo_id or '/' not in repo_id:
+                raise ValueError("Invalid repository ID format.")
             self.repo_id = repo_id
             self.repo_folder = repo_id.replace('/', '---')
             self.file_queue.clear()
             self.total_size = 0
             self.process_repository(repo_id, is_sd)
             return {"total_size": self.total_size, "file_list": self.file_queue}
+        except (FileNotFoundError, ValueError) as e:
+            logger.error(f"Invalid repository '{repo_id}': {e}")
+            raise
         except Exception as e:
             logger.error(f"An error occurred while fetching info for repo '{repo_id}': {e}")
             raise
@@ -72,7 +76,7 @@ class ModelDownloaderApi:
         Initiates the processing of the model repository.
 
         This method starts the recursive enumeration of files in the repository, applying filtering
-        based on the `is_sd` flag. 
+        based on the `is_sd` flag.
 
         Args:
             repo_id (str): The ID of the model repository on the Hugging Face Hub.
@@ -80,49 +84,65 @@ class ModelDownloaderApi:
         """
         self.enum_file_list(repo_id, is_sd, True)
 
-    def enum_file_list(self, enum_path: str, is_sd: bool = False, is_root: bool = True) -> None:
+    def enum_file_list(self, enum_path: str, is_sd: bool = False, is_root: bool = True, visited_paths: set = None) -> None:
         """
         Recursively enumerates files and directories within a given path.
 
-        This method traverses the directory structure of the repository, processing files and 
+        This method traverses the directory structure of the repository, processing files and
         recursively calling itself for subdirectories. It applies filtering to exclude unnecessary
-        files. 
+        files.
 
         Args:
             enum_path (str): The current path being enumerated.
             is_sd (bool, optional): A flag indicating if the model is a Stable Diffusion model. Defaults to False.
-            is_root (bool, optional): A flag indicating if the current path is the root of the repository. 
+            is_root (bool, optional): A flag indicating if the current path is the root of the repository.
                 Defaults to True.
+            visited_paths (set, optional): A set to keep track of visited paths to prevent infinite recursion in case of circular symbolic links.
 
         Raises:
-            Exception: If any error occurs during file listing, it is logged and re-raised.
+            FileNotFoundError: If the provided path does not exist.
+            PermissionError: If there are permission issues accessing the path.
+            Exception: If any other error occurs during file enumeration. 
         """
+        if visited_paths is None:
+            visited_paths = set()
+
+        if enum_path in visited_paths:
+            logger.warning(f"Skipping circular reference at '{enum_path}'")
+            return
+        visited_paths.add(enum_path)
+
         try:
             items = self.fs.ls(enum_path, detail=True)
             for item in items:
-                self.process_item(item, is_sd, is_root)
+                self.process_item(item, is_sd, is_root, visited_paths=visited_paths)
+        except FileNotFoundError as e:
+            logger.error(f"Path '{enum_path}' not found: {e}")
+        except PermissionError as e:
+            logger.error(f"Permission denied for '{enum_path}': {e}")
         except Exception as e:
             logger.error(f"An error occurred while enumerating files in '{enum_path}': {e}")
             raise
 
-    def process_item(self, item: Dict[str, Any], is_sd: bool, is_root: bool) -> None:
+    def process_item(self, item: Dict[str, Any], is_sd: bool, is_root: bool, visited_paths: set) -> None:
         """
         Processes an individual item (file or directory) in the repository.
 
-        For directories, it recursively calls `enum_file_list`. For files, it checks if the file 
-        should be ignored, and if not, adds its information to the download queue. 
+        For directories, it recursively calls `enum_file_list`. For files, it checks if the file
+        should be ignored, and if not, adds its information to the download queue.
 
         Args:
             item (Dict[str, Any]): A dictionary containing the metadata of the file or directory.
             is_sd (bool): A flag indicating if special handling for Stable Diffusion models is needed.
-            is_root (bool): A flag indicating if the current item is in the root directory of the repository. 
+            is_root (bool): A flag indicating if the current item is in the root directory of the repository.
+            visited_paths (set): A set to keep track of visited paths to prevent infinite recursion in case of circular symbolic links.
         """
         name = self.normalize_path(item.get("name"))
         size = item.get("size")
         item_type = item.get("type")
 
         if item_type == "directory":
-            self.enum_file_list(name, is_sd, False)
+            self.enum_file_list(name, is_sd, False, visited_paths=visited_paths)
         else:
             if not self.should_ignore_file(name, is_sd, is_root):
                 self.add_file_to_queue(name, size)
@@ -131,9 +151,9 @@ class ModelDownloaderApi:
         """
         Determines if a file should be ignored based on its name and the type of model.
 
-        This method implements filtering rules to exclude specific files from the download queue. 
-        For Stable Diffusion models, it ignores model files (`.safetensors`, `.pt`, `.ckpt`) in 
-        the root directory. Common unnecessary files like images, git attributes, and 
+        This method implements filtering rules to exclude specific files from the download queue.
+        For Stable Diffusion models, it ignores model files (`.safetensors`, `.pt`, `.ckpt`) in
+        the root directory. Common unnecessary files like images, git attributes, and
         documentation files are also ignored.
 
         Args:
@@ -176,15 +196,18 @@ class ModelDownloaderApi:
             str: The constructed download URL.
 
         Raises:
-            Exception: If an error occurs while constructing the URL, it is logged and re-raised.
+            ValueError: If the file path cannot be made relative to the repository ID.
+            Exception: If any other error occurs during URL construction, it is logged.
         """
         try:
-            # Calculate the relative path.
             relative_path = Path(name).relative_to(self.repo_id).as_posix()
             subfolder = Path(relative_path).parent.as_posix()
             filename = Path(relative_path).name
             subfolder = '' if subfolder == '.' else subfolder
             return hf_hub_url(repo_id=self.repo_id, filename=filename, subfolder=subfolder)
+        except ValueError as e:
+            logger.error(f"Cannot make '{name}' relative to '{self.repo_id}': {e}")
+            raise
         except Exception as e:
             logger.error(f"An error occurred while constructing URL for '{name}': {e}")
             raise
@@ -215,18 +238,14 @@ class ModelDownloaderApi:
 # --- Main Function ---
 def main() -> None:
     """
-    Main function to execute the script from the command line.
+    The main function that executes when the script is run from the command line.
 
-    Parses command-line arguments, initializes the `ModelDownloaderApi`, and retrieves 
-    repository information. Prints the results as a JSON string.
+    It retrieves the repository ID and the optional is_sd flag from the command line 
+    arguments, and then calls the ModelDownloaderApi to get repository information. 
+    The results are printed as a JSON string.
 
-    Usage: 
+    Usage:
         python downloader.py <repo_id> [is_sd]
-
-    Args:
-        repo_id (str): The ID of the repository to process.
-        is_sd (int, optional):  A flag (0 or 1) indicating whether special handling is 
-            required for Stable Diffusion models. Defaults to 0 (False).
     """
     if len(sys.argv) < 2:
         logger.error("Usage: downloader.py <repo_id> [is_sd]")
@@ -234,12 +253,19 @@ def main() -> None:
     else:
         try:
             repo_id = sys.argv[1]
+            # Add validation for repo_id, e.g., check it’s a valid identifier
+            if not repo_id or '/' not in repo_id:
+                raise ValueError("Invalid repository ID format.")
+            
             is_sd = int(sys.argv[2]) != 0 if len(sys.argv) > 2 else False
             downloader = ModelDownloaderApi()
             info = downloader.get_info(repo_id, is_sd)
             print(dumps(info))
         except ValueError as e:
             logger.error(f"Invalid argument: {e}")
+            exit(1)
+        except IndexError as e:
+            logger.error(f"Missing argument: {e}")
             exit(1)
         except Exception as e:
             logger.error(f"An error occurred: {e}")
