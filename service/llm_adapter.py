@@ -2,91 +2,124 @@ import threading
 from queue import Empty, Queue
 import json
 import traceback
-import llm_biz
-from model_downloader import NotEnoughDiskSpaceException, DownloadException
+from service import llm_biz
+from service.model_downloader import NotEnoughDiskSpaceException, DownloadException
 from psutil._common import bytes2human
 
 
 class LLM_SSE_Adapter:
-    msg_queue: Queue
-    finish: bool
-    singal: threading.Event
+    """
+    Adapter class to handle SSE (Server-Sent Events) for an LLM (Large Language Model).
+    """
 
     def __init__(self):
-        self.msg_queue = Queue(-1)
+        """
+        Initializes the LLM_SSE_Adapter with a message queue, finish flag, and signal event.
+        """
+        self.msg_queue = Queue()
         self.finish = False
-        self.singal = threading.Event()
+        self.signal = threading.Event()
 
-    def put_msg(self, data):
+    def put_msg(self, data: dict):
+        """
+        Puts a message in the queue and sets the signal event.
+
+        :param data: The data to put in the message queue.
+        """
         self.msg_queue.put_nowait(data)
-        self.singal.set()
+        self.signal.set()
 
     def load_model_callback(self, event: str):
-        data = {"type": "load_model", "event": event}
-        self.put_msg(data)
+        """
+        Callback for when a model is loaded.
+
+        :param event: The event message.
+        """
+        self.put_msg({"type": "load_model", "event": event})
 
     def text_in_callback(self, msg: str):
-        data = {"type": "text_in", "value": msg}
-        self.put_msg(data)
+        """
+        Callback for text input.
 
-    def text_out_callback(self, msg: str, type=1):
-        data = {"type": "text_out", "value": msg, "dtype": type}
-        self.put_msg(data)
+        :param msg: The input message.
+        """
+        self.put_msg({"type": "text_in", "value": msg})
+
+    def text_out_callback(self, msg: str, type: int = 1):
+        """
+        Callback for text output.
+
+        :param msg: The output message.
+        :param type: The type of the message.
+        """
+        self.put_msg({"type": "text_out", "value": msg, "dtype": type})
 
     def first_latency_callback(self, first_latency: str):
-        data = {"type": "first_token_latency", "value": first_latency}
-        self.put_msg(data)
+        """
+        Callback for the first token latency.
+
+        :param first_latency: The first token latency.
+        """
+        self.put_msg({"type": "first_token_latency", "value": first_latency})
 
     def after_latency_callback(self, after_latency: str):
-        data = {"type": "after_token_latency", "value": after_latency}
-        self.put_msg(data)
+        """
+        Callback for the after token latency.
+
+        :param after_latency: The after token latency.
+        """
+        self.put_msg({"type": "after_token_latency", "value": after_latency})
 
     def sr_latency_callback(self, sr_latency: str):
-        data = {"type": "sr_latency", "value": sr_latency}
-        self.put_msg(data)
+        """
+        Callback for the speech recognition latency.
+
+        :param sr_latency: The speech recognition latency.
+        """
+        self.put_msg({"type": "sr_latency", "value": sr_latency})
 
     def error_callback(self, ex: Exception):
-        if (
-            isinstance(ex, NotImplementedError)
-            and ex.__str__() == "Access to repositories lists is not implemented."
-        ):
-            self.put_msg(
-                {
-                    "type": "error",
-                    "err_type": "repositories_not_found",
-                }
-            )
+        """
+        Callback for handling errors.
+
+        :param ex: The exception that occurred.
+        """
+        if isinstance(ex, NotImplementedError) and str(ex) == "Access to repositories lists is not implemented.":
+            self.put_msg({"type": "error", "err_type": "repositories_not_found"})
         elif isinstance(ex, NotEnoughDiskSpaceException):
-            self.put_msg(
-                {
-                    "type": "error",
-                    "err_type": "not_enough_disk_space",
-                    "need": bytes2human(ex.requires_space),
-                    "free": bytes2human(ex.free_space),
-                }
-            )
+            self.put_msg({
+                "type": "error",
+                "err_type": "not_enough_disk_space",
+                "need": bytes2human(ex.requires_space),
+                "free": bytes2human(ex.free_space),
+            })
         elif isinstance(ex, DownloadException):
             self.put_msg({"type": "error", "err_type": "download_exception"})
         elif isinstance(ex, llm_biz.StopGenerateException):
-            pass
+            pass  # No action needed
         elif isinstance(ex, RuntimeError):
             self.put_msg({"type": "error", "err_type": "runtime_error"})
         else:
-            self.put_msg({"type": "error", "err_type": "unknow_exception"})
-        print(f"exception:{str(ex)}")
+            self.put_msg({"type": "error", "err_type": "unknown_exception"})
+        print(f"exception: {str(ex)}")
 
     def text_conversation(self, params: llm_biz.LLMParams):
-        thread = threading.Thread(
-            target=self.text_conversation_run,
-            args=[params],
-        )
+        """
+        Starts a text conversation in a new thread.
+
+        :param params: Parameters for the LLM conversation.
+        :return: Generator that yields messages from the queue.
+        """
+        thread = threading.Thread(target=self.text_conversation_run, args=[params])
         thread.start()
         return self.generator()
 
-    def text_conversation_run(
-        self,
-        params: llm_biz.LLMParams,
-    ):
+    def text_conversation_run(self, params: llm_biz.LLMParams):
+        """
+        Runs the text conversation.
+
+        :param params: Parameters for the LLM conversation.
+        """
         try:
             llm_biz.chat(
                 params=params,
@@ -100,19 +133,23 @@ class LLM_SSE_Adapter:
             self.error_callback(ex)
         finally:
             self.finish = True
-            self.singal.set()
+            self.signal.set()
 
     def generator(self):
+        """
+        Generator that yields messages from the queue.
+
+        :yield: Message from the queue.
+        """
         while True:
             while not self.msg_queue.empty():
                 try:
                     data = self.msg_queue.get_nowait()
-                    msg = f"data:{json.dumps(data)}\0"
-                    yield msg
-                except Empty(Exception):
+                    yield f"data:{json.dumps(data)}\0"
+                except Empty:
                     break
             if not self.finish:
-                self.singal.clear()
-                self.singal.wait()
+                self.signal.clear()
+                self.signal.wait()
             else:
                 break

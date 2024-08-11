@@ -1,4 +1,4 @@
-name: aipg_xpu
+name: aipg_xpu_ultra
 channels:
   - conda-forge
   - defaults
@@ -21,6 +21,8 @@ dependencies:
   - setuptools=69.5.1
   - pydantic
   - python-dotenv
+  - libjpeg-turbo
+  - libpng
   - pip:
       - basicsr==1.4.2
       - compel==2.0.2
