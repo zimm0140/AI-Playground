@@ -26,9 +26,9 @@ def image_to_base64(image: Image.Image) -> str:
     Returns:
         str: The base64 encoded string representation of the image.
     """
-    buffered = io.BytesIO()
-    image.save(buffered, format="PNG")
-    return f"data:image/png;base64,{base64.b64encode(buffered.getvalue()).decode('utf-8')}"
+    with io.BytesIO() as buffered:  # Use 'with' statement for resource management
+        image.save(buffered, format="PNG")
+        return f"data:image/png;base64,{base64.b64encode(buffered.getvalue()).decode('utf-8')}"
 
 
 def generate_mask_image(mask_flag_bytes: bytes, width: int, height: int) -> Image.Image:
@@ -51,7 +51,7 @@ def generate_mask_image(mask_flag_bytes: bytes, width: int, height: int) -> Imag
 def get_shape_ceil(h: float, w: float) -> float:
     """
     Calculates the ceiling of the square root of the product of height and width, divided by 64.0,
-    and then multiplies by 64.0. 
+    and then multiplies by 64.0.
 
     This function is likely used to determine the appropriate output size for models that 
     require input dimensions to be multiples of 64. 
@@ -76,7 +76,7 @@ def get_image_shape_ceil(image: Image.Image) -> float:
     Returns:
         float:  The calculated ceiling value for the image shape.
     """
-    H, W = image.size  # Use `image.size` to get the width and height of the image. 
+    H, W = image.size  # Use `image.size` to get the width and height of the image.
     return get_shape_ceil(H, W)
 
 
@@ -87,7 +87,7 @@ def check_model_exist(type: int, repo_id: str) -> bool:
     The function checks for the existence of model files based on the provided `type`
     and `repo_id`. It retrieves the base directory for the specified model type from 
     the `model_config` and checks if the necessary files or directories exist within
-    that directory. 
+    that directory.
 
     Args:
         type (int): An integer representing the type of model (e.g., 0 for LLM, 1 for Stable Diffusion).
@@ -97,9 +97,9 @@ def check_model_exist(type: int, repo_id: str) -> bool:
         bool: True if the model exists, False otherwise.
 
     Raises:
-        Exception: If an unknown model type value is provided.
+        ValueError: If an unknown model type value is provided.
     """
-    folder_name = repo_id.replace("/", "---")  # Replace '/' with '---' for folder names. 
+    folder_name = repo_id.replace("/", "---")  # Replace '/' with '---' for folder names.
 
     model_type_paths = {
         0: Path(model_config.config.get("llm")) / folder_name / "config.json",
@@ -130,7 +130,7 @@ def check_model_exist(type: int, repo_id: str) -> bool:
             return path.exists()
         return path.exists()
     else:
-        raise Exception(f"Unknown model type value: {type}")  # Corrected typo: "uwnkown" to "unknown".
+        raise ValueError(f"Unknown model type value: {type}")  # Use more specific exception
 
 
 def convert_model_type(type: int) -> str:
@@ -138,7 +138,7 @@ def convert_model_type(type: int) -> str:
     Converts a model type code (int) to its corresponding string representation.
 
     Args:
-        type (int):  An integer representing the model type. 
+        type (int):  An integer representing the model type.
 
     Returns:
         str: The string representation of the model type.
@@ -153,11 +153,11 @@ def convert_model_type(type: int) -> str:
         6: "inpaint",
         7: "preview"
     }
-    
+
     try:
         return model_type_map[type]
     except KeyError:
-        raise Exception(f"Unknown model type value: {type}")  # Corrected typo: "uwnkown" to "unknown".
+        raise ValueError(f"Unknown model type value: {type}")  # Use more specific exception
 
 
 def get_model_path(type: int) -> Path:
@@ -168,7 +168,7 @@ def get_model_path(type: int) -> Path:
         type (int): The integer code representing the model type.
 
     Returns:
-        Path: The file path associated with the specified model type. 
+        Path: The file path associated with the specified model type.
     """
     return Path(model_config.config.get(convert_model_type(type)))
 
@@ -178,7 +178,7 @@ def calculate_md5(file_path: Path) -> str:
     Calculates the MD5 hash of a file.
 
     Args:
-        file_path (Path): The path to the file. 
+        file_path (Path): The path to the file.
 
     Returns:
         str: The MD5 hash of the file.
@@ -297,7 +297,7 @@ def get_support_graphics(env_type: str):
         list: A list of dictionaries, each containing the index and name of a supported device.
     """
     arc_regex = re.compile(r"Intel\(R\) Arc\(TM\) [^ ]+ Graphics")
-    
+
     device_count = torch.xpu.device_count()  # Get the number of XPU devices available.
     model_config.env_type = env_type  # Set the environment type in the model configuration.
     graphics = []
