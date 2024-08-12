@@ -19,16 +19,17 @@ from paint_biz import (
     InpaintParams,
     OutpaintParams,
     UpscaleImageParams,
-    PaintBiz 
+    PaintBiz
 )
-import llm_biz 
+import llm_biz
 import utils
 import rag
 import model_config
 from model_downloader import HFPlaygroundDownloader
 from psutil._common import bytes2human
-import schedulers_util  
+import schedulers_util
 from cachetools import TTLCache
+from functools import wraps
 
 # --- Initialize Flask App ---
 
@@ -398,7 +399,7 @@ def create_model_blueprint(model_size_cache: TTLCache = None) -> Blueprint:
                     executor.shutdown()
 
             # Return the results
-            return jsonify({"code": SUCCESS_CODE, "message": SUCCESS_MESSAGE, "sizeList": result_dict})
+            return jsonify({"code": success_code, "message": success_message, "sizeList": result_dict})
         except Exception as e:
             logger.exception("Error in getModelSize route.")
             return jsonify({"error": "An error occurred during model size retrieval."}), 500
@@ -433,6 +434,7 @@ def create_model_blueprint(model_size_cache: TTLCache = None) -> Blueprint:
             if not isinstance(model_list, list):
                 raise BadRequest("Invalid model list. Expected a list of model dictionaries.")
 
+            # Create a new adapter instance for each request
             downloader_adapter = model_download_adapter.Model_Downloader_Adapter()
             iterator = downloader_adapter.download(model_list)
             return Response(stream_with_context(iterator), content_type="text/event-stream")
