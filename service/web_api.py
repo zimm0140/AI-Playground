@@ -1,10 +1,15 @@
 from datetime import datetime
-import os
 import threading
-from flask import Flask, jsonify, request, Response, stream_with_context
+from typing import Dict, Any, List, Tuple
+
+from flask import Flask, jsonify, request, Response, stream_with_context, Blueprint
+from werkzeug.exceptions import BadRequest, InternalServerError
+from pathlib import Path
+import logging
+
 from llm_adapter import LLM_SSE_Adapter
 from sd_adapter import SD_SSE_Adapter
-import model_download_adpater
+import model_download_adapter
 from paint_biz import (
     TextImageParams,
     ImageToImageParams,
@@ -19,108 +24,202 @@ import rag
 import model_config
 from model_downloader import HFPlaygroundDownloader
 from psutil._common import bytes2human
-import traceback
 
-# Initialize the Flask application
+# Initialize Flask app
 app = Flask(__name__)
 
-# Route for LLM (Language Model) chat API
-@app.route("/api/llm/chat", methods=["POST"])
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Create blueprints for organizing routes
+llm_bp = Blueprint("llm", __name__, url_prefix="/api/llm")
+sd_bp = Blueprint("sd", __name__, url_prefix="/api/sd")
+model_bp = Blueprint("model", __name__, url_prefix="/api")
+
+# --- Constants ---
+SUCCESS_CODE = 0
+FAILURE_CODE = -1
+SUCCESS_MESSAGE = "success"
+FAILED_MESSAGE = "failed"
+DEFAULT_MODE = 0
+DEFAULT_IMAGE_SIZE = 512
+DEFAULT_SCALE = 1.5
+DEFAULT_DENOISE = 0.5
+DEFAULT_GENERATE_NUMBER = 1
+DEFAULT_INFERENCE_STEPS = 12
+DEFAULT_GUIDANCE_SCALE = 7.5
+DEFAULT_SEED = -1
+DEFAULT_SCHEDULER = "None"
+DEFAULT_LORA = "None"
+DEFAULT_IMAGE_PREVIEW = 0
+DEFAULT_SAFE_CHECK = 1
+
+# --- Helper Functions ---
+
+def validate_json_input(required_fields: List[str]):
+    """
+    Decorator to validate JSON input for API endpoints.
+    Raises a BadRequest exception if the request is not JSON or if any required field is missing.
+
+    Args:
+        required_fields (List[str]): A list of required fields in the JSON payload.
+    """
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            if not request.is_json:
+                raise BadRequest("Invalid content type. JSON expected.")
+            data = request.get_json()
+            for field in required_fields:
+                if field not in data:
+                    raise BadRequest(f"Missing required field: {field}")
+            return f(*args, **kwargs)
+        return decorated_function
+    return decorator
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+    """
+    Global error handler for the application. 
+    Catches all exceptions, logs them, and returns a JSON error response. 
+    For BadRequest exceptions, it returns a 400 status code. 
+    For all other exceptions, it returns a 500 status code.
+    """
+    if isinstance(e, BadRequest):
+        return jsonify({"error": str(e)}), 400
+    logger.exception("An error occurred:")
+    return jsonify({"error": "An internal error occurred."}), 500
+
+# --- LLM Routes ---
+
+@llm_bp.route("/chat", methods=["POST"])
+@validate_json_input(["prompt"])
 def llm_chat():
     """
     Handles LLM chat requests and streams responses.
-    
-    Expects a JSON payload with parameters for the LLM chat.
+
+    Expects a JSON payload with:
+    - prompt: The chat prompt.
+
     Returns a streaming response with the chat output.
     """
-    paint_biz.dispose_basic_model()  # Dispose of the basic model if in use
-    params = request.get_json()  # Parse JSON parameters from the request
-    llm_params = llm_biz.LLMParams(**params)  # Initialize LLM parameters
-    sse_invoker = LLM_SSE_Adapter()  # Create an SSE adapter for LLM
-    it = sse_invoker.text_conversation(llm_params)  # Start the conversation
-    return Response(stream_with_context(it), content_type="text/event-stream")  # Stream response as SSE
+    try:
+        paint_biz.dispose_basic_model()  # Dispose of the basic model if in use
+        params = request.get_json()
+        llm_params = llm_biz.LLMParams(**params)
+        sse_invoker = LLM_SSE_Adapter()
+        it = sse_invoker.text_conversation(llm_params)
+        return Response(stream_with_context(it), content_type="text/event-stream")
+    except Exception as e:
+        logger.exception("Error in LLM chat route.")
+        return jsonify({"error": "An error occurred during LLM chat."}), 500
 
-# Route to stop LLM generation
-@app.route("/api/llm/stopGenerate", methods=["GET"])
+@llm_bp.route("/stopGenerate", methods=["GET"])
 def stop_llm_generate():
-    """Stops the ongoing LLM generation process."""
-    import llm_biz  # This import could be moved to the top of the file
-    llm_biz.stop_generate()  # Stop the LLM generation
-    return jsonify({"code": 0, "message": "success"})  # Return success message
+    """Stops the ongoing LLM generation process. Returns a JSON success response."""
+    llm_biz.stop_generate()
+    return jsonify({"code": SUCCESS_CODE, "message": SUCCESS_MESSAGE})
 
-# Route for Stable Diffusion image generation API
-@app.route("/api/sd/generate", methods=["POST"])
+# --- Stable Diffusion Routes ---
+
+@sd_bp.route("/generate", methods=["POST"])
 def sd_generate():
     """
     Handles image generation requests using Stable Diffusion.
-    Supports various modes:
-    - mode 0: Text-to-Image
-    - mode 1: Upscale Image
-    - mode 2: Image-to-Image
-    - mode 3: Inpainting
-    - mode 4: Outpainting
 
-    Expects form data with parameters for image generation.
+    Expects form data with the following parameters:
+    - mode: The generation mode (0-4).
+        - 0: Text-to-Image
+        - 1: Upscale Image
+        - 2: Image-to-Image
+        - 3: Inpainting
+        - 4: Outpainting
+    - device: The index of the device to use (defaults to 0).
+    - prompt: The text prompt for image generation.
+    - model_repo_id: The repository ID of the model to use.
+    - width: The width of the generated image (defaults to 512).
+    - negative_prompt: The negative prompt for image generation.
+    - height: The height of the generated image (defaults to 512).
+    - generate_number: The number of images to generate (defaults to 1).
+    - inference_steps: The number of inference steps (defaults to 12).
+    - guidance_scale: The guidance scale (defaults to 7.5).
+    - seed: The random seed (defaults to -1).
+    - scheduler: The scheduler to use (defaults to "None").
+    - lora: The LORA to use (defaults to "None").
+    - image_preview: Whether to enable image preview (defaults to 0).
+    - safe_check: Whether to enable safety checks (defaults to 1).
+    - image: The input image for modes 1, 2, 3, and 4.
+    - denoise: The denoising strength for modes 1, 2, 3, and 4 (defaults to 0.5).
+    - scale: The scaling factor for Upscale Image mode (mode 1, defaults to 1.5).
+    - mask_image: The mask image for Inpainting mode (mode 3).
+    - direction: The direction for Outpainting mode (mode 4, defaults to "right").
+
     Returns a streaming response with image generation progress.
     """
-    llm_biz.dispose()  # Dispose LLM to free resources
-    mode = request.form.get("mode", default=0, type=int)  # Get the mode from request
+    try:
+        llm_biz.dispose()  # Dispose of any existing LLM resources
+        mode = int(request.form.get("mode", DEFAULT_MODE))
+        if mode not in range(5):
+            raise BadRequest("Invalid mode specified.")
 
-    # Initialize parameters based on the selected mode
-    if mode != 0:  # Handle modes that require an input image
+        # Initialize parameters based on the selected mode
         if mode == 1:  # Upscale Image mode
-            params = UpscaleImageParams()
-            params.scale = request.form.get("scale", 1.5, type=float)
+            params = UpscaleImageParams(
+                scale=float(request.form.get("scale", DEFAULT_SCALE))
+            )
         elif mode == 2:  # Image-to-Image mode
             params = ImageToImageParams()
         elif mode == 3:  # Inpainting mode
-            params = InpaintParams()
-            params.mask_image = cache_mask_image()
+            params = InpaintParams(
+                mask_image=cache_mask_image()
+            )
         elif mode == 4:  # Outpainting mode
-            params = OutpaintParams()
-            params.direction = request.form.get("direction", "right", type=str)
+            params = OutpaintParams(
+                direction=request.form.get("direction", "right")
+            )
+        else:
+            params = TextImageParams()
 
-        # Cache the input image and get denoise parameter
-        params.image = cache_input_image()
-        params.denoise = request.form.get("denoise", 0.5, type=float)
-    else:
-        params = TextImageParams()  # Text-to-Image mode
+        # Set common parameters for all modes
+        params.device = int(request.form.get("device", 0))
+        params.prompt = request.form.get("prompt", "")
+        params.model_name = request.form["model_repo_id"]
+        params.mode = mode
+        params.width = int(request.form.get("width", DEFAULT_IMAGE_SIZE))
+        params.negative_prompt = request.form.get("negative_prompt", "")
+        params.height = int(request.form.get("height", DEFAULT_IMAGE_SIZE))
+        params.generate_number = int(request.form.get("generate_number", DEFAULT_GENERATE_NUMBER))
+        params.inference_steps = int(request.form.get("inference_steps", DEFAULT_INFERENCE_STEPS))
+        params.guidance_scale = float(request.form.get("guidance_scale", DEFAULT_GUIDANCE_SCALE))
+        params.seed = int(request.form.get("seed", DEFAULT_SEED))
+        params.scheduler = request.form.get("scheduler", DEFAULT_SCHEDULER)
+        params.lora = request.form.get("lora", DEFAULT_LORA)
+        params.image_preview = int(request.form.get("image_preview", DEFAULT_IMAGE_PREVIEW))
+        params.safe_check = int(request.form.get("safe_check", DEFAULT_SAFE_CHECK))
 
-    # Set common parameters for all modes
-    base_params = params  # Consider refactoring this to avoid assigning to a new variable
-    base_params.device = request.form.get("device", default=0, type=int)
-    base_params.prompt = request.form.get("prompt", default="", type=str)
-    base_params.model_name = request.form["model_repo_id"]
-    base_params.mode = mode
-    base_params.width = request.form.get("width", default=512, type=int)
-    base_params.negative_prompt = request.form.get("negative_prompt", default="", type=str)
-    base_params.height = request.form.get("height", default=512, type=int)
-    base_params.generate_number = request.form.get("generate_number", default=1, type=int)
-    base_params.inference_steps = request.form.get("inference_steps", default=12, type=int)
-    base_params.guidance_scale = request.form.get("guidance_scale", default=7.5, type=float)
-    base_params.seed = request.form.get("seed", default=-1, type=int)
-    base_params.scheduler = request.form.get("scheduler", default="None", type=str)
-    base_params.lora = request.form.get("lora", default="None", type=str)
-    base_params.image_preview = request.form.get("image_preview", default=0, type=int)
-    base_params.safe_check = request.form.get("safe_check", default=1, type=int)
+        if mode != 0:  # Modes that require input image
+            params.image = cache_input_image()
+            params.denoise = float(request.form.get("denoise", DEFAULT_DENOISE))
 
-    # Initialize the SSE adapter for Stable Diffusion
-    sse_invoker = SD_SSE_Adapter(request.url_root)
-    # Start the image generation process
-    it = sse_invoker.generate(params)
-    # Return a streaming response with the generated image(s)
-    return Response(stream_with_context(it), content_type="text/event-stream")
+        sse_invoker = SD_SSE_Adapter(request.url_root)
+        it = sse_invoker.generate(params)
+        return Response(stream_with_context(it), content_type="text/event-stream")
+    except BadRequest as e:
+        return jsonify({"error": str(e)}), 400
+    except Exception as e:
+        logger.exception("Error in SD generate route.")
+        return jsonify({"error": "An error occurred during image generation."}), 500
 
-# Route to stop Stable Diffusion image generation
-@app.route("/api/sd/stopGenerate", methods=["GET"])
+@sd_bp.route("/stopGenerate", methods=["GET"])
 def stop_sd_generate():
-    """Stops the ongoing SD generation process."""
-    import paint_biz  # This import could be moved to the top of the file
-    paint_biz.stop_generate()  # Stop the SD generation
-    return jsonify({"code": 0, "message": "success"})  # Return success message
+    """Stops the ongoing SD generation process. Returns a JSON success response."""
+    paint_biz.stop_generate()
+    return jsonify({"code": SUCCESS_CODE, "message": SUCCESS_MESSAGE})
 
-# Route to initialize application settings
-@app.route("/api/init", methods=["POST"])
+# --- Model Management Routes ---
+
+@model_bp.route("/init", methods=["POST"])
 def get_init_settings():
     """
     Initializes settings based on POSTed configuration.
@@ -128,295 +227,303 @@ def get_init_settings():
     Expects a JSON payload with configurations.
     Returns a JSON response with available schedulers.
     """
-    import schedulers_util  # This import could be moved to the top of the file
+    try:
+        post_config: dict = request.get_json()
+        for k, v in post_config.items():
+            if k in model_config.config:
+                model_config.config[k] = v
+        return jsonify(schedulers_util.schedulers)
+    except Exception as e:
+        logger.exception("Error in init route.")
+        return jsonify({"error": "An error occurred during initialization."}), 500
 
-    # Get the configuration settings from the request body
-    post_config: dict = request.get_json()
-
-    # Update the global configuration with the received settings
-    for k, v in post_config.items():
-        if k in model_config.config:  # More Pythonic way to check for key existence
-            model_config.config[k] = v  # Update configuration using dictionary syntax
-
-    # Return the available schedulers as a JSON response
-    return jsonify(schedulers_util.schedulers)
-
-# Route to get supported graphics configurations
-@app.route("/api/getGraphics", methods=["POST"])
+@model_bp.route("/getGraphics", methods=["POST"])
 def get_graphics():
-    """Retrieves supported graphics configurations based on the environment."""
-    env = request.form.get("env", default="ultra", type=str)  # Get environment type
-    return jsonify(utils.get_support_graphics(env))  # Return supported graphics
+    """
+    Retrieves supported graphics configurations based on the environment. 
+    Takes a POST request with a form parameter 'env' (defaults to "ultra").
+    Returns a JSON response with the supported graphics configurations.
+    """
+    env = request.form.get("env", default="ultra", type=str)
+    return jsonify(utils.get_support_graphics(env))
 
-# Route to gracefully exit the application (Caution: This may need additional security)
-@app.route("/api/applicationExit", methods=["GET"])
-def applicationExit():
+@model_bp.route("/applicationExit", methods=["GET"])
+def application_exit(): # Renamed for consistency
     """
     Terminates the application by sending a SIGINT signal.
-    
-    Warning: This endpoint should be protected in a production environment to prevent unauthorized termination.
+
+    Warning: This endpoint should be protected in a production environment 
+    to prevent unauthorized termination.
     """
     from signal import SIGINT
-    pid = os.getpid()  # Get the current process ID
-    os.kill(pid, SIGINT)  # Send SIGINT to terminate the process
+    pid = os.getpid() 
+    os.kill(pid, SIGINT)
 
-# Route to check if specified models exist on the server
-@app.route("/api/checkModelExist", methods=["POST"])
+@model_bp.route("/checkModelExist", methods=["POST"])
+@validate_json_input(["models"])
 def check_model_exist():
     """
     Checks if models exist locally.
 
-    Expects a JSON payload with a list of models to check.
+    Expects a JSON payload with a list of models to check:
+    - models: A list of dictionaries, each with 'repo_id' and 'type'.
+
     Returns a JSON response with the existence status of each model.
     """
-    model_list = request.get_json()  # Get the list of models from the request body
-    result_list = []
+    try:
+        model_list: List[Dict[str, Any]] = request.get_json()["models"]
+        result_list = []
 
-    # Iterate over each model in the list and check if it exists
-    for item in model_list:
-        repo_id = item["repo_id"]
-        model_type = item["type"]
-        exist = utils.check_model_exist(model_type, repo_id)  # Corrected the typo here
-        result_list.append({"repo_id": repo_id, "type": model_type, "exist": exist})
+        for item in model_list:
+            repo_id = item["repo_id"]
+            model_type = item["type"]
+            exist = utils.check_model_exist(model_type, repo_id)
+            result_list.append({"repo_id": repo_id, "type": model_type, "exist": exist})
 
-    # Return the existence check results as a JSON response
-    return jsonify({"code": 0, "message": "success", "exists": result_list})
+        return jsonify({"code": SUCCESS_CODE, "message": SUCCESS_MESSAGE, "exists": result_list})
+    except Exception as e:
+        logger.exception("Error in checkModelExist route.")
+        return jsonify({"error": "An error occurred during model existence check."}), 500
 
-# Cache to store model sizes
+# --- Model Size Cache ---
+
+# This could be improved with a more robust caching mechanism (e.g., using cachetools)
 size_cache = dict()
-# Thread lock for thread-safe operations on the cache
 lock = threading.Lock()
 
-# Route to get the sizes of specified models
-@app.route("/api/getModelSize", methods=["POST"])
+@model_bp.route("/getModelSize", methods=["POST"])
+@validate_json_input(["models"])
 def get_model_size():
     """
-    Retrieves the sizes of specified models.
+    Retrieves the sizes of specified models. 
 
-    Expects a JSON payload with a list of models.
+    Expects a JSON payload with:
+    - models: A list of dictionaries, each with 'repo_id' and 'type'.
+
     Returns a JSON response with the size of each requested model.
     """
-    import concurrent.futures  # This import could be moved to the top of the file
+    try:
+        model_list: List[Dict[str, Any]] = request.get_json()["models"]
+        result_dict = {}
+        request_list = []
 
-    model_list = request.get_json()  # Get the list of models from the request body
-    result_dict = dict()
-    request_list = []
+        for item in model_list:
+            repo_id = item["repo_id"]
+            model_type = item["type"]
+            key = f"{repo_id}_{model_type}"
+            total_size = size_cache.get(key)
+            if total_size is None:
+                request_list.append((repo_id, model_type))
+            else:
+                result_dict[key] = bytes2human(total_size, "%(value).2f%(symbol)s")
 
-    # Check the size cache for each model
-    for item in model_list:
-        repo_id = item["repo_id"]
-        model_type = item["type"]
-        key = f"{repo_id}_{model_type}"
-        total_size = size_cache.get(key)
-        if total_size is None:
-            # If the model size is not cached, add it to the request list
-            request_list.append((repo_id, model_type))
-        else:
-            # If the model size is cached, add it to the result dictionary
-            result_dict[key] = bytes2human(total_size, "%(value).2f%(symbol)s")  # More Pythonic dictionary syntax
+        if request_list:
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                futures = [
+                    executor.submit(fill_size_execute, repo_id, model_type, result_dict)
+                    for repo_id, model_type in request_list
+                ]
+                concurrent.futures.wait(futures)
+                executor.shutdown()
 
-    # If there are models to check, use a thread pool to calculate their sizes concurrently
-    if len(request_list) > 0:  # More Pythonic way to check list length
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            futures = [
-                executor.submit(fill_size_execute, repo_id, model_type, result_dict)
-                for repo_id, model_type in request_list
-            ]
-            concurrent.futures.wait(futures)
-            executor.shutdown()
+        return jsonify({"code": SUCCESS_CODE, "message": SUCCESS_MESSAGE, "sizeList": result_dict})
+    except Exception as e:
+        logger.exception("Error in getModelSize route.")
+        return jsonify({"error": "An error occurred during model size retrieval."}), 500
 
-    # Return the model sizes as a JSON response
-    return jsonify({"code": 0, "message": "success", "sizeList": result_dict})
-
-# Function to retrieve and cache the size of a specific model
 def fill_size_execute(repo_id: str, model_type: int, result_dict: dict):
     """
-    Retrieves and caches the size of a model.
-
-    Args:
-        repo_id (str): The repository ID of the model.
-        model_type (int): The type of the model.
-        result_dict (dict): The dictionary to store the result.
+    Retrieves the size of a model and updates the cache. 
+    This function is designed to be run in a separate thread.
     """
     key = f"{repo_id}_{model_type}"
-
-    # Get the model size based on the type
     if model_type == 4:
         total_size = utils.get_ESRGAN_size()
     else:
         total_size = HFPlaygroundDownloader().get_model_total_size(repo_id, model_type)
 
-    # Update the size cache with the model size in a thread-safe manner
     with lock:
-        size_cache[key] = total_size  # More Pythonic dictionary syntax
-        result_dict[key] = bytes2human(total_size, "%(value).2f%(symbol)s")  # More Pythonic dictionary syntax
+        size_cache[key] = total_size
+        result_dict[key] = bytes2human(total_size, "%(value).2f%(symbol)s")
 
-# Route to enable Retrieval-Augmented Generation (RAG) feature
-@app.route("/api/llm/enableRag", methods=["POST"])
+# --- RAG Routes ---
+
+@llm_bp.route("/enableRag", methods=["POST"])
 def enable_rag():
     """
     Enables RAG (Retrieval-Augmented Generation) for LLMs.
 
-    Expects form data with 'repo_id' and 'device'.
-    Returns a JSON response indicating success.
+    Expects form data with:
+    - repo_id: The repository ID for the RAG model.
+    - device: The device index to use.
+
+    Returns a JSON success response.
     """
-    if not rag.Is_Inited:  # If RAG is not initialized
+    if not rag.Is_Inited:
         repo_id = request.form.get("repo_id", default="", type=str)
         device = request.form.get("device", default=0, type=int)
-        rag.init(repo_id, device)  # Initialize RAG with the given repo_id and device
-    # Return a success message
-    return jsonify({"code": 0, "message": "success"})
+        rag.init(repo_id, device)
+    return jsonify({"code": SUCCESS_CODE, "message": SUCCESS_MESSAGE})
 
-# Route to disable RAG feature
-@app.route("/api/llm/disableRag", methods=["GET"])
+@llm_bp.route("/disableRag", methods=["GET"])
 def disable_rag():
-    """Disables RAG for LLMs."""
+    """Disables RAG for LLMs. Returns a JSON success response."""
     if rag.Is_Inited:
-        rag.dispose()  # Dispose of the RAG resources
-    return jsonify({"code": 0, "message": "success"})  # Return success message
+        rag.dispose()
+    return jsonify({"code": SUCCESS_CODE, "message": SUCCESS_MESSAGE})
 
-# Route to download a model
-@app.route("/api/downloadModel", methods=["POST"])
+@llm_bp.route("/getRagFiles", methods=["GET"])
+def get_rag_files():
+    """
+    Retrieves a list of RAG files with their filenames and MD5 checksums. 
+    Returns a JSON response with the file data.
+    """
+    try:
+        result_list = list()
+        index_list = rag.get_index_list()
+        if index_list is not None:
+            for index in index_list:
+                result_list.append({"filename": index.get("name"), "md5": index.get("md5")})
+        return jsonify({"code": SUCCESS_CODE, "message": SUCCESS_MESSAGE, "data": result_list})
+    except Exception as e:
+        logger.exception("Error in getRagFiles route.")
+        return jsonify({"error": "An error occurred while retrieving RAG files."}), 500
+
+@llm_bp.route("/uploadRagFile", methods=["POST"])
+def upload_rag_file():
+    """
+    Handles RAG file uploads.
+
+    Expects form data with:
+    - path: The path to the RAG file.
+
+    Returns a JSON response indicating success and the MD5 checksum of the uploaded file.
+    """
+    try:
+        path = request.form.get("path")
+        code, md5 = rag.add_index_file(path)
+        return jsonify({"code": code, "message": SUCCESS_MESSAGE, "md5": md5})
+    except Exception as e:
+        logger.exception("Error in uploadRagFile route.")
+        return jsonify({"error": "An error occurred during RAG file upload."}), 500
+
+@llm_bp.route("/deleteRagIndex", methods=["POST"])
+def delete_rag_file():
+    """
+    Deletes a RAG file from the index.
+
+    Expects form data with:
+    - md5: The MD5 checksum of the file to delete.
+
+    Returns a JSON success response.
+    """
+    try:
+        md5_checksum = request.form.get("md5")
+        rag.delete_index(md5_checksum)
+        return jsonify({"code": SUCCESS_CODE, "message": SUCCESS_MESSAGE})
+    except Exception as e:
+        logger.exception("Error in deleteRagIndex route.")
+        return jsonify({"error": "An error occurred during RAG file deletion."}), 500
+
+# --- Model Downloading ---
+
+@model_bp.route("/downloadModel", methods=["POST"])
+@validate_json_input(["models"])
 def download_model():
     """
-    Handles model download requests.
+    Handles model download requests and streams progress updates.
 
-    Expects a JSON payload with a list of models to download.
+    Expects a JSON payload with:
+    - models: A list of dictionaries, each containing the model information.
+
     Returns a streaming response with download progress.
     """
-    model_list = request.get_json()  # Get the list of models to download from the request
-    
-    # If a download is already in progress, stop it
-    if model_download_adpater._adapter is not None:
-        model_download_adpater._adapter.stop_download()
     try:
-        # Create a new Model_Downloader_Adapter to handle the download
-        model_download_adpater._adapter = model_download_adpater.Model_Downloader_Adapter()
-        iterator = model_download_adpater._adapter.download(model_list)  # Start downloading models
-        # Return a streaming response to show download progress
+        model_list: List[Dict[str, Any]] = request.get_json()["models"]
+        # Ensure thread safety when stopping downloads
+        if model_download_adapter._adapter is not None:
+            with lock:
+                model_download_adapter._adapter.stop_download()
+        model_download_adapter._adapter = model_download_adapter.Model_Downloader_Adapter()
+        iterator = model_download_adapter._adapter.download(model_list)
         return Response(stream_with_context(iterator), content_type="text/event-stream")
     except Exception as e:
-        # Handle exceptions during the download process
-        traceback.print_exc()  # Print the traceback for debugging
-        model_download_adpater._adapter.stop_download()  # Stop the download in case of error
-        error_message = '{{"type": "error", "err_type": "{}"}}'.format(e)
-        # Return an error message as a streaming response
-        return Response(stream_with_context([error_message]), content_type="text/event-stream")
+        logger.exception("Error in downloadModel route.")
+        return jsonify({"error": "An error occurred during model download."}), 500
 
-# Route to stop an ongoing model download
-@app.route("/api/stopDownloadModel", methods=["GET"])
+@model_bp.route("/stopDownloadModel", methods=["GET"])
 def stop_download_model():
-    """Stops an ongoing model download."""
-    # Stop the download if the adapter is active
-    if model_download_adpater._adapter is not None:
-        model_download_adpater._adapter.stop_download()
-    return jsonify({"code": 0, "message": "success"})  # Return success message
+    """Stops an ongoing model download. Returns a JSON success response."""
+    # Ensure thread safety when stopping downloads
+    if model_download_adapter._adapter is not None:
+        with lock:
+            model_download_adapter._adapter.stop_download()
+    return jsonify({"code": SUCCESS_CODE, "message": SUCCESS_MESSAGE})
 
-# Route to get the list of RAG files
-@app.route("/api/llm/getRagFiles", methods=["GET"])
-def get_rag_files():
-    """Retrieves a list of RAG files with their filenames and MD5 checksums."""
-    try:
-        result_list = list()  # Initialize an empty list to store the results
-        index_list = rag.get_index_list()  # Get the list of RAG indices
-        # Check if index_list is not None (avoid potential errors)
-        if index_list is not None:  
-            # Iterate through each index in the list
-            for index in index_list:
-                # Append a dictionary containing the filename and its MD5 checksum to the result list
-                result_list.append({"filename": index.get("name"), "md5": index.get("md5")}) 
-
-        return jsonify({"code": 0, "message": "success", "data": result_list})  # Return success with the file list
-    except Exception as e:
-        traceback.print_exc()  # Print the traceback in case of an exception
-        return jsonify({"code": -1, "message": "failed"})  # Return a failure message
-
-# Route to upload a RAG file
-@app.route("/api/llm/uploadRagFile", methods=["POST"])
-def upload_rag_file():
-    """Handles RAG file uploads and returns the MD5 checksum of the uploaded file."""
-    try:
-        path = request.form.get("path")  # Retrieve the file path from the request form
-        code, md5 = rag.add_index_file(path)  # Add the file to the RAG index and get its MD5 checksum
-        return jsonify({"code": code, "message": "success", "md5": md5})  # Return a success message with the MD5 checksum
-    except Exception as e:
-        traceback.print_exc()  # Print the traceback if an exception occurs
-        return jsonify({"code": -1, "message": "failed", "path": path})  # Return a failure message with the file path
-
-# Route to delete a RAG file from the index
-@app.route("/api/llm/deleteRagIndex", methods=["POST"])
-def delete_rag_file():
-    """Deletes a RAG file from the index based on its MD5 checksum."""
-    try:
-        md5_checksum = request.form.get("md5")  # Get the MD5 checksum of the file to delete
-        rag.delete_index(md5_checksum)  # Delete the file from the RAG index
-        return jsonify({"code": 0, "message": "success"})  # Return a success message
-    except Exception as e:
-        traceback.print_exc()  # Print the traceback for debugging purposes
-        return jsonify({"code": -1, "message": "failed"})  # Return a failure message
+# --- Image Caching ---
 
 def cache_input_image():
     """
-    Caches the uploaded input image for Stable Diffusion and returns the file path.
-    
-    Handles various image file types (JPEG, GIF, BMP, PNG) and generates a 
-    timestamped file name for storage.
+    Caches the uploaded input image and returns the file path.
+    Handles file extensions based on content type and creates a timestamped filename.
+    Raises a BadRequest exception if no image file is provided.
     """
-    file = request.files.get("image")  # Get the uploaded image file from the request
-    ext = ".png"  # Set the default file extension to PNG
-    # Determine the correct file extension based on the content type
-    if file.content_type == "image/jpeg":
-        ext = ".jpg"
-    elif file.content_type == "image/gif":
-        ext = ".gif"
-    elif file.content_type == "image/bmp":
-        ext = ".bmp"
+    file = request.files.get("image")
+    if not file:
+        raise BadRequest("No image file provided.")
 
-    # Generate a timestamped filename
+    file_extensions = {
+        "image/jpeg": ".jpg",
+        "image/gif": ".gif",
+        "image/bmp": ".bmp",
+        "image/png": ".png"
+    }
+    ext = file_extensions.get(file.content_type, ".png")
+
     now = datetime.now()
     folder = now.strftime("%d_%m_%Y")
     base_name = now.strftime("%H%M%S")
-    file_path = os.path.abspath(os.path.join("./static/sd_input/", folder, base_name + ext))
+    # Use pathlib for file path construction
+    save_dir = Path("./static/sd_input") / folder
+    save_dir.mkdir(parents=True, exist_ok=True)
+    file_path = save_dir / f"{base_name}{ext}" 
 
-    # Create the directory if it doesn't exist
-    os.makedirs(os.path.dirname(file_path), exist_ok=True)
-    # Save the file to the generated path
     file.save(file_path)
-    # Cache the file with its size
-    utils.cache_file(file_path, file.__sizeof__())  
-    file.stream.close()  # Close the file stream
-    return file_path  # Return the file path
+    utils.cache_file(file_path, file.__sizeof__())
+    file.stream.close()
+    return str(file_path) # Return as string for compatibility
 
 def cache_mask_image():
-    """Caches the uploaded mask image for inpainting and returns the file path."""
-    # Get mask dimensions from request
-    mask_width = request.form.get("mask_width", default=512, type=int)
-    mask_height = request.form.get("mask_height", default=512, type=int)
-    # Generate a PIL Image from the uploaded mask image data
+    """
+    Caches the uploaded mask image and returns the file path.
+    Creates a timestamped filename and saves the mask as a PNG image.
+    """
+    mask_width = int(request.form.get("mask_width", DEFAULT_IMAGE_SIZE))
+    mask_height = int(request.form.get("mask_height", DEFAULT_IMAGE_SIZE))
     mask_image = utils.generate_mask_image(
         request.files.get("mask_image").stream.read(), mask_width, mask_height
     )
 
-    # Generate a timestamped filename for the mask image
     now = datetime.now()
     folder = now.strftime("%d_%m_%Y")
     base_name = now.strftime("%H%M%S")
-    file_path = os.path.abspath(os.path.join("static/sd_mask/", folder, base_name + ".png"))
+    # Use pathlib for file path construction
+    save_dir = Path("./static/sd_mask") / folder
+    save_dir.mkdir(parents=True, exist_ok=True)
+    file_path = save_dir / f"{base_name}.png"
 
-    # Create the directory for the mask image if it doesn't exist
-    os.makedirs(os.path.dirname(file_path), exist_ok=True)
-    # Save the mask image to the generated file path
     mask_image.save(file_path)
-    # Cache the file path and size
-    utils.cache_file(file_path, os.path.getsize(file_path)) 
-    return file_path  # Return the file path
+    utils.cache_file(file_path, file_path.stat().st_size) # Get file size using pathlib
+    return str(file_path) # Return as string for compatibility
+
+# Register blueprints with the Flask application
+app.register_blueprint(llm_bp)
+app.register_blueprint(sd_bp)
+app.register_blueprint(model_bp)
 
 # Main entry point for running the Flask application
 if __name__ == "__main__":
-    import argparse
-    # Argument parser for command-line arguments
     parser = argparse.ArgumentParser(description="AI Playground Web service")
-    parser.add_argument('--port', type=int, default=59999, help='Service listen port')
+    parser.add_argument("--port", type=int, default=59999, help="Service listen port")
     args = parser.parse_args()
-    # Run the Flask app on the specified host and port
     app.run(host="127.0.0.1", port=args.port)
