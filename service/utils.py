@@ -1,6 +1,6 @@
 import base64
 import math
-from typing import IO, Optional, Union, Callable
+from typing import IO, Union, List, Dict
 from pathlib import Path
 from PIL import Image
 import io
@@ -15,6 +15,17 @@ import requests
 import model_config
 import realesrgan
 
+# Constants for model types
+MODEL_TYPES = {
+    0: "llm",
+    1: "stableDiffusion",
+    2: "lora",
+    3: "vae",
+    4: "ESRGAN",
+    5: "embedding",
+    6: "inpaint",
+    7: "preview"
+}
 
 def image_to_base64(image: Image.Image) -> str:
     """
@@ -26,7 +37,7 @@ def image_to_base64(image: Image.Image) -> str:
     Returns:
         str: The base64 encoded string representation of the image.
     """
-    with io.BytesIO() as buffered:  # Use 'with' statement for resource management
+    with io.BytesIO() as buffered:
         image.save(buffered, format="PNG")
         return f"data:image/png;base64,{base64.b64encode(buffered.getvalue()).decode('utf-8')}"
 
@@ -50,11 +61,11 @@ def generate_mask_image(mask_flag_bytes: bytes, width: int, height: int) -> Imag
 
 def get_shape_ceil(h: float, w: float) -> float:
     """
-    Calculates the ceiling of the square root of the product of height and width, divided by 64.0,
-    and then multiplies by 64.0.
+    Calculates the ceiling of the square root of the product of height and width, 
+    divided by 64.0, and then multiplies by 64.0.
 
     This function is likely used to determine the appropriate output size for models that 
-    require input dimensions to be multiples of 64. 
+    require input dimensions to be multiples of 64.
 
     Args:
         h (float): The height value.
@@ -71,13 +82,13 @@ def get_image_shape_ceil(image: Image.Image) -> float:
     Gets the ceiling of the shape of an image, ensuring it is a multiple of 64.
 
     Args:
-        image (Image.Image):  A PIL Image.
+        image (Image.Image): A PIL Image.
 
     Returns:
-        float:  The calculated ceiling value for the image shape.
+        float: The calculated ceiling value for the image shape.
     """
-    H, W = image.size  # Use `image.size` to get the width and height of the image.
-    return get_shape_ceil(H, W)
+    width, height = image.size  # Ensure correct order of width and height
+    return get_shape_ceil(height, width)
 
 
 def check_model_exist(type: int, repo_id: str) -> bool:
@@ -99,38 +110,37 @@ def check_model_exist(type: int, repo_id: str) -> bool:
     Raises:
         ValueError: If an unknown model type value is provided.
     """
-    folder_name = repo_id.replace("/", "---")  # Replace '/' with '---' for folder names.
-
+    folder_name = repo_id.replace("/", "---")
     model_type_paths = {
-        0: Path(model_config.config.get("llm")) / folder_name / "config.json",
-        1: Path(model_config.config.get("stableDiffusion")) / folder_name / "model_index.json",
-        2: Path(model_config.config.get("lora")) / folder_name,
-        3: Path(model_config.config.get("vae")) / folder_name,
-        4: Path(model_config.config.get("ESRGAN")) / Path(realesrgan.ESRGAN_MODEL_URL).name,
-        5: Path(model_config.config.get("embedding")) / folder_name,
-        6: Path(model_config.config.get("inpaint")) / folder_name / "model_index.json",
-        7: Path(model_config.config.get("preview")) / folder_name / "config.json"
+        0: Path(model_config.config.get(MODEL_TYPES[0])) / folder_name / "config.json",
+        1: Path(model_config.config.get(MODEL_TYPES[1])) / folder_name / "model_index.json",
+        2: Path(model_config.config.get(MODEL_TYPES[2])) / folder_name,
+        3: Path(model_config.config.get(MODEL_TYPES[3])) / folder_name,
+        4: Path(model_config.config.get(MODEL_TYPES[4])) / Path(realesrgan.ESRGAN_MODEL_URL).name,
+        5: Path(model_config.config.get(MODEL_TYPES[5])) / folder_name,
+        6: Path(model_config.config.get(MODEL_TYPES[6])) / folder_name / "model_index.json",
+        7: Path(model_config.config.get(MODEL_TYPES[7])) / folder_name / "config.json"
     }
 
     if type in model_type_paths:
         path = model_type_paths[type]
-        if type == 2:  # Special case for LORA models
+        if type == 2:  # LORA models
             return any([
                 (path / "pytorch_lora_weights.safetensors").exists(),
                 (path / "pytorch_lora_weights.bin").exists(),
                 is_single_file(repo_id) and path.exists()
             ])
-        if type == 7:  # Special case for Preview models
+        if type == 7:  # Preview models
             return any([
                 path.exists(),
-                (Path(model_config.config.get("preview")) / f"{repo_id}.safetensors").exists(),
-                (Path(model_config.config.get("preview")) / f"{repo_id}.bin").exists()
+                (Path(model_config.config.get(MODEL_TYPES[7])) / f"{repo_id}.safetensors").exists(),
+                (Path(model_config.config.get(MODEL_TYPES[7])) / f"{repo_id}.bin").exists()
             ])
         if is_single_file(repo_id) and type in {1, 2, 6}:
             return path.exists()
         return path.exists()
     else:
-        raise ValueError(f"Unknown model type value: {type}")  # Use more specific exception
+        raise ValueError(f"Unknown model type value: {type}")
 
 
 def convert_model_type(type: int) -> str:
@@ -138,26 +148,18 @@ def convert_model_type(type: int) -> str:
     Converts a model type code (int) to its corresponding string representation.
 
     Args:
-        type (int):  An integer representing the model type.
+        type (int): An integer representing the model type.
 
     Returns:
         str: The string representation of the model type.
-    """
-    model_type_map = {
-        0: "llm",
-        1: "stableDiffusion",
-        2: "lora",
-        3: "vae",
-        4: "ESRGAN",
-        5: "embedding",
-        6: "inpaint",
-        7: "preview"
-    }
 
+    Raises:
+        ValueError: If an unknown model type value is provided. 
+    """
     try:
-        return model_type_map[type]
+        return MODEL_TYPES[type]
     except KeyError:
-        raise ValueError(f"Unknown model type value: {type}")  # Use more specific exception
+        raise ValueError(f"Unknown model type value: {type}")
 
 
 def get_model_path(type: int) -> Path:
@@ -260,7 +262,6 @@ def cache_file(file_path: Union[IO[bytes], Path], file_size: int):
         except OSError:
             shutil.copyfile(cache_path, file_path)
 
-
 def is_single_file(filename: str) -> bool:
     """
     Checks if a filename corresponds to a single model file.
@@ -273,7 +274,6 @@ def is_single_file(filename: str) -> bool:
     """
     return filename.endswith(('.safetensors', '.bin'))
 
-
 def get_ESRGAN_size() -> int:
     """
     Retrieves the size of the ESRGAN model file.
@@ -285,8 +285,7 @@ def get_ESRGAN_size() -> int:
         response = session.head(realesrgan.ESRGAN_MODEL_URL)  # Use a HEAD request to get only the headers
         return int(response.headers.get("Content-Length"))  # Return the content length from the headers.
 
-
-def get_support_graphics(env_type: str):
+def get_support_graphics(env_type: str) -> List[Dict[str, Union[int, str]]]:
     """
     Retrieves a list of supported Intel Arc Graphics devices.
 
@@ -297,12 +296,11 @@ def get_support_graphics(env_type: str):
         list: A list of dictionaries, each containing the index and name of a supported device.
     """
     arc_regex = re.compile(r"Intel\(R\) Arc\(TM\) [^ ]+ Graphics")
-
-    device_count = torch.xpu.device_count()  # Get the number of XPU devices available.
-    model_config.env_type = env_type  # Set the environment type in the model configuration.
+    device_count = torch.xpu.device_count()
+    model_config.env_type = env_type
     graphics = []
-    for i in range(device_count):  # Iterate over each device.
-        device_name = torch.xpu.get_device_name(i)  # Get the name of the device.
+    for i in range(device_count):
+        device_name = torch.xpu.get_device_name(i)
         if device_name == "Intel(R) Arc(TM) Graphics" or arc_regex.search(device_name):
-            graphics.append({"index": i, "name": device_name})  # If the device is supported, add it to the list.
-    return graphics  # Return the list of supported devices.
+            graphics.append({"index": i, "name": device_name})
+    return graphics
