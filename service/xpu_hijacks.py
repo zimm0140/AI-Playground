@@ -133,13 +133,12 @@ def autocast_init(self, device_type, dtype=None, enabled=True, cache_enabled=Non
     This override ensures that autocasting on XPUs uses bfloat16, which is often
     preferred for its memory efficiency on these devices.
     """
-    if device_type == "cuda":
-        device_type = "xpu"  # Redirect CUDA calls to XPU
-    if device_type == "xpu":
+    if device_type == "cuda" or device_type == "xpu":
         if dtype is None:
             dtype = torch.bfloat16
+        return original_autocast_init(self, device_type="xpu", dtype=dtype, enabled=enabled, cache_enabled=cache_enabled)
+    else:
         return original_autocast_init(self, device_type=device_type, dtype=dtype, enabled=enabled, cache_enabled=cache_enabled)
-    return original_autocast_init(self, device_type=device_type, dtype=dtype, enabled=enabled, cache_enabled=cache_enabled)
 
 # --- Latent Antialias CPU Offload ---
 
@@ -682,9 +681,9 @@ def torch_ones(*args, device=None, **kwargs) -> torch.Tensor:
     Returns:
         torch.Tensor: A tensor filled with the scalar value 1 on the specified device.
     """
-    if check_device(device):  # Check if the specified device is for CUDA or XPU
-        return original_torch_ones(*args, device=return_xpu(device), **kwargs)  # If so, create the tensor on the corresponding XPU device
-    return original_torch_ones(*args, device=device, **kwargs)  # Otherwise, create the tensor on the specified device
+    if check_device(device):  # Check if the device is a CUDA or XPU device
+        return original_torch_ones(*args, device=return_xpu(device), **kwargs)  # If so, create the tensor on the XPU device. 
+    return original_torch_ones(*args, device=device, **kwargs)  # If not, create the tensor on the specified device.
 
 # Store the original `torch.zeros` function
 original_torch_zeros = torch.zeros
@@ -723,7 +722,7 @@ def torch_linspace(*args, device=None, **kwargs) -> torch.Tensor:
     correct device, specifically handling XPU devices.
 
     Args:
-        *args: Variable length argument list. 
+        *args: Variable length argument list to specify the start, end, steps, etc. for the linspace.
         device (torch.device or int, optional): The desired device for the tensor.
         **kwargs: Arbitrary keyword arguments.
 
