@@ -1,17 +1,39 @@
 import logging
 import time
-import traceback
-from threading import Thread, Lock
-from pathlib import Path
-from typing import Callable, Optional, Tuple
 from io import BufferedWriter
+from pathlib import Path
+from threading import Thread, Lock
+from typing import Callable, Optional, Tuple
 
 import requests
+import traceback
 
 from exceptions import DownloadException
 
-
 class FileDownloader:
+    """
+    A class for downloading files from a given URL to a local file system, 
+    with support for progress reporting, download completion notification, 
+    and stopping the download process.
+
+    Attributes:
+        on_download_progress (Optional[Callable[[str, int, int, int], None]]): 
+            A callback function that reports the download progress. It receives 
+            the filename, the number of bytes downloaded so far, the total file size, 
+            and the download speed in bytes per second.
+        on_download_completed (Optional[Callable[[str, Optional[Exception]], None]]): 
+            A callback function that is called when the download is completed. It receives 
+            the filename and an optional exception if an error occurred during the download.
+        url (str): The URL of the file being downloaded.
+        filename (str): The full path of the local file where the downloaded content is saved.
+        basename (str): The name of the file being downloaded (without the path).
+        total_size (int): The total size of the file being downloaded in bytes.
+        download_size (int): The number of bytes downloaded so far.
+        download_stop (bool): A flag indicating whether the download process should be stopped.
+        prev_sec_download_size (int): The number of bytes downloaded in the previous second, 
+            used for calculating the download speed.
+        lock (Lock): A threading lock to ensure thread-safe access to shared resources.
+    """
     on_download_progress: Optional[Callable[[str, int, int, int], None]] = None
     on_download_completed: Optional[Callable[[str, Optional[Exception]], None]] = None
     url: str
@@ -24,6 +46,10 @@ class FileDownloader:
     lock: Lock
 
     def __init__(self):
+        """
+        Initializes the FileDownloader with default values for all attributes.
+        Sets up a lock for thread safety and initializes the logger.
+        """
         self.download_stop = False
         self.download_size = 0
         self.completed = False
@@ -35,11 +61,18 @@ class FileDownloader:
 
     def download_file(self, url: str, file_path: str) -> None:
         """
-        Download a file from the given URL to the specified file path.
+        Initiates the file download process.
+
+        This method begins the download of the file from the provided URL to the specified 
+        local file path. It manages the download process, handles errors, and invokes 
+        callbacks for progress reporting and completion.
 
         Args:
             url (str): The URL of the file to download.
-            file_path (str): The local file path to save the downloaded file.
+            file_path (str): The local file path where the downloaded file will be saved.
+
+        Raises:
+            DownloadException: Raised if the download fails after multiple retries.
         """
         self.url = url
         self.basename = Path(file_path).name
@@ -69,14 +102,23 @@ class FileDownloader:
 
     def __init_download(self, url: str, file_path: str) -> Tuple[requests.Response, BufferedWriter]:
         """
-        Initialize the download process, supporting resume if the file already exists.
+        Prepares the download by initiating the HTTP request and setting up the local file.
+
+        This method supports resuming an interrupted download if the file already exists 
+        locally by requesting the remaining portion of the file from the server.
 
         Args:
             url (str): The URL of the file to download.
-            file_path (str): The local file path to save the downloaded file.
+            file_path (str): The local file path where the downloaded file will be saved.
 
         Returns:
-            Tuple[requests.Response, BufferedWriter]: The HTTP response and file writer object.
+            Tuple[requests.Response, BufferedWriter]: 
+                A tuple containing the HTTP response object and a buffered writer object 
+                for writing the downloaded content to the file.
+
+        Raises:
+            requests.RequestException: If the HTTP request fails.
+            OSError: If the file operations (opening, writing) fail.
         """
         file_path = Path(file_path)
         if file_path.exists():
@@ -94,11 +136,18 @@ class FileDownloader:
 
     def __start_download(self, response: requests.Response, fw: BufferedWriter) -> None:
         """
-        Start the download process and handle retries in case of failures.
+        Handles the main file download process, including retries on failure.
+
+        This method reads the file content from the HTTP response in chunks and writes 
+        it to the local file. If the download is interrupted by an exception, it will retry 
+        up to three times before failing.
 
         Args:
-            response (requests.Response): The HTTP response object.
-            fw (BufferedWriter): The file writer object.
+            response (requests.Response): The HTTP response object containing the file data.
+            fw (BufferedWriter): The file writer object used to save the downloaded content.
+
+        Raises:
+            DownloadException: If the download fails after three retries.
         """
         retry = 0
         while True:
@@ -110,7 +159,7 @@ class FileDownloader:
                         fw.write(bytes)
 
                         if self.download_stop:
-                            logging.info(f"FileDownloader thread {Thread.current_thread().ident} exit by stop")
+                            logging.info(f"FileDownloader thread {threading.current_thread().ident} exit by stop")
                             break
                 break
             except Exception:
@@ -119,16 +168,19 @@ class FileDownloader:
                 if retry > 3:
                     raise DownloadException(self.url)
                 else:
-                    logging.info(f"FileDownloader thread {Thread.current_thread().ident} retry {retry} times")
+                    logging.info(f"FileDownloader thread {threading.current_thread().ident} retry {retry} times")
                     time.sleep(1)
                     response, fw = self.__init_download(self.url, self.filename)
 
     def __start_report_download_progress(self) -> Thread:
         """
-        Start a separate thread to report download progress.
+        Starts a separate thread to periodically report the download progress.
+
+        The thread repeatedly invokes the `on_download_progress` callback (if provided) 
+        with the current download status.
 
         Returns:
-            Thread: The thread object for reporting download progress.
+            Thread: The thread object responsible for reporting download progress.
         """
         report_thread = Thread(target=self.__report_download_progress)
         report_thread.start()
@@ -136,7 +188,11 @@ class FileDownloader:
 
     def __report_download_progress(self) -> None:
         """
-        Report download progress periodically.
+        Reports download progress at regular intervals (1 second).
+
+        This method is intended to run in a separate thread. It reports the download 
+        progress by calling the `on_download_progress` callback with the current 
+        download state, including the amount downloaded and the download speed.
         """
         while not self.download_stop and not self.completed:
             with self.lock:
@@ -153,6 +209,10 @@ class FileDownloader:
 
     def stop_download(self) -> None:
         """
-        Stop the download process.
+        Stops the download process.
+
+        Sets a flag that signals the download process to stop after the current chunk 
+        is processed. This method is typically called from another thread to gracefully 
+        stop the download.
         """
         self.download_stop = True
