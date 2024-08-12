@@ -250,7 +250,7 @@ def as_tensor(data, dtype=None, device=None):
 
 # Retrieve the value of the environment variable 'IPEX_FORCE_ATTENTION_SLICE'
 # This variable is used to force the use of 32-bit attention operations even if the device supports FP64. 
-IPEX_FORCE_ATTENTION_SLICE = os.getenv('IPEX_FORCE_ATTENTION_SLICE')
+IPEX_FORCE_ATTENTION_SLICE = os.environ.get('IPEX_FORCE_ATTENTION_SLICE')
 
 # Conditionally select the appropriate functions for `torch.bmm` and `scaled_dot_product_attention` 
 # based on device support for FP64 and the environment variable.
