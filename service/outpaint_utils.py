@@ -1,7 +1,11 @@
+# --- Third-Party Imports ---
+import cv2
 import numpy as np
 from PIL import Image
-import cv2
+
+# --- Type Hinting Imports ---
 from typing import Any
+
 
 def preprocess_outpaint(direction: str, image: Image.Image):
     """

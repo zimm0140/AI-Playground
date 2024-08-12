@@ -1,14 +1,19 @@
+# --- Standard Library Imports ---
 from datetime import datetime
 import json
+import os
 import threading
 from queue import Empty, Queue
 import traceback
 from typing import Any
+
+# --- Third-Party Imports ---
+from PIL import Image
+from psutil._common import bytes2human
+
+# --- Local Application Imports ---
 import paint_biz
 from model_downloader import NotEnoughDiskSpaceException, DownloadException
-from psutil._common import bytes2human
-from PIL import Image
-import os
 import utils
 
 class SD_SSE_Adapter:

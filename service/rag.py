@@ -1,11 +1,13 @@
+# --- Standard Library Imports ---
 import json
-from typing import Any, List, Dict
-import torch
-import time
 import os
 import re
-import utils
-import model_config
+import time
+from typing import Any, List, Dict
+
+# --- Third-Party Imports ---
+import torch
+import intel_extension_for_pytorch as ipex  # noqa: F401
 from langchain_core.embeddings import Embeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders.word_document import (
@@ -16,10 +18,11 @@ from langchain_community.document_loaders.markdown import UnstructuredMarkdownLo
 from langchain_community.document_loaders.pdf import PyPDFLoader
 from langchain_community.document_loaders.text import TextLoader
 from langchain_community.vectorstores.faiss import FAISS, Document
-
-# from sentence_transformers import SentenceTransformer
-import intel_extension_for_pytorch as ipex  # noqa: F401
 from sentence_transformers import SentenceTransformer
+
+# --- Local Application Imports ---
+import utils
+import model_config
 
 #### CONFIGURATIONS ------------------------------------------------------------------------------------------------------------------------
 INDEX_DATABASE_PATH = "./db/"  # Faiss database folder
