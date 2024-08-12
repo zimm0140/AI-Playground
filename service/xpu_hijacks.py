@@ -625,10 +625,11 @@ def UntypedStorage_cuda(self, device=None, *args, **kwargs):
 
 # --- Tensor Creation Function Overrides ---
 
-# Store a reference to the original `torch.empty` function
+# Store a reference to the original `torch.empty` function. This is done
+# to preserve the original function and allow us to call it when necessary.
 original_torch_empty = torch.empty
 
-# Override the function for creating an empty tensor to support XPUs
+# Override the function for creating an empty tensor to support XPUs.
 @wraps(torch.empty)
 def torch_empty(*args, device=None, **kwargs) -> torch.Tensor:
     """
@@ -640,19 +641,19 @@ def torch_empty(*args, device=None, **kwargs) -> torch.Tensor:
     Args:
         *args:  Variable length argument list used to specify the size of the tensor.
         device (torch.device or int, optional): The desired device for the tensor.
-        **kwargs: Arbitrary keyword arguments. 
+        **kwargs: Arbitrary keyword arguments.
 
     Returns:
         torch.Tensor:  A tensor filled with uninitialized data on the specified device.
     """
-    if check_device(device):
-        return original_torch_empty(*args, device=return_xpu(device), **kwargs)
-    return original_torch_empty(*args, device=device, **kwargs)
+    if check_device(device):  # If the requested device is CUDA or XPU...
+        return original_torch_empty(*args, device=return_xpu(device), **kwargs) # Create the tensor on the XPU device
+    return original_torch_empty(*args, device=device, **kwargs)  # Otherwise, create the tensor on the specified device
 
-# Store the original `torch.randn` function
+# Store the original `torch.randn` function.
 original_torch_randn = torch.randn
 
-# Override the function for creating a tensor with random values from a normal distribution
+# Override the function for creating a tensor with random values from a normal distribution.
 @wraps(torch.randn)
 def torch_randn(*args, device=None, dtype=None, **kwargs) -> torch.Tensor:
     """
@@ -685,8 +686,8 @@ def torch_ones(*args, device=None, **kwargs) -> torch.Tensor:
     """
     Returns a tensor filled with the scalar value 1.
 
-    This function overrides `torch.ones` to ensure that the tensor is created on the 
-    correct device, specifically handling XPU devices. 
+    This function overrides `torch.ones` to ensure that the tensor is created on the
+    correct device, specifically handling XPU devices.
 
     Args:
         *args:  Variable length argument list used to specify the size of the tensor.
@@ -696,9 +697,9 @@ def torch_ones(*args, device=None, **kwargs) -> torch.Tensor:
     Returns:
         torch.Tensor: A tensor filled with the scalar value 1 on the specified device.
     """
-    if check_device(device):
-        return original_torch_ones(*args, device=return_xpu(device), **kwargs) 
-    return original_torch_ones(*args, device=device, **kwargs)  
+    if check_device(device):  # Check if the device is a CUDA or XPU device
+        return original_torch_ones(*args, device=return_xpu(device), **kwargs)  # If so, create the tensor on the XPU device.
+    return original_torch_ones(*args, device=device, **kwargs)  # If not, create the tensor on the specified device.
 
 # Store the original `torch.zeros` function
 original_torch_zeros = torch.zeros
@@ -709,8 +710,8 @@ def torch_zeros(*args, device=None, **kwargs) -> torch.Tensor:
     """
     Returns a tensor filled with the scalar value 0.
 
-    This function overrides `torch.zeros` to ensure that the tensor is created on the 
-    correct device, specifically handling XPU devices. 
+    This function overrides `torch.zeros` to ensure that the tensor is created on the
+    correct device, specifically handling XPU devices.
 
     Args:
         *args:  Variable length argument list used to specify the size of the tensor.
@@ -720,9 +721,9 @@ def torch_zeros(*args, device=None, **kwargs) -> torch.Tensor:
     Returns:
         torch.Tensor: A tensor filled with the scalar value 0 on the specified device.
     """
-    if check_device(device):
-        return original_torch_zeros(*args, device=return_xpu(device), **kwargs)
-    return original_torch_zeros(*args, device=device, **kwargs)
+    if check_device(device):  # Check if the device is CUDA or XPU
+        return original_torch_zeros(*args, device=return_xpu(device), **kwargs)  # If so, create the tensor on the corresponding XPU device
+    return original_torch_zeros(*args, device=device, **kwargs)  # Otherwise, create the tensor on the specified device
 
 # Store the original `torch.linspace` function
 original_torch_linspace = torch.linspace
@@ -733,7 +734,7 @@ def torch_linspace(*args, device=None, **kwargs) -> torch.Tensor:
     """
     Returns a one-dimensional tensor of evenly spaced values.
 
-    This function overrides `torch.linspace` to ensure that the tensor is created on the 
+    This function overrides `torch.linspace` to ensure that the tensor is created on the
     correct device, specifically handling XPU devices.
 
     Args:
@@ -742,7 +743,7 @@ def torch_linspace(*args, device=None, **kwargs) -> torch.Tensor:
         **kwargs: Arbitrary keyword arguments.
 
     Returns:
-        torch.Tensor: A one-dimensional tensor of evenly spaced values on the specified device. 
+        torch.Tensor: A one-dimensional tensor of evenly spaced values on the specified device.
     """
     if check_device(device):  # Check if the device is for CUDA or XPU
         return original_torch_linspace(*args, device=return_xpu(device), **kwargs)  # Create the linspace tensor on the corresponding XPU
@@ -763,15 +764,15 @@ def torch_Generator(device=None):
         device (torch.device or int, optional): The desired device for the generator.
 
     Returns:
-        torch.Generator: A pseudo-random number generator object on the specified device. 
+        torch.Generator: A pseudo-random number generator object on the specified device.
     """
     if check_device(device):  # Check if the device is for CUDA or XPU
-        return original_torch_Generator(return_xpu(device)) # Create the generator on the corresponding XPU device
+        return original_torch_Generator(return_xpu(device))  # Create the generator on the corresponding XPU device
     return original_torch_Generator(device)  # Otherwise, create the generator on the specified device
 
 # --- Load Override ---
 
-# Store a reference to the original `torch.load` function for loading objects from files
+# Store the original `torch.load` function for loading objects from files
 original_torch_load = torch.load
 
 # Override the function to handle loading tensors onto XPU devices
