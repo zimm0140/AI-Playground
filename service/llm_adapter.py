@@ -1,10 +1,15 @@
+# --- Standard Library Imports ---
 import threading
 from queue import Empty, Queue
 import json
 import traceback
+
+# --- Third-Party Imports ---
+from psutil._common import bytes2human
+
+# --- Local Imports ---
 from service import llm_biz
 from service.model_downloader import NotEnoughDiskSpaceException, DownloadException
-from psutil._common import bytes2human
 
 
 class LLM_SSE_Adapter:
