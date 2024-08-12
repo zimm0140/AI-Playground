@@ -1,5 +1,7 @@
 import diffusers
 
+# Dictionary mapping scheduler names to their configuration.
+# This includes the class name of the scheduler and any keyword arguments.
 scheduler_map = {
     "DPM++ 2M": {"class_name": "DPMSolverMultistepScheduler", "kwargs": {}},
     "DPM++ 2M Karras": {
@@ -49,11 +51,24 @@ scheduler_map = {
 }
 
 # 从 scheduler_map 获取调度器清单
-schedulers = list(scheduler_map.keys())
+schedulers = list(scheduler_map.keys()) # List of available scheduler names
 
 def set_scheduler(pipe: diffusers.DiffusionPipeline, name: str):
-    print("---------------------debug ", name)
-    scheduler_cfg = scheduler_map.get(name)
+    """
+    Sets the scheduler for a diffusion pipeline based on the provided name. 
+    If the name is "None", the pipeline's default scheduler is used.
+
+    Args:
+        pipe (diffusers.DiffusionPipeline): The diffusion pipeline to configure.
+        name (str): The name of the scheduler to set.
+
+    Raises:
+        Exception: If the specified scheduler name is unknown.
+    """
+    print("---------------------debug ", name) # Debug print statement
+    scheduler_cfg = scheduler_map.get(name) # Retrieve the scheduler configuration
+
+    # Handle the case when no specific scheduler is requested (name is "None")
     if name == "None":
         if hasattr(pipe.scheduler, "scheduler_config"):
            default_class_name = pipe.scheduler.scheduler_config["_class_name"]
@@ -61,14 +76,20 @@ def set_scheduler(pipe: diffusers.DiffusionPipeline, name: str):
             default_class_name = pipe.scheduler.config["_class_name"]
         # same scheduler
         if default_class_name == type(pipe.scheduler).__name__:
-            return
+            # If the pipeline already has the default scheduler, do nothing
+            return 
         else:
+            # Get the default scheduler class 
             scheduler_class = getattr(diffusers, default_class_name)
-    elif scheduler_cfg is None:
-        raise Exception(f"unkown scheduler name \"{name}\"")
-    else:
+    # If a scheduler configuration is found
+    elif scheduler_cfg is not None: 
+        # Get the scheduler class from the diffusers library
         scheduler_class = getattr(diffusers, scheduler_cfg["class_name"])
+    else:
+        # If the scheduler name is not found, raise an exception
+        raise Exception(f"unkown scheduler name \"{name}\"")
     print(f"load scheduler {name}")
+    # Set the scheduler for the pipeline using its configuration and keyword arguments
     pipe.scheduler = scheduler_class.from_config(
         pipe.scheduler.config,  **scheduler_cfg["kwargs"]
     )
