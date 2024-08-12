@@ -1,10 +1,12 @@
-# Load model directly
-from threading import Thread
+# --- Standard Library Imports ---
 import time
 import traceback
+from threading import Thread
+
+# --- Third-Party Imports ---
 import torch
-from transformers import pipeline,PreTrainedModel,TextIteratorStreamer
 import intel_extension_for_pytorch as ipex
+from transformers import pipeline, PreTrainedModel, TextIteratorStreamer
 
 def stream_chat_generate(model:PreTrainedModel, args:dict):
     
