@@ -7,6 +7,10 @@ import io
 import hashlib
 import torch
 import numpy as np
+import tempfile
+import shutil
+import re
+import requests
 
 import model_config
 import realesrgan
@@ -97,43 +101,34 @@ def check_model_exist(type: int, repo_id: str) -> bool:
     """
     folder_name = repo_id.replace("/", "---")  # Replace '/' with '---' for folder names. 
 
-    if type == 0:  # Check for LLM models 
-        model_path = Path(model_config.config.get("llm"))
-        return (model_path / folder_name / "config.json").exists()
-    elif type == 1:  # Check for Stable Diffusion models
-        model_path = Path(model_config.config.get("stableDiffusion"))
-        if is_single_file(repo_id):
-            return (model_path / repo_id).exists()
-        return (model_path / folder_name / "model_index.json").exists()
-    elif type == 2:  # Check for LORA models
-        model_path = Path(model_config.config.get("lora"))
-        if is_single_file(repo_id):
-            return (model_path / repo_id).exists()
-        return (
-            (model_path / folder_name / "pytorch_lora_weights.safetensors").exists()
-            or (model_path / folder_name / "pytorch_lora_weights.bin").exists()
-        )
-    elif type == 3:  # Check for VAE models
-        model_path = Path(model_config.config.get("vae"))
-        return (model_path / folder_name).exists()
-    elif type == 4:  # Check for ESRGAN models
-        model_path = Path(model_config.config.get("ESRGAN"))
-        return (model_path / Path(realesrgan.ESRGAN_MODEL_URL).name).exists()
-    elif type == 5:  # Check for Embedding models
-        model_path = Path(model_config.config.get("embedding"))
-        return (model_path / folder_name).exists()
-    elif type == 6:  # Check for Inpaint models
-        model_path = Path(model_config.config.get("inpaint"))
-        if is_single_file(repo_id):
-            return (model_path / repo_id).exists()
-        return (model_path / folder_name / "model_index.json").exists()
-    elif type == 7:  # Check for Preview models
-        model_path = Path(model_config.config.get("preview"))
-        return (
-            (model_path / folder_name / "config.json").exists()
-            or (model_path / f"{repo_id}.safetensors").exists()
-            or (model_path / f"{repo_id}.bin").exists()
-        )
+    model_type_paths = {
+        0: Path(model_config.config.get("llm")) / folder_name / "config.json",
+        1: Path(model_config.config.get("stableDiffusion")) / folder_name / "model_index.json",
+        2: Path(model_config.config.get("lora")) / folder_name,
+        3: Path(model_config.config.get("vae")) / folder_name,
+        4: Path(model_config.config.get("ESRGAN")) / Path(realesrgan.ESRGAN_MODEL_URL).name,
+        5: Path(model_config.config.get("embedding")) / folder_name,
+        6: Path(model_config.config.get("inpaint")) / folder_name / "model_index.json",
+        7: Path(model_config.config.get("preview")) / folder_name / "config.json"
+    }
+
+    if type in model_type_paths:
+        path = model_type_paths[type]
+        if type == 2:  # Special case for LORA models
+            return any([
+                (path / "pytorch_lora_weights.safetensors").exists(),
+                (path / "pytorch_lora_weights.bin").exists(),
+                is_single_file(repo_id) and path.exists()
+            ])
+        if type == 7:  # Special case for Preview models
+            return any([
+                path.exists(),
+                (Path(model_config.config.get("preview")) / f"{repo_id}.safetensors").exists(),
+                (Path(model_config.config.get("preview")) / f"{repo_id}.bin").exists()
+            ])
+        if is_single_file(repo_id) and type in {1, 2, 6}:
+            return path.exists()
+        return path.exists()
     else:
         raise Exception(f"Unknown model type value: {type}")  # Corrected typo: "uwnkown" to "unknown".
 
@@ -286,8 +281,9 @@ def get_ESRGAN_size() -> int:
     Returns:
         int: The size of the ESRGAN model file in bytes.
     """
-    response = requests.head(realesrgan.ESRGAN_MODEL_URL)  # Use a HEAD request to get only the headers
-    return int(response.headers.get("Content-Length"))  # Return the content length from the headers.
+    with requests.Session() as session:
+        response = session.head(realesrgan.ESRGAN_MODEL_URL)  # Use a HEAD request to get only the headers
+        return int(response.headers.get("Content-Length"))  # Return the content length from the headers.
 
 
 def get_support_graphics(env_type: str):
@@ -300,11 +296,13 @@ def get_support_graphics(env_type: str):
     Returns:
         list: A list of dictionaries, each containing the index and name of a supported device.
     """
+    arc_regex = re.compile(r"Intel\(R\) Arc\(TM\) [^ ]+ Graphics")
+    
     device_count = torch.xpu.device_count()  # Get the number of XPU devices available.
     model_config.env_type = env_type  # Set the environment type in the model configuration.
     graphics = []
     for i in range(device_count):  # Iterate over each device.
         device_name = torch.xpu.get_device_name(i)  # Get the name of the device.
-        if device_name == "Intel(R) Arc(TM) Graphics" or re.search("Intel\\(R\\) Arc\\(TM\\) [^ ]+ Graphics", device_name) is not None:
+        if device_name == "Intel(R) Arc(TM) Graphics" or arc_regex.search(device_name):
             graphics.append({"index": i, "name": device_name})  # If the device is supported, add it to the list.
     return graphics  # Return the list of supported devices.
