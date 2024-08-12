@@ -1,17 +1,23 @@
-from huggingface_hub import HfFileSystem, hf_hub_url
-from typing import Any, Callable, Dict, List
-from os import path, makedirs, rename
-import requests
-import queue
-from threading import Thread, Lock
-import time
-import psutil
-from psutil._common import bytes2human
-from exceptions import DownloadException
-import traceback
+# --- Standard Library Imports ---
 import concurrent.futures
-import utils
+import queue
+import time
+import traceback
+from os import makedirs, path, rename
+from threading import Lock, Thread
 
+# --- Third-Party Imports ---
+import psutil
+import requests
+from huggingface_hub import HfFileSystem, hf_hub_url
+from psutil._common import bytes2human
+from typing import Any, Callable, Dict, List
+
+# --- Local Imports ---
+import utils
+from exceptions import DownloadException
+
+# --- Global Variables ---
 model_list_cache = dict()
 model_lock = Lock()
 

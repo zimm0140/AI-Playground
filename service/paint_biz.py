@@ -1,39 +1,46 @@
+# --- Standard Library Imports ---
 import gc
 import os
 import queue
 import random
+import re
 import time
+from threading import Event
 from typing import Any, Callable, Dict, List
-import utils
-import model_config
-import inpaint_utils
+
+# --- Third-Party Imports ---
+import torch
+from PIL import Image
+from compel import Compel
 from diffusers import (
+    AutoPipelineForImage2Image,
+    AutoPipelineForInpainting,
+    AutoencoderTiny,
     DiffusionPipeline,
+    LCMScheduler,
+    StableDiffusionImg2ImgPipeline,
+    StableDiffusionInpaintPipeline,
     StableDiffusionPipeline,
     StableDiffusionXLPipeline,
-    AutoPipelineForInpainting,
-    AutoPipelineForImage2Image,
-    StableDiffusionImg2ImgPipeline,
     StableDiffusionXLImg2ImgPipeline,
-    StableDiffusionInpaintPipeline,
     StableDiffusionXLInpaintPipeline,
-    LCMScheduler,
-    AutoencoderTiny,
 )
 from diffusers.pipelines.stable_diffusion.safety_checker import (
     StableDiffusionSafetyChecker,
 )
-import torch
-from PIL import Image
 from realesrgan import RealESRGANer
-import re
+
+# --- Local Application Imports ---
+import inpaint_utils
+import model_config
 import schedulers_util
-from compel import Compel
-from threading import Event
+import utils
 from xpu_hijacks import ipex_hijacks
 
+# --- Initialization ---
 ipex_hijacks()
 print("workarounds applied")
+
 
 # region class define
 

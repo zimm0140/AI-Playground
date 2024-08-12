@@ -1,10 +1,13 @@
 ## code credit goes to https://github.com/vladmandic/automatic/blob/master/modules/intel/ipex/hijacks.py
 ##
 
+# --- Standard Library Imports ---
 from pathlib import Path
 import logging
 from functools import wraps
 from contextlib import nullcontext
+
+# --- Third-Party Imports ---
 import torch
 import intel_extension_for_pytorch as ipex  # pylint: disable=import-error, unused-import
 import numpy as np

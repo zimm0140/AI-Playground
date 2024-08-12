@@ -1,17 +1,23 @@
+# --- Standard Library Imports ---
 import gc
-import PIL
-import PIL.Image
-import cv2
 import math
-import numpy as np
 import os
 import queue
 import threading
+
+# --- Third-Party Imports ---
+import cv2
+import numpy as np
 import torch
-from basicsr.archs.rrdbnet_arch import RRDBNet # Import the RRDBNet architecture from BasicSR
-from torch.nn import functional as F # Import PyTorch functional tools
+from torch.nn import functional as F
+import PIL
+import PIL.Image
+from basicsr.archs.rrdbnet_arch import RRDBNet  # Import the RRDBNet architecture from BasicSR
+
+# --- Local Application Imports ---
 import model_config  # Import the model configuration
-import xpu_hijacks # Import XPU compatibility layer 
+import xpu_hijacks  # Import XPU compatibility layer
+
 
 # Apply Intel's extensions and compatibility fixes for PyTorch on Intel XPUs
 xpu_hijacks.ipex_hijacks()
