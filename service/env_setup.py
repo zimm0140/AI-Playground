@@ -1,16 +1,27 @@
-import subprocess
-import sys
-import argparse
-import logging
-from rich.progress import Progress
-from rich.console import Console
-from rich.traceback import install
-from typing import List
+# Standard library imports
+import subprocess  # Allows for executing shell commands from within Python.
+import sys         # Provides access to system-specific parameters and functions.
+import argparse    # Handles command-line argument parsing.
+import logging     # Provides a flexible framework for emitting log messages from Python programs.
+from typing import List  # Allows for type hinting, ensuring better code readability and error checking.
 
+# External library imports
+from rich.progress import Progress  # Used to create and manage progress bars in the console.
+from rich.console import Console    # Provides advanced console output capabilities, including styled text.
+from rich.traceback import install  # Enhances Python's error tracebacks for better readability.
+
+# Install enhanced traceback handling using `rich`
 install()
 
-def setup_logging(level: int = logging.INFO) -> None:
-    """Set up logging configuration."""
+def setup_logging(level: int = logging.INFO) -> logging.Logger:
+    """Set up logging configuration.
+
+    Args:
+        level (int): The logging level. Default is `logging.INFO`.
+
+    Returns:
+        logging.Logger: Configured logger instance.
+    """
     logging.basicConfig(level=level)
     logger = logging.getLogger(__name__)
     return logger
