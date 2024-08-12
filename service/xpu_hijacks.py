@@ -1,5 +1,5 @@
 ## code credit goes to https://github.com/vladmandic/automatic/blob/master/modules/intel/ipex/hijacks.py
-## 
+##
 
 import os
 from functools import wraps
@@ -12,7 +12,7 @@ from typing import Union, Optional, Tuple
 """
 PyTorch Compatibility Layer for Intel XPUs
 
-This module provides a compatibility layer to ensure that PyTorch code designed for CUDA devices 
+This module provides a compatibility layer to ensure that PyTorch code designed for CUDA devices
 can run smoothly on Intel XPU devices. It accomplishes this by hijacking and overriding various
 PyTorch functions, properties, and attributes, adapting them to work with XPU-specific features
 and limitations.
@@ -38,7 +38,8 @@ Usage:
 # Check if the current XPU device supports 64-bit floating-point precision (FP64)
 device_supports_fp64 = torch.xpu.has_fp64_dtype()
 
-# Globally redirect PyTorch CUDA operations to use XPU operations
+# Globally redirect PyTorch CUDA operations to use XPU operations.
+# This makes any code using `torch.cuda` run on XPU instead.
 torch.cuda = torch.xpu
 
 def return_null_context(*args: Optional[tuple], **kwargs: Optional[dict]) -> nullcontext:  # pylint: disable=unused-argument
@@ -47,6 +48,13 @@ def return_null_context(*args: Optional[tuple], **kwargs: Optional[dict]) -> nul
 
     This is a utility function to disable certain context-based operations, such as CUDA's SDP kernel,
     when they are not needed or supported on XPUs.
+
+    Args:
+        *args (Optional[tuple]): Variable length positional arguments (ignored).
+        **kwargs (Optional[dict]): Variable length keyword arguments (ignored).
+
+    Returns:
+        nullcontext: A context manager that does nothing.
     """
     return nullcontext()
 
@@ -63,7 +71,7 @@ def is_available() -> bool:
     return ipex.has_xpu()
 
 @property
-def is_cuda(self):
+def is_cuda(self) -> bool:
     """
     Checks if a tensor's device is either an XPU or a CUDA device.
 
@@ -133,12 +141,10 @@ def autocast_init(self, device_type, dtype=None, enabled=True, cache_enabled=Non
     This override ensures that autocasting on XPUs uses bfloat16, which is often
     preferred for its memory efficiency on these devices.
     """
-    if device_type == "cuda" or device_type == "xpu":
-        if dtype is None:
-            dtype = torch.bfloat16
+    if device_type in ("cuda", "xpu"):  # Use 'in' operator for set membership check
+        dtype = dtype or torch.bfloat16  # Use the `or` operator to simplify default dtype assignment
         return original_autocast_init(self, device_type="xpu", dtype=dtype, enabled=enabled, cache_enabled=cache_enabled)
-    else:
-        return original_autocast_init(self, device_type=device_type, dtype=dtype, enabled=enabled, cache_enabled=cache_enabled)
+    return original_autocast_init(self, device_type=device_type, dtype=dtype, enabled=enabled, cache_enabled=cache_enabled)
 
 # --- Latent Antialias CPU Offload ---
 
@@ -147,7 +153,7 @@ original_interpolate = torch.nn.functional.interpolate
 
 # Override `torch.nn.functional.interpolate` to offload to CPU for certain cases
 @wraps(torch.nn.functional.interpolate)
-def interpolate(tensor, size=None, scale_factor=None, mode='nearest', align_corners=None, 
+def interpolate(tensor, size=None, scale_factor=None, mode='nearest', align_corners=None,
                 recompute_scale_factor=None, antialias=False): # pylint: disable=too-many-arguments
     """
     Performs interpolation on the input tensor.
@@ -182,8 +188,7 @@ def interpolate(tensor, size=None, scale_factor=None, mode='nearest', align_corn
         return original_interpolate(tensor.to("cpu", dtype=torch.float32), size=size, scale_factor=scale_factor, mode=mode,
                                    align_corners=align_corners, recompute_scale_factor=recompute_scale_factor, 
                                    antialias=antialias).to(return_device, dtype=return_dtype)
-    else:
-        return original_interpolate(tensor, size=size, scale_factor=scale_factor, mode=mode,
+    return original_interpolate(tensor, size=size, scale_factor=scale_factor, mode=mode,
                                    align_corners=align_corners, recompute_scale_factor=recompute_scale_factor, 
                                    antialias=antialias)
 
@@ -222,9 +227,9 @@ def as_tensor(data, dtype=None, device=None):
     """
     Creates a tensor from the input data.
 
-    This function overrides `torch.as_tensor` to ensure compatibility with XPU devices and to handle 
-    potential data type issues. If the input `data` is a NumPy array with a `float` data type and 
-    the target device is not explicitly set to "cpu", the array is converted to `float32`. 
+    This function overrides `torch.as_tensor` to ensure compatibility with XPU devices and to handle
+    potential data type issues. If the input `data` is a NumPy array with a `float` data type and
+    the target device is not explicitly set to "cpu", the array is converted to `float32`.
 
     Args:
         data (array_like): Initial data for the tensor. Can be a list, tuple, NumPy ndarray, scalar, and other types.
@@ -235,15 +240,16 @@ def as_tensor(data, dtype=None, device=None):
         torch.Tensor: The tensor created from the input data.
     """
     if check_device(device):
-        device = return_xpu(device)  # If the device is for CUDA, convert it to XPU. 
+        device = return_xpu(device)
     if isinstance(data, np.ndarray) and data.dtype == float and not (
         (isinstance(device, torch.device) and device.type == "cpu") or (isinstance(device, str) and "cpu" in device)):
-        data = data.astype('float32') # Convert to float32 for XPU compatibility
+        data = data.astype('float32')
     return original_as_tensor(data, dtype=dtype, device=device)
 
 # --- 32-Bit Attention Workarounds ---
 
 # Retrieve the value of the environment variable 'IPEX_FORCE_ATTENTION_SLICE'
+# This variable is used to force the use of 32-bit attention operations even if the device supports FP64. 
 IPEX_FORCE_ATTENTION_SLICE = os.getenv('IPEX_FORCE_ATTENTION_SLICE')
 
 # Conditionally select the appropriate functions for `torch.bmm` and `scaled_dot_product_attention` 
@@ -257,8 +263,9 @@ else:
     try:
         from attention import torch_bmm_32_bit as original_torch_bmm
         from attention import scaled_dot_product_attention_32_bit as original_scaled_dot_product_attention
-    except ImportError:
+    except ImportError:  # pylint: disable=broad-exception-caught
         # If loading the 32-bit versions fails, use the original PyTorch functions as a fallback
+        logger.warning("32-bit attention functions not found, falling back to original functions.")
         original_torch_bmm = torch.bmm
         original_scaled_dot_product_attention = torch.nn.functional.scaled_dot_product_attention
 
@@ -266,13 +273,13 @@ else:
 
 # Override `torch.bmm` to ensure matching data types for inputs
 @wraps(torch.bmm)
-def torch_bmm(input, mat2, *, out=None):
+def torch_bmm(input: torch.Tensor, mat2: torch.Tensor, *, out: Optional[torch.Tensor] = None) -> torch.Tensor:
     """
     Performs a batch matrix-matrix product of matrices stored in input and mat2.
 
     This function overrides the standard `torch.bmm` to ensure that both input tensors
-    have the same data type before performing the operation. It converts `mat2` to the
-    data type of `input` if necessary.
+    have the same data type before performing the operation. If the data types of `input`
+    and `mat2` do not match, `mat2` is converted to the data type of `input`.
 
     Args:
         input (torch.Tensor): The first batch of matrices to be multiplied.
@@ -288,12 +295,15 @@ def torch_bmm(input, mat2, *, out=None):
 
 # Override `torch.nn.functional.scaled_dot_product_attention` to ensure consistent data types across all inputs
 @wraps(torch.nn.functional.scaled_dot_product_attention)
-def scaled_dot_product_attention(query, key, value, attn_mask=None, dropout_p=0.0, is_causal=False):
+def scaled_dot_product_attention(query: torch.Tensor, key: torch.Tensor, value: torch.Tensor, 
+                                 attn_mask: Optional[torch.Tensor] = None, dropout_p: float = 0.0, 
+                                 is_causal: bool = False, **kwargs) -> torch.Tensor:
     """
-    Computes scaled dot product attention on input tensors.
+    Computes scaled dot product attention on input tensors, ensuring data type consistency.
 
-    This function ensures that the query, key, value, and attention mask (if provided) tensors all have
-    the same data type. It converts the tensors to the data type of the `query` tensor if necessary.
+    This function ensures that the `query`, `key`, `value`, and `attn_mask` (if provided) 
+    tensors all have the same data type. If the data types do not match, the `key`, 
+    `value`, and `attn_mask` tensors are converted to the data type of the `query` tensor.
 
     Args:
         query (torch.Tensor): Query tensor.
@@ -302,6 +312,7 @@ def scaled_dot_product_attention(query, key, value, attn_mask=None, dropout_p=0.
         attn_mask (torch.Tensor, optional): Optional attention mask tensor. Default: None.
         dropout_p (float, optional): Dropout probability. Default: 0.0
         is_causal (bool, optional): If True, applies a causal mask to the attention scores. Default: False
+        **kwargs:  Additional keyword arguments to be passed to the original scaled dot product attention function.
 
     Returns:
         torch.Tensor: The output tensor resulting from the scaled dot product attention operation.
@@ -310,19 +321,20 @@ def scaled_dot_product_attention(query, key, value, attn_mask=None, dropout_p=0.
     value = value.to(dtype=query.dtype) if query.dtype != value.dtype else value
     if attn_mask is not None and query.dtype != attn_mask.dtype:
         attn_mask = attn_mask.to(dtype=query.dtype)
-    return original_scaled_dot_product_attention(query, key, value, attn_mask=attn_mask, dropout_p=dropout_p, is_causal=is_causal)
+    return original_scaled_dot_product_attention(query, key, value, attn_mask=attn_mask, dropout_p=dropout_p, is_causal=is_causal, **kwargs)
 
 # --- A1111 FP16 Workaround ---
 original_functional_group_norm = torch.nn.functional.group_norm
 
 # Override `torch.nn.functional.group_norm` to ensure data type consistency for FP16 operations
 @wraps(torch.nn.functional.group_norm)
-def functional_group_norm(input, num_groups, weight=None, bias=None, eps=1e-05):
+def functional_group_norm(input: torch.Tensor, num_groups: int, weight: Optional[torch.Tensor] = None, bias: Optional[torch.Tensor] = None, eps: float = 1e-05) -> torch.Tensor:
     """
-    Applies Group Normalization over a mini-batch of inputs.
+    Applies Group Normalization over a mini-batch of inputs, ensuring data type compatibility.
 
     This override ensures data type compatibility between input, weight, and bias, potentially converting
-    the input tensor to the data type of the weight tensor. 
+    the input tensor to the data type of the weight tensor. This is especially important when working with 
+    FP16 precision, where data type mismatches can cause issues.
 
     Args:
         input (torch.Tensor): Input tensor of shape (N, C, *).
@@ -345,12 +357,14 @@ original_functional_layer_norm = torch.nn.functional.layer_norm
 
 # Override `torch.nn.functional.layer_norm` to handle data type consistency for BF16 operations
 @wraps(torch.nn.functional.layer_norm)
-def functional_layer_norm(input, normalized_shape, weight=None, bias=None, eps=1e-05):
+def functional_layer_norm(input: torch.Tensor, normalized_shape: Union[int, list, torch.Size], weight: Optional[torch.Tensor] = None,
+                          bias: Optional[torch.Tensor] = None, eps: float = 1e-05) -> torch.Tensor:
     """
-    Applies Layer Normalization over a mini-batch of inputs.
+    Applies Layer Normalization over a mini-batch of inputs, ensuring data type consistency.
 
     This override ensures data type consistency between input, weight, and bias, converting the input
-    to the data type of the weight if necessary. 
+    to the data type of the weight if necessary. This is particularly relevant when working with bfloat16 (BF16)
+    precision.
 
     Args:
         input (torch.Tensor): Input tensor of shape (N, *).
@@ -375,7 +389,7 @@ original_functional_linear = torch.nn.functional.linear
 
 # Override the linear function to ensure data type consistency during training
 @wraps(torch.nn.functional.linear)
-def functional_linear(input, weight, bias=None):
+def functional_linear(input: torch.Tensor, weight: torch.Tensor, bias: Optional[torch.Tensor] = None) -> torch.Tensor:
     """
     Applies a linear transformation to the incoming data: :math:`y = xA^T + b`.
 
@@ -406,7 +420,9 @@ original_functional_conv2d = torch.nn.functional.conv2d
 
 # Override the 2D convolution function to ensure data type consistency 
 @wraps(torch.nn.functional.conv2d)
-def functional_conv2d(input, weight, bias=None, stride=1, padding=0, dilation=1, groups=1):
+def functional_conv2d(input: torch.Tensor, weight: torch.Tensor, bias: Optional[torch.Tensor] = None, 
+                       stride: Union[int, Tuple] = 1, padding: Union[int, Tuple] = 0, 
+                       dilation: Union[int, Tuple] = 1, groups: int = 1) -> torch.Tensor:
     """
     Applies a 2D convolution over an input signal composed of several input planes.
 
@@ -440,7 +456,7 @@ original_torch_cat = torch.cat
 
 # Override the tensor concatenation function to handle potential data type mismatches
 @wraps(torch.cat)
-def torch_cat(tensor, *args, **kwargs):
+def torch_cat(tensor, *args, **kwargs) -> torch.Tensor:
     """
     Concatenates the given sequence of seq tensors in the given dimension.
 
@@ -471,7 +487,7 @@ original_functional_pad = torch.nn.functional.pad
 
 # Override the padding function to handle potential issues with bfloat16 (BF16)
 @wraps(torch.nn.functional.pad)
-def functional_pad(input, pad, mode='constant', value=None):
+def functional_pad(input: torch.Tensor, pad: Tuple, mode: str = 'constant', value: Optional[float] = None) -> torch.Tensor:
     """
     Pads tensor.
 
@@ -482,8 +498,8 @@ def functional_pad(input, pad, mode='constant', value=None):
     Args:
         input (torch.Tensor): N-dimensional tensor.
         pad (tuple): m-elements tuple, where m/2 <= input dimensions and m is even.
-        mode (string, optional): 'constant', 'reflect', 'replicate' or 'circular'. Default: 'constant'
-        value (scalar, optional): Fill value for 'constant' padding. Default: 0
+        mode (string, optional): 'constant', 'reflect', 'replicate' or 'circular'. Default: 'constant'.
+        value (scalar, optional): Fill value for 'constant' padding. Default: 0.
 
     Returns:
         torch.Tensor: Padded tensor.
@@ -493,11 +509,11 @@ def functional_pad(input, pad, mode='constant', value=None):
     return original_functional_pad(input, pad, mode=mode, value=value)  # Use original padding function if not in 'reflect' mode or not bfloat16
 
 # --- Tensor Creation Workarounds ---
+
 original_torch_tensor = torch.tensor
 
-# Override `torch.tensor` to handle device selection and potential data type conversion to float32 on XPUs
 @wraps(torch.tensor)
-def torch_tensor(data, *args, dtype=None, device=None, **kwargs):
+def torch_tensor(data, *args, dtype=None, device=None, **kwargs) -> torch.Tensor:
     """
     Constructs a tensor from data, ensuring compatibility with XPU devices.
 
@@ -515,12 +531,15 @@ def torch_tensor(data, *args, dtype=None, device=None, **kwargs):
     """
     if check_device(device):
         device = return_xpu(device)
+
+    # Check if dtype needs to be converted to float32 for XPU compatibility
     if not device_supports_fp64:
-        if (isinstance(device, torch.device) and device.type == "xpu") or (isinstance(device, str) and "xpu" in device):
+        if isinstance(device, torch.device) and device.type == "xpu" or isinstance(device, str) and "xpu" in device:
             if dtype == torch.float64:
                 dtype = torch.float32
-            elif dtype is None and (hasattr(data, "dtype") and (data.dtype == torch.float64 or data.dtype == float)):
+            elif dtype is None and hasattr(data, "dtype") and data.dtype in (torch.float64, float):
                 dtype = torch.float32
+
     return original_torch_tensor(data, *args, dtype=dtype, device=device, **kwargs)
 
 original_Tensor_to = torch.Tensor.to
@@ -563,54 +582,50 @@ def Tensor_cuda(self, device=None, *args, **kwargs):
 
 # --- Storage Initialization Workarounds ---
 
-# Keep a reference to the original `torch.UntypedStorage.__init__`
 original_UntypedStorage_init = torch.UntypedStorage.__init__
 
-# Override the initialization of UntypedStorage to handle device placement
 @wraps(torch.UntypedStorage.__init__)
 def UntypedStorage_init(*args, device=None, **kwargs):
     """
-    Initializes a new storage object on the specified device.
+    Initializes a new storage object, considering XPU device compatibility.
 
-    This function overrides the default `torch.UntypedStorage.__init__` to ensure that new
-    storage objects are created on the correct device, especially when targeting XPUs. 
-
-    If the specified device is a CUDA or XPU device, it will be converted to an XPU device
-    using `return_xpu(device)`.
+    This function overrides the standard `torch.UntypedStorage.__init__` to ensure
+    that new storage objects are created on the correct device, particularly when
+    an XPU device is specified. If the specified device is CUDA or XPU, it will be
+    converted to an XPU device. 
 
     Args:
         *args: Variable length argument list.
         device (torch.device or int, optional): The desired device for the storage object.
         **kwargs: Arbitrary keyword arguments.
     """
-    if check_device(device): # Check if the device is CUDA or XPU
-        return original_UntypedStorage_init(*args, device=return_xpu(device), **kwargs) # Create the storage on the corresponding XPU device
-    return original_UntypedStorage_init(*args, device=device, **kwargs) # Otherwise, create on the specified device
+    if check_device(device):
+        device = return_xpu(device)
+    return original_UntypedStorage_init(*args, device=device, **kwargs)
 
-# Store a reference to the original `torch.UntypedStorage.cuda` function
 original_UntypedStorage_cuda = torch.UntypedStorage.cuda
 
-# Override the cuda method of UntypedStorage to move storage to the appropriate device
 @wraps(torch.UntypedStorage.cuda)
 def UntypedStorage_cuda(self, device=None, *args, **kwargs):
     """
     Moves the storage to a CUDA or XPU device.
 
-    This function overrides the standard `torch.UntypedStorage.cuda` to ensure that storage is
-    correctly moved to an XPU device when specified. 
+    This function overrides the standard `torch.UntypedStorage.cuda` to ensure that 
+    the storage is correctly moved to the appropriate device, handling XPU devices 
+    when specified. 
 
     Args:
         device (torch.device or int, optional): The target CUDA or XPU device. 
         *args: Variable length argument list.
         **kwargs: Arbitrary keyword arguments.
     """
-    if check_device(device): # Check if the specified device is a CUDA or XPU device
-        return original_UntypedStorage_cuda(self, return_xpu(device), *args, **kwargs) # If so, move the storage to the corresponding XPU device
-    return original_UntypedStorage_cuda(self, device, *args, **kwargs)  # Otherwise, move the storage to the specified device
+    if check_device(device):
+        return original_UntypedStorage_cuda(self, return_xpu(device), *args, **kwargs)
+    return original_UntypedStorage_cuda(self, device, *args, **kwargs)
 
 # --- Tensor Creation Function Overrides ---
 
-# Store the original `torch.empty` function
+# Store a reference to the original `torch.empty` function
 original_torch_empty = torch.empty
 
 # Override the function for creating an empty tensor to support XPUs
@@ -681,9 +696,9 @@ def torch_ones(*args, device=None, **kwargs) -> torch.Tensor:
     Returns:
         torch.Tensor: A tensor filled with the scalar value 1 on the specified device.
     """
-    if check_device(device):  # Check if the device is a CUDA or XPU device
-        return original_torch_ones(*args, device=return_xpu(device), **kwargs)  # If so, create the tensor on the XPU device. 
-    return original_torch_ones(*args, device=device, **kwargs)  # If not, create the tensor on the specified device.
+    if check_device(device):
+        return original_torch_ones(*args, device=return_xpu(device), **kwargs) 
+    return original_torch_ones(*args, device=device, **kwargs)  
 
 # Store the original `torch.zeros` function
 original_torch_zeros = torch.zeros
@@ -705,9 +720,9 @@ def torch_zeros(*args, device=None, **kwargs) -> torch.Tensor:
     Returns:
         torch.Tensor: A tensor filled with the scalar value 0 on the specified device.
     """
-    if check_device(device): # Check if the specified device is for CUDA or XPU
-        return original_torch_zeros(*args, device=return_xpu(device), **kwargs)  # If so, create the tensor on the corresponding XPU device
-    return original_torch_zeros(*args, device=device, **kwargs)  # Otherwise, create the tensor on the specified device
+    if check_device(device):
+        return original_torch_zeros(*args, device=return_xpu(device), **kwargs)
+    return original_torch_zeros(*args, device=device, **kwargs)
 
 # Store the original `torch.linspace` function
 original_torch_linspace = torch.linspace
@@ -756,7 +771,7 @@ def torch_Generator(device=None):
 
 # --- Load Override ---
 
-# Store the original `torch.load` function for loading objects from files
+# Store a reference to the original `torch.load` function for loading objects from files
 original_torch_load = torch.load
 
 # Override the function to handle loading tensors onto XPU devices
@@ -765,37 +780,38 @@ def torch_load(f, map_location=None, *args, **kwargs):
     """
     Loads an object saved with `torch.save` from a file.
 
-    This function overrides the standard `torch.load` to ensure that tensors and other 
+    This function overrides the standard `torch.load` to ensure that tensors and other
     objects are correctly loaded onto the specified device, particularly handling XPU devices. 
 
     If the specified `map_location` is a CUDA or XPU device, the function will remap the 
     storage location to the corresponding XPU device using `return_xpu(map_location)`.
 
     Args:
-        f (file-like object, str, or path-like object): A file-like object or a string or 
-            path-like object containing a file name.
-        map_location (torch.device, str, or function, optional):  Specifies how to remap storage locations.
+        f (file-like object, str, or path-like object): A file-like object, a string, or 
+            a path-like object containing a file name.
+        map_location (torch.device, str, or function, optional):  Specifies how to remap 
+            storage locations.
         *args:  Variable length argument list.
         **kwargs:  Arbitrary keyword arguments.
 
     Returns:
         Any: The loaded object. 
     """
-    if check_device(map_location):  # Check if the map_location is a CUDA or XPU device
-        return original_torch_load(f, *args, map_location=return_xpu(map_location), **kwargs) # Load the object, remapping storage to the XPU device 
-    return original_torch_load(f, *args, map_location=map_location, **kwargs)  # Otherwise, use the original torch.load function
+    if check_device(map_location):
+        return original_torch_load(f, *args, map_location=return_xpu(map_location), **kwargs)
+    return original_torch_load(f, *args, map_location=map_location, **kwargs)
 
 
 # --- Hijack Functions ---
-# This function applies all the overrides defined in this module to the corresponding PyTorch functions
 def ipex_hijacks():
     """
     Replaces specific PyTorch functions with their XPU-compatible versions.
 
     This function should be called to activate the compatibility layer for XPU devices, ensuring that
-    subsequent PyTorch operations are correctly routed to XPUs and handle data types and other 
-    potential compatibility issues. 
+    subsequent PyTorch operations are correctly routed to XPUs and handle data types and other
+    potential compatibility issues.
     """
+
     # Override core tensor creation and manipulation functions
     torch.tensor = torch_tensor
     torch.Tensor.to = Tensor_to
@@ -811,7 +827,7 @@ def ipex_hijacks():
     torch.load = torch_load
 
     # Override specific PyTorch backend functions
-    torch.backends.cuda.sdp_kernel = return_null_context  
+    torch.backends.cuda.sdp_kernel = return_null_context
     torch.UntypedStorage.is_cuda = is_cuda
     torch.cuda.is_available = is_available
     torch.amp.autocast_mode.autocast.__init__ = autocast_init
@@ -827,8 +843,8 @@ def ipex_hijacks():
 
     torch.bmm = torch_bmm
     torch.cat = torch_cat
-    
-    # Override functions related to NumPy array conversion, only if the device doesn't support FP64
+
+    # Override NumPy array conversion functions if FP64 is not supported on the device
     if not device_supports_fp64:
         torch.from_numpy = from_numpy
-        torch.as_tensor = as_tensor 
+        torch.as_tensor = as_tensor
