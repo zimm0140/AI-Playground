@@ -1,12 +1,16 @@
+# --- Standard Library Imports ---
+import json
 import os
 import threading
 from queue import Empty, Queue
-import json
-from file_downloader import FileDownloader
-from model_downloader import NotEnoughDiskSpaceException, DownloadException
+
+# --- Third-Party Imports ---
 from psutil._common import bytes2human
-from model_downloader import HFPlaygroundDownloader
 import realesrgan
+
+# --- Local Imports ---
+from file_downloader import FileDownloader
+from model_downloader import DownloadException, HFPlaygroundDownloader, NotEnoughDiskSpaceException
 import utils
 
 
