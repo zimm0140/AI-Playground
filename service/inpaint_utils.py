@@ -1,11 +1,16 @@
+import logging
 from typing import Tuple, Union, List
+
 import numpy as np
 from PIL import Image
 import cv2
-import logging
 
+# Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+# Use logger.info(), logger.error(), etc., in your functions for logging
+
 
 def get_image_ndarray(image: Union[Image.Image, np.ndarray]) -> np.ndarray:
     """
