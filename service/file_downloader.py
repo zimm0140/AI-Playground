@@ -1,12 +1,14 @@
-from io import BufferedWriter
 import logging
 import time
 import traceback
-from typing import Callable, Optional, Tuple
-import requests
 from threading import Thread, Lock
-from exceptions import DownloadException
 from pathlib import Path
+from typing import Callable, Optional, Tuple
+from io import BufferedWriter
+
+import requests
+
+from exceptions import DownloadException
 
 
 class FileDownloader:
