@@ -1,12 +1,13 @@
-# Load model directly
+# --- Standard Library Imports ---
 import gc
 import threading
 import time
 import traceback
-import torch
-
-from typing import List, Dict
 from os import path
+from typing import List, Dict, Callable
+
+# --- Third-Party Imports ---
+import torch
 from transformers import (
     TextIteratorStreamer,
     StoppingCriteriaList,
@@ -14,14 +15,14 @@ from transformers import (
     PreTrainedModel,
     PreTrainedTokenizer,
 )
-
-from ipex_llm.transformers import AutoModelForCausalLM
-from typing import Callable
 from transformers.generation.stopping_criteria import (
     StoppingCriteria,
     STOPPING_CRITERIA_INPUTS_DOCSTRING,
     add_start_docstrings,
 )
+
+# --- Local Imports ---
+from ipex_llm.transformers import AutoModelForCausalLM
 import model_config
 
 
