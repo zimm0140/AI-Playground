@@ -1,0 +1,259 @@
+name: Publish Documentation
+
+on:
+  # Run after main workflow completes on main branch
+  workflow_run:
+    workflows: ["CI"]
+    branches: [main]
+    types: [completed]
+  
+  # Allow manual triggering
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+      
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install mkdocs mkdocs-material pymdown-extensions
+      
+      - name: Create docs directory structure
+        run: |
+          mkdir -p docs/{api,hardware,platform,coverage,testing,security}
+          
+          # Create index page
+          cat > docs/index.md << EOF
+          # AI Playground Documentation Hub
+          
+          Welcome to the automatically generated documentation for the AI Playground project.
+          
+          This site is updated automatically by the CI workflow and includes:
+          
+          - API Documentation
+          - Hardware Compatibility Matrix
+          - Platform Compatibility Reports
+          - Test Coverage Reports
+          - Security Reports
+          
+          Last updated: $(date)
+          
+          ## Navigation
+          
+          - [API Documentation](api/)
+          - [Hardware Compatibility](hardware/)
+          - [Platform Compatibility](platform/)
+          - [Test Coverage](coverage/)
+          - [Testing Reports](testing/)
+          - [Security Reports](security/)
+          EOF
+      
+      - name: Download all artifacts
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          workflow: main.yml
+          workflow_conclusion: success
+          path: artifacts
+      
+      - name: Process API documentation
+        run: |
+          # Copy API documentation
+          cp -r artifacts/api-documentation-linux-3.10/* docs/api/ || true
+          cp -r artifacts/api-endpoints-summary-linux-3.10/* docs/api/ || true
+          
+          # Create API index
+          cat > docs/api/index.md << EOF
+          # API Documentation
+          
+          This section contains automatically generated API documentation:
+          
+          - [API Endpoints Summary](api_endpoints.md)
+          - [Class Documentation](api_docs/)
+          EOF
+      
+      - name: Process hardware reports
+        run: |
+          # Copy hardware compatibility matrix
+          cp -r artifacts/hardware-compatibility-matrix-linux-3.10/* docs/hardware/ || true
+          cp -r artifacts/hardware-support-matrix-linux-3.10 docs/hardware/hardware_support.md || true
+          
+          # Create hardware index
+          cat > docs/hardware/index.md << EOF
+          # Hardware Compatibility
+          
+          This section contains detailed hardware compatibility information:
+          
+          - [Hardware Compatibility Matrix](compatibility_matrix.md)
+          - [Hardware Support Matrix](hardware_support.md)
+          EOF
+      
+      - name: Process platform compatibility reports
+        run: |
+          # Copy platform compatibility reports
+          cp -r artifacts/platform-compatibility-report-linux-3.10/* docs/platform/ || true
+          cp -r artifacts/compatibility-report-linux-3.10/* docs/platform/linux/ || true
+          cp -r artifacts/compatibility-report-windows-3.10/* docs/platform/windows/ || true
+          cp -r artifacts/compatibility-report-macos-3.10/* docs/platform/macos/ || true
+          
+          # Create platform index
+          cat > docs/platform/index.md << EOF
+          # Platform Compatibility
+          
+          This section contains platform compatibility reports:
+          
+          - [Platform Compatibility Report](platform_compatibility_report.md)
+          - [Linux Compatibility](linux/)
+          - [Windows Compatibility](windows/)
+          - [macOS Compatibility](macos/)
+          EOF
+      
+      - name: Process coverage reports
+        run: |
+          # Copy coverage reports
+          cp -r artifacts/coverage-report-linux-3.10/* docs/coverage/ || true
+          
+          # Create coverage index
+          cat > docs/coverage/index.md << EOF
+          # Test Coverage Reports
+          
+          This section contains test coverage reports:
+          
+          - [Linux Coverage Report](linux/)
+          - [Windows Coverage](windows.md)
+          - [macOS Coverage](macos.md)
+          EOF
+          
+          # Create platform-specific coverage files
+          echo "# Windows Test Coverage" > docs/coverage/windows.md
+          [[ -f artifacts/code-quality-report-windows-3.10/coverage.xml ]] && \
+            echo "Windows test coverage results are available in artifacts." >> docs/coverage/windows.md
+          
+          echo "# macOS Test Coverage" > docs/coverage/macos.md
+          [[ -f artifacts/code-quality-report-macos-3.10/coverage.xml ]] && \
+            echo "macOS test coverage results are available in artifacts." >> docs/coverage/macos.md
+      
+      - name: Process testing reports
+        run: |
+          # Copy testing reports
+          mkdir -p docs/testing/{linux,windows,macos}
+          cp -r artifacts/tool-compatibility-report-linux-3.10/* docs/testing/linux/ || true
+          
+          # Create testing index
+          cat > docs/testing/index.md << EOF
+          # Testing Reports
+          
+          This section contains testing reports:
+          
+          - [Docker Testing](docker_testing.md)
+          - [Tool Compatibility](linux/)
+          EOF
+          
+          # Create Docker testing report
+          cat > docs/testing/docker_testing.md << EOF
+          # Docker Testing Report
+          
+          Docker testing results are available in the CI artifacts.
+          EOF
+      
+      - name: Process security reports
+        run: |
+          # Copy security reports
+          cp -r artifacts/security-report-linux-3.10/* docs/security/ || true
+          cp -r artifacts/dependency-report-linux-3.10/* docs/security/dependencies/ || true
+          
+          # Create security index
+          cat > docs/security/index.md << EOF
+          # Security Reports
+          
+          This section contains security reports:
+          
+          - [Dependency Security Scan](main_requirements_scan.md)
+          - [Service Dependency Scan](service_requirements_scan.md)
+          - [Dependency Updates](dependencies/)
+          EOF
+      
+      - name: Create mkdocs configuration
+        run: |
+          cat > mkdocs.yml << EOF
+          site_name: AI Playground Documentation
+          site_description: Automatically generated documentation for the AI Playground project
+          theme:
+            name: material
+            palette:
+              primary: indigo
+              accent: indigo
+            features:
+              - navigation.instant
+              - navigation.tracking
+              - navigation.expand
+              - navigation.indexes
+              - toc.integrate
+          
+          markdown_extensions:
+            - admonition
+            - pymdownx.details
+            - pymdownx.superfences
+            - pymdownx.highlight
+            - pymdownx.tabbed
+            - toc:
+                permalink: true
+          
+          nav:
+            - Home: index.md
+            - API:
+                - api/index.md
+                - Endpoints: api/api_endpoints.md
+            - Hardware:
+                - hardware/index.md
+                - Compatibility Matrix: hardware/compatibility_matrix.md
+                - Support Matrix: hardware/hardware_support.md
+            - Platform:
+                - platform/index.md
+                - Compatibility Report: platform/platform_compatibility_report.md
+                - Linux: platform/linux/README.md
+                - Windows: platform/windows/README.md
+                - macOS: platform/macos/README.md
+            - Coverage:
+                - coverage/index.md
+            - Testing:
+                - testing/index.md
+                - Docker Testing: testing/docker_testing.md
+            - Security:
+                - security/index.md
+          EOF
+      
+      - name: Build with MkDocs
+        run: mkdocs build
+      
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: 'site'
+      
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2 
