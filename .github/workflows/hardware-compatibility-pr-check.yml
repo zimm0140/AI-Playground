@@ -1,0 +1,152 @@
+name: Hardware Compatibility PR Check
+
+on:
+  pull_request:
+    paths:
+      - '**/*requirements*.txt'
+      - '**/requirements/*.txt'
+      - '.github/workflows/scripts/hardware_compatibility_*.py'
+      - '.github/workflows/scripts/test_hardware_compatibility.sh'
+      - '.github/workflows/scripts/run_hardware_advisor.sh'
+
+jobs:
+  check-compatibility:
+    runs-on: ubuntu-latest
+    name: Check Hardware Compatibility
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # We need full history for proper version tracking
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml numpy matplotlib
+      
+      - name: Set execution permissions
+        run: |
+          chmod +x .github/workflows/scripts/*.sh
+          chmod +x .github/workflows/scripts/*.py
+      
+      - name: Get changed requirement files
+        id: changed-files
+        run: |
+          # Find requirement files that were changed in this PR
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }} ${{ github.sha }} | grep -E "*requirements.*\.txt$" || echo "")
+          echo "Changed requirement files: $CHANGED_FILES"
+          echo "changed_files=$CHANGED_FILES" >> $GITHUB_OUTPUT
+      
+      - name: Create artifacts directory
+        run: |
+          mkdir -p ci_artifacts/hardware_compatibility/recommendations
+      
+      - name: Run hardware compatibility checks
+        run: |
+          .github/workflows/scripts/run_hardware_advisor.sh
+      
+      - name: Generate PR comment
+        id: pr-comment
+        run: |
+          # Create the comment body
+          PR_COMMENT_FILE="ci_artifacts/hardware_compatibility/pr_comment.md"
+          
+          echo "# 🧪 Hardware Compatibility Check Results" > $PR_COMMENT_FILE
+          echo "" >> $PR_COMMENT_FILE
+          
+          echo "## Changed Requirements Files" >> $PR_COMMENT_FILE
+          echo "" >> $PR_COMMENT_FILE
+          if [ -n "${{ steps.changed-files.outputs.changed_files }}" ]; then
+            for file in ${{ steps.changed-files.outputs.changed_files }}; do
+              echo "- \`$file\`" >> $PR_COMMENT_FILE
+            done
+          else
+            echo "No requirements files were changed, but related scripts were modified." >> $PR_COMMENT_FILE
+          fi
+          echo "" >> $PR_COMMENT_FILE
+          
+          # Include compatibility summary
+          if [ -f "ci_artifacts/hardware_compatibility/combined_summary.md" ]; then
+            # Extract sections we want
+            echo "## Compatibility Summary" >> $PR_COMMENT_FILE
+            echo "" >> $PR_COMMENT_FILE
+            grep -A 100 "## Compatibility Matrix" "ci_artifacts/hardware_compatibility/combined_summary.md" | grep -B 100 "## Next Steps" | grep -v "## Next Steps" >> $PR_COMMENT_FILE
+            echo "" >> $PR_COMMENT_FILE
+            
+            # Add recommendations if available
+            if [ -f "ci_artifacts/hardware_compatibility/recommendations/resolution_plan.md" ]; then
+              echo "## 🚀 Recommendations" >> $PR_COMMENT_FILE
+              echo "" >> $PR_COMMENT_FILE
+              grep -A 100 "## High Priority Recommendations" "ci_artifacts/hardware_compatibility/recommendations/resolution_plan.md" | grep -B 100 "## Medium Priority Recommendations" | grep -v "## Medium Priority Recommendations" >> $PR_COMMENT_FILE
+              echo "" >> $PR_COMMENT_FILE
+            fi
+          else
+            echo "## ⚠️ Warning" >> $PR_COMMENT_FILE
+            echo "" >> $PR_COMMENT_FILE
+            echo "Could not generate compatibility report. The hardware compatibility check may have failed." >> $PR_COMMENT_FILE
+            echo "" >> $PR_COMMENT_FILE
+          fi
+          
+          echo "## Next Steps" >> $PR_COMMENT_FILE
+          echo "" >> $PR_COMMENT_FILE
+          echo "Please review the recommendations above and ensure that your changes maintain compatibility across all hardware platforms." >> $PR_COMMENT_FILE
+          echo "For detailed information, see the [Hardware Compatibility Documentation](../docs/hardware_compatibility.md)." >> $PR_COMMENT_FILE
+      
+      - name: Upload compatibility reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: hardware-compatibility-reports
+          path: ci_artifacts/hardware_compatibility/
+          retention-days: 30
+      
+      - name: Comment on PR
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const commentFile = 'ci_artifacts/hardware_compatibility/pr_comment.md';
+            
+            if (!fs.existsSync(commentFile)) {
+              console.log('PR comment file not found. Skipping comment.');
+              return;
+            }
+            
+            const comment = fs.readFileSync(commentFile, 'utf8');
+            
+            // Check if we already commented on this PR
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            
+            const botComment = comments.find(comment => {
+              return comment.user.login === 'github-actions[bot]' && 
+                     comment.body.includes('Hardware Compatibility Check Results');
+            });
+            
+            if (botComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: comment
+              });
+              console.log('Updated existing comment');
+            } else {
+              // Create new comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: comment
+              });
+              console.log('Created new comment');
+            } 

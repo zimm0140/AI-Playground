@@ -91,6 +91,55 @@ The hardware compatibility testing integrates with other CI features:
 - **CI Metrics Dashboard** - Compatibility trends are tracked over time
 - **Failure Notifications** - Critical compatibility issues trigger notifications
 
+## Hardware Compatibility Advisor
+
+The Hardware Compatibility Advisor is an intelligent system that analyzes compatibility test results and provides actionable recommendations for resolving conflicts.
+
+### Features
+
+- **Automated Version Conflict Resolution** - Suggests standardized versions for packages with conflicts
+- **Optimized Version Selection** - Intelligently selects the most compatible version across platforms
+- **Resolution Plans** - Generates detailed plans for resolving all detected conflicts
+- **Standardized Requirements Files** - Creates optimized requirements files with resolved conflicts
+- **Patch Generation** - Produces patch files that can be applied to fix issues
+
+### Using the Advisor
+
+To run the Hardware Compatibility Advisor:
+
+```bash
+.github/workflows/scripts/run_hardware_advisor.sh
+```
+
+This script will:
+1. Run the hardware compatibility tester
+2. Analyze the results and generate recommendations
+3. Create a combined report with test results and recommendations
+
+### Recommendations Prioritization
+
+The advisor categorizes recommendations by priority:
+
+- **High Priority** - Conflicts that are likely to cause runtime issues (e.g., incompatible pinned versions)
+- **Medium Priority** - Conflicts that may cause issues in certain circumstances
+- **Low Priority** - Minor inconsistencies that should be standardized for best practices
+
+### Resolution Plans
+
+The resolution plan provides specific recommendations for each conflict, including:
+- Current versions in use across platforms
+- Suggested standardized version
+- Rationale for the suggestion
+- Affected platforms
+- Impact and confidence ratings
+
+### Optimized Requirements
+
+The advisor generates optimized requirements files for each platform with:
+- Standardized versions for conflicting packages
+- Sorted package lists for better readability
+- Consistent formatting and version specifications
+
 ## Future Improvements
 
 Planned enhancements to the hardware compatibility testing system:
