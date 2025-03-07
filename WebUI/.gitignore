@@ -12,6 +12,9 @@ dist/
 dist-ssr
 *.local
 release/
+ComfyUI/
+LlamaCPP/
+OpenVino/
 
 # Editor directories and files
 .vscode/*

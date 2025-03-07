@@ -59,7 +59,7 @@
     .v-slide-bar {
       position: absolute;
       border-radius: 50%;
-      background: url("@/assets/svg/slide-bar.svg");
+      background: url('@/assets/svg/slide-bar.svg');
       width: 13px;
       height: 13px;
       transition: left ease 0.1s;
@@ -83,7 +83,7 @@
   font-size: 12px;
   font-weight: 400;
   line-height: 18px;
-  letter-spacing: 0%;
+  letter-spacing: 0;
   text-align: center;
   box-sizing: content-box;
   padding: 4px 12px;
@@ -116,7 +116,7 @@
 
     &.v-radio-checked {
       border: none;
-      background: url("@/assets/svg/radio-checked.svg");
+      background: url('@/assets/svg/radio-checked.svg');
     }
   }
 
@@ -173,7 +173,7 @@
     align-items: flex-start;
     gap: 10px;
     border-radius: 5px;
-    background: #05010f;
+    background: #05010fa8;
     overflow: hidden;
     position: relative;
 
@@ -235,7 +235,7 @@
       mask-size: 100% 100%;
       -webkit-mask-image: var(--svg);
       mask-image: var(--svg);
-      --svg: url("@/assets/svg/toggle.svg");
+      --svg: url('@/assets/svg/toggle.svg');
 
       &.revese {
         transform: rotate(180deg);
@@ -393,7 +393,7 @@
     .v-slide-bar {
       position: absolute;
       border-radius: 50%;
-      background: url("@/assets/svg/slide-bar.svg");
+      background: url('@/assets/svg/slide-bar.svg');
       width: 13px;
       height: 13px;
       transition: bottom ease 0.1s;
@@ -438,10 +438,32 @@
     align-items: center;
 
     &::after {
-      content: " ";
+      content: ' ';
       width: 14px;
       height: 14px;
-      background: url("@/assets/svg/right.svg") 0px 0px no-repeat;
+      background: url('@/assets/svg/right.svg') 0px 0px no-repeat;
+      background-size: contain;
+    }
+  }
+}
+
+.v-checkbox-control-table {
+  border: 1px solid var(--compontents-main);
+  border-radius: 4px;
+  width: 16px;
+  height: 16px;
+
+  &.v-checkbox-checked-table {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+
+    &::after {
+      content: ' ';
+      width: 14px;
+      height: 14px;
+      background: url('@/assets/svg/right.svg') 0px 0px no-repeat;
       background-size: contain;
     }
   }

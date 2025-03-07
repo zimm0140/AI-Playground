@@ -3,32 +3,19 @@ import torch
 import numpy as np
 from PIL import Image
 
-# URL for downloading the LaMa model
 LAMA_MODEL_URL = "https://github.com/enesmsahin/simple-lama-inpainting/releases/download/v0.1.0/big-lama.pt"
 
+
 def get_image(img):
-    """
-    Converts an input image to a NumPy array and prepares it for model processing.
-    
-    This function handles both 2D grayscale and 3D color images. It normalizes pixel values 
-    to the range [0, 1] and converts the image format to the required shape (channels, height, width).
-
-    Parameters:
-    img (PIL.Image.Image or numpy.ndarray): The input image as a PIL image or a NumPy array.
-
-    Returns:
-    numpy.ndarray: The processed image as a NumPy array.
-    """
-    if isinstance(img, Image.Image):  # Check if the input is a PIL image
-        img = np.array(img)  # Convert the PIL image to a NumPy array
-    
-    if img.ndim == 3:  # If the image has three dimensions (HWC format)
-        img = np.transpose(img, (2, 0, 1))  # Rearrange to CHW format (channels, height, width)
-    elif img.ndim == 2:  # If the image is grayscale (2D)
-        img = img[np.newaxis, ...]  # Add a new axis for the channel dimension
-    
-    img = img.astype(np.float32) / 255  # Normalize the image to the range [0, 1]
+    if isinstance(img, Image.Image):
+        img = np.array(img)
+    if img.ndim == 3:
+        img = np.transpose(img, (2, 0, 1))  # chw
+    elif img.ndim == 2:
+        img = img[np.newaxis, ...]
+    img = img.astype(np.float32) / 255
     return img
+
 
 def prepare_img_and_mask(image, mask, device, pad_out_to_modulo=8, scale_factor=None):
     def ceil_modulo(x, mod):
@@ -61,7 +48,9 @@ def prepare_img_and_mask(image, mask, device, pad_out_to_modulo=8, scale_factor=
             img = img[0]
         else:
             img = np.transpose(img, (1, 2, 0))
-        img = cv2.resize(img, dsize=None, fx=factor, fy=factor, interpolation=interpolation)
+        img = cv2.resize(
+            img, dsize=None, fx=factor, fy=factor, interpolation=interpolation
+        )
         if img.ndim == 2:
             img = img[None, ...]
         else:
@@ -109,7 +98,7 @@ class SimpleLama:
         if image is None:
             return None
         if mask is None:
-            mask = Image.new('L', image.size, 0)
+            mask = Image.new("L", image.size, 0)
             return None
         image, mask = prepare_img_and_mask(image, mask, self.device)
         with torch.inference_mode():
@@ -118,10 +107,11 @@ class SimpleLama:
             cur_res = np.clip(cur_res * 255, 0, 255).astype(np.uint8)
             cur_res = Image.fromarray(cur_res)
             return cur_res
-        
+
+
 if __name__ == "__main__":
     lama = SimpleLama()
     image = Image.open("C:\\Users\\X\\Desktop\\inpaint_test.png")
     mask_image = Image.open("C:\\Users\\X\\Desktop\\1mask.png")
-    result_image = lama(image,mask_image)
+    result_image = lama(image, mask_image)
     result_image.show()

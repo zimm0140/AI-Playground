@@ -1,0 +1,118 @@
+{
+  "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
+  "appId": "YourAppID",
+  "asar": true,
+  "copyright": "Copyright © Intel. All rights reserved",
+  "extraResources": [
+    {
+      "from": "external/service",
+      "to": "service",
+      "filter": [
+        "**/*",
+        "!models/",
+        "!.vscode/",
+        "!__pycache__/",
+        "!test/",
+        "!db/",
+        "!cache/",
+        "!static/",
+        "!temp/",
+        "!dist/",
+        "*.bat"
+      ]
+    },
+    {
+      "from": "external/LlamaCPP",
+      "to": "LlamaCPP",
+      "filter": ["!__pycache__/"]
+    },
+    {
+      "from": "external/OpenVINO",
+      "to": "OpenVINO",
+      "filter": ["!__pycache__/", "!.cache/", "!db/", "!llm_cache/"]
+    },
+    {
+      "from": "external/OpenVINO",
+      "to": "OpenVINO",
+      "filter": ["!__pycache__/", "!.cache/", "!db/", "!llm_cache/"]
+    },
+    {
+      "from": "external/intel_extension_for_pytorch-2.3.110+bmg-cp311-cp311-win_amd64.whl",
+      "to": "intel_extension_for_pytorch-2.3.110+bmg-cp311-cp311-win_amd64.whl"
+    },
+    {
+      "from": "external/intel_extension_for_pytorch-2.3.110+arl_h-cp311-cp311-win_amd64.whl",
+      "to": "intel_extension_for_pytorch-2.3.110+arl_h-cp311-cp311-win_amd64.whl"
+    },
+    {
+      "from": "external/llama_cpp_python-0.3.2-cp311-cp311-win_amd64.whl",
+      "to": "llama_cpp_python-0.3.2-cp311-cp311-win_amd64.whl"
+    },
+    {
+      "from": "external/workflows",
+      "to": "workflows"
+    },
+    {
+      "from": "external/service/models/stable_diffusion/ESRGAN",
+      "to": "service/models/stable_diffusion/ESRGAN"
+    },
+    {
+      "from": "external/service/models/stable_diffusion/preview",
+      "to": "service/models/stable_diffusion/preview"
+    },
+    {
+      "from": "external/7zr.exe",
+      "to": "7zr.exe"
+    },
+    {
+      "from": "external/prototype-python-env.7z",
+      "to": "prototype-python-env.7z"
+    },
+    {
+      "from": "external/model_config.json",
+      "to": "model_config.json"
+    },
+    {
+      "from": "build/settings.json",
+      "to": "settings.json"
+    },
+    {
+      "from": "external/models",
+      "to": "service/models"
+    },
+    {
+      "from": "external/service/static/assets/",
+      "to": "service/static/assets/"
+    },
+    {
+      "from": "../3rdpartynoticeslicenses.txt",
+      "to": "3rdpartynoticeslicenses.txt"
+    }
+  ],
+  "productName": "AI Playground",
+  "directories": {
+    "output": "../release"
+  },
+  "files": ["dist", "dist-electron"],
+  "win": {
+    "target": [
+      {
+        "target": "nsis",
+        "arch": ["x64"]
+      }
+    ],
+    "verifyUpdateCodeSignature": false,
+    "requestedExecutionLevel": "asInvoker",
+    "icon": "app.ico",
+    "artifactName": "${productName}-${version}.${ext}",
+    "electronLanguages": ["en-US", "zh-CN"]
+  },
+  "nsis": {
+    "license": "build/license.rtf",
+    "oneClick": false,
+    "perMachine": false,
+    "allowToChangeInstallationDirectory": true,
+    "deleteAppDataOnUninstall": true,
+    "allowElevation": true
+  }
+}

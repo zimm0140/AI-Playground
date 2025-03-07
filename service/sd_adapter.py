@@ -1,66 +1,43 @@
-# --- Standard Library Imports ---
 from datetime import datetime
 import json
-import os
 import threading
 from queue import Empty, Queue
 import traceback
 from typing import Any
-
-# --- Third-Party Imports ---
-from PIL import Image
-from psutil._common import bytes2human
-
-# --- Local Application Imports ---
 import paint_biz
 from model_downloader import NotEnoughDiskSpaceException, DownloadException
-import utils
+from psutil._common import bytes2human
+from PIL import Image
+import os
+import aipg_utils as utils
+
 
 class SD_SSE_Adapter:
-    """
-    Adapter class for handling Server-Sent Events (SSE) for Stable Diffusion image generation.
-    This class manages communication between the backend image generation process and 
-    the frontend client, providing real-time updates on progress, errors, and the final image output.
-    """
-    msg_queue: Queue  # Queue to store messages for the client
-    finish: bool  # Flag indicating if the generation process is finished
-    singal: threading.Event  # Threading event for signaling message availability
-    url_root: str  # Root URL for constructing image paths
+    msg_queue: Queue
+    finish: bool
+    singal: threading.Event
+    url_root: str
+    save_image_path : str
 
     def __init__(self, url_root: str):
-        """
-        Initializes the SD_SSE_Adapter with the root URL for serving images.
-
-        Args:
-            url_root (str): The base URL for accessing generated images.
-        """
-        self.msg_queue = Queue(-1) # Initialize a queue with unlimited size
-        self.finish = False  # Set the finish flag to False initially
-        self.singal = threading.Event() # Initialize the threading event
-        self.url_root = url_root # Store the root URL
+        self.msg_queue = Queue(-1)
+        self.finish = False
+        self.singal = threading.Event()
+        self.url_root = url_root
+        if os.getenv('USERPROFILE'):
+            self.save_image_path = os.path.join(os.getenv('USERPROFILE'), 'Documents', 'AI-Playground', 'media')
+        elif os.getenv('HOME'):
+            self.save_image_path = os.path.join(os.getenv('HOME'), 'AI-Playground', 'media')
+        else:
+            self.save_image_path = os.path.join('static', 'sd_out')
 
     def put_msg(self, data):
-        """
-        Puts a message into the message queue and signals the waiting thread.
-
-        Args:
-            data (Any): The data to be sent as a message.
-        """
-        self.msg_queue.put_nowait(data) # Add data to the queue without blocking
-        self.singal.set()  # Signal the event to indicate a new message
+        self.msg_queue.put_nowait(data)
+        self.singal.set()
 
     def download_model_progress_callback(
         self, repo_id: str, download_size: int, total_size: int, speed: int
     ):
-        """
-        Callback function to handle model download progress updates.
-
-        Args:
-            repo_id (str): The ID of the repository from which the model is downloaded.
-            download_size (int): The size of the downloaded data in bytes.
-            total_size (int): The total size of the model in bytes.
-            speed (int): The download speed in bytes per second.
-        """
         data = {
             "type": "download_model_progress",
             "repo_id": repo_id,
@@ -69,42 +46,21 @@ class SD_SSE_Adapter:
             "percent": round(download_size / total_size * 100, 2),
             "speed": "{}/s".format(bytes2human(speed)),
         }
-        self.put_msg(data)  # Put the progress data into the message queue
+        self.put_msg(data)
 
     def download_model_completed_callback(self, repo_id: str, ex: Exception):
-        """
-        Callback function to handle model download completion or failure.
-
-        Args:
-            repo_id (str): The ID of the repository from which the model was downloaded.
-            ex (Exception): The exception object if a download error occurred, otherwise None.
-        """
         if ex is not None:
-            # Send an error message if the download failed
-            self.put_msg({"type": "error", "value": "DownloadModelFailed"}) 
+            self.put_msg({"type": "error", "value": "DownloadModelFailed"})
         else:
-            # Send a completion message if the download was successful
             self.put_msg({"type": "download_model_completed", "repo_id": repo_id})
 
     def load_model_callback(self, event: str):
-        """
-        Callback function to handle model loading events.
-
-        Args:
-            event (str): A string describing the model loading event.
-        """
         data = {"type": "load_model", "event": event}
-        self.put_msg(data) # Put the model loading event data into the message queue
+        self.put_msg(data)
 
     def load_model_components_callback(self, event: str):
-        """
-        Callback function to handle model components loading events.
-
-        Args:
-            event (str): A string describing the model components loading event.
-        """
-        data = {"type": "load_model_components","event": event}
-        self.put_msg(data) # Put the model components loading event data into the message queue
+        data = {"type": "load_model_components", "event": event}
+        self.put_msg(data)
 
     def step_end_callback(
         self,
@@ -114,82 +70,59 @@ class SD_SSE_Adapter:
         preview_enabled: bool,
         image: Image.Image | None,
     ):
-        """
-        Callback function to handle the end of a generation step.
-
-        Args:
-            index (int): Index of the image being generated.
-            step (int): Current step number in the generation process.
-            total_step (int): Total number of steps in the generation process.
-            preview_enabled (bool): Boolean flag indicating if image previews are enabled.
-            image (Image.Image | None): The generated preview image, if available.
-        """
         if preview_enabled and image is not None:
-            # Convert image to base64 if previews are enabled
-            image = utils.image_to_base64(image) 
+            image = utils.image_to_base64(image)
         elif not preview_enabled:
-            # Otherwise, use a placeholder image URL
-            image = f"{self.url_root}/static/assets/aipg.png" 
+            image = f"{self.url_root}/static/assets/aipg.png"
 
         data = {
             "type": "step_end",
             "index": index,
             "step": step,
             "total_step": total_step,
-            "image": image, # Include image data or placeholder URL
+            "image": image,
         }
-        self.put_msg(data) # Put the step-end data into the message queue
+        self.put_msg(data)
 
     def image_out_callback(
         self,
         index: int,
         image: Image.Image | None,
         params: paint_biz.TextImageParams = None,
-        safe_check_pass: bool = True
+        safe_check_pass: bool = True,
     ):
-        """
-        Callback function to handle the output of a generated image.
-
-        Args:
-            index (int): Index of the generated image.
-            image (Image.Image | None): The generated image.
-            params (paint_biz.TextImageParams, optional): Parameters used for generation.
-            safe_check_pass (bool): Indicates if the generated image passed safety checks.
-        """
         now = datetime.now()
         folder = now.strftime("%d_%m_%Y")
         base_name = now.strftime("%H%M%S")
-        filename = "static/sd_out/{}/{}.png".format(folder, base_name)
+        image_name = f"{base_name}.png"
+        filename = os.path.join(self.save_image_path, folder, image_name)
         dir = os.path.dirname(filename)
         if not os.path.exists(dir):
-            os.makedirs(dir) # Create the output directory if it doesn't exist
-        image.save(filename) # Save the generated image to the specified path
-        utils.cache_file(filename, os.path.getsize(filename)) # Cache the generated image
+            os.makedirs(dir)
+        image.save(filename)
+        utils.cache_file(filename, os.path.getsize(filename))
 
-        response_params = self.get_response_params(image, os.path.getsize(filename), params)
+        response_params = self.get_response_params(
+            image, os.path.getsize(filename), params
+        )
         try:
-            # Attempt to log the generation parameters to a file
             self.log_to_file(params, folder, base_name)
         except Exception:
-            traceback.print_exc() # Print any exceptions that occur during logging
+            traceback.print_exc()
+            pass
 
-        image_url = f"{self.url_root}/{filename}"
+        image_location = f"{folder}/{image_name}"
+
         data = {
             "type": "image_out",
             "index": index,
-            "image": image_url, # Include the URL of the generated image
+            "image": image_location,
             "params": response_params,
-            "safe_check_pass":safe_check_pass,
+            "safe_check_pass": safe_check_pass,
         }
-        self.put_msg(data) # Put the image output data into the message queue
+        self.put_msg(data)
 
     def error_callback(self, ex: Exception):
-        """
-        Callback function to handle errors during image generation or model downloading.
-
-        Args:
-            ex (Exception): The exception object representing the error.
-        """
         if (
             isinstance(ex, NotImplementedError)
             and ex.__str__() == "Access to repositories lists is not implemented."
@@ -212,26 +145,20 @@ class SD_SSE_Adapter:
         elif isinstance(ex, DownloadException):
             self.put_msg({"type": "error", "err_type": "download_exception"})
         elif isinstance(ex, paint_biz.StopGenerateException):
-            pass  # No specific action for StopGenerateException (handled elsewhere)
+            pass
         elif isinstance(ex, RuntimeError):
             self.put_msg({"type": "error", "err_type": "runtime_error"})
         else:
-            self.put_msg({"type": "error", "err_type": "unknow_exception"})
+            self.put_msg({"type": "error", "err_type": "unknown_exception"})
         print(f"exception:{str(ex)}")
 
     def generate(self, params: paint_biz.TextImageParams):
-        """
-        Initiates the image generation process in a separate thread.
-
-        Args:
-            params (paint_biz.TextImageParams): Parameters for image generation.
-        
-        Returns:
-            Generator: A generator that yields messages to be sent to the client.
-        """
-        thread = threading.Thread(target=self.generate_run, args=[params])
-        thread.start() # Start the image generation in a new thread
-        return self.generator()  # Return a generator to yield messages to the client
+        thread = threading.Thread(
+            target=self.generate_run,
+            args=[params],
+        )
+        thread.start()
+        return self.generator()
 
     def generate_run(
         self,
@@ -241,128 +168,96 @@ class SD_SSE_Adapter:
         | paint_biz.InpaintParams
         | paint_biz.OutpaintParams,
     ):
-        """
-        The main function for running the image generation process in a separate thread.
-
-        Args:
-            params: Parameters for image generation (can be one of the defined parameter types).
-        """
         try:
             paint_biz.load_model_callback = self.load_model_callback
-            paint_biz.load_model_components_callback = self.load_model_components_callback
+            paint_biz.load_model_components_callback = (
+                self.load_model_components_callback
+            )
             paint_biz.step_end_callback = self.step_end_callback
             paint_biz.image_out_callback = self.image_out_callback
             paint_biz.download_progress_callback = self.download_model_progress_callback
             paint_biz.download_completed_callback = (
                 self.download_model_completed_callback
             )
-            paint_biz.generate(params=params)  # Start the image generation process
+            paint_biz.generate(params=params)
         except Exception as ex:
             traceback.print_exc()
-            self.error_callback(ex) # Handle any exceptions using the error callback
+            self.error_callback(ex)
         finally:
-            self.finish = True  # Set the finish flag to True when generation is complete
-            self.singal.set() # Signal the threading event
+            self.finish = True
+            self.singal.set()
 
     def generator(self):
-        """
-        A generator function that yields messages from the queue to the client. 
-
-        Yields:
-            str: A Server-Sent Event (SSE) formatted message.
-        """
         while True:
             while not self.msg_queue.empty():
                 try:
-                    # Get a message from the queue
-                    data = self.msg_queue.get_nowait() 
-                    # Format the message for SSE
-                    msg = f"data:{json.dumps(data)}\0" 
-                    yield msg # Yield the message to be sent to the client
-                except Empty:
-                    break # Break the inner loop if the queue is empty
+                    data = self.msg_queue.get_nowait()
+                    msg = f"data:{json.dumps(data)}\0"
+                    yield msg
+                except Empty(Exception):
+                    break
             if not self.finish:
-                self.singal.clear() # Clear the signal if generation is not finished
-                self.singal.wait()  # Wait for the signal indicating a new message
+                self.singal.clear()
+                self.singal.wait()
             else:
-                break # Break the outer loop if the generation process is finished
+                break
 
     def get_response_params(
         self, image: Image.Image, size: int, params: paint_biz.TextImageParams
     ):
-        """
-        Generates a dictionary of parameters for the image generation response.
-
-        Args:
-            image (Image.Image): The generated image.
-            size (int): The size of the generated image in bytes.
-            params (paint_biz.TextImageParams): Parameters used for image generation.
-
-        Returns:
-            dict: A dictionary of response parameters.
-        """
         response_params = {
-            "width": image.width,  # Image width
-            "height": image.height, # Image height
-            "size": bytes2human(size), # Human-readable image size
+            "width": image.width,
+            "height": image.height,
+            "size": bytes2human(size),
         }
 
         for key, value in params.__dict__.items():
-            # Exclude specific parameters from the response
             if key in [
                 "generate_number",
                 "image_preview",
                 "width",
-                "height"
+                "height",
             ] or isinstance(value, Image.Image):
                 continue
-            response_params.__setitem__(key, value) # Add other parameters to the response
+            response_params.__setitem__(key, value)
 
         return response_params
 
-    def log_to_file(
-        self, params: Any, folder: str, base_name: str
-    ):
-        """
-        Logs the image generation parameters and the path to the output image to a history file.
-
-        Args:
-            params (Any): The parameters used for image generation.
-            folder (str): The folder where the history file is stored.
-            base_name (str): The base filename for the output image.
-        """
+    def log_to_file(self, params: Any, folder: str, base_name: str):
         from shutil import copyfile
-
-        json_path = f"./static/sd_out/{folder}/history.json"
-        base_output = os.path.abspath("./static/")
+        image_folder_path = os.path.join(self.save_image_path, f"{folder}")
+        json_path = os.path.join(image_folder_path,"history.json")
         if os.path.exists(json_path):
             try:
                 with open(json_path, "r+") as f:
-                    f.seek(12) # Seek to the beginning of the JSON data
-                    history_json = json.load(f) # Load the existing history
+                    f.seek(12)
+                    history_json = json.load(f)
             except Exception:
-                os.remove(json_path) # Remove the history file if it's corrupted
-                history_json = [] # Start a new history list
+                os.remove(json_path)
+                history_json = []
         else:
-            history_json = []  # Start a new history list
+            history_json = []
 
         param_list = []
         for k, v in params.__dict__.items():
             if k == "generate_number" or k == "image_preview":
-                continue # Skip these parameters
+                continue
             elif k == "image" or k == "mask_image":
-                # For image parameters, store the relative path
+                # currently, this option does not occur and would be, moreover,
+                # explicitly filtered out in get_response_params(). It is therefore
+                # uncertain, from where the reference images would be drawn from.
+                # This clause should, thus, be changed once the need occurs
+                base_output = os.path.abspath("./static/")
                 save_path = os.path.abspath(str(v))
-                save_path = save_path.replace(base_output, "../../").replace('\\', '/')
+                save_path = save_path.replace(base_output, "../../").replace("\\", "/")
                 param_list.append(
                     {
                         "name": k,
                         "type": "image",
-                        "value": save_path, 
+                        "value": save_path,
                     }
                 )
             else:
-                # For other parameters, store the value directly
                 param_list.append(
                     {
                         "name": k,
@@ -372,18 +267,26 @@ class SD_SSE_Adapter:
                 )
 
         history_item = {
-            "out_image": f"./{base_name}.png", # Path to the output image
-            "params": param_list, # Parameters used for generation
+            "out_image": f"./{base_name}.png",
+            "params": param_list,
         }
 
-        history_json.insert(0, history_item)  # Insert the new item at the beginning
+        history_json.insert(0, history_item)
 
         with open(json_path, "w") as f:
-            # Write the history data to the file
-            f.write("let hisotry=") 
+            f.write("let history=")
             json.dump(history_json, f)
-        
-        html_path = f"./static/sd_out/{folder}/history.html"
+
+        html_path = os.path.join(image_folder_path,"history.html")
         if not os.path.exists(html_path):
-            # Copy the history template if it doesn't exist
-            copyfile("./static/assets/hisotory_template.html", html_path)
+            copyfile("./static/assets/history_template.html", html_path)
+            template_path = os.path.abspath("./static/assets/")
+            css_path = os.path.join(template_path, 'history.css')
+            js_path = os.path.join(template_path, 'history.js')
+            with open(html_path, 'r+') as file:
+                content = file.read()
+                content = content.replace('{css_path}', css_path)
+                content = content.replace('{js_path}', js_path)
+                file.seek(0)
+                file.write(content)
+                file.truncate()
