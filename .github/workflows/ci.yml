@@ -213,6 +213,52 @@ jobs:
           
           python service/xpu_patch.py
       
+      - name: Patch for CI-friendly imports
+        run: |
+          # Create a patch script to handle importing issues in CI
+          cat > service/ci_patches.py << 'EOF'
+          #!/usr/bin/env python3
+          
+          import sys
+          import os
+          
+          def patch_files():
+              """Apply various patches to make code more CI-friendly"""
+              # List of patches to apply - each is a (file_path, pattern, replacement) tuple
+              patches = []
+              
+              # Add a patch to fix any relative imports that might be causing issues
+              if os.path.exists('service/tests/test_api.py'):
+                  patches.append((
+                      'service/tests/test_api.py',
+                      'from web_api import app',
+                      'try:\n    from web_api import app\nexcept ImportError:\n    from service.web_api import app'
+                  ))
+              
+              # Add patches for any other files as needed
+              # Create patches for any other files that might need patching
+              
+              for file_path, pattern, replacement in patches:
+                  if os.path.exists(file_path):
+                      print(f"Patching {file_path}...")
+                      with open(file_path, 'r') as f:
+                          content = f.read()
+                      
+                      if pattern in content:
+                          content = content.replace(pattern, replacement)
+                          with open(file_path, 'w') as f:
+                              f.write(content)
+                          print(f"  - Successfully patched {file_path}")
+                      else:
+                          print(f"  - Pattern not found in {file_path}")
+          
+          if __name__ == "__main__":
+              patch_files()
+          EOF
+          
+          # Apply the patches
+          python service/ci_patches.py
+      
       - name: Verify environment setup
         run: |
           echo "Checking environment setup before tests"
