@@ -2,38 +2,64 @@
 # ----------------------------------
 # This file lists all Python package dependencies required by the AI Playground service
 # with their specific versions to ensure reproducible installations.
+#
+# The service integrates multiple AI technologies including:
+# - Stable Diffusion for image generation
+# - Large Language Models (LLMs) for text generation
+# - Retrieval-Augmented Generation (RAG) for context-aware responses
 
-# Core AI libraries
+# =================== IMAGE GENERATION & PROCESSING ===================
+# Image enhancement and super-resolution (used by ESRGAN upscaling)
 basicsr==1.4.2
+# Text prompt weighting and conditioning for Stable Diffusion (enhances prompt control)
 compel==2.0.2
+# Dataset handling and processing (used for training and fine-tuning models)
 datasets==2.18.0
+# Diffusion models implementation - core package for Stable Diffusion functionality
 diffusers==0.27.2
-peft==0.10.0
-transformers==4.39.0
-trl==0.9.3
-huggingface_hub==0.25.2
 
-# Web API framework
+# =================== WEB API & DATA HANDLING ===================
+# Web API framework - powers the HTTP server interface
 Flask==3.0.3
+# API extension for Flask - provides schema validation and API documentation
 apiflask==2.3.0
+# Data validation and serialization - handles web request/response bodies
 marshmallow-dataclass==8.7.1
-Requests==2.32.3
 
-# Natural Language Processing and RAG
+# =================== LANGUAGE MODELS & RAG ===================
+# LLM document retrieval and processing framework - enables RAG functionality
 langchain_community==0.3.0
+# Numerical computing library - foundation for ML operations
+numpy==1.26.4
+# Computer vision and image processing - handles image transformations
+opencv_python==4.9.0.80
+# Parameter-Efficient Fine-Tuning for language models - enables model adaptation
+peft==0.10.0
+# Image manipulation library - core package for image handling
+Pillow==10.3.0
+# System resource monitoring - manages memory and processing resources
+psutil==5.9.8
+# HTTP library for API requests - enables communication with external services
+Requests==2.32.3
+# Text embeddings and similarity - crucial for semantic search in RAG
 sentence_transformers==2.3.1
-faiss-cpu==1.8.0
+# Hugging Face Transformers library - provides access to LLMs and other models
+transformers==4.39.0
+# Transformer Reinforcement Learning - used for model alignment and RLHF
+trl==0.9.3
 
-# Document processing for RAG
+# =================== SEARCH & DOCUMENT PROCESSING ===================
+# Vector similarity search for retrieval - enables efficient embedding searches
+faiss-cpu==1.8.0
+# MS Word document text extraction - processes .docx files for RAG
 docx2txt==0.8
+# PDF document processing - extracts text from PDF files for RAG
 pypdf==4.2.0
+# Document parsing for various formats - general document processing for RAG
 unstructured==0.16.16
 
-# Image processing
-opencv_python==4.9.0.80
-Pillow==10.3.0
-
-# Utilities
-numpy==1.26.4
-psutil==5.9.8
+# =================== UTILITIES & INTEGRATION ===================
+# Python packaging utilities - ensures proper dependency resolution
 setuptools>=75.2.0
+# Hugging Face model repository access - enables model downloading and management
+huggingface_hub==0.25.2
