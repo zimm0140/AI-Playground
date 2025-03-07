@@ -65,5 +65,11 @@ jobs:
       - name: Copy sitecustomize.py to site-packages
         run: cp sitecustomize.py $(python -c 'import site; print(site.getsitepackages()[0])')
       
+      - name: Create intel_extension_for_pytorch stub
+        run: |
+          echo "# Dummy stub to satisfy intel_extension_for_pytorch import" > intel_extension_for_pytorch.py
+          echo "# Provides minimal implementation for CI" >> intel_extension_for_pytorch.py
+          cp intel_extension_for_pytorch.py $(python -c 'import site; print(site.getsitepackages()[0])')
+      
       - name: Run tests
         run: python -m unittest discover -s service/tests 
