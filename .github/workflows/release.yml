@@ -166,15 +166,12 @@ jobs:
             -x "**/.DS_Store" \
             -x "**/.git*"
       
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
+      - name: Upload release artifacts
+        uses: actions/upload-artifact@v4
         with:
           name: release-artifacts
-          path: |
-            dist/
-            release_docs/
-            CHANGELOG.md
-          retention-days: 7
+          path: dist/
+          retention-days: 30
   
   # Create GitHub release
   publish-release:

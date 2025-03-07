@@ -87,18 +87,12 @@ jobs:
             --changed-files ${{ steps.changed-files.outputs.changed_files }} \
             --output-file pr_comment.md
             
-      - name: Upload validation reports
-        uses: actions/upload-artifact@v3
+      - name: Upload validation artifacts
+        uses: actions/upload-artifact@v4
         with:
-          name: comfyui-workflow-validation-reports
-          path: |
-            ci_artifacts/workflow_validation/
-            ci_artifacts/workflow_requirements/
-            ci_artifacts/workflow_tests/
-            ci_artifacts/workflow_versions/
-            ci_artifacts/workflow_dashboard/
-            ci_artifacts/workflow_simulation/
-          retention-days: 30
+          name: workflow-validation-artifacts
+          path: ci_artifacts/
+          retention-days: 5
           
       - name: Comment on PR
         uses: actions/github-script@v6

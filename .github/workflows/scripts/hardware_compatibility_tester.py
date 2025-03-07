@@ -277,7 +277,7 @@ class HardwareCompatibilityTester:
             f.write("# Hardware Compatibility Report\n\n")
             
             f.write("## Overview\n\n")
-            f.write(f"This report analyzes package compatibility across different hardware platforms.\n\n")
+            f.write("This report analyzes package compatibility across different hardware platforms.\n\n")
             
             f.write(f"- **Generated on**: {platform.node()}\n")
             f.write(f"- **System**: {platform.system()} {platform.release()}\n")
@@ -453,7 +453,7 @@ class HardwareCompatibilityTester:
             Exit code (0 for success, 1 for issues found)
         """
         try:
-            print(f"Finding hardware-specific requirements files...")
+            print("Finding hardware-specific requirements files...")
             hw_req_files = self.find_hardware_requirements()
             
             # Print found hardware requirements files
@@ -462,21 +462,21 @@ class HardwareCompatibilityTester:
                 for file in files:
                     print(f"  - {file}")
             
-            print(f"\nAnalyzing hardware requirements...")
+            print("\nAnalyzing hardware requirements...")
             self.analyze_hardware_requirements()
             
-            print(f"Identifying conflicts...")
+            print("Identifying conflicts...")
             conflicts = self.identify_conflicts()
             
-            print(f"Generating compatibility matrix...")
+            print("Generating compatibility matrix...")
             self.generate_compatibility_matrix()
             
-            print(f"Generating reports...")
+            print("Generating reports...")
             report_path = self.generate_markdown_report()
             self.generate_github_summary()
             
             # Summary output
-            print(f"\nAnalysis complete!")
+            print("\nAnalysis complete!")
             print(f"- Analyzed {len(self.hardware_requirements)} hardware platforms")
             print(f"- Found {len(conflicts)} package conflicts")
             
@@ -516,7 +516,7 @@ def main():
     
     exit_code = tester.run()
     
-    if args.github_summary:
+    if args.github_summary and os.environ.get("GITHUB_STEP_SUMMARY"):
         # Get the GITHUB_STEP_SUMMARY environment variable
         step_summary = os.environ.get('GITHUB_STEP_SUMMARY')
         if step_summary:
@@ -526,7 +526,7 @@ def main():
                 with open(summary_path, 'r', encoding='utf-8') as src:
                     with open(step_summary, 'a', encoding='utf-8') as dest:
                         dest.write(src.read())
-                print(f"Added summary to GitHub Actions output")
+                print("Added summary to GitHub Actions output")
     
     if args.fail_on_high_priority:
         sys.exit(exit_code)

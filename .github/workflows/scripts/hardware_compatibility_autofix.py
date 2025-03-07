@@ -395,7 +395,7 @@ class HardwareCompatibilityAutofix:
                 f.write("Backups were created with the suffix `{self.backup_suffix}` for each modified file.\n")
                 f.write("To restore from backup, use:\n\n")
                 f.write("```bash\n")
-                f.write(f"# Replace with the specific file path\n")
+                f.write("# Replace with the specific file path\n")
                 f.write(f"mv /path/to/file{self.backup_suffix} /path/to/file\n")
                 f.write("```\n")
         

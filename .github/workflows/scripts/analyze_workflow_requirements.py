@@ -396,7 +396,7 @@ class WorkflowRequirementsAnalyzer:
                     continue
                 
                 # Memory requirements
-                f.write(f"**Memory Requirements**:\n")
+                f.write("**Memory Requirements**:\n")
                 f.write(f"- Minimum: {workflow['memory_required']['min']}GB\n")
                 f.write(f"- Recommended: {workflow['memory_required']['recommended']}GB\n\n")
                 

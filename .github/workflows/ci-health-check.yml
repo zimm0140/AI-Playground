@@ -303,7 +303,7 @@ jobs:
           cat ci_artifacts/health_check/health_report.md >> $GITHUB_STEP_SUMMARY
       
       - name: Upload health check artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ci-health-check-report
           path: ci_artifacts/health_check/

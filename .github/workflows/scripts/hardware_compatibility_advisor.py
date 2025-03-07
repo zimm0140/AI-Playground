@@ -123,7 +123,7 @@ class HardwareCompatibilityAdvisor:
             Dictionary with version suggestions
         """
         package = conflict['package']
-        versions = conflict['versions']
+        versions = conflict['all_versions']
         all_versions = conflict['all_versions']
         
         # Extract version numbers from pinned versions
@@ -153,48 +153,57 @@ class HardwareCompatibilityAdvisor:
                 most_common_version = version
                 most_common_count = len(usages)
         
-        # Generate suggestions based on conflict type
-        if pinned_versions:
-            # For pinned versions, suggest the latest version
-            latest_version = max(pinned_versions, key=lambda v: [int(i) for i in re.findall(r'\d+', v)])
-            
-            suggestion = {
-                'package': package,
-                'type': 'pinned_version',
-                'current_versions': all_versions,
-                'suggested_version': f"=={latest_version}",
-                'rationale': f"Standardize on the latest pinned version ({latest_version}) across all platforms",
-                'affected_platforms': list(versions.keys()),
-                'impact': 'Medium' if len(pinned_versions) > 1 else 'Low',
-                'confidence': 'High' if len(set(pinned_versions)) <= 2 else 'Medium'
-            }
-        elif constraints:
-            # For constraints, suggest a union that satisfies all
-            # This is a simplification - in reality we'd need a proper version solver
-            suggestion = {
-                'package': package,
-                'type': 'constraint',
-                'current_versions': all_versions,
-                'suggested_version': most_common_version,
-                'rationale': "Use the most common constraint across platforms",
-                'affected_platforms': list(versions.keys()),
-                'impact': 'Medium',
-                'confidence': 'Medium'
-            }
+        # Find the most common version
+        if len(versions) == 1:
+            # Only one version, use it
+            suggested_version = list(versions.keys())[0]
+            rationale = "Only one version found across platforms"
         else:
-            # For mixed versioning types, prefer pinned versions
-            suggestion = {
-                'package': package,
-                'type': 'mixed',
-                'current_versions': all_versions,
-                'suggested_version': most_common_version,
-                'rationale': "Standardize on the most commonly used version specification",
-                'affected_platforms': list(versions.keys()),
-                'impact': 'High',
-                'confidence': 'Medium'
-            }
+            # Multiple versions, find the most common
+            most_common_version = max(versions.items(), key=lambda x: x[1])
+            suggested_version = most_common_version[0]
+            rationale = "Most common version across platforms"
+            
+            # Check if there's a newer version that's also common
+            for version_str, count in versions.items():
+                if count == most_common_version[1] and version_str > suggested_version:
+                    suggested_version = version_str
+                    rationale = "Newest among most common versions"
+                    
+            # Special case for version constraints
+            if ">" in suggested_version or "<" in suggested_version:
+                # For constraints, prefer the most permissive
+                for version_str in versions.keys():
+                    if "==" in version_str:
+                        suggested_version = version_str
+                        rationale = "Exact version preferred over constraints"
+                        break
         
-        return suggestion
+        # Calculate impact and confidence
+        if max(versions.values()) == len(versions.keys()):
+            # All platforms use the same version
+            impact = "Low"
+            confidence = "High"
+            rationale = "All platforms already use this version"
+        elif max(versions.values()) >= len(versions.keys()) / 2:
+            # Majority of platforms use this version
+            impact = "Medium"
+            confidence = "High"
+        else:
+            # No clear majority
+            impact = "High"
+            confidence = "Medium"
+        
+        return {
+            'package': package,
+            'type': 'mixed',
+            'current_versions': all_versions,
+            'suggested_version': suggested_version,
+            'rationale': rationale,
+            'affected_platforms': list(versions.keys()),
+            'impact': impact,
+            'confidence': confidence
+        }
     
     def generate_all_recommendations(self) -> Dict[str, List[Dict[str, Any]]]:
         """
@@ -484,7 +493,41 @@ class HardwareCompatibilityAdvisor:
             # Reference to full report
             f.write("See [detailed resolution plan](resolution_plan.md) for complete recommendations.\n")
         
-        return summary_path
+        # Add summary to GitHub step summary if running in GitHub Actions
+        if os.environ.get("GITHUB_STEP_SUMMARY"):
+            with open(os.environ.get("GITHUB_STEP_SUMMARY"), "a") as f:
+                f.write("## Hardware Compatibility Advisor Results\n\n")
+                
+                # Add overview
+                f.write("### Overview\n\n")
+                f.write("The Hardware Compatibility Advisor analyzed compatibility data and generated recommendations.\n\n")
+                
+                # Add statistics
+                f.write("### Statistics\n\n")
+                f.write("- **Total Conflicts:** {}\n".format(len(self.compatibility_data.get('conflicts', []))))
+                f.write("- **High Priority Recommendations:** {}\n".format(len(self.recommendations.get("high_priority", []))))
+                f.write("- **Medium Priority Recommendations:** {}\n".format(len(self.recommendations.get("medium_priority", []))))
+                f.write("- **Low Priority Recommendations:** {}\n".format(len(self.recommendations.get("low_priority", []))))
+                
+                # Add recommendation summary
+                f.write("\n### Recommendation Summary\n\n")
+                if self.recommendations.get("high_priority", []):
+                    f.write("#### High Priority\n\n")
+                    for rec in self.recommendations["high_priority"][:5]:  # Show top 5
+                        f.write("- `{}`: Standardize to `{}`\n".format(rec["package"], rec["suggested_version"]))
+                    if len(self.recommendations["high_priority"]) > 5:
+                        f.write("- ... and {} more\n".format(len(self.recommendations["high_priority"]) - 5))
+                    f.write("\n")
+                
+                # Add next steps
+                f.write("\n### Next Steps\n\n")
+                f.write("1. Review the [Resolution Plan]({})\n".format(os.path.join(self.output_dir, "resolution_plan.md")))
+                f.write("2. Apply recommended changes to standardize package versions\n")
+                f.write("3. Re-run the hardware compatibility tests to verify improvements\n")
+                
+            print("Added summary to GitHub Actions output")
+        
+        return "GitHub step summary not available"
     
     def run(self) -> int:
         """
@@ -568,7 +611,13 @@ def main():
                         dest.write(src.read())
                 print(f"Added summary to GitHub Actions output")
     
-    sys.exit(exit_code)
+    # Print final message
+    if exit_code == 0:
+        print("Hardware Compatibility Advisor completed successfully.")
+    else:
+        print("Hardware Compatibility Advisor completed with errors.")
+    
+    return exit_code
 
 
 if __name__ == "__main__":
