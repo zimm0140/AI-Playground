@@ -23,9 +23,12 @@ import os
 from functools import wraps
 from contextlib import nullcontext
 import torch
-try:
+import importlib.util
+
+spec = importlib.util.find_spec("intel_extension_for_pytorch")
+if spec is not None:
     import intel_extension_for_pytorch as ipex  # pylint: disable=import-error, unused-import
-except ModuleNotFoundError:
+else:
     ipex = None
 import numpy as np
 
@@ -57,7 +60,10 @@ def is_available():
     Returns:
         bool: True if Intel XPU is available, False otherwise.
     """
-    return ipex.has_xpu()
+    if ipex is None:
+        return False
+    else:
+        return ipex.has_xpu()
 
 
 @property
