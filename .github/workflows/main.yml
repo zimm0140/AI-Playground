@@ -276,6 +276,18 @@ jobs:
           name: tool-compatibility-report-linux-${{ matrix.python-version }}
           path: ci_artifacts/tool_compat/
           retention-days: 30
+      
+      - name: Collect CI metrics
+        run: |
+          pip install matplotlib
+          python .github/workflows/scripts/collect_ci_metrics.py
+      
+      - name: Upload CI metrics
+        uses: actions/upload-artifact@v3
+        with:
+          name: ci-metrics-linux-${{ matrix.python-version }}
+          path: ci_artifacts/metrics/
+          retention-days: 90
 
   # Windows testing job - a simplified version of the Linux job
   test-windows:
@@ -562,6 +574,8 @@ jobs:
           echo "| Platform Compatibility Check | ✅ Enabled |" >> $GITHUB_STEP_SUMMARY
           echo "| Release Automation | ✅ Enabled |" >> $GITHUB_STEP_SUMMARY
           echo "| Cross-Platform Testing | ✅ Linux, Windows, macOS |" >> $GITHUB_STEP_SUMMARY
+          echo "| CI Metrics Dashboard | ✅ Enabled |" >> $GITHUB_STEP_SUMMARY
+          echo "| Documentation Site | ✅ Enabled |" >> $GITHUB_STEP_SUMMARY
           
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "See individual platform artifacts for detailed reports." >> $GITHUB_STEP_SUMMARY 
