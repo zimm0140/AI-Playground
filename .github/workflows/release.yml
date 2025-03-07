@@ -1,0 +1,218 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  # First run the CI tests to ensure everything is working
+  validate:
+    runs-on: ubuntu-latest
+    name: Validate Release
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if [ -f service/requirements.txt ]; then pip install -r service/requirements.txt; fi
+          pip install pytest pytest-cov
+      
+      - name: Run tests
+        run: |
+          python -m pytest
+
+  # Generate release artifacts and documentation
+  build-artifacts:
+    needs: validate
+    runs-on: ubuntu-latest
+    name: Build Release Artifacts
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Fetch all history for changelog generation
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install build twine wheel setuptools
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if [ -f service/requirements.txt ]; then pip install -r service/requirements.txt; fi
+      
+      - name: Set tag version
+        id: tag
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+      
+      - name: Create build directory
+        run: mkdir -p dist
+      
+      - name: Build Python package
+        run: |
+          if [ -f setup.py ]; then
+            python -m build
+          else
+            echo "No setup.py found, creating source distribution manually"
+            
+            # Create a simple setup.py if it doesn't exist
+            if [ ! -f setup.py ]; then
+              cat > setup.py << EOF
+          from setuptools import setup, find_packages
+
+          setup(
+              name="ai-playground",
+              version="${{ steps.tag.outputs.VERSION }}",
+              packages=find_packages(),
+              install_requires=open("requirements.txt").read().splitlines(),
+              python_requires=">=3.9",
+          )
+          EOF
+              python -m build
+            fi
+          fi
+      
+      - name: Generate changelog
+        id: changelog
+        run: |
+          # Get the previous tag
+          PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+          
+          if [ -z "$PREV_TAG" ]; then
+            # If there's no previous tag, use the first commit
+            echo "No previous tag found, using all commits"
+            git log --pretty=format:"- %s (%h)" > CHANGELOG.md
+          else
+            echo "Generating changelog from $PREV_TAG to ${GITHUB_REF#refs/tags/}"
+            git log --pretty=format:"- %s (%h)" $PREV_TAG..HEAD > CHANGELOG.md
+          fi
+          
+          # Add header
+          echo "# Changelog for ${GITHUB_REF#refs/tags/}" | cat - CHANGELOG.md > temp && mv temp CHANGELOG.md
+          echo "" >> CHANGELOG.md
+          echo "## Changes" >> CHANGELOG.md
+          echo "" >> CHANGELOG.md
+          cat CHANGELOG.md
+      
+      - name: Generate documentation
+        run: |
+          # Create release documentation directory
+          mkdir -p release_docs
+          
+          # Generate API documentation if pdoc3 is available
+          pip install pdoc3
+          
+          # Copy README if it exists
+          if [ -f README.md ]; then
+            cp README.md release_docs/
+          fi
+          
+          # Generate API docs
+          if [ -d service ]; then
+            find service -name "*.py" -not -path "*/\.*" -not -path "*/tests/*" | while read file; do
+              module_name=$(echo "$file" | sed 's/\.py$//' | sed 's/\//./g')
+              echo "Documenting $module_name"
+              pdoc --html --output-dir release_docs "$module_name" || true
+            done
+          fi
+          
+          # Copy changelog
+          cp CHANGELOG.md release_docs/
+          
+          # Create release notes
+          {
+            echo "# Release ${{ steps.tag.outputs.VERSION }}"
+            echo ""
+            echo "## Installation"
+            echo ""
+            echo "```bash"
+            echo "pip install ai-playground==${{ steps.tag.outputs.VERSION }}"
+            echo "```"
+            echo ""
+            echo "## Documentation"
+            echo ""
+            echo "See the [full documentation](https://github.com/${{ github.repository }}/tree/${{ github.ref_name }}/docs) for details."
+            echo ""
+            echo "## Changes"
+            echo ""
+            head -n 20 CHANGELOG.md | tail -n +5
+            if [ $(wc -l < CHANGELOG.md) -gt 20 ]; then
+              echo "... (see CHANGELOG.md for full details)"
+            fi
+          } > release_docs/RELEASE_NOTES.md
+      
+      - name: Create ZIP archive
+        run: |
+          zip -r dist/release-${{ steps.tag.outputs.VERSION }}.zip \
+            service/ \
+            requirements.txt \
+            service/requirements.txt \
+            README.md \
+            CHANGELOG.md \
+            release_docs/ \
+            -x "**/__pycache__/**" \
+            -x "**/.DS_Store" \
+            -x "**/.git*"
+      
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: release-artifacts
+          path: |
+            dist/
+            release_docs/
+            CHANGELOG.md
+          retention-days: 7
+  
+  # Create GitHub release
+  publish-release:
+    needs: build-artifacts
+    runs-on: ubuntu-latest
+    name: Publish Release
+    permissions:
+      contents: write  # Required to create releases
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: release-artifacts
+          path: artifacts
+      
+      - name: Set tag version
+        id: tag
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+      
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Release v${{ steps.tag.outputs.VERSION }}
+          body_path: artifacts/release_docs/RELEASE_NOTES.md
+          files: |
+            artifacts/dist/*
+          draft: false
+          prerelease: ${{ contains(github.ref, '-rc') || contains(github.ref, '-alpha') || contains(github.ref, '-beta') }}
+      
+      # This step is optional and would publish to PyPI
+      # Uncomment if you want to publish to PyPI
+      # - name: Publish to PyPI
+      #   if: "!contains(github.ref, '-')"  # Only publish final releases, not pre-releases
+      #   uses: pypa/gh-action-pypi-publish@release/v1
+      #   with:
+      #     user: __token__
+      #     password: ${{ secrets.PYPI_API_TOKEN }}
+      #     packages-dir: artifacts/dist/ 
