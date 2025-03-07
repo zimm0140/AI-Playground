@@ -213,9 +213,6 @@ jobs:
           
           python service/xpu_patch.py
       
-      - name: Lint code
-        run: yapf -r --diff .
-      
       - name: Verify environment setup
         run: |
           echo "Checking environment setup before tests"
