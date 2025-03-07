@@ -232,6 +232,23 @@ _safety_checker: StableDiffusionSafetyChecker = None
 
 
 def get_basic_model(input_model_name: str) -> DiffusionPipeline | Any:
+    """
+    Load or retrieve the basic diffusion model pipeline.
+    
+    This function manages loading and caching of the primary diffusion model.
+    If the requested model is already loaded, it returns the cached instance.
+    Otherwise, it loads the model from disk, configures it, and caches it for future use.
+    
+    Args:
+        input_model_name: The model name in format "config_key:model_name"
+        
+    Returns:
+        A configured diffusion pipeline ready for use
+        
+    Raises:
+        Exception: If the model cannot be found or loaded
+        StopGenerateException: If loading is interrupted by user
+    """
     global \
         _last_model_name, \
         _basic_model_pipe, \
@@ -306,6 +323,13 @@ def get_basic_model(input_model_name: str) -> DiffusionPipeline | Any:
 
 
 def process_preview_taesd():
+    """
+    Initialize or reload the tiny autoencoder for generation previews.
+    
+    Loads the appropriate tiny autoencoder model (TAESD) based on the current 
+    diffusion model type (SD1.5 or SDXL) to enable efficient generation previews.
+    The TAESD provides fast approximate decoding of latent space for previews.
+    """
     global _taesd_vae_type, _taesd_vae
 
     if isinstance(
@@ -335,6 +359,24 @@ def process_preview_taesd():
 
 
 def get_ext_pipe(params: TextImageParams, pipe_classes: List, init_class: any):
+    """
+    Get or initialize an extended pipeline for specialized tasks.
+    
+    Creates or reuses an extended pipeline for specific generation tasks like 
+    img2img, inpainting, or outpainting. If a suitable pipeline is already 
+    loaded, it will be reused; otherwise, a new one will be created.
+    
+    Args:
+        params: Generation parameters
+        pipe_classes: List of valid pipeline classes for the task
+        init_class: Class to use for initializing a new pipeline
+        
+    Returns:
+        Configured pipeline for the specified task
+        
+    Raises:
+        StopGenerateException: If initialization is interrupted by user
+    """
     global _basic_model_pipe, _ext_model_pipe
 
     if _ext_model_pipe is not None:
@@ -355,6 +397,18 @@ def get_ext_pipe(params: TextImageParams, pipe_classes: List, init_class: any):
 
 
 def load_model_from_single_file(model_signle_file: str):
+    """
+    Load a diffusion model from a single file (safetensors or ckpt).
+    
+    Attempts to load either an SDXL or SD1.5 model based on the filename,
+    falling back to the other format if the initial attempt fails.
+    
+    Args:
+        model_signle_file: Path to the model file
+        
+    Returns:
+        Loaded diffusion pipeline
+    """
     base_name = os.path.basename(model_signle_file)
     is_xl = re.search("[-_]xl[-_\.]", base_name, flags=re.I) is not None
     if is_xl:
@@ -380,6 +434,18 @@ def load_model_from_single_file(model_signle_file: str):
 
 
 def load_model_from_pretrained(model_dir: str):
+    """
+    Load a diffusion model from a directory of model components.
+    
+    Detects and loads the appropriate model precision (fp16 or fp32)
+    based on available model files.
+    
+    Args:
+        model_dir: Directory containing the model files
+        
+    Returns:
+        Loaded diffusion pipeline
+    """
     if os.path.exists(
             os.path.join(model_dir, "unet/diffusion_pytorch_model.fp32.safetensors")
     ) or os.path.exists(
@@ -405,6 +471,19 @@ def load_model_from_pretrained(model_dir: str):
 
 
 def set_lora(pipe: StableDiffusionPipeline | StableDiffusionXLPipeline, lora: str):
+    """
+    Apply LoRA (Low-Rank Adaptation) weights to a diffusion model.
+    
+    Loads and applies LoRA weights to customize model behavior.
+    Caches the last used LoRA to avoid unnecessary reloading.
+    
+    Args:
+        pipe: The diffusion pipeline to modify
+        lora: Name of the LoRA adapter to apply, or "None" to remove
+    
+    Raises:
+        Exception: If the specified LoRA cannot be found
+    """
     global \
         _default_scheduler, \
         _last_lora, \
@@ -436,6 +515,16 @@ def set_lora(pipe: StableDiffusionPipeline | StableDiffusionXLPipeline, lora: st
 def set_scheduler(
         pipe: StableDiffusionPipeline | StableDiffusionXLPipeline, scheduler_name: str
 ):
+    """
+    Set the scheduler for a diffusion pipeline.
+    
+    Changes the noise scheduler used during the diffusion process,
+    which affects the image generation quality and characteristics.
+    
+    Args:
+        pipe: The diffusion pipeline to modify
+        scheduler_name: Name of the scheduler to use
+    """
     global _last_scheduler
     schedulers_util.set_scheduler(pipe, scheduler_name)
     _last_scheduler = scheduler_name
@@ -450,6 +539,19 @@ def set_components(
         ),
         params: TextImageParams,
 ):
+    """
+    Set up the components for a diffusion pipeline based on generation parameters.
+    
+    Configures the pipeline with the appropriate scheduler, LoRA, safety checker,
+    and preview functionality based on the provided parameters.
+    
+    Args:
+        pipe: The diffusion pipeline to configure
+        params: Generation parameters to apply
+        
+    Raises:
+        StopGenerateException: If configuration is interrupted by user
+    """
     global \
         _last_scheduler, \
         _last_lora, \
@@ -483,6 +585,14 @@ def set_components(
 
 
 def get_ESRGANer():
+    """
+    Get or initialize the RealESRGAN super-resolution model.
+    
+    Lazy-loads the RealESRGAN model for image upscaling.
+    
+    Returns:
+        Configured RealESRGANer instance ready for upscaling
+    """
     global _realESRGANer
     if _realESRGANer is None:
         _realESRGANer = RealESRGANer()
@@ -491,6 +601,20 @@ def get_ESRGANer():
 
 
 def convert_prompt_to_compel_format(prompt):
+    """
+    Convert prompt text to the format expected by Compel.
+    
+    Transforms common attention weight formats into the syntax used by Compel:
+    - (word:1.2) becomes (word)1.2
+    - [word] becomes (word)0.909090909
+    - [word:1.2] becomes (word)0.9
+    
+    Args:
+        prompt: Original prompt text
+        
+    Returns:
+        Converted prompt compatible with Compel
+    """
     # convert prompt to compel supported prompt weighting format
     converted = re.sub(r"\(([^:]+):([\d.]+)\)", r"(\1)\2", prompt)
     converted = re.sub(r"\[([^:\]]+)\]", r"(\1)0.909090909", converted)
@@ -515,6 +639,25 @@ def __callback_on_step_end__(
         timesteps: int,
         callback_kwargs: Dict,
 ):
+    """
+    Callback function called at the end of each diffusion step.
+    
+    Handles progress reporting and preview image generation during the diffusion process.
+    If preview generation is enabled, it uses the tiny autoencoder to create
+    approximate previews of the current image state every few steps.
+    
+    Args:
+        model: The diffusion model being used
+        step: Current step number
+        timesteps: Total number of timesteps
+        callback_kwargs: Dictionary containing step data, including latents
+        
+    Returns:
+        The unchanged callback_kwargs dictionary
+        
+    Raises:
+        StopGenerateException: If generation is interrupted by user
+    """
     global \
         step_end_callback, \
         _generate_idx, \
