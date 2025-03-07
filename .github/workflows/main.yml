@@ -6,6 +6,10 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  # Enable manual trigger from the Actions tab
+  workflow_dispatch:
+  # Enable workflow reuse
+  workflow_call:
 
 jobs:
   test-linux:
@@ -46,6 +50,10 @@ jobs:
           chmod +x .github/workflows/scripts/*.sh
           chmod +x .github/workflows/scripts/*.py
       
+      - name: Profile CI performance
+        # This helps identify bottlenecks in the CI process
+        run: .github/workflows/scripts/profile_ci_performance.sh
+      
       - name: Catalog hardware-specific dependencies
         run: .github/workflows/scripts/catalog_hardware.sh
       
@@ -73,6 +81,17 @@ jobs:
       
       - name: Verify environment setup
         run: .github/workflows/scripts/verify_environment.sh
+      
+      - name: Check dependency updates
+        # Check for outdated dependencies
+        run: .github/workflows/scripts/check_dependency_updates.sh
+      
+      - name: Upload dependency report
+        uses: actions/upload-artifact@v3
+        with:
+          name: dependency-report-linux-${{ matrix.python-version }}
+          path: ci_artifacts/dependencies/
+          retention-days: 30
       
       - name: Run code quality checks
         run: .github/workflows/scripts/check_code_quality.sh
@@ -119,8 +138,28 @@ jobs:
           path: ci_artifacts/coverage/
           retention-days: 30
       
+      - name: Run Docker-based tests
+        # Run tests in Docker for environment consistency
+        if: "contains(matrix.python-version, '3.10')"  # Only run Docker tests on Python 3.10
+        run: .github/workflows/scripts/docker_test.sh ${{ matrix.python-version }}
+      
+      - name: Upload Docker test results
+        if: "contains(matrix.python-version, '3.10')"
+        uses: actions/upload-artifact@v3
+        with:
+          name: docker-test-results-linux-${{ matrix.python-version }}
+          path: ci_artifacts/docker/
+          retention-days: 30
+      
       - name: Generate workflow summary
         run: .github/workflows/scripts/generate_summary.sh
+      
+      - name: Upload performance profile
+        uses: actions/upload-artifact@v3
+        with:
+          name: performance-report-linux-${{ matrix.python-version }}
+          path: ci_artifacts/performance/
+          retention-days: 30
       
       - name: Prepare notification message
         id: notification
@@ -142,6 +181,9 @@ jobs:
           | Code Quality | $(if [ -s yapf_report.txt ]; then echo "⚠️ Issues found"; else echo "✅ No issues"; fi) |
           | Hardware Support | ✅ Documented |
           | Tests | ✅ Completed |
+          | Docker Tests | $(if [ -f ci_artifacts/docker/docker_coverage.xml ]; then echo "✅ Completed"; else echo "⏭️ Skipped"; fi) |
+          | Security Scan | $(if [ -f ci_artifacts/security/main_requirements_scan.txt ]; then grep -q "vulnerability found" ci_artifacts/security/main_requirements_scan.txt && echo "⚠️ Issues found" || echo "✅ No issues"; fi) |
+          | Performance | ✅ Profiled |
           
           [View Run Details](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
           EOF
@@ -225,7 +267,7 @@ jobs:
           python -m pip install --upgrade pip
           if (Test-Path -Path "requirements.txt") { pip install -r requirements.txt }
           if (Test-Path -Path "service/requirements.txt") { pip install -r service/requirements.txt }
-          pip install yapf==0.40.2
+          pip install yapf==0.40.2 pytest pytest-cov
         shell: pwsh
       
       - name: Set environment variables
@@ -238,6 +280,18 @@ jobs:
       
       - name: Run tests with custom test runner
         run: python .github/workflows/scripts/custom_test_runner.py
+        shell: pwsh
+      
+      - name: Analyze test coverage on Windows
+        run: |
+          python -m pytest --cov=service --cov-report=xml:coverage.xml
+          $coverage = [xml](Get-Content coverage.xml)
+          $coveragePct = [math]::Round([double]$coverage.coverage.'line-rate' * 100, 2)
+          "Windows test coverage: $coveragePct%"
+          # Create summary for GitHub
+          "## Windows Test Coverage" >> $env:GITHUB_STEP_SUMMARY
+          "" >> $env:GITHUB_STEP_SUMMARY
+          "| Coverage | $coveragePct% |" >> $env:GITHUB_STEP_SUMMARY
         shell: pwsh
       
       - name: Check code quality
@@ -342,6 +396,17 @@ jobs:
           else
             echo "⚠️ Some platform tests failed or were skipped. See job details for more information." >> $GITHUB_STEP_SUMMARY
           fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Additional Features" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Feature | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|---------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Docker Testing | ✅ Enabled |" >> $GITHUB_STEP_SUMMARY
+          echo "| Performance Profiling | ✅ Enabled |" >> $GITHUB_STEP_SUMMARY
+          echo "| Dependency Updates | ✅ Enabled |" >> $GITHUB_STEP_SUMMARY
+          echo "| Security Scanning | ✅ Enabled |" >> $GITHUB_STEP_SUMMARY
+          echo "| Release Automation | ✅ Enabled |" >> $GITHUB_STEP_SUMMARY
           
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "See individual platform artifacts for detailed reports." >> $GITHUB_STEP_SUMMARY 
