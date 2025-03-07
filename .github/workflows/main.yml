@@ -104,6 +104,11 @@ jobs:
           chmod +x .github/workflows/scripts/test_hardware_compatibility.sh
           .github/workflows/scripts/test_hardware_compatibility.sh
       
+      - name: Run hardware compatibility advisor
+        run: |
+          chmod +x .github/workflows/scripts/run_hardware_advisor.sh
+          .github/workflows/scripts/run_hardware_advisor.sh
+      
       - name: Upload hardware compatibility report
         uses: actions/upload-artifact@v3
         with:
@@ -757,15 +762,14 @@ jobs:
           echo "| CI Run Step Summary Annotations JSON Annotations JSON Markdown | ${{ github.run_step_summary_annotations_json_annotations_json_markdown }} |" >> $GITHUB_STEP_SUMMARY
           echo "| CI Run Step Summary Annotations JSON Annotations JSON HTML | ${{ github.run_step_summary_annotations_json_annotations_json_html }} |" >> $GITHUB_STEP_SUMMARY
           echo "| CI Run Step Summary Annotations JSON Annotations JSON Annotations | ${{ github.run_step_summary_annotations_json_annotations_json_annotations }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| CI Run Step Summary Annotations JSON Annotations JSON Annotations Markdown | ${{ github.run_step_summary_annotations_json_annotations_json_annotations_markdown }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| CI Run Step Summary Annotations JSON Annotations JSON Annotations HTML | ${{ github.run_step_summary_annotations_json_annotations_json_annotations_html }} |" >> $GITHUB_STEP_SUMMARY
           echo "| CI Run Step Summary Annotations JSON Annotations JSON Annotations JSON | ${{ github.run_step_summary_annotations_json_annotations_json_annotations_json }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| CI Run Step Summary Annotations JSON Annotations JSON Annotations JSON Markdown | ${{ github.run_step_summary_annotations_json_annotations_json_annotations_json_markdown }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| CI Run Step Summary Annotations JSON Annotations JSON Annotations JSON HTML | ${{ github.run_step_summary_annotations_json_annotations_json_annotations_json_html }} |" >> $GITHUB_STEP_SUMMARY
           echo "| CI Run Step Summary Annotations JSON Annotations JSON Annotations JSON Annotations | ${{ github.run_step_summary_annotations_json_annotations_json_annotations_json_annotations }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| CI Run Step Summary Annotations JSON Annotations JSON Annotations JSON Annotations Markdown | ${{ github.run_step_summary_annotations_json_annotations_json_annotations_json_annotations_markdown }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| CI Run Step Summary Annotations JSON Annotations JSON Annotations JSON Annotations HTML | ${{ github.run_step_summary_annotations_json_annotations_json_annotations_json_annotations_html }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| CI Run Step Summary Annotations JSON Annotations JSON Annotations JSON Annotations JSON | ${{ github.run_step_summary_annotations_json_annotations_json_annotations_json_annotations }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| CI Run Step Summary Annotations JSON Annotations JSON Annotations JSON Annotations JSON Annotations JSON Annotations JSON Annotations JSON Annotations JSON Annotations | ${{ github.run_step_summary_annotations_json_annotations_json_annotations_json_annotations_json_annotations }} |" >> $GITHUB_STEP_SUMMARY
           echo "| CI Run Step Summary Annotations JSON Annotations JSON Annotations JSON Annotations JSON | ${{ github.run_step_summary_annotations_json_annotations_json_annotations_json_annotations_json }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| CI Run Step Summary Annotations JSON Annotations JSON Annotations JSON Annotations JSON Annotations JSON | ${{ github.run_step_summary_annotations_json_annotations_json_annotations_json_annotations_json_annotations_json }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| CI Run Step Summary Annotations JSON Annotations JSON Annotations JSON Annotations JSON Annotations JSON Annotations JSON | ${{ github.run_step_summary_annotations_json_annotations_json_annotations_json_annotations_json_annotations_json }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| CI Run Step Summary Annotations JSON Annotations JSON Annotations JSON Annotations JSON Annotations JSON Annotations JSON Annotations JSON | ${{ github.run_step_summary_annotations_json_annotations_json_annotations_json_annotations_json_annotations_json_annotations_json }} |" >> $GITHUB_STEP_SUMMARY
           echo "| CI Run Step Summary Annotations JSON Annotations JSON Annotations JSON Annotations JSON Markdown | ${{ github.run_step_summary_annotations_json_annotations_json_annotations_json_annotations_json_markdown }} |" >> $GITHUB_STEP_SUMMARY
           echo "| CI Run Step Summary Annotations JSON Annotations JSON Annotations JSON Annotations JSON HTML | ${{ github.run_step_summary_annotations_json_annotations_json_annotations_json_annotations_json_html }} |" >> $GITHUB_STEP_SUMMARY
           echo "| CI Run Step Summary Annotations JSON Annotations JSON Annotations JSON Annotations JSON Annotations | ${{ github.run_step_summary_annotations_json_annotations_json_annotations_json_annotations_json_annotations }} |" >> $GITHUB_STEP_SUMMARY
