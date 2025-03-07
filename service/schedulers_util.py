@@ -1,5 +1,22 @@
+"""
+Stable Diffusion Schedulers Utility Module
+-----------------------------------------
+This module provides utilities for managing different scheduler algorithms used in 
+Stable Diffusion image generation.
+
+The module defines:
+- A comprehensive map of available schedulers with their configurations
+- Functions to set schedulers on diffusion pipelines
+- Support for various scheduler algorithms including DPM++, Euler, LMS, and more
+
+Schedulers control the noise schedule during the diffusion process and significantly 
+impact the quality and characteristics of generated images.
+"""
+
 import diffusers
 
+# Dictionary mapping friendly scheduler names to their implementation details
+# Each entry contains the class name and any keyword arguments needed for initialization
 scheduler_map = {
     "DPM++ 2M": {"class_name": "DPMSolverMultistepScheduler", "kwargs": {}},
     "DPM++ 2M Karras": {
@@ -56,19 +73,34 @@ scheduler_map = {
     },
 }
 
+# Get list of schedulers from scheduler_map
 # 从 scheduler_map 获取调度器清单
 schedulers = list(scheduler_map.keys())
 
 
 def set_scheduler(pipe: diffusers.DiffusionPipeline, name: str):
+    """
+    Set the scheduler for a diffusion pipeline based on the specified name.
+    
+    This function either sets a new scheduler from the scheduler_map or reverts
+    to the default scheduler if 'None' is specified.
+    
+    Args:
+        pipe: The diffusion pipeline to modify
+        name: Name of the scheduler to use (must be in scheduler_map or 'None')
+        
+    Raises:
+        Exception: If an unknown scheduler name is provided
+    """
     print("---------------------debug ", name)
     scheduler_cfg = scheduler_map.get(name)
     if name == "None":
+        # Handle case where "None" is specified - revert to default scheduler
         if hasattr(pipe.scheduler, "scheduler_config"):
             default_class_name = pipe.scheduler.scheduler_config["_class_name"]
         else:
             default_class_name = pipe.scheduler.config["_class_name"]
-        # same scheduler
+        # If already using the default scheduler, do nothing
         if default_class_name == type(pipe.scheduler).__name__:
             return
         else:
@@ -76,13 +108,16 @@ def set_scheduler(pipe: diffusers.DiffusionPipeline, name: str):
     elif scheduler_cfg is None:
         raise Exception(f'unkown scheduler name "{name}"')
     else:
+        # Get the scheduler class from diffusers module
         scheduler_class = getattr(diffusers, scheduler_cfg["class_name"])
     print(f"load scheduler {name}")
+    # Initialize the new scheduler with the appropriate config and kwargs
     pipe.scheduler = scheduler_class.from_config(
         pipe.scheduler.config, **scheduler_cfg["kwargs"]
     )
 
 
+# Commented out interactive scheduler selection code (preserved from original)
 # while True:
 #     print("Please select a scheduler:")
 
