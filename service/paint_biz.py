@@ -792,6 +792,7 @@ def text_to_image(
 
     with torch.inference_mode():
         while _generate_idx < params.generate_number:
+            # Update seed for the current image generation iteration to ensure unique outputs in batch mode.
             params.seed = (
                 random.randint(0, 0xFFFFFFFE)
                 if seed == -1
@@ -1204,9 +1205,10 @@ def generate(params: TextImageParams):
     try:
         stop_generate()
         torch.xpu.set_device(params.device)
+        # Set the PyTorch XPU device based on the provided device in params.
         # service_config.device = f"xpu:{params.device}"
         if _last_model_name != params.model_name:
-            # hange model dispose basic model
+            # If a new model is requested, dispose the current basic model to free up resources.
             if _basic_model_pipe is not None:
                 dispose_basic_model()
 
@@ -1331,6 +1333,7 @@ def assert_stop_generate():
     """
     global _stop_generate, _stop_event
     if _stop_generate:
+        # Stop flag is active: signal the event and abort generation by raising an exception.
         _stop_event.set()
         raise StopGenerateException()
 
