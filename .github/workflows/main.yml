@@ -8,14 +8,14 @@ on:
     branches: [ main ]
 
 jobs:
-  test:
+  test-linux:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: ['3.9', '3.10']
       # Don't cancel all matrix jobs if one fails
       fail-fast: false
-    name: Python ${{ matrix.python-version }}
+    name: Linux Python ${{ matrix.python-version }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -52,7 +52,7 @@ jobs:
       - name: Upload hardware support matrix
         uses: actions/upload-artifact@v3
         with:
-          name: hardware-support-matrix-${{ matrix.python-version }}
+          name: hardware-support-matrix-linux-${{ matrix.python-version }}
           path: ci_artifacts/hw_support.md
           retention-days: 90
       
@@ -80,14 +80,44 @@ jobs:
       - name: Upload code quality report
         uses: actions/upload-artifact@v3
         with:
-          name: code-quality-report-${{ matrix.python-version }}
+          name: code-quality-report-linux-${{ matrix.python-version }}
           path: |
             yapf_report.txt
             ci_artifacts/code_quality_summary.txt
           retention-days: 30
       
+      - name: Run shell script checks
+        run: .github/workflows/scripts/check_shell_scripts.sh
+      
+      - name: Upload shell script analysis
+        uses: actions/upload-artifact@v3
+        with:
+          name: shell-lint-report-linux-${{ matrix.python-version }}
+          path: ci_artifacts/shell_lint/
+          retention-days: 30
+      
+      - name: Scan dependencies for security vulnerabilities
+        run: .github/workflows/scripts/scan_dependencies.sh
+      
+      - name: Upload security scan results
+        uses: actions/upload-artifact@v3
+        with:
+          name: security-report-linux-${{ matrix.python-version }}
+          path: ci_artifacts/security/
+          retention-days: 30
+      
       - name: Run tests with custom test runner
         run: python .github/workflows/scripts/custom_test_runner.py
+      
+      - name: Analyze test coverage
+        run: .github/workflows/scripts/analyze_test_coverage.sh
+      
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report-linux-${{ matrix.python-version }}
+          path: ci_artifacts/coverage/
+          retention-days: 30
       
       - name: Generate workflow summary
         run: .github/workflows/scripts/generate_summary.sh
@@ -141,7 +171,7 @@ jobs:
       - name: Upload compatibility report
         uses: actions/upload-artifact@v3
         with:
-          name: compatibility-report-python-${{ matrix.python-version }}
+          name: compatibility-report-linux-${{ matrix.python-version }}
           path: compatibility_report/
           retention-days: 90
       
@@ -151,7 +181,7 @@ jobs:
       - name: Upload API documentation
         uses: actions/upload-artifact@v3
         with:
-          name: api-documentation-python-${{ matrix.python-version }}
+          name: api-documentation-linux-${{ matrix.python-version }}
           path: api_docs/
           retention-days: 30
       
@@ -161,6 +191,157 @@ jobs:
       - name: Upload tool compatibility report
         uses: actions/upload-artifact@v3
         with:
-          name: tool-compatibility-report-${{ matrix.python-version }}
+          name: tool-compatibility-report-linux-${{ matrix.python-version }}
           path: ci_artifacts/tool_compat/
-          retention-days: 30 
+          retention-days: 30
+
+  # Windows testing job - a simplified version of the Linux job
+  test-windows:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        python-version: ['3.10']  # Test only latest Python on Windows for speed
+      fail-fast: false
+    name: Windows Python ${{ matrix.python-version }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      
+      - name: Cache pip
+        uses: actions/cache@v3
+        with:
+          path: ~\AppData\Local\pip\Cache
+          key: ${{ runner.os }}-python-${{ matrix.python-version }}-pip-${{ hashFiles('requirements.txt', 'service/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-python-${{ matrix.python-version }}-pip-
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if (Test-Path -Path "requirements.txt") { pip install -r requirements.txt }
+          if (Test-Path -Path "service/requirements.txt") { pip install -r service/requirements.txt }
+          pip install yapf==0.40.2
+        shell: pwsh
+      
+      - name: Set environment variables
+        run: |
+          echo "CUDA_VISIBLE_DEVICES=-1" >> $env:GITHUB_ENV
+          echo "CUDA_DEVICE_ORDER=PCI_BUS_ID" >> $env:GITHUB_ENV
+          echo "XPU_VISIBLE_DEVICES=-1" >> $env:GITHUB_ENV
+          echo "FORCE_CPU_ONLY=1" >> $env:GITHUB_ENV
+        shell: pwsh
+      
+      - name: Run tests with custom test runner
+        run: python .github/workflows/scripts/custom_test_runner.py
+        shell: pwsh
+      
+      - name: Check code quality
+        run: |
+          # Check for Python syntax errors
+          Get-ChildItem -Path . -Filter "*.py" -Recurse -Exclude "venv" | ForEach-Object { python -m py_compile $_.FullName }
+          
+          # Run basic style check with yapf
+          yapf --diff --recursive --exclude="venv/*" . | Set-Content -Path yapf_report.txt
+        shell: pwsh
+      
+      - name: Upload code quality report
+        uses: actions/upload-artifact@v3
+        with:
+          name: code-quality-report-windows-${{ matrix.python-version }}
+          path: yapf_report.txt
+          retention-days: 30
+      
+      - name: Generate compatibility report
+        run: |
+          mkdir -p compatibility_report
+          
+          @"
+          # Windows Compatibility Report
+          
+          This report is automatically generated by the CI workflow to document compatibility with Windows.
+          
+          ## Matrix Test Information
+          
+          | Python Version | Status | Details |
+          |----------------|--------|---------|
+          | Python ${{ matrix.python-version }} | ✅ Current Run | [View Details](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) |
+          
+          ## Platform Support
+          
+          | Platform | Status | Notes |
+          |----------|--------|-------|
+          | Windows | ✅ Tested | Successfully ran on Windows |
+          
+          Last updated: $(Get-Date -Format "yyyy-MM-dd HH:mm:ss UTC")
+          
+          *This is an automated report generated from workflow run #${{ github.run_number }}*
+          "@ | Set-Content -Path compatibility_report/README.md
+        shell: pwsh
+      
+      - name: Upload compatibility report
+        uses: actions/upload-artifact@v3
+        with:
+          name: compatibility-report-windows-${{ matrix.python-version }}
+          path: compatibility_report/
+          retention-days: 90
+
+  # Final job to summarize results from all platforms
+  summarize:
+    needs: [test-linux, test-windows]
+    runs-on: ubuntu-latest
+    if: always()
+    name: Summarize Results
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+      
+      - name: Create summary
+        run: |
+          echo "# CI Summary Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          echo "## Platform Test Matrix" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Platform | Python | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|--------|--------|" >> $GITHUB_STEP_SUMMARY
+          
+          # Add Linux results
+          if [ "${{ needs.test-linux.result }}" == "success" ]; then
+            echo "| Linux | 3.9 | :white_check_mark: Passed |" >> $GITHUB_STEP_SUMMARY
+            echo "| Linux | 3.10 | :white_check_mark: Passed |" >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ needs.test-linux.result }}" == "failure" ]; then
+            echo "| Linux | 3.9, 3.10 | :x: Failed |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Linux | 3.9, 3.10 | :warning: Skipped |" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          # Add Windows results
+          if [ "${{ needs.test-windows.result }}" == "success" ]; then
+            echo "| Windows | 3.10 | :white_check_mark: Passed |" >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ needs.test-windows.result }}" == "failure" ]; then
+            echo "| Windows | 3.10 | :x: Failed |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Windows | 3.10 | :warning: Skipped |" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Overall Status" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ needs.test-linux.result }}" == "success" ] && [ "${{ needs.test-windows.result }}" == "success" ]; then
+            echo "✅ All platform tests passed successfully!" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ Some platform tests failed or were skipped. See job details for more information." >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "See individual platform artifacts for detailed reports." >> $GITHUB_STEP_SUMMARY 
