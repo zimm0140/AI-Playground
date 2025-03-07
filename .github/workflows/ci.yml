@@ -402,28 +402,8 @@ jobs:
       - name: Generate workflow summary
         # Create a detailed summary of the CI run for better visibility of results
         run: |
-          echo "## CI Environment Information" >> $GITHUB_STEP_SUMMARY
-          echo "- Python version: $(python --version)" >> $GITHUB_STEP_SUMMARY
+          echo "# CI Workflow Summary :clipboard:" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "## Environment Information" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-          python -c "import sys; print('Python:', sys.version)" >> $GITHUB_STEP_SUMMARY
-          python -c "import torch; print('PyTorch:', torch.__version__)" >> $GITHUB_STEP_SUMMARY
-          echo "CI Mode: Enabled" >> $GITHUB_STEP_SUMMARY
-          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          
-          echo "## Applied Patches" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- :white_check_mark: Intel Extension for PyTorch stub" >> $GITHUB_STEP_SUMMARY
-          echo "- :white_check_mark: CPU-only mode enforcement" >> $GITHUB_STEP_SUMMARY
-          echo "- :white_check_mark: Import compatibility fixes" >> $GITHUB_STEP_SUMMARY
-          echo "- :white_check_mark: XPU hijacks patching" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          
-          echo "## Test Status" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo ":information_source: Tests were run with error handling enabled" >> $GITHUB_STEP_SUMMARY
-          echo ":warning: Some tests may have been skipped due to missing dependencies in CI" >> $GITHUB_STEP_SUMMARY
-          echo ":rocket: CI workflow completed successfully" >> $GITHUB_STEP_SUMMARY 
+          echo "- Python version: $(python --version)" >> $GITHUB_STEP_SUMMARY
+          echo "- PyTorch version: $(python -c 'import torch; print(torch.__version__)')" >> $GITHUB_STEP_SUMMARY
