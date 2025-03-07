@@ -1037,6 +1037,21 @@ def inpaint(params: InpaintParams):
 
 
 def outpaint(params: OutpaintParams):
+    """
+    Extend an image beyond its original boundaries using text prompts.
+    
+    Performs outpainting by:
+    1. Loading a specialized inpainting pipeline
+    2. Expanding the original image with transparent/blank areas
+    3. Creating a mask for the expanded areas
+    4. Running diffusion to generate content in the expanded areas
+    5. Blending the new content with the original image
+    
+    The direction parameter determines which side to expand the image.
+    
+    Args:
+        params: Outpainting parameters including image path, direction, and prompt
+    """
     from outpaint_utils import preprocess_outpaint
 
     global _generate_idx, image_out_callback
@@ -1116,6 +1131,17 @@ def outpaint(params: OutpaintParams):
 
 
 def is_image_completely_black(image: Image):
+    """
+    Check if an image is entirely black.
+    
+    Used for safety checking to detect if an image was filtered out.
+    
+    Args:
+        image: The PIL image to check
+        
+    Returns:
+        True if the image is completely black, False otherwise
+    """
     pixels = image.getdata()
     return all(pixel == (0, 0, 0) for pixel in pixels)
 
@@ -1125,6 +1151,16 @@ def output_image(
         image: Image.Image,
         params: TextImageParams,
 ):
+    """
+    Process and output a generated image.
+    
+    Handles safety checking and sends the image to the output callback.
+    
+    Args:
+        pipe: The diffusion pipeline that generated the image
+        image: The generated image
+        params: The parameters used for generation
+    """
     global image_out_callback, _safety_checker, _generate_idx
     passed_safety_check = not is_image_completely_black(image)
     if image_out_callback is not None:
@@ -1132,6 +1168,19 @@ def output_image(
 
 
 def generate(params: TextImageParams):
+    """
+    Main entry point for image generation.
+    
+    Dispatches to the appropriate generation function based on the mode parameter:
+    - Mode 0: Text-to-image
+    - Mode 1: Upscale
+    - Mode 2: Image-to-image
+    - Mode 3: Inpaint
+    - Mode 4: Outpaint
+    
+    Args:
+        params: Generation parameters
+    """
     global \
         _last_model_name, \
         _last_mode, \
@@ -1179,6 +1228,12 @@ def generate(params: TextImageParams):
 
 
 def dispose_basic_model():
+    """
+    Clean up the basic model pipeline resources.
+    
+    Releases memory used by the basic model pipeline, extended pipeline,
+    and tiny autoencoder. Resets state variables and clears GPU cache.
+    """
     global \
         _basic_model_pipe, \
         _ext_model_pipe, \
@@ -1212,6 +1267,11 @@ def dispose_basic_model():
 
 
 def dispose_ext_model():
+    """
+    Clean up the extended model pipeline resources.
+    
+    Releases memory used by the extended model pipeline and clears GPU cache.
+    """
     global _ext_model_pipe
     del _ext_model_pipe
     _ext_model_pipe = None
@@ -1220,6 +1280,12 @@ def dispose_ext_model():
 
 
 def dispose():
+    """
+    Clean up all model resources.
+    
+    Releases memory used by the RealESRGAN model and all diffusion pipelines.
+    Called when shutting down or needing to free all resources.
+    """
     global _realESRGANer, _preview_thread
     if _realESRGANer is not None:
         del _realESRGANer
@@ -1228,6 +1294,12 @@ def dispose():
 
 
 def stop_generate():
+    """
+    Stop any ongoing image generation process.
+    
+    Sets a flag to request generation stopping and waits for the process
+    to acknowledge the stop request via an event.
+    """
     global _stop_generate, _generating, _stop_event
     if _generating:
         _stop_generate = True
@@ -1238,6 +1310,15 @@ def stop_generate():
 
 
 def assert_stop_generate():
+    """
+    Check if generation should stop and raise an exception if so.
+    
+    Called at various points during generation to allow early termination.
+    Signals that the stop was acknowledged by setting an event.
+    
+    Raises:
+        StopGenerateException: If generation stop has been requested
+    """
     global _stop_generate, _stop_event
     if _stop_generate:
         _stop_event.set()
@@ -1245,4 +1326,9 @@ def assert_stop_generate():
 
 
 def clear_xpu_cache():
+    """
+    Clear the GPU (XPU) memory cache.
+    
+    Utility function for manual memory management to free GPU memory.
+    """
     torch.xpu.empty_cache()
