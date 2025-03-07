@@ -68,23 +68,38 @@ jobs:
       
       - name: Create intel_extension_for_pytorch stub
         run: |
-          echo "# Dummy stub to satisfy intel_extension_for_pytorch import" > intel_extension_for_pytorch.py
-          echo "# Provides minimal implementation for CI" >> intel_extension_for_pytorch.py
-          echo "class IpexGradScaler:" >> intel_extension_for_pytorch.py
-          echo "    def scale(self, loss): return loss" >> intel_extension_for_pytorch.py
-          echo "    def step(self, optimizer): pass" >> intel_extension_for_pytorch.py
-          echo "    def update(self): pass" >> intel_extension_for_pytorch.py
-          echo "optimize = lambda model, dtype=None, inplace=False, **kwargs: model" >> intel_extension_for_pytorch.py
-          echo "def quantization_aware_training(): return None" >> intel_extension_for_pytorch.py
-          echo "def has_xpu(): return False" >> intel_extension_for_pytorch.py
           SITE_PACKAGES=$(python -c 'import site; print(site.getsitepackages()[0])')
           mkdir -p $SITE_PACKAGES/intel_extension_for_pytorch
-          cp intel_extension_for_pytorch.py $SITE_PACKAGES/intel_extension_for_pytorch/__init__.py
+          cat > $SITE_PACKAGES/intel_extension_for_pytorch/__init__.py << 'EOF'
+          # Dummy stub to satisfy intel_extension_for_pytorch import
+          # Provides minimal implementation for CI
+
+          class IpexGradScaler:
+              def scale(self, loss): 
+                  return loss
+              def step(self, optimizer): 
+                  pass
+              def update(self): 
+                  pass
+
+          def optimize(model, dtype=None, inplace=False, **kwargs):
+              return model
+
+          def quantization_aware_training():
+              return None
+
+          # Critical function needed by xpu_hijacks.py
+          def has_xpu():
+              return False
+          EOF
+          # Verify the file was created correctly
+          ls -la $SITE_PACKAGES/intel_extension_for_pytorch/
+          cat $SITE_PACKAGES/intel_extension_for_pytorch/__init__.py
       
       - name: Verify intel_extension_for_pytorch stub
         run: |
-          python -c "import intel_extension_for_pytorch as ipex; print('Stub functions available:', dir(ipex)); print('has_xpu() returns:', ipex.has_xpu())"
-          ls -la $(python -c 'import site; print(site.getsitepackages()[0])')/intel_extension_for_pytorch
+          python -c "import sys; print('Python version:', sys.version)"
+          python -c "import intel_extension_for_pytorch as ipex; print('Module location:', ipex.__file__); print('Stub functions available:', dir(ipex)); print('has_xpu function exists:', hasattr(ipex, 'has_xpu')); print('has_xpu() returns:', ipex.has_xpu())"
       
       - name: Debug Python module paths
         run: python -c "import sys; print('Python module search paths:'); [print(f'- {p}') for p in sys.path]"
