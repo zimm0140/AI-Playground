@@ -117,14 +117,14 @@ jobs:
           retention-days: 90
       
       - name: Upload dependency report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: dependency-report-linux-${{ matrix.python-version }}
           path: ci_artifacts/dependencies/
           retention-days: 30
       
       - name: Upload requirements consistency report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: requirements-consistency-report-linux-${{ matrix.python-version }}
           path: ci_artifacts/requirements_check/
@@ -134,7 +134,7 @@ jobs:
         run: .github/workflows/scripts/check_code_quality.sh
       
       - name: Upload code quality report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: code-quality-report-linux-${{ matrix.python-version }}
           path: |
@@ -146,7 +146,7 @@ jobs:
         run: .github/workflows/scripts/check_shell_scripts.sh
       
       - name: Upload shell script analysis
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: shell-lint-report-linux-${{ matrix.python-version }}
           path: ci_artifacts/shell_lint/
@@ -156,7 +156,7 @@ jobs:
         run: .github/workflows/scripts/scan_dependencies.sh
       
       - name: Upload security scan results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: security-report-linux-${{ matrix.python-version }}
           path: ci_artifacts/security/
@@ -169,7 +169,7 @@ jobs:
         run: .github/workflows/scripts/analyze_test_coverage.sh
       
       - name: Upload coverage report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: coverage-report-linux-${{ matrix.python-version }}
           path: ci_artifacts/coverage/
@@ -182,7 +182,7 @@ jobs:
       
       - name: Upload Docker test results
         if: contains(matrix.python-version, '3.10')
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: docker-test-results-linux-${{ matrix.python-version }}
           path: ci_artifacts/docker/
@@ -195,14 +195,14 @@ jobs:
         run: python .github/workflows/scripts/check_platform_compatibility.py
       
       - name: Upload platform compatibility report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: platform-compatibility-report-linux-${{ matrix.python-version }}
           path: ci_artifacts/platform_checks/
           retention-days: 30
       
       - name: Upload performance profile
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: performance-report-linux-${{ matrix.python-version }}
           path: ci_artifacts/performance/
@@ -258,7 +258,7 @@ jobs:
         run: .github/workflows/scripts/generate_compatibility_report.sh ${{ matrix.python-version }}
       
       - name: Upload compatibility report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: compatibility-report-linux-${{ matrix.python-version }}
           path: compatibility_report/
@@ -271,14 +271,14 @@ jobs:
         run: python .github/workflows/scripts/generate_api_summary.py
       
       - name: Upload API documentation
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: api-documentation-linux-${{ matrix.python-version }}
           path: api_docs/
           retention-days: 30
       
       - name: Upload API endpoints summary
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: api-endpoints-summary-linux-${{ matrix.python-version }}
           path: ci_artifacts/api_summary/
@@ -288,7 +288,7 @@ jobs:
         run: .github/workflows/scripts/check_tool_compatibility.sh
       
       - name: Upload tool compatibility report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: tool-compatibility-report-linux-${{ matrix.python-version }}
           path: ci_artifacts/tool_compat/
@@ -305,14 +305,14 @@ jobs:
           python .github/workflows/scripts/generate_badges.py
       
       - name: Upload CI metrics
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ci-metrics-linux-${{ matrix.python-version }}
           path: ci_artifacts/metrics/
           retention-days: 90
       
       - name: Upload CI badges
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ci-badges
           path: ci_artifacts/badges/
@@ -391,6 +391,126 @@ jobs:
             echo "SLACK_WEBHOOK_URL not set, skipping notification"
           fi
 
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-results
+          path: test-results/
+          retention-days: 30
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 30
+
+      - name: Upload dependency report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-report
+          path: ci_artifacts/dependencies/
+          retention-days: 30
+
+      - name: Upload security report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-report
+          path: ci_artifacts/security/
+          retention-days: 30
+
+      - name: Upload code quality report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-quality-report
+          path: ci_artifacts/code_quality/
+          retention-days: 30
+
+      - name: Upload documentation
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: documentation
+          path: ci_artifacts/docs/
+          retention-days: 30
+
+      - name: Upload CI metrics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-metrics
+          path: ci_artifacts/metrics/
+          retention-days: 30
+
+      - name: Upload CI badges
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-badges
+          path: ci_artifacts/badges/
+          retention-days: 30
+
+      - name: Upload hardware compatibility report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hardware-compatibility-report
+          path: ci_artifacts/hardware_compatibility/
+          retention-days: 30
+
+      - name: Upload workflow validation report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: workflow-validation-report
+          path: ci_artifacts/workflow_validation/
+          retention-days: 30
+
+      - name: Upload workflow requirements report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: workflow-requirements-report
+          path: ci_artifacts/workflow_requirements/
+          retention-days: 30
+
+      - name: Upload workflow dashboard
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: workflow-dashboard
+          path: ci_artifacts/workflow_dashboard/
+          retention-days: 30
+
+      - name: Upload summary report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-summary
+          path: ci_artifacts/summary/
+          retention-days: 30
+
+      - name: Upload build artifacts
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: dist/
+          retention-days: 30
+
+      - name: Upload release artifacts
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-artifacts
+          path: release/
+          retention-days: 30
+
   # Windows testing job - a simplified version of the Linux job
   test-windows:
     runs-on: windows-latest
@@ -458,7 +578,7 @@ jobs:
         shell: pwsh
       
       - name: Upload code quality report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: code-quality-report-windows-${{ matrix.python-version }}
           path: yapf_report.txt
@@ -492,7 +612,7 @@ jobs:
         shell: pwsh
       
       - name: Upload compatibility report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: compatibility-report-windows-${{ matrix.python-version }}
           path: compatibility_report/
@@ -560,7 +680,7 @@ jobs:
           yapf --diff --recursive --exclude="venv/*" . > yapf_report.txt
       
       - name: Upload code quality report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: code-quality-report-macos-${{ matrix.python-version }}
           path: yapf_report.txt
@@ -593,7 +713,7 @@ jobs:
           EOF
       
       - name: Upload compatibility report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: compatibility-report-macos-${{ matrix.python-version }}
           path: compatibility_report/
@@ -763,7 +883,6 @@ jobs:
           echo "| CI Run Step Summary Annotations JSON Annotations JSON HTML | ${{ github.run_step_summary_annotations_json_annotations_json_html }} |" >> $GITHUB_STEP_SUMMARY
           echo "| CI Run Step Summary Annotations JSON Annotations JSON Annotations | ${{ github.run_step_summary_annotations_json_annotations_json_annotations }} |" >> $GITHUB_STEP_SUMMARY
           echo "| CI Run Step Summary Annotations JSON Annotations JSON Annotations JSON | ${{ github.run_step_summary_annotations_json_annotations_json_annotations_json }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| CI Run Step Summary Annotations JSON Annotations JSON Annotations JSON Annotations | ${{ github.run_step_summary_annotations_json_annotations_json_annotations_json_annotations }} |" >> $GITHUB_STEP_SUMMARY
           echo "| CI Run Step Summary Annotations JSON Annotations JSON Annotations JSON Annotations JSON | ${{ github.run_step_summary_annotations_json_annotations_json_annotations_json_annotations }} |" >> $GITHUB_STEP_SUMMARY
           echo "| CI Run Step Summary Annotations JSON Annotations JSON Annotations JSON Annotations JSON Annotations JSON Annotations JSON Annotations JSON Annotations JSON Annotations | ${{ github.run_step_summary_annotations_json_annotations_json_annotations_json_annotations_json_annotations }} |" >> $GITHUB_STEP_SUMMARY
           echo "| CI Run Step Summary Annotations JSON Annotations JSON Annotations JSON Annotations JSON | ${{ github.run_step_summary_annotations_json_annotations_json_annotations_json_annotations_json }} |" >> $GITHUB_STEP_SUMMARY

@@ -70,15 +70,10 @@ jobs:
             --output-dir ci_artifacts/workflow_dashboard
             
       - name: Upload validation reports
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: comfyui-workflow-validation-reports
-          path: |
-            ci_artifacts/workflow_validation/
-            ci_artifacts/workflow_requirements/
-            ci_artifacts/workflow_tests/
-            ci_artifacts/workflow_versions/
-            ci_artifacts/workflow_dashboard/
+          name: workflow-validation-reports
+          path: ci_artifacts/workflow_validation/
           retention-days: 30
           
       - name: Publish validation summary
