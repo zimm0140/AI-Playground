@@ -23,7 +23,10 @@ import os
 from functools import wraps
 from contextlib import nullcontext
 import torch
-import intel_extension_for_pytorch as ipex  # pylint: disable=import-error, unused-import
+try:
+    import intel_extension_for_pytorch as ipex  # pylint: disable=import-error, unused-import
+except ModuleNotFoundError:
+    ipex = None
 import numpy as np
 
 
