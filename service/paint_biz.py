@@ -12,6 +12,12 @@ It supports multiple generation modes:
 
 The module handles model loading, parameter management, callback processing, and various image manipulation tasks
 with optimization for Intel XPU hardware.
+
+# Developer Notes:
+# - All functions in this module are documented with detailed docstrings explaining their parameters and behavior.
+# - When updating image generation functionality, ensure consistency across function signatures and expected outputs.
+# - This module depends on several external libraries (diffusers, PIL/Pillow, RealESRGAN, compel, etc.). Make sure these are installed in your environment.
+# - For detailed usage and parameter definitions, refer to the corresponding parameter classes defined below.
 """
 
 import gc
