@@ -756,6 +756,20 @@ def convet_compel_prompt(
 def text_to_image(
         params: TextImageParams,
 ):
+    """
+    Generate images from text prompts.
+    
+    The core text-to-image generation function that:
+    1. Loads the appropriate model
+    2. Processes the text prompt with Compel
+    3. Runs diffusion with the specified parameters
+    4. Outputs the generated images
+    
+    Supports batch generation with different seeds for each image.
+    
+    Args:
+        params: Text-to-image generation parameters
+    """
     global _generate_idx, image_out_callback
     pipe = get_basic_model(params.model_name)
     set_components(pipe, params)
@@ -792,6 +806,20 @@ def text_to_image(
 
 
 def image_to_image(params: ImageToImageParams):
+    """
+    Transform an existing image using text prompts.
+    
+    Performs image-to-image generation by:
+    1. Loading the appropriate specialized pipeline
+    2. Processing the input image
+    3. Running diffusion with the text prompt to transform the image
+    4. Outputting the generated images
+    
+    The denoise parameter controls how much of the original image is preserved.
+    
+    Args:
+        params: Image-to-image generation parameters
+    """
     global _generate_idx, image_out_callback
     pipe = get_ext_pipe(
         params,
@@ -842,6 +870,19 @@ def image_to_image(params: ImageToImageParams):
 
 
 def upscale(params: UpscaleImageParams):
+    """
+    Upscale an image to a higher resolution.
+    
+    Offers two upscaling modes:
+    1. Pure RealESRGAN upscaling (when denoise ≤ 0.1)
+    2. Diffusion-enhanced upscaling (when denoise > 0.1)
+    
+    The second mode combines Stable Diffusion refinement with RealESRGAN
+    to produce high-quality upscaled images with enhanced details.
+    
+    Args:
+        params: Upscaling parameters including scale factor and denoise strength
+    """
     global image_out_callback, _generate_idx, _ext_model_pipe
 
     input_image = Image.open(params.image)
@@ -899,6 +940,21 @@ def upscale(params: UpscaleImageParams):
 
 
 def inpaint(params: InpaintParams):
+    """
+    Fill in masked regions of an image using text prompts.
+    
+    Performs inpainting by:
+    1. Loading a specialized inpainting pipeline
+    2. Processing the input image and mask
+    3. Slicing the image to focus on the masked area
+    4. Running diffusion to generate content in the masked region
+    5. Blending the new content with the original image
+    
+    The mask defines which areas will be regenerated (white areas in the mask).
+    
+    Args:
+        params: Inpainting parameters including image path, mask path, and prompt
+    """
     global _generate_idx, image_out_callback
 
     pipe = get_ext_pipe(
