@@ -516,7 +516,8 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        python-version: ['3.10']  # Test only latest Python on Windows for speed
+        python-version: ['3.10']
+      # Don't cancel all matrix jobs if one fails
       fail-fast: false
     name: Windows Python ${{ matrix.python-version }}
     steps:
@@ -884,6 +885,7 @@ jobs:
           echo "| CI Run Step Summary Annotations JSON Annotations JSON Annotations | ${{ github.run_step_summary_annotations_json_annotations_json_annotations }} |" >> $GITHUB_STEP_SUMMARY
           echo "| CI Run Step Summary Annotations JSON Annotations JSON Annotations JSON | ${{ github.run_step_summary_annotations_json_annotations_json_annotations_json }} |" >> $GITHUB_STEP_SUMMARY
           echo "| CI Run Step Summary Annotations JSON Annotations JSON Annotations JSON Annotations JSON | ${{ github.run_step_summary_annotations_json_annotations_json_annotations_json_annotations }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| CI Run Step Summary Annotations JSON Annotations JSON Annotations JSON Annotations JSON Annotations JSON Annotations JSON Annotations JSON Annotations JSON Annotations | ${{ github.run_step_summary_annotations_json_annotations_json_annotations_json_annotations_json }} |" >> $GITHUB_STEP_SUMMARY
           echo "| CI Run Step Summary Annotations JSON Annotations JSON Annotations JSON Annotations JSON Annotations JSON Annotations JSON Annotations JSON Annotations JSON Annotations | ${{ github.run_step_summary_annotations_json_annotations_json_annotations_json_annotations_json_annotations }} |" >> $GITHUB_STEP_SUMMARY
           echo "| CI Run Step Summary Annotations JSON Annotations JSON Annotations JSON Annotations JSON | ${{ github.run_step_summary_annotations_json_annotations_json_annotations_json_annotations_json }} |" >> $GITHUB_STEP_SUMMARY
           echo "| CI Run Step Summary Annotations JSON Annotations JSON Annotations JSON Annotations JSON Annotations JSON | ${{ github.run_step_summary_annotations_json_annotations_json_annotations_json_annotations_json_annotations_json }} |" >> $GITHUB_STEP_SUMMARY
