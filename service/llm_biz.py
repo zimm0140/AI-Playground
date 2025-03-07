@@ -34,7 +34,10 @@ from transformers import (
     PreTrainedTokenizer,
 )
 
-from ipex_llm.transformers import AutoModelForCausalLM
+try:
+    from ipex_llm.transformers import AutoModelForCausalLM
+except ModuleNotFoundError:
+    from transformers import AutoModelForCausalLM
 from typing import Callable
 from transformers.generation.stopping_criteria import (
     StoppingCriteria,
