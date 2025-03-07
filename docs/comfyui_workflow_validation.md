@@ -1,0 +1,107 @@
+# ComfyUI Workflow Validation in CI
+
+This document explains the automated validation process for ComfyUI workflows in the CI pipeline.
+
+## Overview
+
+The ComfyUI workflow validation process consists of three main stages:
+
+1. **Structural Validation**: Checks that workflow JSON files are well-formed and contain the expected structure.
+2. **Requirements Analysis**: Analyzes workflows to determine model, custom node, and hardware requirements.
+3. **Execution Simulation**: Simulates the workflow execution without requiring models or GPU resources.
+
+The validation runs automatically on:
+- Pull requests that modify workflows in the `WebUI/external/workflows` directory
+- Push events to the main branch that modify workflows
+- Weekly (Sunday at 00:00 UTC) to ensure ongoing compatibility
+- Manually via workflow dispatch when needed
+
+## Workflow Structure Validation
+
+This stage validates the JSON structure of workflow files:
+
+- Ensures workflows contain valid JSON syntax
+- Verifies the presence of required fields (`nodes` and `links`)
+- Checks that nodes have valid `class_type` values
+- Validates that connections between nodes reference existing nodes
+- Reports on unknown node types that may require additional validation
+
+### Validation Report
+
+The validation report includes:
+- Number of valid and invalid workflows
+- List of issues found in each workflow
+- Recommendations for fixing issues
+
+## Requirements Analysis
+
+This stage analyzes the requirements for executing each workflow:
+
+- **Model Requirements**: Identifies checkpoints, LoRAs, VAEs, and other models used
+- **Custom Node Extensions**: Determines which ComfyUI extensions are needed
+- **Python Packages**: Lists Python packages required by custom nodes
+- **Hardware Requirements**: Estimates GPU memory needed based on model size, batch size, and operations
+
+### Analysis Report
+
+The analysis report includes:
+- Aggregate statistics on most common models and custom nodes
+- Memory requirement estimates for each workflow
+- Detailed requirements for each individual workflow
+- Recommendations for setting up execution environments
+
+## Execution Simulation
+
+This stage performs a lightweight simulation of workflow execution:
+
+- Verifies that the workflow graph is acyclic (no circular dependencies)
+- Determines a valid execution order for nodes
+- Checks that connections between nodes have compatible types
+- Simulates data flow through the workflow without running actual models
+- Verifies that output nodes are properly connected
+
+### Simulation Report
+
+The simulation report includes:
+- Number of workflows that passed/failed simulation
+- Execution time for each workflow simulation
+- Detailed issues for failed workflows, categorized by severity
+- Recommendations for fixing common execution issues
+
+## CI Integration
+
+The workflow validation results are integrated into the CI pipeline:
+
+- Results are summarized in the GitHub step summary
+- Detailed reports are uploaded as artifacts
+- The main workflow summary includes the workflow validation status
+- Issues can be addressed before merging changes
+
+## Running Validation Locally
+
+You can run the validation process locally using the following scripts:
+
+```bash
+# Structural validation
+python .github/workflows/scripts/validate_comfyui_workflows.py --workflows-dir WebUI/external/workflows
+
+# Requirements analysis
+python .github/workflows/scripts/analyze_workflow_requirements.py --workflows-dir WebUI/external/workflows
+
+# Execution simulation
+python .github/workflows/scripts/test_workflow_execution.py --workflows-dir WebUI/external/workflows
+```
+
+Each script supports additional arguments:
+- `--output-dir`: Directory to store validation results
+- `--fail-on-error`: Exit with error code if validation fails
+
+## Future Improvements
+
+Planned improvements to the workflow validation process:
+
+1. **Actual Execution Testing**: Implement actual execution testing with minimal example models
+2. **Regression Testing**: Compare execution results between versions to detect regressions
+3. **Performance Benchmarking**: Measure execution time and memory usage for workflows
+4. **Extended Node Support**: Add support for validating more custom node types
+5. **Workflow Generation**: Generate test workflows to validate node compatibility 
