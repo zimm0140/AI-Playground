@@ -59,7 +59,10 @@ class ModelDownloaderApi:
         self.repo_folder = repo_id.replace("/", "---")
         self.file_queue.clear()
         self.total_size = 0
-        self.enum_file_list("/", is_sd)
+        self.enum_file_list(repo_id, is_sd, True)
+        print(dumps({"total_size": self.total_size, "file_list": self.file_queue}))
+        
+        # Also return a dictionary for API usage
         return {
             "repo_id": repo_id,
             "repo_folder": self.repo_folder,
@@ -71,53 +74,61 @@ class ModelDownloaderApi:
         """
         Enumerate files in a repository path and add them to the file queue.
         
-        Recursively explores the repository structure, adding file information
-        to the file_queue and accumulating the total size.
+        Recursively explores the repository structure, filtering out unwanted files,
+        adding file information to the file_queue and accumulating the total size.
         
         Args:
-            enum_path: The path within the repository to enumerate.
+            enum_path: The repository path or ID to enumerate.
             is_sd: Boolean flag indicating if this is a Stable Diffusion model,
-                  which may require special handling for certain file types.
+                  which affects file filtering (ignores root .safetensors, .pt, and .ckpt files).
             is_root: Boolean flag indicating if this is the root call in the recursion.
                     
         Returns:
             The updated file queue if this is the root call, otherwise None.
         """
-        print(f"enum_path={enum_path}")
-        file_list = self.fs.ls(path.join(self.repo_id, enum_path), detail=True)
-        
-        for file in file_list:
-            filetype = file["type"]
-            filename = path.basename(file["name"])
-            full_name = file["name"]
-            file_rel_path = full_name.replace(f"{self.repo_id}/", "")
-            if filetype == "directory":
-                self.enum_file_list(file_rel_path, is_sd, False)
-            elif filetype == "file":
-                if is_sd:
-                    # If is a safetensor file, is the model. Else is an extra file
-                    is_model = filename.endswith(".safetensors")
-                    is_extra = not is_model
-                else:
-                    # If it's not a sd model, all files are model files
-                    is_model = True
-                    is_extra = False
-                fsize = file["size"]
-                self.total_size += fsize
-                url = hf_hub_url(self.repo_id, file_rel_path)
-                # file_path = path.join(self.repo_folder, file_rel_path)
-                file_info = {
-                    "name": filename,
-                    "path": file_rel_path,
-                    "url": url,
-                    "size": fsize,
-                    "is_model": is_model,
-                    "is_extra": is_extra,
-                }
-                self.file_queue.append(file_info)
-                # print(f'file_path={file_path}')
-                # print(f'url={url}')
-        
+        list = self.fs.ls(enum_path, detail=True)
+        for item in list:
+            name: str = item.get("name")
+            size: int = item.get("size")
+            type: str = item.get("type")
+            if type == "directory":
+                self.enum_file_list(name, is_sd, False)
+            else:
+                # sd model ignore root .safetensors .pt .ckpt files
+                if (
+                    is_sd
+                    and is_root
+                    and (
+                        name.endswith(".safetensors")
+                        or name.endswith(".pt")
+                        or name.endswith(".ckpt")
+                    )
+                ):
+                    continue
+                # ignore no used files
+                elif (
+                    name.endswith(".png")
+                    or name.endswith(".gitattributes")
+                    or name.endswith(".md")
+                    or name.endswith(".jpg")
+                ):
+                    continue
+
+                self.total_size += size
+                relative_path = path.relpath(name, self.repo_id)
+                subfolder = path.dirname(relative_path).replace("\\", "/")
+                filename = path.basename(relative_path)
+                url = hf_hub_url(
+                    repo_id=self.repo_id, filename=filename, subfolder=subfolder
+                )
+                self.file_queue.append(
+                    {
+                        "name": name.replace(self.repo_id, self.repo_folder),
+                        "size": size,
+                        "url": url,
+                    }
+                )
+                
         if is_root:
             return self.file_queue
 
