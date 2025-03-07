@@ -1,23 +1,39 @@
+# AI Playground Service Requirements File
+# ----------------------------------
+# This file lists all Python package dependencies required by the AI Playground service
+# with their specific versions to ensure reproducible installations.
+
+# Core AI libraries
 basicsr==1.4.2
 compel==2.0.2
 datasets==2.18.0
 diffusers==0.27.2
+peft==0.10.0
+transformers==4.39.0
+trl==0.9.3
+huggingface_hub==0.25.2
+
+# Web API framework
 Flask==3.0.3
 apiflask==2.3.0
 marshmallow-dataclass==8.7.1
-langchain_community==0.3.0
-numpy==1.26.4
-opencv_python==4.9.0.80
-peft==0.10.0
-Pillow==10.3.0
-psutil==5.9.8
 Requests==2.32.3
+
+# Natural Language Processing and RAG
+langchain_community==0.3.0
 sentence_transformers==2.3.1
-transformers==4.39.0
-trl==0.9.3
 faiss-cpu==1.8.0
+
+# Document processing for RAG
 docx2txt==0.8
 pypdf==4.2.0
 unstructured==0.16.16
+
+# Image processing
+opencv_python==4.9.0.80
+Pillow==10.3.0
+
+# Utilities
+numpy==1.26.4
+psutil==5.9.8
 setuptools>=75.2.0
-huggingface_hub==0.25.2
