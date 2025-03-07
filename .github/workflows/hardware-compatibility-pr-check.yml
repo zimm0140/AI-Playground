@@ -50,6 +50,19 @@ jobs:
         run: |
           .github/workflows/scripts/run_hardware_advisor.sh
       
+      - name: Run auto-fix simulation
+        id: autofix-simulation
+        run: |
+          # Run the auto-fix tool in simulation mode (dry run)
+          .github/workflows/scripts/run_hardware_autofix.sh --dry-run
+          
+          # Check if auto-fix report was generated
+          if [ -f "ci_artifacts/hardware_compatibility/autofix/autofix_report.md" ]; then
+            echo "autofix_report_exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "autofix_report_exists=false" >> $GITHUB_OUTPUT
+          fi
+      
       - name: Generate PR comment
         id: pr-comment
         run: |
@@ -84,6 +97,26 @@ jobs:
               echo "" >> $PR_COMMENT_FILE
               grep -A 100 "## High Priority Recommendations" "ci_artifacts/hardware_compatibility/recommendations/resolution_plan.md" | grep -B 100 "## Medium Priority Recommendations" | grep -v "## Medium Priority Recommendations" >> $PR_COMMENT_FILE
               echo "" >> $PR_COMMENT_FILE
+              
+              # Add auto-fix simulation results if available
+              if [ "${{ steps.autofix-simulation.outputs.autofix_report_exists }}" == "true" ]; then
+                echo "## 🔧 Auto-fix Simulation Results" >> $PR_COMMENT_FILE
+                echo "" >> $PR_COMMENT_FILE
+                echo "The auto-fix tool ran in simulation mode. Here's what would be changed if applied:" >> $PR_COMMENT_FILE
+                echo "" >> $PR_COMMENT_FILE
+                grep -A 100 "## Changes That Would Be Applied" "ci_artifacts/hardware_compatibility/autofix/autofix_report.md" | grep -B 100 "## Skipped Changes" | grep -v "## Skipped Changes" >> $PR_COMMENT_FILE
+                echo "" >> $PR_COMMENT_FILE
+                echo "<details><summary>Skipped Changes</summary>" >> $PR_COMMENT_FILE
+                echo "" >> $PR_COMMENT_FILE
+                grep -A 100 "## Skipped Changes" "ci_artifacts/hardware_compatibility/autofix/autofix_report.md" | grep -B 100 "## Next Steps" | grep -v "## Next Steps" >> $PR_COMMENT_FILE
+                echo "</details>" >> $PR_COMMENT_FILE
+                echo "" >> $PR_COMMENT_FILE
+              fi
+            else
+              echo "## ⚠️ Warning" >> $PR_COMMENT_FILE
+              echo "" >> $PR_COMMENT_FILE
+              echo "Could not generate compatibility report. The hardware compatibility check may have failed." >> $PR_COMMENT_FILE
+              echo "" >> $PR_COMMENT_FILE
             fi
           else
             echo "## ⚠️ Warning" >> $PR_COMMENT_FILE
@@ -95,10 +128,11 @@ jobs:
           echo "## Next Steps" >> $PR_COMMENT_FILE
           echo "" >> $PR_COMMENT_FILE
           echo "Please review the recommendations above and ensure that your changes maintain compatibility across all hardware platforms." >> $PR_COMMENT_FILE
+          echo "You can automatically apply these changes by adding a comment with \`/auto-fix\` to this PR." >> $PR_COMMENT_FILE
           echo "For detailed information, see the [Hardware Compatibility Documentation](../docs/hardware_compatibility.md)." >> $PR_COMMENT_FILE
       
       - name: Upload compatibility reports
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: hardware-compatibility-reports
           path: ci_artifacts/hardware_compatibility/

@@ -61,14 +61,14 @@ jobs:
         run: .github/workflows/scripts/generate_hardware_matrix.sh
       
       - name: Upload hardware support matrix
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: hardware-support-matrix-linux-${{ matrix.python-version }}
           path: ci_artifacts/hw_support.md
           retention-days: 90
       
       - name: Upload hardware compatibility matrix
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: hardware-compatibility-matrix-linux-${{ matrix.python-version }}
           path: ci_artifacts/hardware_matrix/
@@ -110,7 +110,7 @@ jobs:
           .github/workflows/scripts/run_hardware_advisor.sh
       
       - name: Upload hardware compatibility report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: hardware-compatibility-report-linux-${{ matrix.python-version }}
           path: ci_artifacts/hardware_compatibility/

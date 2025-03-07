@@ -19,8 +19,8 @@ import sys
 import json
 import argparse
 import re
-from typing import Dict, List, Set, Tuple, Any, Optional
-from collections import defaultdict, Counter
+from typing import Dict, List, Any
+from collections import defaultdict
 
 
 class HardwareCompatibilityAdvisor:
@@ -176,7 +176,7 @@ class HardwareCompatibilityAdvisor:
                 'type': 'constraint',
                 'current_versions': all_versions,
                 'suggested_version': most_common_version,
-                'rationale': f"Use the most common constraint across platforms",
+                'rationale': "Use the most common constraint across platforms",
                 'affected_platforms': list(versions.keys()),
                 'impact': 'Medium',
                 'confidence': 'Medium'
@@ -188,7 +188,7 @@ class HardwareCompatibilityAdvisor:
                 'type': 'mixed',
                 'current_versions': all_versions,
                 'suggested_version': most_common_version,
-                'rationale': f"Standardize on the most commonly used version specification",
+                'rationale': "Standardize on the most commonly used version specification",
                 'affected_platforms': list(versions.keys()),
                 'impact': 'High',
                 'confidence': 'Medium'
@@ -528,7 +528,7 @@ class HardwareCompatibilityAdvisor:
         print("Writing GitHub summary...")
         self.write_github_summary()
         
-        print(f"Hardware Compatibility Advisor complete!")
+        print("Hardware Compatibility Advisor complete!")
         print(f"Resolution plan: {report_path}")
         
         # Return success

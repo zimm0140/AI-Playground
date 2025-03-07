@@ -53,9 +53,10 @@ This report combines results from both the Hardware Compatibility Tester and Adv
 
 ## Overview
 
-The Hardware Compatibility Suite performs two main functions:
+The Hardware Compatibility Suite performs three main functions:
 1. **Testing**: Analyzes package dependencies across hardware platforms
 2. **Advising**: Generates recommendations for resolving compatibility issues
+3. **Auto-fix**: Automatically applies recommended changes to standardize package versions
 
 ## Testing Results
 
@@ -93,7 +94,10 @@ $([ -f "$RECOMMENDATIONS_DIR/resolution_plan.md" ] && cat "$RECOMMENDATIONS_DIR/
 
 1. Review the detailed [compatibility report]($OUTPUT_DIR/hardware_compatibility_report.md)
 2. Examine the complete [resolution plan]($RECOMMENDATIONS_DIR/resolution_plan.md)
-3. Apply suggested changes to standardize package versions across platforms
+3. Run the auto-fix tool to automatically apply recommended changes:
+   \`\`\`
+   .github/workflows/scripts/run_hardware_autofix.sh [--apply] [--all-priorities]
+   \`\`\`
 4. Re-run the hardware compatibility suite to verify improvements
 EOF
 
@@ -102,4 +106,32 @@ echo -e "Reports generated:"
 echo -e "  - ${YELLOW}Compatibility Report:${NC} $OUTPUT_DIR/hardware_compatibility_report.md"
 echo -e "  - ${YELLOW}Resolution Plan:${NC} $RECOMMENDATIONS_DIR/resolution_plan.md"
 echo -e "  - ${YELLOW}Combined Summary:${NC} $OUTPUT_DIR/combined_summary.md"
-echo -e "${BLUE}===============================================${NC}" 
+echo -e "${BLUE}===============================================${NC}"
+
+# Step 4: Offer to run the auto-fix tool
+echo -e "\n${YELLOW}STEP 4: Auto-fix Option${NC}"
+echo -e "Would you like to run the auto-fix tool to automatically apply recommended changes?"
+echo -e "  1) Run auto-fix in simulation mode (dry run, no changes applied)"
+echo -e "  2) Run auto-fix and apply changes (backups will be created)"
+echo -e "  3) Skip auto-fix"
+echo -e ""
+read -p "Enter your choice (1-3): " choice
+
+case $choice in
+  1)
+    echo -e "\n${YELLOW}Running auto-fix in simulation mode...${NC}"
+    .github/workflows/scripts/run_hardware_autofix.sh
+    ;;
+  2)
+    echo -e "\n${YELLOW}Running auto-fix and applying changes...${NC}"
+    .github/workflows/scripts/run_hardware_autofix.sh --apply
+    ;;
+  3)
+    echo -e "\n${YELLOW}Skipping auto-fix.${NC}"
+    echo -e "You can run it later with: .github/workflows/scripts/run_hardware_autofix.sh"
+    ;;
+  *)
+    echo -e "\n${RED}Invalid choice. Skipping auto-fix.${NC}"
+    echo -e "You can run it later with: .github/workflows/scripts/run_hardware_autofix.sh"
+    ;;
+esac 
