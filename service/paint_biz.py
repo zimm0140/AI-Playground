@@ -170,7 +170,9 @@ class NoWatermark:
 
 # region global variable
 
+# Main model pipeline for basic image generation tasks
 _basic_model_pipe: StableDiffusionPipeline | StableDiffusionXLPipeline = None
+# Extended model pipeline for specialized tasks (img2img, inpainting, etc.)
 _ext_model_pipe: (
         StableDiffusionPipeline
         | StableDiffusionXLPipeline
@@ -179,26 +181,47 @@ _ext_model_pipe: (
         | StableDiffusionInpaintPipeline
         | StableDiffusionXLInpaintPipeline
 ) = None
+# RealESRGAN super-resolution model instance for upscaling
 _realESRGANer: RealESRGANer = None
+# Track the last used generation mode to avoid unnecessary reloading
 _last_mode: int = None
+# Track the last model name to avoid unnecessary reloading
 _last_model_name: str = None
+# Current generation index within a batch
 _generate_idx: int
+# Default scheduler instance (used as fallback)
 _default_scheduler: LCMScheduler = None
+# Track the last used LoRA to avoid unnecessary reloading
 _last_lora: str = "None"
+# Track the last used scheduler to avoid unnecessary reloading
 _last_scheduler: str = "None"
+# Callback for model loading progress events
 load_model_callback: Callable[[str], None] = None
+# Callback for model component loading events
 load_model_components_callback: Callable[[str], None] = None
+# Callback for download progress events
 download_progress_callback: Callable[[str, int, int, int], None] = (None,)
+# Callback for download completion events
 download_completed_callback: Callable[[str, Exception], None] = (None,)
+# Callback for step completion during generation
 step_end_callback: Callable[[int, int, int, Image.Image | None], None] = None
+# Callback for generated image output
 image_out_callback: Callable[[int, Image.Image, Any], None] = None
+# Tiny autoencoder for efficient preview generation
 _taesd_vae: AutoencoderTiny = None
+# Type of tiny autoencoder currently loaded (sd1.5 or sdxl)
 _taesd_vae_type: str = None
+# Whether preview generation is enabled (0=off, 1=on)
 _preview_enabled = 0
+# Flag to signal generation stopping
 _stop_generate = False
+# Flag to indicate active generation
 _generating = False
+# Event for synchronizing stop requests
 _stop_event = Event()
+# Queue for preview images
 _preview_queue = queue.Queue()
+# Safety checker instance for content filtering
 _safety_checker: StableDiffusionSafetyChecker = None
 
 
