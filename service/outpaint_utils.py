@@ -1,3 +1,16 @@
+"""
+Outpainting Utilities Module
+---------------------------
+This module provides utility functions for image outpainting, which extends 
+images beyond their original boundaries by generating new content.
+
+The utilities handle:
+- Preparing images for outpainting by adding padded areas
+- Creating gradient masks for smooth transitions between original and generated content
+- Applying blur effects to mask boundaries
+- Cropping and slicing images based on direction parameters
+"""
+
 import numpy as np
 from PIL import Image
 import cv2
@@ -5,6 +18,20 @@ from typing import Any
 
 
 def preprocess_outpaint(direction: str, image: Image.Image):
+    """
+    Prepare an image for outpainting by extending it in the specified direction.
+    
+    Creates a padded version of the input image with an extended region in the
+    specified direction, and generates a corresponding mask where the extended
+    area is marked for inpainting (white).
+    
+    Args:
+        direction: Direction to extend the image ("top", "right", "bottom", or "left")
+        image: Original PIL image to extend
+        
+    Returns:
+        tuple: (Padded image as PIL Image, mask image as PIL Image) 
+    """
     top_pad = 0
     right_pad = 0
     bottom_pad = 0
@@ -62,6 +89,20 @@ def preprocess_outpaint(direction: str, image: Image.Image):
 
 
 def gradient_dir(region: np.ndarray[Any, Any], dir):
+    """
+    Create a gradient in a specific direction within an image region.
+    
+    Modifies the input region in-place to contain a linear gradient that
+    transitions from black to white or white to black in the specified direction.
+    Used to create smooth transitions between original and generated content.
+    
+    Args:
+        region: NumPy array representing the image region to modify
+        dir: Direction of the gradient ("left", "right", "top", or "bottom")
+        
+    Returns:
+        The modified region with the gradient applied
+    """
     h, w, _ = region.shape
     if dir == "left":
         for x in range(w):
@@ -85,6 +126,23 @@ def outpaint_canny_gradient(
     left_pad: int,
     right_pad: int,
 ):
+    """
+    Apply gradient transitions to the edges of a mask image.
+    
+    Creates smooth gradient transitions at the boundaries between
+    the original image area and the areas to be outpainted, which
+    helps create seamless blends in the final output.
+    
+    Args:
+        image: Mask image (PIL Image or NumPy array)
+        top_pad: Amount of padding at the top
+        bottom_pad: Amount of padding at the bottom
+        left_pad: Amount of padding on the left
+        right_pad: Amount of padding on the right
+        
+    Returns:
+        PIL Image containing the modified mask with gradients
+    """
     if isinstance(image, Image.Image):
         img_ndata = np.array(image)
     else:
@@ -119,6 +177,23 @@ def outpaint_canny_blur(
     left_pad: int,
     right_pad: int,
 ):
+    """
+    Apply Gaussian blur to the edges of a mask image.
+    
+    Blurs the transition boundaries between the original image and
+    the outpainted areas to create smoother blends. This is an alternative
+    to gradient transitions.
+    
+    Args:
+        image: Mask image (PIL Image or NumPy array)
+        top_pad: Amount of padding at the top
+        bottom_pad: Amount of padding at the bottom
+        left_pad: Amount of padding on the left
+        right_pad: Amount of padding on the right
+        
+    Returns:
+        PIL Image containing the modified mask with blurred edges
+    """
     if isinstance(image, Image.Image):
         img_ndata = np.array(image)
     else:
@@ -149,6 +224,26 @@ def outpaint_canny_blur(
 def slice_by_direction(
     inpaint_image: Image.Image, mask_image: Image.Image, direction: int, max_size: int
 ):
+    """
+    Crop input and mask images based on a direction bit flag.
+    
+    Used to focus processing on specific portions of large images by
+    cropping them based on direction flags. The direction is specified
+    using bit flags where:
+    - 1: Top
+    - 2: Right
+    - 4: Bottom
+    - 8: Left
+    
+    Args:
+        inpaint_image: Input image to crop
+        mask_image: Mask image to crop
+        direction: Bit flag indicating direction(s)
+        max_size: Maximum size constraint for the crop
+        
+    Returns:
+        tuple: (Cropped input image, cropped mask image, crop box coordinates)
+    """
     top = 0
     right = 0
     bottom = 0
