@@ -63,6 +63,39 @@ jobs:
           echo "    if not hasattr(torch.xpu, 'has_fp64_dtype'):" >> sitecustomize.py
           echo "        torch.xpu.has_fp64_dtype = lambda: False" >> sitecustomize.py
       
+      - name: Create mock torch.xpu module
+        run: |
+          SITE_PACKAGES=$(python -c 'import site; print(site.getsitepackages()[0])')
+          # Create a more complete torch.xpu module with commonly used functions
+          mkdir -p $SITE_PACKAGES/torch/xpu
+          cat > $SITE_PACKAGES/torch/xpu/__init__.py << 'EOF'
+          # Mock implementation of torch.xpu module for CI testing
+          import torch
+          
+          # Create device-related functions
+          def device_count():
+              return 0
+              
+          def current_device():
+              return 0
+              
+          def get_device_name(device=None):
+              return "CI_MOCK_XPU_DEVICE"
+              
+          def is_available():
+              return False
+              
+          def has_fp64_dtype():
+              return False
+
+          # Create a device class to handle common operations
+          def device(index=0):
+              return torch.device("cpu")  # Return CPU device instead
+          EOF
+          
+          # Add xpu to torch module if needed
+          python -c "import torch; print('xpu' in dir(torch))"
+      
       - name: Copy sitecustomize.py to site-packages
         run: cp sitecustomize.py $(python -c 'import site; print(site.getsitepackages()[0])')
       
@@ -91,6 +124,18 @@ jobs:
           # Critical function needed by xpu_hijacks.py
           def has_xpu():
               return False
+
+          # Additional functions and attributes often used with IPEX
+          def enable_auto_mixed_precision(*args, **kwargs):
+              return None
+
+          def enable_onednn_fusion(*args, **kwargs):
+              return None
+              
+          xpu = None  # This attribute may be accessed directly
+          
+          def get_device_name(*args, **kwargs):
+              return "CPU"
           EOF
           # Verify the file was created correctly
           ls -la $SITE_PACKAGES/intel_extension_for_pytorch/
