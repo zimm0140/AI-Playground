@@ -1,274 +1,348 @@
 declare interface Window {
-    chrome: Chrome;
-    electronAPI: electronAPI;
+  chrome: Chrome
+  electronAPI: electronAPI
+  envVars: { platformTitle: string; productVersion: string }
+}
+
+interface ImportMetaEnv {
+  readonly VITE_PLATFORM_TITLE: string
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv
 }
 
 type electronAPI = {
-    openUrl(url: string): void
-    changeWindowMessageFilter(): void;
-    getWinSize(): Promise<{
-        width: number;
-        height: number;
-        maxChatContentHeight: number;
-    }>;
-    getLocalSettings(): Promise<LocalSettings>;
-    setWinSize(width: number, height: number): Promise<void>;
-    showSaveDialog(options: Electron.SaveDialogOptions): Promise<Electron.SaveDialogReturnValue>
-    showMessageBox(options: Electron.MessageBoxOptions): Promise<number>
-    showMessageBoxSync(options: Electron.MessageBoxSyncOptions): Promise<number>
-    showOpenDialog(options: Electron.OpenDialogOptions): Promise<Electron.OpenDialogReturnValue>
-    dragWinToMoveStart(x: number, y: number): void;
-    dragWinToMove(x: number, y: number): void;
-    dragWinToMoveStop(): void;
-    setIgnoreMouseEvents(ignore: boolean): void;
-    miniWindow(): void;
-    exitApp(): void;
-    saveImage(url: string): void;
-    openImageWin(url: string, title: string, width: number, height: number): void;
-    wakeupApiService(): void;
-    screenChange(callback: (width: number, height: number) => void): void;
-    webServiceExit(callback: (serviceName: string, normalExit: string) => void): void;
-    existsPath(path: string): Promise<boolean>;
-    getInitSetting(): Promise<SetupData>
-    updateModelPaths(modelPaths: ModelPaths): Promise<ModelLists>,
-    restorePathsSettings():Promise<void>,
-    refreshSDModles(): Promise<string[]>,
-    refreshLLMModles(): Promise<string[]>,
-    refreshLora(): Promise<string[]>,
-    refreshInpaintModles(): Promise<string[]>,
-    openImageWithSystem(url: string): void,
-    selecteImage(url: string): void,
-    setFullScreen(enable: boolean): void
-};
+  reloadImageWorkflows(): Promise<string[]>
+  updateWorkflowsFromIntelRepo(): Promise<UpdateWorkflowsFromIntelResult>
+  openDevTools(): void
+  openUrl(url: string): void
+  changeWindowMessageFilter(): void
+  getWinSize(): Promise<{
+    width: number
+    height: number
+    maxChatContentHeight: number
+  }>
+  getLocalSettings(): Promise<LocalSettings>
+  getThemeSettings(): Promise<ThemeSettings>
+  setWinSize(width: number, height: number): Promise<void>
+  showSaveDialog(options: Electron.SaveDialogOptions): Promise<Electron.SaveDialogReturnValue>
+  showMessageBox(options: Electron.MessageBoxOptions): Promise<number>
+  showMessageBoxSync(options: Electron.MessageBoxSyncOptions): Promise<number>
+  showOpenDialog(options: Electron.OpenDialogOptions): Promise<Electron.OpenDialogReturnValue>
+  dragWinToMoveStart(x: number, y: number): void
+  dragWinToMove(x: number, y: number): void
+  dragWinToMoveStop(): void
+  setIgnoreMouseEvents(ignore: boolean): void
+  miniWindow(): void
+  exitApp(): void
+  getMediaUrlBase(): Promise<string>
+  saveImage(url: string): void
+  openImageWin(url: string, title: string, width: number, height: number): void
+  wakeupApiService(): void
+  screenChange(callback: (width: number, height: number) => void): void
+  webServiceExit(callback: (serviceName: string, normalExit: string) => void): void
+  existsPath(path: string): Promise<boolean>
+  getInitSetting(): Promise<SetupData>
+  updateModelPaths(modelPaths: ModelPaths): Promise<ModelLists>
+  restorePathsSettings(): Promise<void>
+  refreshSDModles(): Promise<string[]>
+  refreshLLMModles(): Promise<string[]>
+  refreshLora(): Promise<string[]>
+  refreshEmbeddingModels(): Promise<string[]>
+  refreshInpaintModles(): Promise<string[]>
+  getDownloadedDiffusionModels(): Promise<string[]>
+  getDownloadedInpaintModels(): Promise<string[]>
+  getDownloadedLoras(): Promise<string[]>
+  getDownloadedLLMs(): Promise<string[]>
+  getDownloadedGGUFLLMs(): Promise<string[]>
+  getDownloadedOpenVINOLLMModels(): Promise<string[]>
+  getDownloadedEmbeddingModels(): Promise<string[]>
+  openImageWithSystem(url: string): void
+  openImageInFolder(url: string): void
+  setFullScreen(enable: boolean): void
+  onDebugLog(
+    callback: (data: {
+      level: 'error' | 'warn' | 'info'
+      source: 'ai-backend'
+      message: string
+    }) => void,
+  ): void
+  wakeupComfyUIService(): void
+  getServices(): Promise<ApiServiceInformation[]>
+  sendStartSignal(serviceName: string): Promise<BackendStatus>
+  sendStopSignal(serviceName: string): Promise<BackendStatus>
+  sendSetUpSignal(serviceName: string): void
+  onServiceSetUpProgress(callback: (data: SetupProgress) => void): void
+  onServiceInfoUpdate(callback: (service: ApiServiceInformation) => void): void
+}
+
+type SetupProgress = {
+  serviceName: BackendServiceName
+  step: string
+  status: 'executing' | 'failed' | 'success'
+  debugMessage: string
+}
 
 type Chrome = {
-    webview: WebView;
-};
+  webview: WebView
+}
 
 type WebView = {
-    hostObjects: HostProxyObjects;
-    addEventListener: (event: "message", callback: (args: any) => void) => void;
-    removeEventListener: (
-        event: "message",
-        callback: (args: any) => void
-    ) => void;
-};
+  hostObjects: HostProxyObjects
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  addEventListener: (event: 'message', callback: (args: any) => void) => void
+  removeEventListener: (
+    event: 'message',
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    callback: (args: any) => void,
+  ) => void
+}
 
 type HostProxyObjects = {
-    clientAPI: AsyncClientAPI;
-    sync: SyncProxyObjects;
-};
+  clientAPI: AsyncClientAPI
+  sync: SyncProxyObjects
+}
 
 type AsyncClientAPI = {
-    WebViewInvoke: (
-        methodName: string,
-        param?: number | boolean | string | null
-    ) => Promise<string>;
-};
+  WebViewInvoke: (methodName: string, param?: number | boolean | string | null) => Promise<string>
+}
 
 type SyncProxyObjects = {
-    clientAPI: SyncClientAPI;
-};
+  clientAPI: SyncClientAPI
+}
 
 type SyncClientAPI = {
-    WebViewInvoke: (
-        methodName: string,
-        param?: number | boolean | string | null
-    ) => string;
-};
+  WebViewInvoke: (methodName: string, param?: number | boolean | string | null) => string
+}
 
 type ApiResponse = {
-    code: number;
-    message: string;
-};
+  code: number
+  message: string
+}
 
 type KVObject = {
-    [key: string]: any;
-};
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any
+}
 
 type StringKV = {
-    [key: string]: string;
-};
+  [key: string]: string
+}
 
 type WebSettings = {
-    graphics: { name: string, index: number }[];
-    schedulers: string[]
+  graphics: { name: string; index: number }[]
+  schedulers: string[]
 }
 
 type GraphicsItem = {
-    index: number,
-    name: string
+  index: number
+  name: string
 }
 
 type ClientMessageEventArgs = {
-    data: UpdateLanguageSettingsNotify;
-    type: "message";
-};
-
+  data: UpdateLanguageSettingsNotify
+  type: 'message'
+}
 
 type UpdateLanguageSettingsNotify = {
-    type: "updateLanguageSettings";
-    value: LanguageSetting;
-};
+  type: 'updateLanguageSettings'
+  value: LanguageSetting
+}
 
 type LanguageSetting = {
-    langName: string;
-    records: Record<string, string>;
-};
-
+  langName: string
+  records: Record<string, string>
+}
 
 type DropListItem = {
-    display: string;
-    value: string | number;
+  display: string
+  value: string | number
+}
+
+type MetricsData = {
+  num_tokens: number
+  total_time: number
+  first_token_latency: number
+  overall_tokens_per_second: number
+  second_plus_tokens_per_second: number
 }
 
 type ChatItem = {
-    question: string,
-    answer: string,
+  metrics: MetricsData
+  question: string
+  answer: string
+  title?: string
+  model?: string
 }
 
 type ChatRequestParams = {
-    context?: Array<Chat>;
+  context?: Array<Chat>
 }
 
 type RagFileItem = {
-    type: number;
-    filename: string;
-    md5: string;
-    status: number,
-    path?: string | null;
+  type: number
+  filename: string
+  md5: string
+  status: number
+  path?: string | null
 }
 
-
-type LLMOutCallback = LoadModelCallback | LLMOutTextCallback | DownloadModelProgressCallback | DownloadModelCompleted | ErrorOutCallback | NotEnoughDiskSpaceExceptionCallback;
+type LLMOutCallback =
+  | LoadModelCallback
+  | LoadModelAllComplete
+  | LLMOutTextCallback
+  | DownloadModelProgressCallback
+  | DownloadModelCompleted
+  | ErrorOutCallback
+  | NotEnoughDiskSpaceExceptionCallback
+  | GatherMetrics
 
 type LLMOutTextCallback = {
-    type: "text_out",
-    value: string
-    dtype: 1, 2
+  type: 'text_out'
+  value: string
+  dtype: 1
+  2
 }
 
-type SDOutCallback = LoadModelCallback | LoadModelcomponentsCallback | SDOutImagelCallback | SDStepEndCallback | ErrorOutCallback | NotEnoughDiskSpaceExceptionCallback;
+type LoadModelAllComplete = {
+  type: 'allComplete'
+}
+
+type GatherMetrics = {
+  type: 'metrics'
+  num_tokens: number
+  total_time: number
+  overall_tokens_per_second: number
+  second_plus_tokens_per_second: number
+  first_token_latency: number
+}
 
 type LoadModelCallback = {
-    type: "load_model",
-    event: "start" | "finish"
+  type: 'load_model'
+  event: 'start' | 'finish'
 }
 
-type LoadModelcomponentsCallback = {
-    type: "load_model_components",
-    event: "start" | "finish"
-}
-
-type SDOutImagelCallback = {
-    type: "image_out",
-    index: number,
-    image: string,
-    params: KVObject,
-}
-
-type SDStepEndCallback = {
-    type: "step_end",
-    index: number,
-    step: number,
-    total_step: number,
-    image?: string,
+type LoadModelComponentsCallback = {
+  type: 'load_model_components'
+  event: 'start' | 'finish'
 }
 
 type NotEnoughDiskSpaceExceptionCallback = {
-    type: "error",
-    err_type: "not_enough_disk_space",
-    requires_space: string,
-    free_space: string
+  type: 'error'
+  err_type: 'not_enough_disk_space'
+  requires_space: string
+  free_space: string
 }
 
 type ErrorOutCallback = {
-    type: "error",
-    err_type: "runtime_error" | "download_exception" | "unknow_exception",
-};
+  type: 'error'
+  err_type: 'runtime_error' | 'download_exception' | 'unknown_exception'
+}
 
 type DownloadModelProgressCallback = {
-    type: "download_model_progress",
-    repo_id: string;
-    download_size: string,
-    total_size: string,
-    percent: number,
-    speed: string,
+  type: 'download_model_progress'
+  repo_id: string
+  download_size: string
+  total_size: string
+  percent: number
+  speed: string
 }
 
 type DownloadModelCompleted = {
-    type: "download_model_completed",
-    repo_id: string;
+  type: 'download_model_completed'
+  repo_id: string
 }
 
 type ShowOpenDialogOptions = {
-    filters: Array<{
-        name: string,
-        extensions: Array<string>
-    }>,
-    title?: string,
-    multiSelected?: boolean,
+  filters: Array<{
+    name: string
+    extensions: Array<string>
+  }>
+  title?: string
+  multiSelected?: boolean
 }
 type ShowOpenDialogResult = {
-    canceled: boolean,
-    filePaths: Array<string>
+  canceled: boolean
+  filePaths: Array<string>
 }
 
 type ShowSaveDialogOptions = {
-    filters: Array<{
-        name: string,
-        extensions: Array<string>
-    }>,
-    title?: string,
-    defaultPath?: string;
+  filters: Array<{
+    name: string
+    extensions: Array<string>
+  }>
+  title?: string
+  defaultPath?: string
 }
 
 type ShowSaveDialogResult = {
-    canceled: boolean,
-    filePath: string;
+  canceled: boolean
+  filePath: string
 }
 
 type RandomNumberSetting = {
-    min: nubmer;
-    max: number;
-    scale: number;
-    default: number;
-    value: number;
+  min: nubmer
+  max: number
+  scale: number
+  default: number
+  value: number
 }
 
 type ResolutionSettings = {
-    width: NumberRange;
-    height: NumberRange;
-    preset: Size[]
+  width: NumberRange
+  height: NumberRange
+  preset: Size[]
 }
 
 type Size = {
-    width: number;
-    height: number;
+  width: number
+  height: number
 }
 
 type NumberRange = {
-    min: number;
-    max: number;
+  min: number
+  max: number
 }
 
-type DownloadFailedParams = { type: "error" | "cancelConfrim" | "cancelDownload" | "conflict", error?: any }
-
-type CheckModelExistParam = {
-    repo_id: string;
-    type: number
+type DownloadFailedParams = {
+  type: 'error' | 'cancelConfrim' | 'cancelDownload' | 'conflict'
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  error?: any
 }
 
-type DownloadModelParam = CheckModelExistParam
+type CheckModelAlreadyLoadedParameters = {
+  repo_id: string
+  type: number
+  backend: 'comfyui' | 'default' | 'llama_cpp' | 'openvino'
+  additionalLicenseLink?: string
+}
 
-type DownloadModelRender = { size: string } & CheckModelExistParam
+type DownloadModelParam = CheckModelAlreadyLoadedParameters
 
-type CheckModelExistResult = {
-    exist: boolean
-} & CheckModelExistParam
+type DownloadModelRender = {
+  size: string
+  gated?: boolean
+  accessGranted?: boolean
+} & DownloadModelParam
 
-type CheckModelSizeResult = {
-    size: string
-} & CheckModelExistParam
+type ComfyUICustomNodesRequestParameters = {
+  username: string
+  repoName: string
+  gitRef?: string
+}
 
-type SDGenerateState = "no_start" | "input_image" | "load_model" | "load_model_components" | "generating" | "image_out" | "error"
+type CheckModelAlreadyLoadedResult = {
+  already_loaded: boolean
+} & CheckModelAlreadyLoadedParameters
+
+type BackendServiceName = 'ai-backend' | 'comfyui-backend' | 'llamacpp-backend' | 'openvino-backend'
+
+type ApiServiceInformation = {
+  serviceName: BackendServiceName
+  status: BackendStatus
+  baseUrl: string
+  port: number
+  isSetUp: boolean
+  isRequired: boolean
+}

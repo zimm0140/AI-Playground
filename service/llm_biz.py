@@ -1,13 +1,14 @@
-# --- Standard Library Imports ---
+# Load model directly
 import gc
 import threading
 import time
 import traceback
-from os import path
-from typing import List, Dict, Callable
-
-# --- Third-Party Imports ---
 import torch
+import logging
+import sys
+
+from typing import Any, List, Dict
+from os import path
 from transformers import (
     TextIteratorStreamer,
     StoppingCriteriaList,
@@ -15,30 +16,44 @@ from transformers import (
     PreTrainedModel,
     PreTrainedTokenizer,
 )
+
+from ipex_llm.transformers import AutoModelForCausalLM
+from typing import Callable
 from transformers.generation.stopping_criteria import (
     StoppingCriteria,
     STOPPING_CRITERIA_INPUTS_DOCSTRING,
     add_start_docstrings,
 )
-
-# --- Local Imports ---
-from ipex_llm.transformers import AutoModelForCausalLM
-import model_config
+import service_config
 
 
 class LLMParams:
     prompt: List[Dict[str, str]]
     device: int
-    enable_rag: bool 
+    enable_rag: bool
     model_repo_id: str
+    max_tokens: int
+    print_metrics: bool
+    generation_parameters: Dict[str, Any]
+
 
     def __init__(
-        self, prompt: list, device: int, enable_rag: bool, model_repo_id: str
+            self,
+            prompt: list,
+            device: int,
+            enable_rag: bool,
+            model_repo_id: str,
+            max_tokens: int,
+            print_metrics: bool = True,
+            **kwargs
     ) -> None:
         self.prompt = prompt
         self.device = device
         self.enable_rag = enable_rag
         self.model_repo_id = model_repo_id
+        self.max_tokens = max_tokens
+        self.print_metrics = print_metrics
+        self.generation_parameters = kwargs
 
 
 RAG_PROMPT_FORMAT = "Answer the questions based on the information below. \n{context}\n\nQuestion: {prompt}"
@@ -49,10 +64,9 @@ _stop_generate = False
 _stop_event = threading.Event()
 _last_repo_id: str = None
 _default_prompt = {
-        "role": "system",
-        "content": "You are a helpful digital assistant. Please provide safe, ethical and accurate information to the user. Please keep the output text language the same as the user input.",
-    }
-
+    "role": "system",
+    "content": "You are a helpful digital assistant. Please provide safe, ethical and accurate information to the user. Please keep the output text language the same as the user input.",
+}
 
 
 def user_stop(input_ids: torch.LongTensor, scores: torch.FloatTensor, **kwargs):
@@ -61,13 +75,13 @@ def user_stop(input_ids: torch.LongTensor, scores: torch.FloatTensor, **kwargs):
 
 
 def stream_chat_generate(
-    model: PreTrainedModel,
-    args: dict,
-    error_callback: Callable[[Exception], None] = None,
+        model: PreTrainedModel,
+        args: dict,
+        error_callback: Callable[[Exception], None] = None,
 ):
-    print(args)
     try:
         model.generate(**args)
+        sys.stdout.flush()
     except Exception as ex:
         traceback.print_exc()
         if error_callback is not None:
@@ -75,15 +89,16 @@ def stream_chat_generate(
 
 
 def generate(
-    prompt: List[Dict[str, str]],
-    model: PreTrainedModel,
-    tokenizer: PreTrainedTokenizer,
-    max_new_tokens: int,
-    error_callback: Callable[[Exception], None] = None,
+        prompt: List[Dict[str, str]],
+        model: PreTrainedModel,
+        tokenizer: PreTrainedTokenizer,
+        max_new_tokens: int,
+        error_callback: Callable[[Exception], None] = None,
 ):
+    logging.debug(f"got prompt: {prompt}")
     global _stop_generate, _default_prompt
     _stop_generate = False
-    
+
     chat_history = [_default_prompt]
     prompt_len = prompt.__len__()
     i = 0
@@ -95,19 +110,17 @@ def generate(
             )
         i = i + 1
 
-    
-
     new_prompt = tokenizer.apply_chat_template(
-         chat_history, tokenize=False, add_generation_prompt=True
+        chat_history, tokenize=False, add_generation_prompt=True
     )
-    
+
     while len(tokenizer.tokenize(new_prompt)) > 2000:
         chat_history.remove(chat_history[1])
         new_prompt = tokenizer.apply_chat_template(
-             chat_history, tokenize=False, add_generation_prompt=True
+            chat_history, tokenize=False, add_generation_prompt=True
         )
 
-    model_inputs = tokenizer(new_prompt, return_tensors="pt").to(model_config.device)
+    model_inputs = tokenizer(new_prompt, return_tensors="pt").to(service_config.device)
     ##tensor: torch.Tensor = encoding.get("input_ids")
 
     stopping_criteria = StoppingCriteriaList()
@@ -140,11 +153,12 @@ def generate(
 
 
 def process_rag(
-    prompt: str,
-    text_out_callback: Callable[[str, int], None] = None,
+        prompt: str,
+        text_out_callback: Callable[[str, int], None] = None,
 ):
     import rag
-    rag.to(model_config.device)
+
+    rag.to(service_config.device)
     query_success, context, rag_source = rag.query(prompt)
     if query_success:
         print("rag query input\r\n{}output:\r\n{}".format(prompt, context))
@@ -155,10 +169,11 @@ def process_rag(
 
 
 def chat(
-    params: LLMParams,
-    load_model_callback: Callable[[str], None] = None,
-    text_out_callback: Callable[[str, int], None] = None,
-    error_callback: Callable[[Exception], None] = None,
+        params: LLMParams,
+        load_model_callback: Callable[[str], None] = None,
+        text_out_callback: Callable[[str, int], None] = None,
+        metrics_callback: Callable[[dict], None] = None,
+        error_callback: Callable[[Exception], None] = None,
 ):
     global _model, _last_repo_id, _generating, _tokenizer, _stop_generate
 
@@ -167,11 +182,11 @@ def chat(
         stop_generate()
 
         torch.xpu.set_device(params.device)
-        model_config.device = f"xpu:{params.device}"
+        service_config.device = f"xpu:{params.device}"
         prompt = params.prompt
         enable_rag = params.enable_rag
         model_repo_id = params.model_repo_id
-        max_token = 1024
+        max_tokens = params.max_tokens
 
         _generating = True
 
@@ -184,7 +199,7 @@ def chat(
                 gc.collect()
                 torch.xpu.empty_cache()
 
-            model_base_path = model_config.config.get("llm")
+            model_base_path = service_config.service_model_paths.get("llm")
             model_name = model_repo_id.replace("/", "---")
             model_path = path.abspath(path.join(model_base_path, model_name))
 
@@ -193,13 +208,13 @@ def chat(
                 load_model_callback("start")
             start = time.time()
 
-            load_in_low_bit="sym_int4"
+            load_in_low_bit = "sym_int4"
 
             _model = AutoModelForCausalLM.from_pretrained(
                 model_path,
                 torch_dtype=torch.float16,
                 trust_remote_code=True,
-                load_in_low_bit= load_in_low_bit,
+                load_in_low_bit=load_in_low_bit,
                 # load_in_4bit=True,
             )
 
@@ -217,22 +232,27 @@ def chat(
 
         assert_stop_generate()
 
-        is_first = True
-
         if enable_rag:
             last_prompt = prompt[prompt.__len__() - 1]
             last_prompt.__setitem__(
                 "question", process_rag(last_prompt.get("question"), text_out_callback)
             )
 
-        _model = _model.to(model_config.device)
+        _model = _model.to(service_config.device)
+
+        num_tokens = 0
+        start_time = time.time()
+        is_first = True
+        first_token_time = 0
+        last_token_time = 0
         with torch.inference_mode():
             all_stream_output = ""
             for stream_output in generate(
-                prompt, _model, _tokenizer, max_token, error_callback
+                    prompt, _model, _tokenizer, max_tokens, error_callback
             ):
                 assert_stop_generate()
 
+                num_tokens += 1
                 if is_first:
                     first_token_time = time.time()
                     is_first = False
@@ -244,18 +264,30 @@ def chat(
 
         last_token_time = time.time()
         torch.xpu.empty_cache()
-        print("\r\n----------inference finish----------")
-        print("cost_time : {:.7f}s".format(last_token_time - first_token_time))
-        print(
-            "first_token_time : {}".format(
-                time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(first_token_time))
-            )
-        )
-        print(
-            "last_token_time : {}".format(
-                time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(last_token_time))
-            )
-        )
+
+        metrics_data = {
+            "type": "metrics",
+            "num_tokens": num_tokens,
+            "total_time": last_token_time - start_time,
+            "overall_tokens_per_second": num_tokens / (last_token_time - start_time),
+            "second_plus_tokens_per_second": (num_tokens - 1) / (last_token_time - first_token_time),
+            "first_token_latency": first_token_time - start_time,
+            "after_token_latency": (last_token_time - first_token_time) / (num_tokens - 1) if num_tokens > 1 else None
+        }
+
+        metrics_callback(metrics_data)
+
+        if params.print_metrics:
+            logging.info(f"""
+                    ----------inference finish----------
+                    num_tokens : {metrics_data['num_tokens']}
+                    total_time : {metrics_data['total_time']:.4f} s
+                    overall tokens/s : {metrics_data['overall_tokens_per_second']:.4f}
+                    2nd+ token/s : {metrics_data['second_plus_tokens_per_second']:.4f}
+                    first_token_latency : {metrics_data['first_token_latency']:.4f} s
+                    after_token_latency : {metrics_data['after_token_latency']:.4f} s
+                    """)
+
     finally:
         _generating = False
 
@@ -298,6 +330,6 @@ class CustomStopCriteria(StoppingCriteria):
 
     @add_start_docstrings(STOPPING_CRITERIA_INPUTS_DOCSTRING)
     def __call__(
-        self, input_ids: torch.LongTensor, scores: torch.FloatTensor, **kwargs
+            self, input_ids: torch.LongTensor, scores: torch.FloatTensor, **kwargs
     ) -> bool:
         return self.stop_callback(input_ids, scores, **kwargs)

@@ -1,127 +1,114 @@
 # AI Playground
 
-![image](https://github.com/user-attachments/assets/66086f2c-216e-4a79-8ff9-01e04db7e71d)
+<a href="https://scan.coverity.com/projects/ai-playground">
+  <img alt="Coverity Scan Build Status"
+       src="https://scan.coverity.com/projects/30694/badge.svg"/>
+</a>
 
-This example is based on the xpu implementation of Intel Arc A-Series dGPU and Ultra iGPU
+![image](https://github.com/user-attachments/assets/ee1efc30-4dd1-4934-9233-53fba00c71bd)
 
-Welcome to AI Playground beta open source project and AI PC starter app for doing AI image creation, image stylizing, and chatbot on a PC powered by an Intel® Arc™ GPU.  AI Playground leverages libraries from GitHub and Huggingface which may not be available in all countries world-wide.
+
+This example is based on the xpu implementation of Intel® Arc™ GPU.
+
+Welcome to AI Playground open source project and AI PC starter app for doing AI image creation, image stylizing, and chatbot on a PC powered by an Intel® Arc™ GPU. AI Playground leverages libraries from GitHub and Huggingface which may not be available in all countries world-wide.  AI Playground supports many Gen AI libraries and models including:
+- Image Diffusion: Stable Diffusion 1.5, SDXL, Flux.1-Schnell, LTX-Video
+- LLM: Safetensor PyTorch LLMs - DeepSeek R1 models, Phi3, Qwen2, Mistral, GGUF LLMs -  Llama 3.1, Llama 3.2: OpenVINO - TinyLlama, Mistral 7B, Phi3 mini, Phi3.5 mini
 
 ## README.md
 - English (readme.md)
 
 ## Min Specs
-AI Playground beta is currently available as a packaged installer, or available as a source code from our Github repository.  To run AI Playground you must have a PC that meets the following specifications
+AI Playground alpha and beta installers are currently available downloadable executables, or available as a source code from our Github repository.  To run AI Playground you must have a PC that meets the following specifications
 
 *	Windows OS
-*	Intel Core Ultra-H Processor (coming soon) OR Intel Arc GPU (discrete) with 8GB of vRAM
+*	Intel Core Ultra-H Processor, Intel Core Ultra 200V series processor OR Intel Arc GPU Series A or Series B (discrete) with 8GB of vRAM
 
 ## Installation - Packaged Installer: 
-AI Playground has multiple packaged installers, each specific to the hardware. 
-1. Choose the correct installer (for Desktop systems with Intel Arc GPUs,or for Intel Core Ultra-H systems), download to your PC then run the installer.
-2. The installer will have two phases.  It will first install components and environment from the installer. The second phase will pull in components from their source. </b >
-This second phase of installation **will take several minutes** and require a steady internet connection.
-3. On first run, the load screen will take up to a minute
-4. Download the Users Guide for application information
+Starting from v2.0, there is a single packaged installer that works for all supported hardware mentioned above. This installer simplifies the process for end users to install AI Playground and get it running on their PC. Please note that while this makes the installation process easier, this is open-source beta software, and there may be component and version conflicts. Refer to the Troubleshooting section for known issues.
 
-*	AI Playground for Desktop-dGPU - [Release Notes](https://github.com/intel/AI-Playground/releases/tag/v1.01beta) | [Download](https://github.com/intel/AI-Playground/releases/download/v1.01beta/AI.Playground-v1.01b-Desktop_dGPU.exe) 
+### Download the installer
+:new: **AI Playground 2.2.1 Beta (all SKUs)** - [Release Notes](https://github.com/intel/AI-Playground/releases/tag/v2.2.1-beta) | [Download](https://github.com/intel/AI-Playground/releases/download/v2.2.1-beta/AI.Playground-2.2.1-beta.exe) :new:
+> [!IMPORTANT]  
+> This release fixes video generation and image generation bugs from 2.2
 
-*	AI Playground for Intel Core Ultra-H  - [Release Notes](https://github.com/intel/AI-Playground/releases/tag/v1.01beta.mtl) | [Download](https://github.com/intel/AI-Playground/releases/download/v1.01beta.mtl/AI.Playground-v1.01b-Mobile_MTL-H.exe) 
+### Installation Process for v2.0
+1. The installer only installs the Electron frontend, so it completes very quickly.
+2. On the first run, you need to install additional backend components for AI Playground to function properly. This process requires a strong and open network and may **take several minutes**.
+3. Download the Users Guide for application information: [AI Playground Users Guide](https://github.com/intel/ai-playground/blob/main/AI%20Playground%20Users%20Guide.pdf)
 
-*	[AI Playground Users Guide](https://github.com/intel/ai-playground/blob/main/AI%20Playground%20Users%20Guide.pdf)
-
-IMPORTANT: We have noticed some systems require the VS C++ redistribution, often already installed on Windows systems. If AI Playground is hanging on the load screen , this may be the issue and can be resolved by installing VS C++ redist https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170
+### Troubleshooting Installation
+The following are known situations where your installation may be blocked or interrupted.  Review the following to remedy installations issues.  If installation issues persist, generate a copy of the log by typing CTRL+SHIFT+I, select the console tab and copy the last few entries of the log written where the installer failed.  Provide these details to us via the issues tab here, or via the Intel Insiders Discord, or Graphics forum on Intel's support site.
+1. **Restart**: Time-out issues have been sighted, which show as a failed install but resolve when restarting AI Playground
+2. **Verify Intel Arc GPU**: Ensure your system has an Intel Arc GPU. Go to your Windows Start Menu, type "Device Manager," and under Display Adapters, check the name of your GPU device. It should describe an Intel Arc GPU. If so, then you you have a GPU that means our minimum specifications.  If it says "Intel(R) Graphics," your system does not have a built-in Intel Arc GPU and does not meet the minimum specifications.
+3. **Interrupted Installation**: The online installation for backend components can be interrupted or blocked by an IT network, firewall, or sleep settings. Ensure you are on an open network, with the firewall off, and set sleep settings to stay awake when powered on.
+4. **Missing Libraries**: Some Windows systems may be missing needed libraries. This can be fixed by installing the 64-bit VC++ redistribution from Microsoft [here](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170). It is recommended this be done after updating the Graphics drivers. Then install AI Playground.
+5. **Python Conflict**: Some PCs with an existing installation of Python can cause a conflict with AI Playground installation, where the wrong or conflicting packages are installed due to the incorrect version or location of Python on the system.  This is usually remedied by uninstalling Python environment, restarting and reinstalling AI Playground
+6.  **Temp Files**: Should the installation be interrupted because of any of the above issues it is possible that temporary installation files have been left behind and trying to install with these files in place can block the installation. Remove these files or do a clean install of AI Playground to remedy
 
 ## Project Development
-### Dev Environment Setup (Backend, Python)
+### Checkout Source Code
 
-1. **Install Intel oneAPI Base Toolkit:**
+To get started, clone the repository and navigate to the project directory:
 
-    - Download and install the latest Intel oneAPI Base Toolkit from [Intel oneAPI Base Toolkit](https://www.intel.com/content/www/us/en/developer/tools/oneapi/base-toolkit.html).
-    - Ensure you select all the necessary components, including the **Intel® oneAPI DPC++/C++ Compiler** and **Intel® oneAPI Math Kernel Library (oneMKL)**.
+```cmd
+git clone -b dev https://github.com/intel/AI-Playground.git
+cd AI-Playground
+```
 
-2. **Create and Activate the Conda Environment:**
+### Install Node.js Dependencies
 
-   - Open a terminal or command prompt and navigate to the project root directory (AI-Playground).
-   - Run the following command to create and activate the environment based on your hardware:
+1. Install the Node.js development environment from [Node.js](https://nodejs.org/en/download).
 
-     **For Core Ultra-H:**
-     ```bash
-     conda env create -f environment-ultra.yml
-     conda activate aipg_xpu_ultra
-     ```
+2. Navigate to the `WebUI` directory and install all Node.js dependencies:
 
-     **For Arc A-Series dGPUs:**
-     ```bash
-     conda env create -f environment-arc.yml
-     conda activate aipg_xpu_arc
-     ```
+```cmd
+cd WebUI
+npm install
+```
 
+### Prepare Python Environment
 
-3. **Download and Install the Intel Extension for PyTorch AOT Packages:**
+1. Install Miniforge to manage your Conda environment: https://github.com/conda-forge/miniforge
 
-    - **Important:** Ensure you select the correct wheel file corresponding to your hardware and Python version from the [Intel Extension for PyTorch releases page](https://github.com/intel/intel-extension-for-pytorch/releases).
+2. Create a Conda environment with Python 3.11 and libuv:
+```
+conda create -n cp311_libuv python=3.11 libuv -y
+```
 
-    - **For Core Ultra-H:**
-      ```bash
-      pip install https://github.com/Nuullll/intel-extension-for-pytorch/releases/download/v2.1.20%2Bmtl%2Boneapi/intel_extension_for_pytorch-2.1.20+mtl-cp310-cp310-win_amd64.whl & \
-      pip install https://github.com/Nuullll/intel-extension-for-pytorch/releases/download/v2.1.20%2Bmtl%2Boneapi/torch-2.1.0a0+git7bcf7da-cp310-cp310-win_amd64.whl & \
-      pip install https://github.com/Nuullll/intel-extension-for-pytorch/releases/download/v2.1.20%2Bmtl%2Boneapi/torchaudio-2.1.0+6ea1133-cp310-cp310-win_amd64.whl & \
-      pip install https://github.com/Nuullll/intel-extension-for-pytorch/releases/download/v2.1.20%2Bmtl%2Boneapi/torchvision-0.16.0+fbb4cc5-cp310-cp310-win_amd64.whl
-      ```
+3. Locate the path to your newly created Conda environment:
+```
+conda env list | findstr cp311_libuv
+```
 
-    - **For Arc A-Series dGPU:**
-      ```bash
-      pip install https://github.com/Nuullll/intel-extension-for-pytorch/releases/download/v2.1.10%2Bxpu/torch-2.1.0a0+cxx11.abi-cp310-cp310-win_amd64.whl & \
-      pip install https://github.com/Nuullll/intel-extension-for-pytorch/releases/download/v2.1.10%2Bxpu/intel_extension_for_pytorch-2.1.10+xpu-cp310-cp310-win_amd64.whl & \
-      pip install https://github.com/Nuullll/intel-extension-for-pytorch/releases/download/v2.1.10%2Bxpu/torchvision-0.16.0a0+cxx11.abi-cp310-cp310-win_amd64.whl & \
-      pip install https://github.com/Nuullll/intel-extension-for-pytorch/releases/download/v2.1.10%2Bxpu/torchaudio-2.1.0a0+cxx11.abi-cp310-cp310-win_amd64.whl
-      ```
+4. In the `WebUI` directory, execute the `fetch-build-resources` script, replacing `<path_to_cp311_libuv_conda_env>` with the actual path you copied in the previous step:
+```
+npm run fetch-build-resources -- --conda_env_dir=<path_to_cp311_libuv_conda_env>
+```
 
-4. **Verify the XPU Environment Setup:**
+5. Run the `prepare-build` script:
+```
+npm run prepare-build
+```
 
-    ```bash
-    python -c "import torch; import intel_extension_for_pytorch as ipex; print(torch.__version__); print(ipex.__version__); [print(f'[{i}]: {torch.xpu.get_device_properties(i)}') for i in range(torch.xpu.device_count())]"
-    ```
+You should now have a basic Python environment located at `build-envs\online\prototype-python-env`.
 
-### Linking Dev Environment to Project Environment
+### Launch the application
 
-1.  **Switch to the project root directory:** (AI-Playground)
-    ```bash
-    cd AI-Playground 
-    ```
+To start the application in development mode, run:
 
-2.  **View the Conda environment path (on Windows):** 
-    ```powershell
-    conda env list | findstr aipg_xpu
-    ```
-    This command will show the path to your `aipg_xpu` environment.
+```
+npm run dev
+```
 
-3.  **Create a symbolic link:**
+### (Optional) Build the installer
 
-    - **Using PowerShell:**
-        ```powershell
-        New-Item -ItemType Junction -Path ".\env" -Target "C:\Users\YourUserName\.conda\envs\aipg_xpu"
-        ```
-        (Replace `"C:\Users\YourUserName\.conda\envs\aipg_xpu"` with the actual path obtained from the previous step.)
+To build the installer, run:
 
-    - **Using Command Prompt (cmd):**
-        ```cmd
-        mklink /J ".\env" "C:\Users\YourUserName\.conda\envs\aipg_xpu"
-        ```
-        (Replace `"C:\Users\YourUserName\.conda\envs\aipg_xpu"` with the actual path obtained from the previous step.)
+```
+npm run build
+```
 
-### WebUI (Node.js + electron)
-
-1.  **Install Node.js development environment:** Download and install from [Node.js download page](https://nodejs.org/).
-2.  **Switch to the WebUI directory and install all Node.js dependencies.**
-    ```bash
-    cd WebUI
-    npm install
-    ```
-3.  **In the WebUI directory, run the below command to get started with development**
-    ```bash
-    npm run dev
-    ```
+The installer executable will be located in the `release` folder.
 
 ## Model Support
 AI Playground supports PyTorch LLM, SD1.5, and SDXL models. AI Playground does not ship with any models but does make  models available for all features either directly from the interface or indirectly by the users downloading models from HuggingFace.co or CivitAI.com and placing them in the appropriate model folder. 
@@ -147,3 +134,4 @@ For information on AI Playground terms, license and disclaimers, visit the proje
 [License](https://github.com/intel/ai-playground/blob/main/LICENSE) | [Notices & Disclaimers](https://github.com/intel/ai-playground/blob/main/notices-disclaimers.md)
 
 The software may include third party components with separate legal notices or governed by other agreements, as may be described in the Third Party Notices file accompanying the software.
+
