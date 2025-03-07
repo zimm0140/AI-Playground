@@ -1,3 +1,16 @@
+"""
+AI Playground Web API Module
+---------------------------
+This module implements a Flask-based web API for AI Playground, providing endpoints for:
+- Large Language Model (LLM) interaction
+- Stable Diffusion (SD) image generation
+- Model management (downloading, checking, etc.)
+- ComfyUI custom nodes and Python package management
+- RAG (Retrieval-Augmented Generation) functionality
+
+The API uses Server-Sent Events (SSE) for streaming responses where appropriate.
+"""
+
 import sys
 
 import comfyui_downloader
@@ -52,11 +65,25 @@ app = APIFlask(__name__)
 
 @app.get("/healthy")
 def healthEndpoint():
+    """
+    Health check endpoint to verify the service is running.
+    
+    Returns:
+        JSON response with health status.
+    """
     return jsonify({"health": "OK"})
 
 
 @app.post("/api/llm/chat")
 def llm_chat():
+    """
+    Endpoint for LLM chat interactions.
+    
+    Disposes of any basic model and streams the LLM response as Server-Sent Events.
+    
+    Returns:
+        Streaming response with the LLM output.
+    """
     paint_biz.dispose_basic_model()
     params = request.get_json()
     llm_params = llm_biz.LLMParams(**params)
@@ -67,6 +94,12 @@ def llm_chat():
 
 @app.get("/api/llm/stopGenerate")
 def stop_llm_generate():
+    """
+    Endpoint to stop ongoing LLM text generation.
+    
+    Returns:
+        JSON response indicating success.
+    """
     import llm_biz
 
     llm_biz.stop_generate()
@@ -76,6 +109,16 @@ def stop_llm_generate():
 @app.post("/api/sd/generate")
 def sd_generate():
     """
+    Endpoint for Stable Diffusion image generation.
+    
+    Supports multiple modes:
+    - Text-to-image (mode 0)
+    - Upscale (mode 1)
+    - Image-to-image (mode 2)
+    - Inpaint (mode 3)
+    - Outpaint (mode 4)
+    
+    Request format:
     {
         "device": int,
         "prompt": str,
@@ -84,6 +127,9 @@ def sd_generate():
         "image?": file,
         "mask?": file
     }
+    
+    Returns:
+        Streaming response with generation progress and results.
     """
     llm_biz.dispose()
     mode = request.form.get("mode", default=0, type=int)
@@ -135,6 +181,12 @@ def sd_generate():
 
 @app.get("/api/sd/stopGenerate")
 def stop_sd_generate():
+    """
+    Endpoint to stop ongoing Stable Diffusion image generation.
+    
+    Returns:
+        JSON response indicating success.
+    """
     import paint_biz
 
     paint_biz.stop_generate()
@@ -143,6 +195,14 @@ def stop_sd_generate():
 
 @app.post("/api/init")
 def get_init_settings():
+    """
+    Initialization endpoint that configures service settings and returns available schedulers.
+    
+    Processes configuration provided in the request and updates service model paths.
+    
+    Returns:
+        JSON response with available schedulers.
+    """
     import schedulers_util
 
     post_config: dict = request.get_json()
@@ -155,19 +215,38 @@ def get_init_settings():
 
 @app.post("/api/getGraphics")
 def get_graphics():
+    """
+    Endpoint to retrieve information about supported graphics hardware.
+    
+    Returns:
+        JSON response with graphics hardware information.
+    """
     return jsonify(utils.get_support_graphics())
 
 
 @app.get("/api/applicationExit")
 def applicationExit():
+    """
+    Endpoint to terminate the application by sending a SIGINT signal to the process.
+    """
     from signal import SIGINT
 
     pid = os.getpid()
     os.kill(pid, SIGINT)
 
+
 @app.post("/api/checkModelAlreadyLoaded")
 @app.input(DownloadModelRequestBody.Schema, location='json', arg_name='download_request_data')
 def check_model_already_loaded(download_request_data: DownloadModelRequestBody):
+    """
+    Endpoint to check if requested models are already loaded.
+    
+    Args:
+        download_request_data: Request body containing model information to check.
+        
+    Returns:
+        JSON response with load status for each requested model.
+    """
     result_list = []
     for item in download_request_data.data:
         base_response = {
@@ -187,6 +266,15 @@ def check_model_already_loaded(download_request_data: DownloadModelRequestBody):
 
 @app.get("/api/checkHFRepoExists")
 def check_if_huggingface_repo_exists():
+    """
+    Endpoint to check if a specified HuggingFace repository exists.
+    
+    Query parameters:
+        repo_id: Repository ID to check.
+        
+    Returns:
+        JSON response indicating whether the repository exists.
+    """
     repo_id = request.args.get('repo_id')
     downloader = HFPlaygroundDownloader()
     exists = downloader.hf_url_exists(repo_id)
@@ -196,8 +284,18 @@ def check_if_huggingface_repo_exists():
         }
     )
 
+
 @app.get("/api/isLLM")
 def is_llm():
+    """
+    Endpoint to check if a specified model is a Language Model.
+    
+    Query parameters:
+        repo_id: Repository ID to check.
+        
+    Returns:
+        JSON response indicating whether the model is an LLM.
+    """
     repo_id = request.args.get('repo_id')
     downloader = HFPlaygroundDownloader()
     try:
@@ -210,12 +308,20 @@ def is_llm():
         }
     )
 
+
+# Cache for storing model sizes to avoid redundant computations
 size_cache = dict()
 lock = threading.Lock()
 
 
 @app.post("/api/isModelGated")
 def is_model_gated():
+    """
+    Endpoint to check if specified models are gated (require authentication).
+    
+    Returns:
+        JSON response with gated status for each requested model.
+    """
     list = request.get_json()
     downloader = HFPlaygroundDownloader()
     gated = {item["repo_id"]: downloader.is_gated(item["repo_id"]) for item in list}
@@ -228,8 +334,18 @@ def is_model_gated():
         }
     )
 
+
 @app.route("/api/isAccessGranted", methods=["POST"])
 def is_access_granted():
+    """
+    Endpoint to check if the provided token grants access to specified models.
+    
+    Request format:
+        [List of model info objects, HuggingFace token]
+        
+    Returns:
+        JSON response with access status for each requested model.
+    """
     list, hf_token = request.get_json()
     downloader = HFPlaygroundDownloader(hf_token)
     accessGranted = { item["repo_id"] : downloader.is_access_granted(item["repo_id"], item["type"], item["backend"]) for item in list }
@@ -239,8 +355,18 @@ def is_access_granted():
         }
     )
 
+
 @app.post("/api/getModelSize")
 def get_model_size():
+    """
+    Endpoint to get the size of specified models.
+    
+    Uses a thread pool executor to fetch sizes in parallel and a cache to avoid
+    redundant computations.
+    
+    Returns:
+        JSON response with size information for each requested model.
+    """
     import concurrent.futures
 
     list = request.get_json()
@@ -277,6 +403,16 @@ def get_model_size():
 
 
 def fill_size_execute(repo_id: str, type: int, result_dict: dict):
+    """
+    Helper function to fetch model size and update the result dictionary.
+    
+    Used by the thread pool executor in get_model_size().
+    
+    Args:
+        repo_id: Repository ID of the model.
+        type: Type of the model.
+        result_dict: Dictionary to store the result.
+    """
     key = f"{repo_id}_{type}"
     if type == 4:
         total_size = utils.get_ESRGAN_size()
@@ -289,6 +425,14 @@ def fill_size_execute(repo_id: str, type: int, result_dict: dict):
 
 @app.post("/api/llm/enableRag")
 def enable_rag():
+    """
+    Endpoint to enable Retrieval-Augmented Generation for LLMs.
+    
+    Initializes the RAG system with the specified model if not already initialized.
+    
+    Returns:
+        JSON response indicating success.
+    """
     if not rag.Is_Inited:
         repo_id = request.form.get("repo_id", default="", type=str)
         device = request.form.get("device", default=0, type=int)
@@ -298,12 +442,29 @@ def enable_rag():
 
 @app.get("/api/llm/disableRag")
 def disable_rag():
+    """
+    Endpoint to disable Retrieval-Augmented Generation for LLMs.
+    
+    Disposes of the RAG system if it is initialized.
+    
+    Returns:
+        JSON response indicating success.
+    """
     if rag.Is_Inited:
         rag.dispose()
     return jsonify({"code": 0, "message": "success"})
 
 
 def get_bearer_token(request):
+    """
+    Helper function to extract the Bearer token from the Authorization header.
+    
+    Args:
+        request: The Flask request object.
+        
+    Returns:
+        The bearer token if present, None otherwise.
+    """
     auth_header = request.headers.get("Authorization")
     if auth_header and auth_header.startswith("Bearer "):
         return auth_header.split(" ")[1]
@@ -313,6 +474,18 @@ def get_bearer_token(request):
 @app.post("/api/downloadModel")
 @app.input(DownloadModelRequestBody.Schema, location='json', arg_name='download_request_data')
 def download_model(download_request_data: DownloadModelRequestBody):
+    """
+    Endpoint to download requested models.
+    
+    Stops any ongoing downloads before starting a new one.
+    Uses the Bearer token for authentication if provided.
+    
+    Args:
+        download_request_data: Request body containing models to download.
+        
+    Returns:
+        Streaming response with download progress and status.
+    """
     if model_download_adpater._adapter is not None:
         model_download_adpater._adapter.stop_download()
     try:
@@ -333,6 +506,12 @@ def download_model(download_request_data: DownloadModelRequestBody):
 
 @app.get("/api/stopDownloadModel")
 def stop_download_model():
+    """
+    Endpoint to stop ongoing model downloads.
+    
+    Returns:
+        JSON response indicating success.
+    """
     if model_download_adpater._adapter is not None:
         model_download_adpater._adapter.stop_download()
     return jsonify({"code": 0, "message": "success"})
@@ -340,6 +519,12 @@ def stop_download_model():
 
 @app.get("/api/llm/getRagFiles")
 def get_rag_files():
+    """
+    Endpoint to get the list of files indexed for RAG.
+    
+    Returns:
+        JSON response with the list of indexed files, including filenames and MD5 hashes.
+    """
     try:
         result_list = list()
         index_list = rag.get_index_list()
@@ -357,6 +542,15 @@ def get_rag_files():
 
 @app.post("/api/llm/uploadRagFile")
 def upload_rag_file():
+    """
+    Endpoint to upload and index a file for RAG.
+    
+    Form parameters:
+        path: Path to the file to index.
+        
+    Returns:
+        JSON response with success status and the MD5 hash of the indexed file.
+    """
     try:
         path = request.form.get("path")
         code, md5 = rag.add_index_file(path)
@@ -368,6 +562,15 @@ def upload_rag_file():
 
 @app.post("/api/llm/deleteRagIndex")
 def delete_rag_file():
+    """
+    Endpoint to delete a RAG index file.
+    
+    Form parameters:
+        md5: MD5 hash of the index to delete.
+        
+    Returns:
+        JSON response indicating success or failure.
+    """
     try:
         path = request.form.get("md5")
         rag.delete_index(path)
@@ -380,6 +583,15 @@ def delete_rag_file():
 @app.post("/api/comfyUi/areCustomNodesLoaded")
 @app.input(ComfyUICustomNodesDownloadRequest.Schema, location='json', arg_name='comfyNodeRequest')
 def are_custom_nodes_installed(comfyNodeRequest: ComfyUICustomNodesDownloadRequest):
+    """
+    Endpoint to check if specified ComfyUI custom nodes are installed.
+    
+    Args:
+        comfyNodeRequest: Request body containing custom nodes to check.
+        
+    Returns:
+        JSON response indicating installation status for each custom node.
+    """
     response = { f"{x.username}/{x.repoName}" : comfyui_downloader.is_custom_node_installed_with_git_ref(x) for x in comfyNodeRequest.data}
     return jsonify(response)
 
@@ -387,6 +599,17 @@ def are_custom_nodes_installed(comfyNodeRequest: ComfyUICustomNodesDownloadReque
 @app.post("/api/comfyUi/loadCustomNodes")
 @app.input(ComfyUICustomNodesDownloadRequest.Schema, location='json', arg_name='comfyNodeRequest')
 def install_custom_nodes(comfyNodeRequest: ComfyUICustomNodesDownloadRequest):
+    """
+    Endpoint to install ComfyUI custom nodes.
+    
+    Only installs nodes that are not already installed.
+    
+    Args:
+        comfyNodeRequest: Request body containing custom nodes to install.
+        
+    Returns:
+        JSON response with installation results for each node.
+    """
     try:
         nodes_to_be_installed = [x for x in comfyNodeRequest.data if not comfyui_downloader.is_custom_node_installed_with_git_ref(x)]
         installation_result = [ {"node": f"{x.username}/{x.repoName}", "success": comfyui_downloader.download_custom_node(x)} for x in nodes_to_be_installed ]
@@ -399,6 +622,15 @@ def install_custom_nodes(comfyNodeRequest: ComfyUICustomNodesDownloadRequest):
 @app.post("/api/comfyUi/installPythonPackage")
 @app.input(ComfyUIPackageInstallRequest.Schema, location='json', arg_name='comfyPackageInstallRequest')
 def install_python_packages_for_comfy(comfyPackageInstallRequest: ComfyUIPackageInstallRequest):
+    """
+    Endpoint to install Python packages required by ComfyUI.
+    
+    Args:
+        comfyPackageInstallRequest: Request body containing packages to install.
+        
+    Returns:
+        JSON response with installation results for each package.
+    """
     try:
         for package in comfyPackageInstallRequest.data:
             comfyui_downloader.install_pypi_package(package)
@@ -406,9 +638,21 @@ def install_python_packages_for_comfy(comfyPackageInstallRequest: ComfyUIPackage
     except Exception as e:
         return jsonify({'error_message': f'failed to at least one package due to {e}'}), 501
 
+
 @app.post("/api/comfyUi/checkWorkflowRequirements")
 @app.input(ComfyUICheckWorkflowRequirementRequest.Schema , location='json', arg_name='comfyRequirementRequest')
 def check_workflow_requirements(comfyRequirementRequest: ComfyUICheckWorkflowRequirementRequest):
+    """
+    Endpoint to check if ComfyUI workflow requirements are met.
+    
+    Checks if required custom nodes and Python packages are installed.
+    
+    Args:
+        comfyRequirementRequest: Request body containing requirements to check.
+        
+    Returns:
+        JSON response indicating whether installation is needed.
+    """
     try:
         nodes_to_be_installed = [not comfyui_downloader.is_custom_node_installed_with_git_ref(x) for x in comfyRequirementRequest.customNodes]
         packages_to_be_installed = [not comfyui_downloader.is_package_installed(x) for x in comfyRequirementRequest.pythonPackages]
@@ -419,6 +663,14 @@ def check_workflow_requirements(comfyRequirementRequest: ComfyUICheckWorkflowReq
 
 
 def cache_input_image():
+    """
+    Helper function to cache an input image for Stable Diffusion.
+    
+    Saves the uploaded file to disk with a timestamp-based filename.
+    
+    Returns:
+        The path to the cached image file.
+    """
     file = request.files.get("image")
     ext = ".png"
     if file.content_type == "image/jpeg":
@@ -441,6 +693,14 @@ def cache_input_image():
 
 
 def cache_mask_image():
+    """
+    Helper function to cache a mask image for inpainting.
+    
+    Processes the uploaded mask image and saves it to disk with a timestamp-based filename.
+    
+    Returns:
+        The path to the cached mask image file.
+    """
     mask_width = request.form.get("mask_width", default=512, type=int)
     mask_height = request.form.get("mask_height", default=512, type=int)
     mask_image = utils.generate_mask_image(
