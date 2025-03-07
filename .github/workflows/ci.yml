@@ -216,6 +216,17 @@ jobs:
       - name: Lint code
         run: yapf -r --diff .
       
+      - name: Verify environment setup
+        run: |
+          echo "Checking environment setup before tests"
+          python -c "import torch; print('CUDA available:', torch.cuda.is_available()); print('XPU available:', getattr(torch, 'xpu', None) is not None and (hasattr(torch.xpu, 'is_available') and torch.xpu.is_available()))"
+          python -c "import os; print('CUDA_VISIBLE_DEVICES:', os.environ.get('CUDA_VISIBLE_DEVICES')); print('XPU_VISIBLE_DEVICES:', os.environ.get('XPU_VISIBLE_DEVICES'))"
+          python -c "import intel_extension_for_pytorch as ipex; print('IPEX has_xpu:', hasattr(ipex, 'has_xpu') and ipex.has_xpu())"
+          # Check if xpu_hijacks has been patched
+          if [ -f service/xpu_hijacks.py ]; then
+            grep -n "has_xpu" service/xpu_hijacks.py | head -5
+          fi
+      
       - name: Run tests
         env:
           PYTHONPATH: .
