@@ -54,6 +54,7 @@ jobs:
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
           if [ -f service/requirements.txt ]; then pip install -r service/requirements.txt; fi
+          pip install yapf==0.40.2
       
       - name: Patch torch.xpu module for CI
         run: |
@@ -69,10 +70,24 @@ jobs:
         run: |
           echo "# Dummy stub to satisfy intel_extension_for_pytorch import" > intel_extension_for_pytorch.py
           echo "# Provides minimal implementation for CI" >> intel_extension_for_pytorch.py
-          cp intel_extension_for_pytorch.py $(python -c 'import site; print(site.getsitepackages()[0])')
+          echo "class IpexGradScaler:" >> intel_extension_for_pytorch.py
+          echo "    def scale(self, loss): return loss" >> intel_extension_for_pytorch.py
+          echo "    def step(self, optimizer): pass" >> intel_extension_for_pytorch.py
+          echo "    def update(self): pass" >> intel_extension_for_pytorch.py
+          echo "optimize = lambda model, dtype=None, inplace=False, **kwargs: model" >> intel_extension_for_pytorch.py
+          echo "def quantization_aware_training(): return None" >> intel_extension_for_pytorch.py
+          echo "def has_xpu(): return False" >> intel_extension_for_pytorch.py
+          SITE_PACKAGES=$(python -c 'import site; print(site.getsitepackages()[0])')
+          mkdir -p $SITE_PACKAGES/intel_extension_for_pytorch
+          cp intel_extension_for_pytorch.py $SITE_PACKAGES/intel_extension_for_pytorch/__init__.py
       
       - name: Verify intel_extension_for_pytorch stub
-        run: python -c "import intel_extension_for_pytorch; print('Stub OK')"
+        run: |
+          python -c "import intel_extension_for_pytorch as ipex; print('Stub functions available:', dir(ipex)); print('has_xpu() returns:', ipex.has_xpu())"
+          ls -la $(python -c 'import site; print(site.getsitepackages()[0])')/intel_extension_for_pytorch
+      
+      - name: Debug Python module paths
+        run: python -c "import sys; print('Python module search paths:'); [print(f'- {p}') for p in sys.path]"
       
       - name: Lint code (yapf)
         run: yapf -R --diff .
@@ -81,4 +96,4 @@ jobs:
         env:
           PYTHONPATH: .
           PYTHONWARNINGS: "ignore"
-        run: python -m unittest discover -s service/tests 
+        run: python -m unittest discover -s service/tests -v 
