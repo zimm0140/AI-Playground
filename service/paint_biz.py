@@ -1,3 +1,19 @@
+"""
+Stable Diffusion Image Generation Module
+--------------------------------------
+This module provides functionality for generating and manipulating images using Stable Diffusion models.
+
+It supports multiple generation modes:
+- Text-to-Image: Generate images from text prompts
+- Image-to-Image: Transform existing images based on text prompts
+- Inpainting: Fill in masked regions of images
+- Outpainting: Extend images beyond their original boundaries
+- Upscaling: Increase image resolution with RealESRGAN
+
+The module handles model loading, parameter management, callback processing, and various image manipulation tasks
+with optimization for Intel XPU hardware.
+"""
+
 import gc
 import os
 import queue
@@ -32,6 +48,7 @@ from compel import Compel
 from threading import Event
 from xpu_hijacks import ipex_hijacks
 
+# Apply Intel XPU (GPU) hijacks to make PyTorch operations work on Intel GPUs
 ipex_hijacks()
 print("workarounds applied")
 
@@ -40,6 +57,26 @@ print("workarounds applied")
 
 
 class TextImageParams:
+    """
+    Base parameters class for text-to-image generation.
+    
+    Attributes:
+        device: GPU device ID to use for generation
+        prompt: Text prompt describing the desired image
+        model_name: Name of the model to use for generation
+        mode: Generation mode (0=text2img, 1=upscale, 2=img2img, 3=inpaint, 4=outpaint)
+        width: Output image width in pixels
+        height: Output image height in pixels
+        generate_number: Number of images to generate
+        seed: Random seed for reproducibility (-1 for random)
+        guidance_scale: How closely to follow the prompt (higher = more faithful)
+        inference_steps: Number of denoising steps (more = higher quality but slower)
+        negative_prompt: Text describing what to avoid in the image
+        lora: LoRA adapter name to use with the model
+        scheduler: Name of the diffusion scheduler to use
+        image_preview: Whether to enable preview during generation (0=off, 1=on)
+        safe_check: Whether to enable safety checking (0=off, 1=on)
+    """
     device: int
     prompt: str
     model_name: str
@@ -61,28 +98,69 @@ class TextImageParams:
 
 
 class ImageToImageParams(TextImageParams):
+    """
+    Parameters for image-to-image generation.
+    
+    Extends TextImageParams with image source and denoising strength.
+    
+    Attributes:
+        image: Path to the source image
+        denoise: Strength of transformation (0.0-1.0, higher = more transformation)
+    """
     image: str
     denoise: float
 
 
 class UpscaleImageParams(ImageToImageParams):
+    """
+    Parameters for image upscaling.
+    
+    Extends ImageToImageParams with scaling factor.
+    
+    Attributes:
+        scale: Factor by which to upscale the image
+    """
     scale: float
 
 
 class InpaintParams(ImageToImageParams):
+    """
+    Parameters for image inpainting.
+    
+    Extends ImageToImageParams with a mask image that defines the area to inpaint.
+    
+    Attributes:
+        mask_image: Path to the mask image (white areas will be inpainted)
+    """
     mask_image: str
 
 
 class OutpaintParams(ImageToImageParams):
+    """
+    Parameters for image outpainting.
+    
+    Extends ImageToImageParams with a direction to extend the image.
+    
+    Attributes:
+        direction: Direction to extend the image ("left", "right", "up", "down")
+    """
     direction: str
 
 
 class StopGenerateException(Exception):
+    """
+    Exception raised when image generation is stopped by user request.
+    """
     def __str__(self):
         return "user stop generate image"
 
 
 class NoWatermark:
+    """
+    Dummy watermark class to replace the default watermarking in Stable Diffusion.
+    
+    Used to disable watermarking on generated images.
+    """
     def apply_watermark(self, img):
         return img
 
