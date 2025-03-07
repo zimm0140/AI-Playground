@@ -1,2 +1,13 @@
+# Intel Level Zero Utility Dependencies
+# ---------------------------------
+# This file lists required packages for the Level Zero listing utility.
+# Level Zero is Intel's low-level hardware abstraction interface for accessing
+# graphics/compute capabilities on Intel GPUs and accelerators.
+
+# Intel Math Kernel Library for Data Parallel C++ (DPCPP)
+# Provides optimized mathematical routines for Intel architectures
 mkl-dpcpp==2024.2.1
+
+# Intel Data Parallel C++ Runtime
+# Required for applications using the DPCPP programming model
 dpcpp-cpp-rt==2024.2.1

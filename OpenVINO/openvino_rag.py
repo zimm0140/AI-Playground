@@ -1,3 +1,21 @@
+"""
+OpenVINO RAG (Retrieval Augmented Generation) Module
+---------------------------------------------------
+This module implements a retrieval-based system for enhancing Large Language Model responses
+with relevant information from a document corpus. It provides functionality to:
+
+1. Index documents (PDF, TXT, DOCX, DOC, MD) using embeddings generated with OpenVINO-optimized models
+2. Store and retrieve these embeddings using a FAISS vector database
+3. Query the database for relevant content based on semantic similarity
+4. Use the retrieved context to improve LLM responses
+
+The module consists of two main classes:
+- EmbeddingWrapper: A wrapper for the embedding model
+- EmbeddingDatabase: A manager for the FAISS vector store and document processing
+
+The implementation uses LangChain components for document loading, text splitting, and vector store operations.
+"""
+
 import gc
 import json
 import os
@@ -16,16 +34,35 @@ from langchain_community.document_loaders.word_document import (
 from langchain_community.vectorstores.faiss import FAISS, Document
 
 #### CONFIGURATIONS ------------------------------------------------------------------------------------------------------------------------
+# Path to store the FAISS index and related metadata
 INDEX_DATABASE_PATH = "./db/"  # Faiss database folder
+# Text chunking parameters for document processing
 CHUNK_SIZE = 1600  # Chunk size for text splitter
 CHUNK_OVERLAP = 400  # Chunk overlap for text splitter
+# Retrieval parameters
 INDEX_NUM = 2  # Number of content pieces to retrieve
+# Generation parameters
 MAX_NEW_TOKENS = 320  # Max length of LLM output
 
 
 # Embedding model class - create a wrapper for embedding model
 class EmbeddingWrapper:
+    """
+    A wrapper class for the LlamaCppEmbeddings model.
+    
+    This class provides an interface for embedding documents and queries
+    using the LlamaCppEmbeddings model, with performance timing.
+    
+    Attributes:
+        model: An instance of LlamaCppEmbeddings used for generating embeddings
+    """
     def __init__(self, model_path: str):
+        """
+        Initialize the embedding model with the specified model path.
+        
+        Args:
+            model_path: Path to the embedding model file
+        """
         start = time.time()
         print(f"******* loading {model_path} start ")
         self.model = LlamaCppEmbeddings(model_path=model_path)
@@ -36,6 +73,15 @@ class EmbeddingWrapper:
         )
 
     def embed_documents(self, texts: List[str]) -> List[List[float]]:
+        """
+        Generate embeddings for a list of documents.
+        
+        Args:
+            texts: List of text strings to embed
+            
+        Returns:
+            List of embedding vectors (as lists of floats)
+        """
         t0 = time.time()
         embeddings = self.model.embed_documents(texts)
         t1 = time.time()
@@ -43,17 +89,45 @@ class EmbeddingWrapper:
         return embeddings
 
     def embed_query(self, text: str) -> List[float]:
+        """
+        Generate an embedding for a single query text.
+        
+        Args:
+            text: The query text to embed
+            
+        Returns:
+            Embedding vector as a list of floats
+        """
         return self.model.embed_query(text)
 
 
 # Faiss database - manage embeddings and file indexing
 class EmbeddingDatabase:
+    """
+    Manages a FAISS vector database for document embeddings and retrieval.
+    
+    This class handles document loading, chunking, embedding, indexing,
+    and similarity search operations. It supports various document formats
+    and maintains metadata about indexed files.
+    
+    Attributes:
+        db: FAISS vector store instance
+        embeddings: EmbeddingWrapper for generating embeddings
+        text_splitter: For splitting documents into chunks
+        index_list: List of indexed files with metadata
+    """
     db: FAISS
     embeddings: EmbeddingWrapper
     text_splitter: RecursiveCharacterTextSplitter
     index_list: List[Dict[str, Any]]
 
     def __init__(self, embeddings: EmbeddingWrapper):
+        """
+        Initialize the embedding database with the provided embedding model.
+        
+        Args:
+            embeddings: An EmbeddingWrapper instance for generating embeddings
+        """
         self.embeddings = embeddings
         index_cache = os.path.join(INDEX_DATABASE_PATH, "index.faiss")
         self.db = (
@@ -72,6 +146,15 @@ class EmbeddingDatabase:
         )
 
     def __load_exists_index(self, index_json: str):
+        """
+        Load existing index metadata from a JSON file.
+        
+        Args:
+            index_json: Path to the index metadata JSON file
+            
+        Returns:
+            List of indexed file metadata or empty list on error
+        """
         try:
             with open(index_json, "r") as f:
                 return json.load(f)
@@ -80,6 +163,14 @@ class EmbeddingDatabase:
             return list()
 
     def __save_index(self, file_base_name: str, md5: str, doc_ids: str):
+        """
+        Save index metadata to the index list and JSON file.
+        
+        Args:
+            file_base_name: Base name of the indexed file
+            md5: MD5 hash of the file content
+            doc_ids: List of document IDs in the vector store
+        """
         self.index_list.append({"name": file_base_name, "md5": md5, "doc_ids": doc_ids})
         if not os.path.exists(INDEX_DATABASE_PATH):
             os.makedirs(INDEX_DATABASE_PATH)
@@ -89,6 +180,14 @@ class EmbeddingDatabase:
         self.db.save_local(INDEX_DATABASE_PATH)
 
     def __add_documents(self, file_base_name: str, docs: List[Document], md5: str):
+        """
+        Add documents to the FAISS vector store.
+        
+        Args:
+            file_base_name: Base name of the source file
+            docs: List of Document objects to add
+            md5: MD5 hash of the source file
+        """
         if self.db is None:
             self.db = FAISS.from_documents(docs, self.embeddings)
         else:
@@ -97,6 +196,19 @@ class EmbeddingDatabase:
         self.__save_index(file_base_name, md5, [doc.metadata["doc_id"] for doc in docs])
 
     def __analyze_file_to_db(self, file: str, md5: str):
+        """
+        Process a file, split it into chunks, and add to the database.
+        
+        This method handles different file types with appropriate loaders,
+        splits the content into chunks, and adds them to the vector store.
+        
+        Args:
+            file: Path to the file to process
+            md5: MD5 hash of the file content
+            
+        Raises:
+            Exception: If file type is unsupported or analysis fails
+        """
         file_base_name = os.path.basename(file)
         file_ext = os.path.splitext(file_base_name)[1].lower()
 
@@ -121,6 +233,16 @@ class EmbeddingDatabase:
             raise Exception(f"Cannot analyze {file_base_name}")
 
     def add_index_file(self, file: str):
+        """
+        Add a file to the index if it hasn't been indexed already.
+        
+        Args:
+            file: Path to the file to index
+            
+        Returns:
+            Tuple of (status_code, md5_hash)
+            status_code: 0 for newly indexed, 1 for already indexed
+        """
         md5 = self.__calculate_md5(file)
         for item in self.index_list:
             if item["md5"] == md5:
@@ -131,6 +253,21 @@ class EmbeddingDatabase:
         return 0, md5
 
     def query_database(self, query: str):
+        """
+        Query the database for documents similar to the query text.
+        
+        Args:
+            query: The query text to find relevant documents for
+            
+        Returns:
+            Tuple of (success, context, sources)
+            success: Boolean indicating if relevant documents were found
+            context: Combined text of relevant documents
+            sources: List of source file names
+            
+        Raises:
+            Exception: If query is empty or None
+        """
         if not query:
             raise Exception("Query cannot be None or empty")
 
@@ -149,6 +286,15 @@ class EmbeddingDatabase:
         return True, "\n\n".join(doc_contents), "\n".join(source_files)
 
     def __calculate_md5(self, file_path: str) -> str:
+        """
+        Calculate MD5 hash for a file.
+        
+        Args:
+            file_path: Path to the file
+            
+        Returns:
+            MD5 hash as a hexadecimal string
+        """
         import hashlib
 
         hasher = hashlib.md5()
@@ -158,21 +304,54 @@ class EmbeddingDatabase:
         return hasher.hexdigest()
 
 
+# Global module variables for the embedding wrapper and database
+embedding_wrapper = None
+embedding_database = None
+
+
 def init(model_path: str):
+    """
+    Initialize the RAG system with the specified embedding model.
+    
+    Args:
+        model_path: Path to the embedding model file
+    """
     global embedding_database, embedding_wrapper
     embedding_wrapper = EmbeddingWrapper(model_path=model_path)
     embedding_database = EmbeddingDatabase(embedding_wrapper)
 
 
 def add_index_file(file: str):
+    """
+    Add a file to the index.
+    
+    Args:
+        file: Path to the file to index
+        
+    Returns:
+        Result from EmbeddingDatabase.add_index_file()
+    """
     return embedding_database.add_index_file(file)
 
 
 def query(query: str):
+    """
+    Query the database for relevant content.
+    
+    Args:
+        query: The query text to find relevant documents for
+        
+    Returns:
+        Result from EmbeddingDatabase.query_database()
+    """
     return embedding_database.query_database(query)
 
 
 def dispose():
+    """
+    Clean up resources by releasing references to global objects.
+    Triggers garbage collection to free memory.
+    """
     global embedding_database, embedding_wrapper
     embedding_database = None
     embedding_wrapper = None
