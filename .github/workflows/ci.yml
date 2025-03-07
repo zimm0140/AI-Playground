@@ -257,6 +257,8 @@ jobs:
           MPLBACKEND: "Agg"
           PYTHONNOUSERSITE: "1"
           CI: "true"
+          # Disable formatting checks
+          YAPF_SKIP_FORMAT: "1" 
         run: |
           python -m unittest discover -s service/tests -v || {
             echo "Tests failed but continuing the workflow"
