@@ -56,16 +56,17 @@ jobs:
           if [ -f service/requirements.txt ]; then pip install -r service/requirements.txt; fi
           pip install yapf==0.40.2
       
-      - name: Create mock CUDA environment variables
+      - name: Set GPU-related environment variables
         run: |
           echo "CUDA_VISIBLE_DEVICES=-1" >> $GITHUB_ENV
           echo "CUDA_DEVICE_ORDER=PCI_BUS_ID" >> $GITHUB_ENV
           echo "XPU_VISIBLE_DEVICES=-1" >> $GITHUB_ENV
-          echo "Setting CUDA/XPU environment variables to disable GPU usage"
+          echo "FORCE_CPU_ONLY=1" >> $GITHUB_ENV
+          echo "Setting environment variables to disable GPU usage"
       
-      - name: Create force CPU mode patch
+      - name: Create CPU mode patches
         run: |
-          # This patch creates a sitecustomize.py file that forces CPU mode for most ML frameworks
+          # This creates a sitecustomize.py file that forces CPU mode for ML frameworks
           cat > sitecustomize.py << 'EOF'
           import os
           import sys
@@ -86,9 +87,9 @@ jobs:
                       if hasattr(torch.cuda, '_is_available'):
                           torch.cuda._is_available = lambda: False
                   
-                  # Create empty xpu module if not present
+                  # Create or patch torch.xpu module with mock implementations
                   if not hasattr(torch, 'xpu'):
-                      # Define a more complete mock XPU module
+                      # Define a complete mock XPU module
                       class XpuModule:
                           def is_available(self):
                               return False
@@ -101,15 +102,14 @@ jobs:
                           def get_device_name(self, device=None):
                               return "CI_MOCK_XPU_DEVICE"
                           def device(self, index=0):
-                              return torch.device("cpu")  # Return CPU device instead
+                              return torch.device("cpu")
                               
                       torch.xpu = XpuModule()
                   else:
-                      # Ensure torch.xpu.is_available() returns False
+                      # Patch existing torch.xpu module
                       torch.xpu.is_available = lambda: False
                       if not hasattr(torch.xpu, 'has_fp64_dtype'):
                           torch.xpu.has_fp64_dtype = lambda: False
-                      # Add other methods if needed
                       if not hasattr(torch.xpu, 'device_count'):
                           torch.xpu.device_count = lambda: 0
                       if not hasattr(torch.xpu, 'current_device'):
@@ -118,62 +118,27 @@ jobs:
                           torch.xpu.get_device_name = lambda device=None: "CI_MOCK_XPU_DEVICE"
                       if not hasattr(torch.xpu, 'device'):
                           torch.xpu.device = lambda index=0: torch.device("cpu")
-                          
-                  print("Patched torch for CPU-only mode")
+                  
+                  print("Successfully patched torch for CPU-only mode")
               except ImportError:
+                  print("Failed to import torch")
                   pass
           
           # Apply patches when this module is imported
           patch_torch()
           EOF
           
-          # Make it executable
+          # Make it executable and copy to site-packages
           chmod +x sitecustomize.py
-      
-      - name: Create mock torch.xpu module
-        run: |
           SITE_PACKAGES=$(python -c 'import site; print(site.getsitepackages()[0])')
-          # Create a more complete torch.xpu module with commonly used functions
-          mkdir -p $SITE_PACKAGES/torch/xpu
-          cat > $SITE_PACKAGES/torch/xpu/__init__.py << 'EOF'
-          # Mock implementation of torch.xpu module for CI testing
-          import torch
+          cp sitecustomize.py $SITE_PACKAGES/
           
-          # Create device-related functions
-          def device_count():
-              return 0
-              
-          def current_device():
-              return 0
-              
-          def get_device_name(device=None):
-              return "CI_MOCK_XPU_DEVICE"
-              
-          def is_available():
-              return False
-              
-          def has_fp64_dtype():
-              return False
-
-          # Create a device class to handle common operations
-          def device(index=0):
-              return torch.device("cpu")  # Return CPU device instead
-          EOF
-          
-          # Add xpu to torch module if needed
-          python -c "import torch; print('xpu' in dir(torch))"
-      
-      - name: Copy sitecustomize.py to site-packages
-        run: cp sitecustomize.py $(python -c 'import site; print(site.getsitepackages()[0])')
-      
-      - name: Create intel_extension_for_pytorch stub
-        run: |
-          SITE_PACKAGES=$(python -c 'import site; print(site.getsitepackages()[0])')
+          # Create intel_extension_for_pytorch stub
           mkdir -p $SITE_PACKAGES/intel_extension_for_pytorch
           cat > $SITE_PACKAGES/intel_extension_for_pytorch/__init__.py << 'EOF'
           # Dummy stub to satisfy intel_extension_for_pytorch import
           # Provides minimal implementation for CI
-
+          
           class IpexGradScaler:
               def scale(self, loss): 
                   return loss
@@ -181,21 +146,21 @@ jobs:
                   pass
               def update(self): 
                   pass
-
+          
           def optimize(model, dtype=None, inplace=False, **kwargs):
               return model
-
+          
           def quantization_aware_training():
               return None
-
+          
           # Critical function needed by xpu_hijacks.py
           def has_xpu():
               return False
-
+          
           # Additional functions and attributes often used with IPEX
           def enable_auto_mixed_precision(*args, **kwargs):
               return None
-
+          
           def enable_onednn_fusion(*args, **kwargs):
               return None
               
@@ -204,34 +169,36 @@ jobs:
           def get_device_name(*args, **kwargs):
               return "CPU"
           EOF
-          # Verify the file was created correctly
-          ls -la $SITE_PACKAGES/intel_extension_for_pytorch/
-          cat $SITE_PACKAGES/intel_extension_for_pytorch/__init__.py
-      
-      - name: Verify intel_extension_for_pytorch stub
-        run: |
-          python -c "import sys; print('Python version:', sys.version)"
-          python -c "import intel_extension_for_pytorch as ipex; print('Module location:', ipex.__file__); print('Stub functions available:', dir(ipex)); print('has_xpu function exists:', hasattr(ipex, 'has_xpu')); print('has_xpu() returns:', ipex.has_xpu())"
+          
+          # Verify the modules
+          python -c "import sys; print('Python:', sys.version)"
+          python -c "import torch; print('torch.xpu available:', hasattr(torch, 'xpu'))"
+          python -c "import intel_extension_for_pytorch as ipex; print('ipex.has_xpu():', ipex.has_xpu())"
       
       - name: Patch xpu_hijacks.py for CI
         run: |
           cat > service/xpu_patch.py << 'EOF'
           #!/usr/bin/env python3
           
-          # This script patches xpu_hijacks.py to work in CI environment
+          # This script patches service/xpu_hijacks.py for CI compatibility
           import re
+          import os
+          
+          if not os.path.exists('service/xpu_hijacks.py'):
+              print("xpu_hijacks.py not found, skipping patch")
+              exit(0)
           
           with open('service/xpu_hijacks.py', 'r') as f:
               content = f.read()
           
-          # Replace the problematic line with a safer version that checks if the function exists
+          # Make ipex.has_xpu() calls safe by checking for the attribute first
           patched = re.sub(
               r'return ipex.has_xpu\(\)',
               'return hasattr(ipex, "has_xpu") and ipex.has_xpu()',
               content
           )
           
-          # Handle any other potential ipex function calls that might fail
+          # Make all ipex function calls safe by using getattr with default
           patched = re.sub(
               r'ipex\.([a-zA-Z0-9_]+)\(',
               'getattr(ipex, "\\1", lambda *a, **kw: None)(',
@@ -245,13 +212,8 @@ jobs:
           EOF
           
           python service/xpu_patch.py
-          # Verify the patch
-          grep -A 3 "def is_available" service/xpu_hijacks.py
       
-      - name: Debug Python module paths
-        run: python -c "import sys; print('Python module search paths:'); [print(f'- {p}') for p in sys.path]"
-      
-      - name: Lint code (yapf)
+      - name: Lint code
         run: yapf -R --diff .
       
       - name: Run tests
