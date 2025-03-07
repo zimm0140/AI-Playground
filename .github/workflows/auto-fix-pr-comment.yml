@@ -1,0 +1,213 @@
+name: Auto-fix PR Comment Handler
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  process-auto-fix:
+    runs-on: ubuntu-latest
+    if: |
+      github.event.issue.pull_request && 
+      contains(github.event.comment.body, '/auto-fix')
+    steps:
+      - name: Checkout PR
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # We need full history for proper version tracking
+          ref: ${{ github.event.repository.default_branch }}
+      
+      - name: Checkout PR Branch
+        run: |
+          # Get PR details and checkout the branch
+          PR_NUMBER=${{ github.event.issue.number }}
+          PR_DATA=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                  "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER")
+          
+          PR_HEAD_REPO=$(echo "$PR_DATA" | jq -r .head.repo.full_name)
+          PR_HEAD_BRANCH=$(echo "$PR_DATA" | jq -r .head.ref)
+          
+          echo "Checking out PR #$PR_NUMBER from $PR_HEAD_REPO branch $PR_HEAD_BRANCH"
+          
+          if [ "$PR_HEAD_REPO" = "${{ github.repository }}" ]; then
+            # PR from the same repository
+            git fetch origin $PR_HEAD_BRANCH
+            git checkout $PR_HEAD_BRANCH
+          else
+            # PR from a fork
+            git remote add fork https://github.com/$PR_HEAD_REPO.git
+            git fetch fork $PR_HEAD_BRANCH
+            git checkout fork/$PR_HEAD_BRANCH
+            git checkout -b $PR_HEAD_BRANCH
+          fi
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml numpy matplotlib
+      
+      - name: Create initial comment
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { issue, repo } = context;
+            
+            // Create initial response
+            await github.rest.issues.createComment({
+              owner: repo.owner,
+              repo: repo.repo,
+              issue_number: issue.number,
+              body: "📊 Running auto-fix to apply hardware compatibility recommendations...\n\nThis may take a few minutes. I'll update this comment with the results."
+            });
+      
+      - name: Set execution permissions
+        run: |
+          chmod +x .github/workflows/scripts/*.sh
+          chmod +x .github/workflows/scripts/*.py
+      
+      - name: Create artifacts directory
+        run: |
+          mkdir -p ci_artifacts/hardware_compatibility/recommendations
+          mkdir -p ci_artifacts/hardware_compatibility/autofix
+      
+      - name: Run hardware compatibility checks
+        run: |
+          .github/workflows/scripts/run_hardware_advisor.sh
+      
+      - name: Run auto-fix
+        id: run-autofix
+        run: |
+          # Run the auto-fix with actual changes
+          .github/workflows/scripts/run_hardware_autofix.sh --apply --high-priority-only
+          
+          # Check if changes were made
+          if [ -f "ci_artifacts/hardware_compatibility/autofix/autofix_report.md" ]; then
+            # Count the number of applied changes
+            APPLIED_CHANGES=$(grep -c "✅" "ci_artifacts/hardware_compatibility/autofix/autofix_report.md" || echo "0")
+            echo "applied_changes=$APPLIED_CHANGES" >> $GITHUB_OUTPUT
+            echo "autofix_successful=true" >> $GITHUB_OUTPUT
+          else
+            echo "applied_changes=0" >> $GITHUB_OUTPUT
+            echo "autofix_successful=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Commit changes if any
+        id: commit-changes
+        if: steps.run-autofix.outputs.applied_changes != '0'
+        run: |
+          # Configure git
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          
+          # Add all changed files
+          git add -A
+          
+          # Check if there are changes to commit
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            echo "changes_committed=false" >> $GITHUB_OUTPUT
+          else
+            # Commit the changes
+            git commit -m "🤖 Auto-fix hardware compatibility issues [skip ci]" \
+                      -m "Applied $(cat ci_artifacts/hardware_compatibility/autofix/autofix_report.md | grep -c '✅') compatibility fixes automatically via PR comment."
+            
+            # Push the changes
+            git push
+            
+            echo "changes_committed=true" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Update PR comment
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const { issue, repo } = context;
+            
+            // Prepare comment body
+            let commentBody = "";
+            const autofix_successful = '${{ steps.run-autofix.outputs.autofix_successful }}' === 'true';
+            const changes_committed = '${{ steps.commit-changes.outputs.changes_committed }}' === 'true';
+            const applied_changes = parseInt('${{ steps.run-autofix.outputs.applied_changes }}' || '0');
+            
+            if (autofix_successful) {
+              if (changes_committed) {
+                commentBody = `# ✅ Auto-fix Successfully Applied\n\n`;
+                commentBody += `Applied ${applied_changes} compatibility fixes to standardize requirements across hardware platforms.\n\n`;
+                
+                // Add the report if it exists
+                const reportPath = 'ci_artifacts/hardware_compatibility/autofix/autofix_report.md';
+                if (fs.existsSync(reportPath)) {
+                  const report = fs.readFileSync(reportPath, 'utf8');
+                  commentBody += `## Auto-fix Report\n\n${report}\n\n`;
+                }
+                
+                commentBody += `## Next Steps\n\n`;
+                commentBody += `1. Review the applied changes\n`;
+                commentBody += `2. Tests will run automatically to verify the fixes\n`;
+                commentBody += `3. Merge the PR if all tests pass\n`;
+              } else {
+                commentBody = `# ℹ️ No Changes Applied\n\n`;
+                commentBody += `The auto-fix tool ran successfully, but no changes were needed or applied.\n\n`;
+                commentBody += `This may be because:\n`;
+                commentBody += `- No compatibility issues were found\n`;
+                commentBody += `- The issues found don't have clear automated resolutions\n\n`;
+                commentBody += `Please check the [hardware compatibility report](../actions/runs/${context.runId}) for more details.`;
+              }
+            } else {
+              commentBody = `# ❌ Auto-fix Failed\n\n`;
+              commentBody += `The auto-fix tool encountered an error and couldn't apply the changes.\n\n`;
+              commentBody += `Please check the [workflow logs](../actions/runs/${context.runId}) for details.`;
+            }
+            
+            // Find the comment we created earlier
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: repo.owner,
+              repo: repo.repo,
+              issue_number: issue.number,
+            });
+            
+            const botComment = comments.find(comment => {
+              return comment.user.login === 'github-actions[bot]' && 
+                     comment.body.includes('Running auto-fix');
+            });
+            
+            if (botComment) {
+              // Update our earlier comment
+              await github.rest.issues.updateComment({
+                owner: repo.owner,
+                repo: repo.repo,
+                comment_id: botComment.id,
+                body: commentBody
+              });
+            } else {
+              // Create a new comment
+              await github.rest.issues.createComment({
+                owner: repo.owner,
+                repo: repo.repo,
+                issue_number: issue.number,
+                body: commentBody
+              });
+            }
+            
+            // Also create a new comment to mark the auto-fix command as handled
+            await github.rest.issues.createComment({
+              owner: repo.owner,
+              repo: repo.repo,
+              issue_number: issue.number,
+              body: `✓ \`/auto-fix\` command processed`
+            });
+      
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: hardware-compatibility-autofix
+          path: ci_artifacts/hardware_compatibility/
+          retention-days: 5 

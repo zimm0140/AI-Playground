@@ -7,42 +7,49 @@ This directory contains curated and validated ComfyUI workflows that have been t
 All workflows in this repository undergo a comprehensive validation process to ensure quality, compatibility, and proper documentation. Our CI system includes:
 
 ### 1. Structural Validation
+
 - Schema validation for proper ComfyUI JSON format
 - Node syntax checking
 - Connection validation between nodes
 - Required input checking
 
 ### 2. Requirements Analysis
+
 - Model dependency detection (checkpoints, VAEs, LoRAs)
 - Extension dependency detection
 - Hardware requirements estimation (VRAM, CPU, disk space)
 - Python package dependency analysis
 
 ### 3. Execution Simulation
+
 - Pathway analysis for workflow execution
 - Execution order validation
 - Error detection in workflow logic
 - Dead node identification (nodes that don't contribute to output)
 
 ### 4. Model Simulation
+
 - Tensor-based simulation without requiring full models
 - Runtime error detection with specific debugging information
 - Data flow validation through the execution pipeline
 - Resource usage estimation
 
 ### 5. Version Tracking
+
 - Automatic version incrementation for modified workflows
 - Breaking change detection
 - Feature addition/removal tracking
 - Compatibility matrices across versions
 
 ### 6. Dashboard Generation
+
 - Comprehensive workflow dashboard with key metrics
 - Status indicators for validation, analysis, and simulation
 - Resource requirement visualization
 - Compatibility information
 
 ### 7. PR Integration
+
 - Automatic PR checks for workflow modifications
 - Detailed comments with validation results
 - Recommendations for fixing issues
