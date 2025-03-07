@@ -34,7 +34,7 @@ jobs:
           pip install argparse pyyaml
           
       - name: Create artifacts directory
-        run: mkdir -p ci_artifacts/workflow_validation ci_artifacts/workflow_requirements ci_artifacts/workflow_tests
+        run: mkdir -p ci_artifacts/workflow_validation ci_artifacts/workflow_requirements ci_artifacts/workflow_tests ci_artifacts/workflow_versions ci_artifacts/workflow_dashboard
           
       - name: Validate workflow JSON files
         run: |
@@ -54,6 +54,21 @@ jobs:
             --workflows-dir WebUI/external/workflows \
             --output-dir ci_artifacts/workflow_tests
             
+      - name: Track workflow versions
+        run: |
+          python .github/workflows/scripts/track_workflow_versions.py \
+            --workflows-dir WebUI/external/workflows \
+            --output-dir ci_artifacts/workflow_versions
+            
+      - name: Generate workflow dashboard
+        run: |
+          python .github/workflows/scripts/generate_workflow_dashboard.py \
+            --validation-dir ci_artifacts/workflow_validation \
+            --requirements-dir ci_artifacts/workflow_requirements \
+            --tests-dir ci_artifacts/workflow_tests \
+            --versions-dir ci_artifacts/workflow_versions \
+            --output-dir ci_artifacts/workflow_dashboard
+            
       - name: Upload validation reports
         uses: actions/upload-artifact@v3
         with:
@@ -62,6 +77,8 @@ jobs:
             ci_artifacts/workflow_validation/
             ci_artifacts/workflow_requirements/
             ci_artifacts/workflow_tests/
+            ci_artifacts/workflow_versions/
+            ci_artifacts/workflow_dashboard/
           retention-days: 30
           
       - name: Publish validation summary
