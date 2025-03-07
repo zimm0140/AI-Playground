@@ -1,3 +1,11 @@
+'''"""
+LaMa Inpainting Module
+----------------------
+This module provides utilities for image inpainting using the LaMa model.
+It includes functions for pre-processing images and masks and a class for loading and applying
+a pre-trained LaMa model for inpainting tasks.
+"""'''
+
 import cv2
 import torch
 import numpy as np
@@ -7,6 +15,19 @@ LAMA_MODEL_URL = "https://github.com/enesmsahin/simple-lama-inpainting/releases/
 
 
 def get_image(img):
+    """
+    Convert an input image to a normalized numpy array in CHW format.
+    
+    If the input is a PIL Image, it is converted to a numpy array. For 3-dimensional arrays,
+    the color channels are transposed to the first dimension. If the image is 2-dimensional,
+    an extra channel dimension is added. The pixel values are normalized to the range [0,1].
+    
+    Args:
+        img: Input image as a PIL Image or numpy array.
+        
+    Returns:
+        A numpy array representing the image in CHW format with normalized pixel values.
+    """
     if isinstance(img, Image.Image):
         img = np.array(img)
     if img.ndim == 3:
@@ -18,12 +39,35 @@ def get_image(img):
 
 
 def prepare_img_and_mask(image, mask, device, pad_out_to_modulo=8, scale_factor=None):
+    """
+    Prepare an image and its corresponding mask for inpainting.
+    
+    This function performs several steps:
+      - Converts input image and mask to normalized numpy arrays in CHW format.
+      - Optionally scales the image and mask by a given factor.
+      - Pads the image and mask so that their dimensions are multiples of a specified modulo.
+      - Converts the processed image and mask into torch tensors and moves them to the specified device.
+      - Binarizes the mask.
+    
+    Args:
+        image: Input image as a PIL Image or numpy array.
+        mask: Input mask as a PIL Image or numpy array.
+        device: The device to which the tensors will be moved.
+        pad_out_to_modulo: The modulo value for padding (default is 8).
+        scale_factor: Optional scaling factor to resize the image and mask.
+    
+    Returns:
+        A tuple (out_image, out_mask) where:
+          - out_image is a torch tensor of shape [1, C, H, W] with normalized pixel values.
+          - out_mask is a binary torch tensor of the same shape indicating mask regions.
+    """
     def ceil_modulo(x, mod):
         if x % mod == 0:
             return x
         return (x // mod + 1) * mod
 
     def get_image(img):
+        """Convert input image to numpy array in CHW format and normalize it."""
         if isinstance(img, Image.Image):
             img = np.array(img)
         if img.ndim == 3:
@@ -34,6 +78,7 @@ def prepare_img_and_mask(image, mask, device, pad_out_to_modulo=8, scale_factor=
         return img
 
     def pad_img_to_modulo(img, mod):
+        """Pad the image so that its height and width are multiples of 'mod'."""
         _channels, height, width = img.shape
         out_height = ceil_modulo(height, mod)
         out_width = ceil_modulo(width, mod)
@@ -44,6 +89,7 @@ def prepare_img_and_mask(image, mask, device, pad_out_to_modulo=8, scale_factor=
         )
 
     def scale_image(img, factor, interpolation=cv2.INTER_AREA):
+        """Resize the image by a given factor using the specified interpolation method."""
         if img.shape[0] == 1:
             img = img[0]
         else:
@@ -87,7 +133,22 @@ def prepare_img_and_mask(image, mask, device, pad_out_to_modulo=8, scale_factor=
 
 
 class SimpleLama:
+    """
+    SimpleLaMa inpainting class.
+    
+    This class loads a pre-trained LaMa inpainting model via TorchScript and provides a callable
+    interface to inpaint an image given a corresponding mask.
+    
+    Attributes:
+        device (str): The device on which the model is loaded (default is 'xpu').
+        model: The loaded TorchScript LaMa model for inpainting.
+    """
     def __init__(self):
+        """
+        Initialize the SimpleLama model by loading the pre-trained TorchScript model.
+        
+        The model is set to evaluation mode and moved to the specified device.
+        """
         self.device = "xpu"
         model_path = "C:\\Users\\X\\Downloads\\big-lama.pt"
         self.model = torch.jit.load(model_path)
@@ -95,6 +156,20 @@ class SimpleLama:
         self.model.to(self.device)
 
     def __call__(self, image: Image.Image | np.ndarray, mask: Image.Image | np.ndarray):
+        """
+        Apply the LaMa inpainting model to the provided image and mask.
+        
+        If the image or mask is None, the function handles the case appropriately.
+        Pre-processing of the image and mask is done before passing them to the model.
+        The output is post-processed to convert it back to a PIL Image.
+        
+        Args:
+            image: An input image as a PIL Image or numpy array.
+            mask: An input mask as a PIL Image or numpy array.
+        
+        Returns:
+            A PIL Image of the inpainted result, or None if inputs are invalid.
+        """
         if image is None:
             return None
         if mask is None:
