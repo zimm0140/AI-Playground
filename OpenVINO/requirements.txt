@@ -1,6 +1,20 @@
+# OpenVINO Dependencies
+# -----------------
+# This file lists all Python packages required for the OpenVINO service implementation.
+# It includes web frameworks for the API service and OpenVINO packages for inference.
+# The nightly builds are used for access to the latest features and optimizations.
+
+# Additional package index for OpenVINO nightly builds
 --extra-index-url https://storage.openvinotoolkit.org/simple/wheels/nightly
+
+# Web API Framework
 Flask==3.0.3
 apiflask==2.3.0
+
+# OpenVINO Core Components
+# - openvino: Base inference engine
+# - openvino-genai: Generative AI capabilities
+# - openvino-tokenizers: Text tokenization utilities for LLMs
 openvino==2025.1.0.dev20250203
 openvino-genai==2025.1.0.0.dev20250203
 openvino-tokenizers==2025.1.0.0.dev20250203

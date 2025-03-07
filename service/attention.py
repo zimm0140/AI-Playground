@@ -1,3 +1,24 @@
+"""
+Intel XPU Attention Optimization Module
+--------------------------------------
+This module provides optimized implementations of attention mechanisms for Intel XPU (GPU) devices.
+
+The optimizations address memory limitations where ARC GPUs can't allocate more than 4GB to a single
+tensor operation block. This is achieved by:
+1. Slicing large tensor operations into smaller chunks
+2. Processing these chunks sequentially
+3. Reassembling the results
+
+Key components:
+- Environment variables to control slicing thresholds
+- Helper functions to determine optimal slice sizes
+- Overridden PyTorch functions for batch matrix multiplication (BMM)
+- Overridden scaled dot product attention implementation
+
+When tensor operations exceed configured thresholds, the implementation automatically
+switches to sliced processing to prevent out-of-memory errors.
+"""
+
 import os
 import torch
 from functools import cache
@@ -13,6 +34,19 @@ attention_slice_rate = float(os.environ.get("IPEX_ATTENTION_SLICE_RATE", 4))
 # Find something divisible with the input_tokens
 @cache
 def find_slice_size(slice_size, slice_block_size):
+    """
+    Find the largest slice size that keeps memory usage below the threshold.
+    
+    Progressively halves the slice_size until the resulting memory block size
+    is below the attention_slice_rate threshold.
+    
+    Args:
+        slice_size: Initial size of the slice
+        slice_block_size: Memory consumption factor for each slice
+        
+    Returns:
+        int: The optimized slice size
+    """
     while (slice_size * slice_block_size) > attention_slice_rate:
         slice_size = slice_size // 2
         if slice_size <= 1:
@@ -24,6 +58,21 @@ def find_slice_size(slice_size, slice_block_size):
 # Find slice sizes for SDPA
 @cache
 def find_sdpa_slice_sizes(query_shape, query_element_size):
+    """
+    Determine optimal slicing configuration for scaled dot product attention.
+    
+    Calculates appropriate slice sizes for each dimension of the query tensor
+    to keep memory usage below thresholds.
+    
+    Args:
+        query_shape: Shape of the query tensor
+        query_element_size: Size in bytes of each element in the query tensor
+        
+    Returns:
+        tuple: Six values including:
+            - Three boolean flags indicating which dimensions need slicing
+            - Three integers representing the slice sizes for each dimension
+    """
     if len(query_shape) == 3:
         batch_size_attention, query_tokens, shape_three = query_shape
         shape_four = 1
@@ -84,6 +133,22 @@ def find_sdpa_slice_sizes(query_shape, query_element_size):
 # Find slice sizes for BMM
 @cache
 def find_bmm_slice_sizes(input_shape, input_element_size, mat2_shape):
+    """
+    Determine optimal slicing configuration for batch matrix multiplication.
+    
+    Calculates appropriate slice sizes for each dimension of the input tensors
+    to keep memory usage below thresholds.
+    
+    Args:
+        input_shape: Shape of the first input tensor
+        input_element_size: Size in bytes of each element in the input tensor
+        mat2_shape: Shape of the second input tensor
+        
+    Returns:
+        tuple: Six values including:
+            - Three boolean flags indicating which dimensions need slicing
+            - Three integers representing the slice sizes for each dimension
+    """
     batch_size_attention, input_tokens, mat2_atten_shape = (
         input_shape[0],
         input_shape[1],
@@ -138,6 +203,21 @@ original_torch_bmm = torch.bmm
 
 
 def torch_bmm_32_bit(input, mat2, *, out=None):
+    """
+    Memory-optimized implementation of batch matrix multiplication for XPU devices.
+    
+    If input tensors are on XPU device and exceed memory thresholds,
+    this function splits the operation into smaller chunks and processes them sequentially.
+    Otherwise, it falls back to the original torch.bmm implementation.
+    
+    Args:
+        input: First input tensor
+        mat2: Second input tensor
+        out: Optional output tensor
+        
+    Returns:
+        Tensor: Result of batch matrix multiplication
+    """
     if input.device.type != "xpu":
         return original_torch_bmm(input, mat2, out=out)
     (
@@ -215,6 +295,25 @@ original_scaled_dot_product_attention = torch.nn.functional.scaled_dot_product_a
 def scaled_dot_product_attention_32_bit(
     query, key, value, attn_mask=None, dropout_p=0.0, is_causal=False, **kwargs
 ):
+    """
+    Memory-optimized implementation of scaled dot product attention for XPU devices.
+    
+    If input tensors are on XPU device and exceed memory thresholds,
+    this function splits the operation into smaller chunks and processes them sequentially.
+    Otherwise, it falls back to the original implementation.
+    
+    Args:
+        query: Query tensor
+        key: Key tensor
+        value: Value tensor
+        attn_mask: Optional attention mask
+        dropout_p: Dropout probability
+        is_causal: Whether to apply causal masking
+        **kwargs: Additional arguments to pass to the original function
+        
+    Returns:
+        Tensor: Result of scaled dot product attention
+    """
     if query.device.type != "xpu":
         return original_scaled_dot_product_attention(
             query,

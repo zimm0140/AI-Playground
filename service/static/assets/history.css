@@ -1,3 +1,11 @@
+/**
+ * AI Playground - History View Styles
+ * -----------------------------------
+ * CSS for the history view page that displays previously generated images
+ * and their associated parameters in a structured layout.
+ */
+
+/* Base page styles - dark theme with centered content */
 body {
     background: #181524;
     padding: 40px 20px;
@@ -10,16 +18,21 @@ body {
     align-items: center;
   }
 
+  /* History list container - vertical stacking of history items */
   .history-list {
     display: flex;
     flex-direction: column;
     gap: 20px;
   }
+  
+  /* Reset default margin/padding and set box-sizing for all elements */
   *{
     padding: 0px;
     margin: 0px;
     box-sizing: border-box;
   }
+  
+  /* Individual history item - horizontal layout with border */
   .history-list > li {
     display: flex;
     padding: 12px;
@@ -27,6 +40,7 @@ body {
   }
 
 
+  /* Container for the result image - takes available space */
   .result-img {
     align-self: stretch;
     flex: 1 1 auto;
@@ -36,11 +50,13 @@ body {
     padding-right: 8px;
   }
 
+  /* Style for the result images - constrained dimensions */
   .result-img img {
     max-width: 700px;
     height: 400px;
   }
 
+  /* Parameter list container - fixed width with vertical layout */
   .params {
     width: 700px;
     flex: none;
@@ -51,16 +67,20 @@ body {
     border-left: 1px solid #666;
   }
 
+  /* Individual parameter item - horizontal layout for name-value pairs */
   .params > li {
     display: flex;
     align-items: top;
     gap: 8px;
     padding-left: 8px;
   }
+  
+  /* Add bottom border to parameters (except the last one) */
   .params > li:nth-last-child(n + 1) {
     border-bottom: 1px solid #666;
   }
 
+  /* Parameter name style - fixed width, bold text */
   .param-name {
     width: 140px;
     line-height: 200%;
@@ -68,11 +88,13 @@ body {
     flex: none;
   }
 
+  /* Parameter value style - flexible width with word breaking for long values */
   .param-value {
     flex: 1 1 auto;
     word-break: break-all;
   }
 
+/* Hyperlink style - blue color for visibility on dark background */
 a{
     color: rgb(59 130 246);
 }

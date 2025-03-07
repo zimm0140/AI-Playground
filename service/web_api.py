@@ -62,6 +62,9 @@ logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
 app = APIFlask(__name__)
 
+# =================== CORE SERVICE ENDPOINTS ===================
+# These endpoints provide basic service functionality like health checks and service control
+
 
 @app.get("/healthy")
 def healthEndpoint():
@@ -72,6 +75,52 @@ def healthEndpoint():
         JSON response with health status.
     """
     return jsonify({"health": "OK"})
+
+
+@app.get("/api/applicationExit")
+def applicationExit():
+    """
+    Endpoint to terminate the application by sending a SIGINT signal to the process.
+    """
+    from signal import SIGINT
+
+    pid = os.getpid()
+    os.kill(pid, SIGINT)
+
+
+@app.post("/api/init")
+def get_init_settings():
+    """
+    Initialization endpoint that configures service settings and returns available schedulers.
+    
+    Processes configuration provided in the request and updates service model paths.
+    
+    Returns:
+        JSON response with available schedulers.
+    """
+    import schedulers_util
+
+    post_config: dict = request.get_json()
+    for k, v in post_config.items():
+        if service_config.service_model_paths.__contains__(k):
+            service_config.service_model_paths.__setitem__(k, v)
+
+    return jsonify(schedulers_util.schedulers)
+
+
+@app.post("/api/getGraphics")
+def get_graphics():
+    """
+    Endpoint to retrieve information about supported graphics hardware.
+    
+    Returns:
+        JSON response with graphics hardware information.
+    """
+    return jsonify(utils.get_support_graphics())
+
+
+# =================== LLM ENDPOINTS ===================
+# Endpoints for Large Language Model interactions
 
 
 @app.post("/api/llm/chat")
@@ -104,6 +153,10 @@ def stop_llm_generate():
 
     llm_biz.stop_generate()
     return jsonify({"code": 0, "message": "success"})
+
+
+# =================== STABLE DIFFUSION ENDPOINTS ===================
+# Endpoints for image generation and manipulation
 
 
 @app.post("/api/sd/generate")
@@ -193,46 +246,8 @@ def stop_sd_generate():
     return jsonify({"code": 0, "message": "success"})
 
 
-@app.post("/api/init")
-def get_init_settings():
-    """
-    Initialization endpoint that configures service settings and returns available schedulers.
-    
-    Processes configuration provided in the request and updates service model paths.
-    
-    Returns:
-        JSON response with available schedulers.
-    """
-    import schedulers_util
-
-    post_config: dict = request.get_json()
-    for k, v in post_config.items():
-        if service_config.service_model_paths.__contains__(k):
-            service_config.service_model_paths.__setitem__(k, v)
-
-    return jsonify(schedulers_util.schedulers)
-
-
-@app.post("/api/getGraphics")
-def get_graphics():
-    """
-    Endpoint to retrieve information about supported graphics hardware.
-    
-    Returns:
-        JSON response with graphics hardware information.
-    """
-    return jsonify(utils.get_support_graphics())
-
-
-@app.get("/api/applicationExit")
-def applicationExit():
-    """
-    Endpoint to terminate the application by sending a SIGINT signal to the process.
-    """
-    from signal import SIGINT
-
-    pid = os.getpid()
-    os.kill(pid, SIGINT)
+# =================== MODEL MANAGEMENT ENDPOINTS ===================
+# Endpoints for checking and downloading models from HuggingFace
 
 
 @app.post("/api/checkModelAlreadyLoaded")
@@ -261,7 +276,6 @@ def check_model_already_loaded(download_request_data: DownloadModelRequestBody):
 
         result_list.append(base_response)
     return jsonify({"code": 0, "message": "success", "data": result_list})
-
 
 
 @app.get("/api/checkHFRepoExists")
@@ -423,54 +437,6 @@ def fill_size_execute(repo_id: str, type: int, result_dict: dict):
         result_dict.__setitem__(key, bytes2human(total_size, "%(value).2f%(symbol)s"))
 
 
-@app.post("/api/llm/enableRag")
-def enable_rag():
-    """
-    Endpoint to enable Retrieval-Augmented Generation for LLMs.
-    
-    Initializes the RAG system with the specified model if not already initialized.
-    
-    Returns:
-        JSON response indicating success.
-    """
-    if not rag.Is_Inited:
-        repo_id = request.form.get("repo_id", default="", type=str)
-        device = request.form.get("device", default=0, type=int)
-        rag.init(repo_id, device)
-    return jsonify({"code": 0, "message": "success"})
-
-
-@app.get("/api/llm/disableRag")
-def disable_rag():
-    """
-    Endpoint to disable Retrieval-Augmented Generation for LLMs.
-    
-    Disposes of the RAG system if it is initialized.
-    
-    Returns:
-        JSON response indicating success.
-    """
-    if rag.Is_Inited:
-        rag.dispose()
-    return jsonify({"code": 0, "message": "success"})
-
-
-def get_bearer_token(request):
-    """
-    Helper function to extract the Bearer token from the Authorization header.
-    
-    Args:
-        request: The Flask request object.
-        
-    Returns:
-        The bearer token if present, None otherwise.
-    """
-    auth_header = request.headers.get("Authorization")
-    if auth_header and auth_header.startswith("Bearer "):
-        return auth_header.split(" ")[1]
-    return None
-
-
 @app.post("/api/downloadModel")
 @app.input(DownloadModelRequestBody.Schema, location='json', arg_name='download_request_data')
 def download_model(download_request_data: DownloadModelRequestBody):
@@ -514,6 +480,42 @@ def stop_download_model():
     """
     if model_download_adpater._adapter is not None:
         model_download_adpater._adapter.stop_download()
+    return jsonify({"code": 0, "message": "success"})
+
+
+# =================== RAG FUNCTIONALITY ENDPOINTS ===================
+# Endpoints for Retrieval-Augmented Generation operations
+
+
+@app.post("/api/llm/enableRag")
+def enable_rag():
+    """
+    Endpoint to enable Retrieval-Augmented Generation for LLMs.
+    
+    Initializes the RAG system with the specified model if not already initialized.
+    
+    Returns:
+        JSON response indicating success.
+    """
+    if not rag.Is_Inited:
+        repo_id = request.form.get("repo_id", default="", type=str)
+        device = request.form.get("device", default=0, type=int)
+        rag.init(repo_id, device)
+    return jsonify({"code": 0, "message": "success"})
+
+
+@app.get("/api/llm/disableRag")
+def disable_rag():
+    """
+    Endpoint to disable Retrieval-Augmented Generation for LLMs.
+    
+    Disposes of the RAG system if it is initialized.
+    
+    Returns:
+        JSON response indicating success.
+    """
+    if rag.Is_Inited:
+        rag.dispose()
     return jsonify({"code": 0, "message": "success"})
 
 
@@ -578,6 +580,26 @@ def delete_rag_file():
     except Exception:
         traceback.print_exc()
         return jsonify({"code": -1, "message": "failed"})
+
+
+def get_bearer_token(request):
+    """
+    Helper function to extract the Bearer token from the Authorization header.
+    
+    Args:
+        request: The Flask request object.
+        
+    Returns:
+        The bearer token if present, None otherwise.
+    """
+    auth_header = request.headers.get("Authorization")
+    if auth_header and auth_header.startswith("Bearer "):
+        return auth_header.split(" ")[1]
+    return None
+
+
+# =================== COMFYUI INTEGRATION ENDPOINTS ===================
+# Endpoints for managing ComfyUI custom nodes and packages
 
 
 @app.post("/api/comfyUi/areCustomNodesLoaded")
@@ -662,6 +684,10 @@ def check_workflow_requirements(comfyRequirementRequest: ComfyUICheckWorkflowReq
         return jsonify({'errorMessage': f'failed to check for installation {e}'}), 500
 
 
+# =================== HELPER FUNCTIONS ===================
+# Utility functions used by the API endpoints
+
+
 def cache_input_image():
     """
     Helper function to cache an input image for Stable Diffusion.
@@ -716,6 +742,10 @@ def cache_mask_image():
     mask_image.save(file_path)
     utils.cache_file(file_path, os.path.getsize(file_path))
     return file_path
+
+
+# =================== APPLICATION ENTRY POINT ===================
+# Main execution block for running the Flask application
 
 
 if __name__ == "__main__":

@@ -1,3 +1,19 @@
+"""
+ComfyUI Downloader Module
+------------------------
+This module provides functionality for downloading and setting up ComfyUI and its components.
+
+Features:
+- Installing a portable Git for Windows
+- Cloning and setting up ComfyUI repository
+- Managing ComfyUI custom nodes installation
+- Installing Python requirements and packages
+- Patching specific custom nodes when needed
+
+The module handles the entire setup process, including downloading dependencies,
+checking out specific Git references, and installing required Python packages.
+"""
+
 import logging
 import os
 import sys
@@ -15,12 +31,36 @@ comfyUI_git_repo_url = "https://github.com/comfyanonymous/ComfyUI.git"
 comfyUI_manager_git_repo_url = "https://github.com/ltdrdata/ComfyUI-Manager.git"
 
 def is_comfyUI_installed() -> bool:
+    """
+    Check if ComfyUI is already installed.
+    
+    Returns:
+        bool: True if ComfyUI installation directory exists, False otherwise.
+    """
     return os.path.exists(service_config.comfy_ui_root_path)
 
 def is_git_installed() -> bool:
+    """
+    Check if Git is already installed.
+    
+    Returns:
+        bool: True if Git installation directory exists, False otherwise.
+    """
     return os.path.exists(service_config.git.get("rootDirPath"))
 
 def _install_portable_git():
+    """
+    Install a portable version of Git for Windows.
+    
+    This function:
+    1. Downloads the portable Git zip file
+    2. Extracts it to the configured directory
+    3. Verifies the installation
+    
+    Raises:
+        AssertionError: If Git installation fails
+        Exception: If download or extraction fails
+    """
     if is_git_installed():
         logging.info("Omitting installation of git, as already present")
         return
@@ -44,6 +84,15 @@ def _install_portable_git():
 
 
 def _fetch_portable_git(seven_zipped_portable_git_target):
+    """
+    Download the portable Git for Windows zip file.
+    
+    Args:
+        seven_zipped_portable_git_target: Path where the downloaded zip will be saved
+        
+    Raises:
+        Exception: If the download fails or returns a non-success status code
+    """
     try:
         response = requests.get(git_download_url, stream=True, timeout=30)
         if response.status_code == 200:
@@ -60,6 +109,18 @@ def _fetch_portable_git(seven_zipped_portable_git_target):
 
 
 def _unzip_portable_git(zipped_git_path, target_dir):
+    """
+    Extract the downloaded Git zip file to the target directory.
+    
+    This function tries to use system tar if available, otherwise falls back to PowerShell.
+    
+    Args:
+        zipped_git_path: Path to the downloaded Git zip file
+        target_dir: Directory where Git should be extracted
+        
+    Raises:
+        Exception: If extraction fails
+    """
     def get_unzipping_command():
         try:
             aipg_utils.call_subprocess("tar --version")
@@ -79,6 +140,16 @@ def _unzip_portable_git(zipped_git_path, target_dir):
         raise e
 
 def _install_git_repo(git_repo_url: str, target_dir: str):
+    """
+    Clone a Git repository to the specified target directory.
+    
+    Args:
+        git_repo_url: URL of the Git repository to clone
+        target_dir: Directory where the repository should be cloned
+        
+    Raises:
+        Exception: If the clone operation fails
+    """
     try:
         aipg_utils.remove_existing_filesystem_resource(target_dir)
         aipg_utils.call_subprocess(f"{service_config.git.get('exePath')} clone {git_repo_url} '{target_dir}'")
@@ -89,6 +160,13 @@ def _install_git_repo(git_repo_url: str, target_dir: str):
         raise e
 
 def _checkout_git_ref(repo_dir: str, git_ref: Optional[str]):
+    """
+    Checkout a specific Git reference (branch, tag, or commit) in a repository.
+    
+    Args:
+        repo_dir: Path to the Git repository
+        git_ref: The Git reference to checkout (branch, tag, or commit hash)
+    """
     if git_ref is None or not git_ref.strip():
         logging.info(f"No valid git ref provided for {repo_dir}")
         logging.warning(f"Repo {repo_dir} remains in ref {get_git_ref(repo_dir)}.")
@@ -102,6 +180,15 @@ def _checkout_git_ref(repo_dir: str, git_ref: Optional[str]):
 
 
 def get_git_ref(repo_dir: str) -> Optional[str]:
+    """
+    Get the current Git reference (commit hash) of a repository.
+    
+    Args:
+        repo_dir: Path to the Git repository
+        
+    Returns:
+        str: The current commit hash, or None if it could not be determined
+    """
     try:
         git_ref = aipg_utils.call_subprocess(f"{service_config.git.get('exePath')} rev-parse HEAD", cwd=repo_dir)
         return git_ref
@@ -111,6 +198,12 @@ def get_git_ref(repo_dir: str) -> Optional[str]:
 
 
 def _install_pip_requirements(requirements_txt_path: str):
+    """
+    Install Python packages from a requirements.txt file.
+    
+    Args:
+        requirements_txt_path: Path to the requirements.txt file
+    """
     logging.info(f"installing python requirements from {requirements_txt_path} using {sys.executable}")
     if os.path.exists(requirements_txt_path):
         python_exe_callable_path = "'" + os.path.abspath(service_config.comfyui_python_exe) + "'" # this returns the abs path and may contain spaces. Escape the spaces with "ticks"
@@ -121,6 +214,15 @@ def _install_pip_requirements(requirements_txt_path: str):
 
 
 def install_pypi_package(packageSpecifier: str):
+    """
+    Install a Python package from PyPI or from a wheel file URL.
+    
+    If the package is already installed, the installation is skipped.
+    If the packageSpecifier is a URL to a .whl file, it is first downloaded.
+    
+    Args:
+        packageSpecifier: PyPI package name (with optional version) or URL to a wheel file
+    """
     if is_package_installed(packageSpecifier):
         logging.info(f"package {packageSpecifier} already installed. Omitting installation")
         return
@@ -148,6 +250,15 @@ def install_pypi_package(packageSpecifier: str):
     logging.info("python package installation completed.")
 
 def is_package_installed(packageSpecifier: str):
+    """
+    Check if a Python package is already installed.
+    
+    Args:
+        packageSpecifier: PyPI package name (with optional version) or URL to a wheel file
+        
+    Returns:
+        bool: True if the package is already installed, False otherwise
+    """
     installed_packages = aipg_utils.call_subprocess(f"{service_config.comfyui_python_exe} -m pip list")
     if packageSpecifier.endswith(".whl"):
         package_name = packageSpecifier.split("/")[-1].split("-")[0]
@@ -159,6 +270,20 @@ def is_package_installed(packageSpecifier: str):
     
 
 def install_comfyUI() -> bool:
+    """
+    Install ComfyUI from GitHub.
+    
+    This function:
+    1. Installs Git if needed
+    2. Clones the ComfyUI repository
+    3. Installs Python requirements for ComfyUI
+    
+    Returns:
+        bool: True if installation was successful, False otherwise
+        
+    Raises:
+        Exception: If any installation step fails
+    """
     if is_comfyUI_installed():
         logging.info("comfyUI installation requested, while already installed")
         return True
@@ -175,6 +300,15 @@ def install_comfyUI() -> bool:
 
 
 def is_custom_node_installed_with_git_ref(node_repo_ref: ComfyUICustomNodesGithubRepoId) -> bool:
+    """
+    Check if a ComfyUI custom node is already installed.
+    
+    Args:
+        node_repo_ref: Object containing repo username, name and git reference
+        
+    Returns:
+        bool: True if the custom node is already installed, False otherwise
+    """
     expected_custom_node_path = os.path.join(service_config.comfy_ui_root_path, "custom_nodes", node_repo_ref.repoName)
     custom_node_dir_exists = os.path.exists(expected_custom_node_path)
 
@@ -182,6 +316,21 @@ def is_custom_node_installed_with_git_ref(node_repo_ref: ComfyUICustomNodesGithu
 
 
 def download_custom_node(node_repo_data: ComfyUICustomNodesGithubRepoId) -> bool:
+    """
+    Download and install a ComfyUI custom node from GitHub.
+    
+    This function:
+    1. Clones the custom node repository
+    2. Checks out the specified Git reference
+    3. Applies patches if needed
+    4. Installs Python requirements for the custom node
+    
+    Args:
+        node_repo_data: Object containing repo username, name and git reference
+        
+    Returns:
+        bool: True if installation was successful, False otherwise
+    """
     if is_custom_node_installed_with_git_ref(node_repo_data):
         logging.info(f"node repo {node_repo_data} already exists. Omitting")
         return True
@@ -227,6 +376,16 @@ def nsfw_image(img_path: str, model_path: str):
 """
 
 def _patch_custom_node_if_required(custom_node_path: str, node_repo_data: ComfyUICustomNodesGithubRepoId):
+    """
+    Apply specific patches to custom nodes that require them.
+    
+    Currently handles a specific patch for the ComfyUI-ReActor plugin
+    to modify its NSFW detection behavior.
+    
+    Args:
+        custom_node_path: Path to the custom node installation
+        node_repo_data: Object containing repo username, name and git reference
+    """
     if f"{node_repo_data.username}/{node_repo_data.repoName}@{node_repo_data.gitRef}".lower() == "Gourieff/comfyui-reactor@d2318ad140582c6d0b68c51df342319b502006ed".lower():
         reactor_sfw_path = os.path.join(custom_node_path, "scripts", "reactor_sfw.py")
         with open(reactor_sfw_path, "w") as file:

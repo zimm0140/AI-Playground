@@ -65,4 +65,6 @@ openvino_model_paths = {
 }
 
 # Default compute device - Intel XPU (Arc GPUs)
+# "xpu" targets Intel's unified GPU acceleration architecture 
+# This allows the service to leverage Intel Arc/Xe GPUs for AI inference
 device = "xpu"

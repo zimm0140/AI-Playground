@@ -1,19 +1,35 @@
-# IPEX
+# Intel MTL (Meteor Lake) Dependencies
+# -----------------------------------
+# This file lists all Python packages required for Intel Meteor Lake processor acceleration.
+# It contains customized dependencies for the MTL architecture, including:
+# - Intel PyTorch Extensions (IPEX) for general acceleration
+# - IPEX-LLM specific optimizations for large language models
+# - Intel libraries tailored for Meteor Lake hardware
+
+# IPEX - Intel PyTorch Extensions
+# ------------------------------
+# Adds optimizations for PyTorch operations on Intel Meteor Lake architecture
+# These index URLs provide access to Intel-optimized PyTorch packages specific to MTL
 --extra-index-url https://pytorch-extension.intel.com/release-whl/stable/mtl/cn/
 --extra-index-url https://pytorch-extension.intel.com/release-whl/stable/mtl/us/
 
-torch==2.3.1.post0+cxx11.abi
-torchvision==0.18.1.post0+cxx11.abi
-torchaudio==2.3.1.post0+cxx11.abi
-intel-extension-for-pytorch==2.3.110.post0+xpu
-mkl-dpcpp==2024.2.1
+# Core PyTorch packages optimized for Meteor Lake
+torch==2.3.1.post0+cxx11.abi             # Intel-optimized PyTorch
+torchvision==0.18.1.post0+cxx11.abi      # Intel-optimized computer vision package
+torchaudio==2.3.1.post0+cxx11.abi        # Intel-optimized audio processing package
+intel-extension-for-pytorch==2.3.110.post0+xpu  # Core Intel extensions for XPU acceleration
+mkl-dpcpp==2024.2.1                      # Intel Math Kernel Library for DPCPP
 
-# IPEX-LLM
-ipex_llm>=2.2.0b20241225
-bigdl-core-xe-23>=2.6.0b20241225
-bigdl-core-xe-addons-23>=2.6.0b20241225
-bigdl-core-xe-batch-23>=2.6.0b20241225
-onednn-devel==2024.1.1
+# IPEX-LLM - Intel PyTorch Extensions for Large Language Models
+# -----------------------------------------------------------
+# Specialized optimizations for LLM inference on Meteor Lake hardware
+ipex_llm>=2.2.0b20241225                 # LLM-specific acceleration framework
+bigdl-core-xe-23>=2.6.0b20241225         # BigDL core for Intel Xe architecture
+bigdl-core-xe-addons-23>=2.6.0b20241225  # Additional components for BigDL on Xe
+bigdl-core-xe-batch-23>=2.6.0b20241225   # Batch processing optimizations
+onednn-devel==2024.1.1                   # Intel Deep Neural Network Library
 
-# Intel dependencies depend on numpy 1
-numpy==1.26.4
+# Version Constraints
+# ------------------
+# Specific version requirements for Meteor Lake compatibility
+numpy==1.26.4                            # Intel dependencies require numpy 1.x

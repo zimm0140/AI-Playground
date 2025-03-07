@@ -4,6 +4,18 @@ PyTorch XPU Hijacks Module
 This module contains function hijacks to redirect PyTorch CUDA operations to Intel XPU devices.
 It allows code written for CUDA to work with Intel GPUs by replacing or modifying PyTorch functions.
 
+This compatibility layer enables existing CUDA-based deep learning code to run on Intel GPUs
+without requiring code modification. The module works by:
+1. Replacing torch.cuda references with torch.xpu
+2. Converting CUDA device specifications to XPU equivalents
+3. Handling data type conversions (particularly float64 to float32) for hardware compatibility
+4. Ensuring tensor operations maintain consistent data types across operands
+
+Key features:
+- Transparent redirection of CUDA API calls to XPU equivalents
+- Automatic handling of data type compatibility issues
+- Special handling for operations not well-supported on Intel GPUs
+
 Code credit: https://github.com/vladmandic/automatic/blob/master/modules/intel/ipex/hijacks.py
 """
 
@@ -15,6 +27,7 @@ import intel_extension_for_pytorch as ipex  # pylint: disable=import-error, unus
 import numpy as np
 
 
+# =================== GLOBAL VARIABLES AND INITIALIZATION ===================
 # Check if the device supports 64-bit floating point operations
 device_supports_fp64 = torch.xpu.has_fp64_dtype()
 
@@ -24,6 +37,7 @@ device_supports_fp64 = torch.xpu.has_fp64_dtype()
 torch.cuda = torch.xpu
 
 
+# =================== HELPER FUNCTIONS ===================
 def return_null_context(*args, **kwargs):  # pylint: disable=unused-argument
     """
     Return a null context manager regardless of input arguments.
@@ -97,6 +111,7 @@ def return_xpu(device):
 original_autocast_init = torch.amp.autocast_mode.autocast.__init__
 
 
+# =================== AUTOMATIC MIXED PRECISION HIJACKS ===================
 @wraps(torch.amp.autocast_mode.autocast.__init__)
 def autocast_init(self, device_type, dtype=None, enabled=True, cache_enabled=None):
     """
@@ -132,6 +147,7 @@ def autocast_init(self, device_type, dtype=None, enabled=True, cache_enabled=Non
 original_interpolate = torch.nn.functional.interpolate
 
 
+# =================== TENSOR OPERATION HIJACKS ===================
 @wraps(torch.nn.functional.interpolate)
 def interpolate(
     tensor,
@@ -188,6 +204,7 @@ def interpolate(
 original_from_numpy = torch.from_numpy
 
 
+# =================== DATA TYPE CONVERSION HIJACKS ===================
 @wraps(torch.from_numpy)
 def from_numpy(ndarray):
     """
@@ -259,6 +276,7 @@ else:
         )
 
 
+# =================== ATTENTION MECHANISM HIJACKS ===================
 @wraps(torch.bmm)
 def torch_bmm(input, mat2, *, out=None):
     """
@@ -314,6 +332,7 @@ def scaled_dot_product_attention(
 original_functional_group_norm = torch.nn.functional.group_norm
 
 
+# =================== NORMALIZATION FUNCTION HIJACKS ===================
 @wraps(torch.nn.functional.group_norm)
 def functional_group_norm(input, num_groups, weight=None, bias=None, eps=1e-05):
     """
@@ -374,6 +393,7 @@ def functional_layer_norm(input, normalized_shape, weight=None, bias=None, eps=1
 original_functional_linear = torch.nn.functional.linear
 
 
+# =================== NEURAL NETWORK FUNCTION HIJACKS ===================
 @wraps(torch.nn.functional.linear)
 def functional_linear(input, weight, bias=None):
     """
@@ -440,6 +460,7 @@ def functional_conv2d(
 original_torch_cat = torch.cat
 
 
+# =================== TENSOR MANIPULATION HIJACKS ===================
 @wraps(torch.cat)
 def torch_cat(tensor, *args, **kwargs):
     """
@@ -790,6 +811,7 @@ def torch_load(f, map_location=None, *args, **kwargs):
         return original_torch_load(f, *args, map_location=map_location, **kwargs)
 
 
+# =================== MAIN HIJACK APPLICATION FUNCTION ===================
 def ipex_hijacks():
     """
     Apply all the XPU hijacks to the torch module.
