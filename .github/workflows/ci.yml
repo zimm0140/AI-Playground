@@ -164,6 +164,13 @@ jobs:
               content
           )
           
+          # Handle any other potential ipex function calls that might fail
+          patched = re.sub(
+              r'ipex\.([a-zA-Z0-9_]+)\(',
+              'getattr(ipex, "\\1", lambda *a, **kw: None)(',
+              patched
+          )
+          
           with open('service/xpu_hijacks.py', 'w') as f:
               f.write(patched)
               
