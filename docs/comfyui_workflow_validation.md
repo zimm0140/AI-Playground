@@ -68,6 +68,27 @@ The simulation report includes:
 - Detailed issues for failed workflows, categorized by severity
 - Recommendations for fixing common execution issues
 
+## Model Simulation
+
+This stage performs a more realistic execution simulation with minimal model implementations:
+
+- Creates small tensor-based model simulations (a few KB instead of GB)
+- Executes node logic with actual tensor arithmetic where possible
+- Verifies data flow through realistic pipeline stages
+- Detects runtime errors and implementation incompatibilities
+- Tests workflow execution without requiring any GPU resources
+
+Unlike the static execution simulation, this approach can detect more subtle issues related to tensor shapes, data types, and node implementation compatibility.
+
+### Simulation Report
+
+The simulation report includes:
+- Detailed trace of node execution attempts
+- Success/failure status for each node in the workflow
+- Runtime errors with specific details about failure points
+- Resource usage and execution time statistics
+- Recommendations for fixing compatibility issues
+
 ## Version Tracking
 
 This stage tracks changes to workflow files over time:
@@ -102,6 +123,28 @@ The dashboard includes:
 - Detailed information on failing workflows and their issues
 - Recommendations for improvements
 
+## PR Integration
+
+When workflows are modified in a pull request, an automated system:
+
+1. Runs all validation, analysis, and simulation stages
+2. Generates a detailed comment on the PR with results
+3. Flags workflows with issues that need to be fixed
+4. Provides specific recommendations for each workflow
+5. Updates the comment when changes are made to workflows
+
+This integration helps contributors understand issues before merging and ensures that only high-quality workflows are added to the repository.
+
+### PR Comment Format
+
+The PR comment includes:
+- Summary of validation status for all changed workflows
+- Table of results with pass/fail indicators for each validation stage
+- Detailed issues for workflows that need attention
+- Resource requirements and compatibility information
+- Recommendations for fixing issues
+- Breaking change warnings if applicable
+
 ## CI Integration
 
 The workflow validation results are integrated into the CI pipeline:
@@ -125,11 +168,17 @@ python .github/workflows/scripts/analyze_workflow_requirements.py --workflows-di
 # Execution simulation
 python .github/workflows/scripts/test_workflow_execution.py --workflows-dir WebUI/external/workflows
 
+# Model simulation
+python .github/workflows/scripts/simulate_workflow_execution.py --workflows-dir WebUI/external/workflows
+
 # Version tracking
 python .github/workflows/scripts/track_workflow_versions.py --workflows-dir WebUI/external/workflows
 
 # Dashboard generation
 python .github/workflows/scripts/generate_workflow_dashboard.py
+
+# PR comment generation (requires changed files list)
+python .github/workflows/scripts/comment_on_workflow_pr.py --changed-files path/to/changed/file1.json,path/to/changed/file2.json
 ```
 
 Each script supports additional arguments:
