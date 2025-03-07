@@ -72,4 +72,6 @@ jobs:
           cp intel_extension_for_pytorch.py $(python -c 'import site; print(site.getsitepackages()[0])')
       
       - name: Run tests
+        env:
+          PYTHONPATH: .
         run: python -m unittest discover -s service/tests 
