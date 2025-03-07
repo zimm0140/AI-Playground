@@ -110,6 +110,19 @@ npm run build
 
 The installer executable will be located in the `release` folder.
 
+## CI Features
+
+### ComfyUI Workflow Validation
+
+AI Playground includes automated validation for ComfyUI workflows in the CI pipeline. This ensures that all workflow JSON files in the `WebUI/external/workflows` directory are properly structured and executable.
+
+The validation process includes:
+- Structural validation of workflow JSON files
+- Analysis of model, custom node, and hardware requirements
+- Simulation of workflow execution without requiring actual models
+
+For more details, see the [ComfyUI Workflow Validation documentation](docs/comfyui_workflow_validation.md).
+
 ## Model Support
 AI Playground supports PyTorch LLM, SD1.5, and SDXL models. AI Playground does not ship with any models but does make  models available for all features either directly from the interface or indirectly by the users downloading models from HuggingFace.co or CivitAI.com and placing them in the appropriate model folder. 
 

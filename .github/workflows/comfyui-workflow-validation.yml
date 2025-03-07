@@ -1,0 +1,137 @@
+name: ComfyUI Workflow Validation
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'WebUI/external/workflows/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'WebUI/external/workflows/**'
+  # Enable manual trigger
+  workflow_dispatch:
+  # Run weekly on Sunday at 00:00 UTC
+  schedule:
+    - cron: '0 0 * * 0'
+
+jobs:
+  validate-workflows:
+    runs-on: ubuntu-latest
+    name: Validate ComfyUI Workflows
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install argparse pyyaml
+          
+      - name: Create artifacts directory
+        run: mkdir -p ci_artifacts/workflow_validation ci_artifacts/workflow_requirements ci_artifacts/workflow_tests
+          
+      - name: Validate workflow JSON files
+        run: |
+          python .github/workflows/scripts/validate_comfyui_workflows.py \
+            --workflows-dir WebUI/external/workflows \
+            --output-dir ci_artifacts/workflow_validation
+            
+      - name: Analyze workflow requirements
+        run: |
+          python .github/workflows/scripts/analyze_workflow_requirements.py \
+            --workflows-dir WebUI/external/workflows \
+            --output-dir ci_artifacts/workflow_requirements
+            
+      - name: Simulate workflow execution
+        run: |
+          python .github/workflows/scripts/test_workflow_execution.py \
+            --workflows-dir WebUI/external/workflows \
+            --output-dir ci_artifacts/workflow_tests
+            
+      - name: Upload validation reports
+        uses: actions/upload-artifact@v3
+        with:
+          name: comfyui-workflow-validation-reports
+          path: |
+            ci_artifacts/workflow_validation/
+            ci_artifacts/workflow_requirements/
+            ci_artifacts/workflow_tests/
+          retention-days: 30
+          
+      - name: Publish validation summary
+        run: |
+          echo "# ComfyUI Workflow Validation Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Validation Results" >> $GITHUB_STEP_SUMMARY
+          
+          if [ -f ci_artifacts/workflow_validation/workflow_validation_results.json ]; then
+            # Extract results using Python
+            python -c """
+            import json
+            
+            # Load validation results
+            with open('ci_artifacts/workflow_validation/workflow_validation_results.json', 'r') as f:
+                results = json.load(f)
+                
+            # Print summary stats
+            print(f\"Total workflows: {results['summary']['total_workflows']}\\n\", file=open('$GITHUB_STEP_SUMMARY', 'a'))
+            print(f\"Valid workflows: {results['summary']['valid_workflows']}\\n\", file=open('$GITHUB_STEP_SUMMARY', 'a'))
+            print(f\"Invalid workflows: {results['summary']['invalid_workflows']}\\n\", file=open('$GITHUB_STEP_SUMMARY', 'a'))
+            
+            # List invalid workflows if any
+            if results['summary']['invalid_workflows'] > 0:
+                print('### Invalid Workflows\\n', file=open('$GITHUB_STEP_SUMMARY', 'a'))
+                
+                for workflow in results['workflows']:
+                    if not workflow['is_valid']:
+                        issue_types = set(issue['type'] for issue in workflow['issues'])
+                        issue_count = len(workflow['issues'])
+                        print(f\"- **{workflow['filename']}**: {issue_count} issues\\n\", file=open('$GITHUB_STEP_SUMMARY', 'a'))
+            """
+          else
+            echo "No validation results found" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "## Requirements Analysis" >> $GITHUB_STEP_SUMMARY
+          
+          if [ -f ci_artifacts/workflow_requirements/workflow_requirements_results.json ]; then
+            # Extract requirements using Python
+            python -c """
+            import json
+            
+            # Load requirements results
+            with open('ci_artifacts/workflow_requirements/workflow_requirements_results.json', 'r') as f:
+                results = json.load(f)
+                
+            # Print summary stats
+            print(f\"Analyzed workflows: {results['summary']['analyzed_workflows']} of {results['summary']['total_workflows']}\\n\", file=open('$GITHUB_STEP_SUMMARY', 'a'))
+            
+            # Show top models if any
+            if results['aggregate']['models']:
+                print('### Top Models\\n', file=open('$GITHUB_STEP_SUMMARY', 'a'))
+                
+                # Sort by usage count and get top 5
+                sorted_models = sorted(results['aggregate']['models'].items(), key=lambda x: x[1], reverse=True)[:5]
+                
+                for model, count in sorted_models:
+                    print(f\"- {model}: Used in {count} workflows\\n\", file=open('$GITHUB_STEP_SUMMARY', 'a'))
+                    
+            # Show top custom nodes if any
+            if results['aggregate']['custom_nodes']:
+                print('### Top Custom Node Extensions\\n', file=open('$GITHUB_STEP_SUMMARY', 'a'))
+                
+                # Sort by usage count and get top 5
+                sorted_nodes = sorted(results['aggregate']['custom_nodes'].items(), key=lambda x: x[1], reverse=True)[:5]
+                
+                for node, count in sorted_nodes:
+                    print(f\"- {node}: Used in {count} workflows\\n\", file=open('$GITHUB_STEP_SUMMARY', 'a'))
+            """
+          else
+            echo "No requirements analysis results found" >> $GITHUB_STEP_SUMMARY
+          fi 

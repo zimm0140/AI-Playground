@@ -664,6 +664,7 @@ jobs:
           echo "| Status Badges | ✅ Enabled |" >> $GITHUB_STEP_SUMMARY
           echo "| Pipeline Health Checks | ✅ Enabled |" >> $GITHUB_STEP_SUMMARY
           echo "| Failure Notifications | ✅ Enabled |" >> $GITHUB_STEP_SUMMARY
+          echo "| ComfyUI Workflow Validation | ✅ Enabled |" >> $GITHUB_STEP_SUMMARY
           
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "See individual platform artifacts for detailed reports." >> $GITHUB_STEP_SUMMARY 
