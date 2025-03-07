@@ -62,5 +62,8 @@ jobs:
           echo "    if not hasattr(torch.xpu, 'has_fp64_dtype'):" >> sitecustomize.py
           echo "        torch.xpu.has_fp64_dtype = lambda: False" >> sitecustomize.py
       
+      - name: Copy sitecustomize.py to site-packages
+        run: cp sitecustomize.py $(python -c 'import site; print(site.getsitepackages()[0])')
+      
       - name: Run tests
         run: python -m unittest discover -s service/tests 
