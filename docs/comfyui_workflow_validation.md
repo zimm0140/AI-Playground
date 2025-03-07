@@ -68,6 +68,40 @@ The simulation report includes:
 - Detailed issues for failed workflows, categorized by severity
 - Recommendations for fixing common execution issues
 
+## Version Tracking
+
+This stage tracks changes to workflow files over time:
+
+- Calculates a unique fingerprint/hash for each workflow's structure
+- Maintains a version history with timestamps and change descriptions
+- Detects breaking changes that might affect compatibility
+- Generates reports on workflow evolution and stability
+
+### Version Report
+
+The version tracking report includes:
+- A complete history of all versions for each workflow
+- Detailed listings of changes between versions
+- Identification of potentially breaking changes
+- Compatibility information for different hardware configurations
+
+## Comprehensive Dashboard
+
+The dashboard combines information from all validation stages into a single view:
+
+- Summarizes the status of all workflows (passing, warnings, failing)
+- Shows detailed validation, test, requirements, and version information
+- Provides recommendations for fixing issues
+- Prioritizes workflows that need attention
+
+### Dashboard Contents
+
+The dashboard includes:
+- Summary statistics on workflow health
+- A compatibility matrix showing which workflows work on different hardware
+- Detailed information on failing workflows and their issues
+- Recommendations for improvements
+
 ## CI Integration
 
 The workflow validation results are integrated into the CI pipeline:
@@ -90,6 +124,12 @@ python .github/workflows/scripts/analyze_workflow_requirements.py --workflows-di
 
 # Execution simulation
 python .github/workflows/scripts/test_workflow_execution.py --workflows-dir WebUI/external/workflows
+
+# Version tracking
+python .github/workflows/scripts/track_workflow_versions.py --workflows-dir WebUI/external/workflows
+
+# Dashboard generation
+python .github/workflows/scripts/generate_workflow_dashboard.py
 ```
 
 Each script supports additional arguments:
