@@ -74,6 +74,9 @@ jobs:
       - name: Verify intel_extension_for_pytorch stub
         run: python -c "import intel_extension_for_pytorch; print('Stub OK')"
       
+      - name: Lint code (yapf)
+        run: yapf -R --diff .
+      
       - name: Run tests
         env:
           PYTHONPATH: .
