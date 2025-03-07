@@ -282,12 +282,97 @@ jobs:
           pip install matplotlib
           python .github/workflows/scripts/collect_ci_metrics.py
       
+      - name: Generate CI badges
+        run: |
+          pip install requests
+          python .github/workflows/scripts/generate_badges.py
+      
       - name: Upload CI metrics
         uses: actions/upload-artifact@v3
         with:
           name: ci-metrics-linux-${{ matrix.python-version }}
           path: ci_artifacts/metrics/
           retention-days: 90
+      
+      - name: Upload CI badges
+        uses: actions/upload-artifact@v3
+        with:
+          name: ci-badges
+          path: ci_artifacts/badges/
+          retention-days: 90
+      
+      - name: Update README with badges
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Check if README.md exists
+          if [ -f README.md ]; then
+            # Check if badges section exists in README
+            if grep -q "<!-- CI Badges - Auto-generated, do not edit -->" README.md; then
+              # Replace existing badges section
+              sed -i '/<!-- CI Badges - Auto-generated, do not edit -->/,/<!-- End of CI Badges -->/c\\' README.md
+              cat ci_artifacts/badges/badges.md >> README.md
+            else
+              # Add badges at the beginning of README
+              badges_content=$(cat ci_artifacts/badges/badges.md)
+              echo -e "$badges_content\n\n$(cat README.md)" > README.md.new
+              mv README.md.new README.md
+            fi
+            
+            # Configure git
+            git config user.name "GitHub Actions"
+            git config user.email "actions@github.com"
+            
+            # Commit and push changes
+            git add README.md
+            git commit -m "Update CI badges [skip ci]"
+            git push https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git HEAD:main
+          else
+            echo "README.md not found, creating new one with badges"
+            cat ci_artifacts/badges/badges.md > README.md
+            
+            # Add additional README content
+            cat >> README.md << EOF
+            
+            # ${GITHUB_REPOSITORY#*/}
+            
+            This is the ${GITHUB_REPOSITORY#*/} project.
+            
+            ## Documentation
+            
+            For full documentation, visit the [GitHub Pages site](https://${GITHUB_REPOSITORY%/*}.github.io/${GITHUB_REPOSITORY#*/}).
+            
+            ## Development
+            
+            See the CI workflow for build and test instructions.
+            EOF
+            
+            # Configure git
+            git config user.name "GitHub Actions"
+            git config user.email "actions@github.com"
+            
+            # Commit and push changes
+            git add README.md
+            git commit -m "Create README with CI badges [skip ci]"
+            git push https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git HEAD:main
+          fi
+      
+      - name: Send notifications on failure
+        if: failure()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          # Only run if SLACK_WEBHOOK_URL is set
+          if [ -n "$SLACK_WEBHOOK_URL" ]; then
+            python .github/workflows/scripts/send_notifications.py \
+              --status failure \
+              --slack \
+              --slack-webhook "$SLACK_WEBHOOK_URL" \
+              --artifacts-dir ci_artifacts
+          else
+            echo "SLACK_WEBHOOK_URL not set, skipping notification"
+          fi
 
   # Windows testing job - a simplified version of the Linux job
   test-windows:
@@ -576,6 +661,9 @@ jobs:
           echo "| Cross-Platform Testing | ✅ Linux, Windows, macOS |" >> $GITHUB_STEP_SUMMARY
           echo "| CI Metrics Dashboard | ✅ Enabled |" >> $GITHUB_STEP_SUMMARY
           echo "| Documentation Site | ✅ Enabled |" >> $GITHUB_STEP_SUMMARY
+          echo "| Status Badges | ✅ Enabled |" >> $GITHUB_STEP_SUMMARY
+          echo "| Pipeline Health Checks | ✅ Enabled |" >> $GITHUB_STEP_SUMMARY
+          echo "| Failure Notifications | ✅ Enabled |" >> $GITHUB_STEP_SUMMARY
           
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "See individual platform artifacts for detailed reports." >> $GITHUB_STEP_SUMMARY 
