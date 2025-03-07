@@ -1,3 +1,18 @@
+"""
+Real-ESRGAN Super-Resolution Module
+----------------------------------
+This module implements image super-resolution using the Real-ESRGAN model.
+
+Real-ESRGAN is an enhanced super-resolution generative adversarial network that 
+improves upon ESRGAN with pure synthetic data and improves generalization and 
+performs better restoration quality on real-world images with complex degradations.
+
+The module provides:
+- RealESRGANer class for upscaling images with tiling support
+- Utility classes for efficient batch processing
+- Support for different image formats and alpha channel handling
+"""
+
 import gc
 import PIL
 import PIL.Image
@@ -13,11 +28,14 @@ from torch.nn import functional as F
 import service_config
 import xpu_hijacks
 
+# Apply Intel XPU (GPU) hijacks to make PyTorch operations work on Intel GPUs
 xpu_hijacks.ipex_hijacks()
 
+# Path and device configuration
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
+# URLs for pre-trained model weights
 ESRGAN_MODEL_URL = "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.2.1/RealESRGAN_x2plus.pth"
 # ESRGAN_MODEL_URL = "https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth"
 
@@ -41,6 +59,12 @@ class RealESRGANer:
     deivce: torch.device
 
     def __init__(self, tile=0, tile_pad=10, pre_pad=10, half=False):
+        """
+        Initialize the RealESRGANer with specified parameters.
+        
+        Sets up the model architecture based on the available model weights,
+        loads the pre-trained weights, and configures the processing parameters.
+        """
         self.tile_size = tile
         self.tile_pad = tile_pad
         self.pre_pad = pre_pad
@@ -53,6 +77,7 @@ class RealESRGANer:
                 service_config.service_model_paths.get("ESRGAN"), ESRGAN_MODEL_URL.split("/")[-1]
             )
         )
+        # Choose model architecture based on model filename (2x or 4x upscaling)
         if model_path.endswith("RealESRGAN_x2plus.pth"):
             self.model = RRDBNet(
                 num_in_ch=3,
@@ -71,6 +96,7 @@ class RealESRGANer:
                 num_grow_ch=32,
                 scale=4,
             )
+        # Load pre-trained weights
         state_dicts = torch.load(model_path, map_location=self.deivce)
 
         # prefer to use params_ema
@@ -89,12 +115,31 @@ class RealESRGANer:
             self,
             device: str,
     ):
+        """
+        Move the model to the specified device.
+        
+        Args:
+            device: The target device (converts 'xpu' to 'cuda' for Intel GPU compatibility)
+        """
         self.model.to(device.replace("xpu", "cuda"))
 
     def dni(self, net_a, net_b, dni_weight, key="params", loc="cpu"):
         """Deep network interpolation.
 
         ``Paper: Deep Network Interpolation for Continuous Imagery Effect Transition``
+        
+        Performs model interpolation between two pre-trained networks to achieve
+        continuous transition effects.
+        
+        Args:
+            net_a: Path to the first model
+            net_b: Path to the second model
+            dni_weight: Interpolation weights as a list of two values
+            key: Key for accessing model parameters
+            loc: Device for loading the models
+            
+        Returns:
+            Interpolated model state dict
         """
         net_a = torch.load(net_a, map_location=torch.device(loc))
         net_b = torch.load(net_b, map_location=torch.device(loc))
@@ -103,7 +148,16 @@ class RealESRGANer:
         return net_a
 
     def pre_process(self, img):
-        """Pre-process, such as pre-pad and mod pad, so that the images can be divisible"""
+        """Pre-process, such as pre-pad and mod pad, so that the images can be divisible
+        
+        Prepares the input image for processing by:
+        1. Converting it to a PyTorch tensor
+        2. Adding padding to avoid border artifacts
+        3. Ensuring dimensions are divisible by the scale factor
+        
+        Args:
+            img: Input image as a NumPy array
+        """
         img = torch.from_numpy(np.transpose(img, (2, 0, 1))).float()
         self.img = img.unsqueeze(0).to(self.deivce)
         if self.half:
@@ -129,6 +183,12 @@ class RealESRGANer:
             )
 
     def process(self):
+        """
+        Process the entire image at once using the model.
+        
+        Performs a forward pass through the Real-ESRGAN model
+        for images that can fit in memory without tiling.
+        """
         # model inference
         self.output = self.model(self.img)
 
@@ -137,6 +197,12 @@ class RealESRGANer:
         Finally, all the processed tiles are merged into one images.
 
         Modified from: https://github.com/ata4/esrgan-launcher
+        
+        This method handles large images by:
+        1. Dividing the image into overlapping tiles
+        2. Processing each tile separately
+        3. Merging the processed tiles back together
+        4. Handling tile overlaps to reduce boundary artifacts
         """
         batch, channel, height, width = self.img.shape
         output_height = height * self.scale
@@ -208,6 +274,15 @@ class RealESRGANer:
                     ]
 
     def post_process(self):
+        """
+        Post-process the output to remove padding.
+        
+        Removes the padding added during pre-processing to get the
+        final enhanced image at the correct dimensions.
+        
+        Returns:
+            torch.Tensor: The processed output image tensor
+        """
         # remove extra pad
         if self.mod_scale is not None:
             _, _, h, w = self.output.size()
@@ -235,6 +310,20 @@ class RealESRGANer:
             outscale: int = None,
             alpha_upsampler="realesrgan",
     ):
+        """
+        Enhance an image using the Real-ESRGAN model.
+        
+        Main entry point for image enhancement, handling different image formats,
+        color spaces, and optional alpha channel processing.
+        
+        Args:
+            img: Input image as a PIL Image or NumPy array
+            outscale: Optional output scale factor (overrides default model scale)
+            alpha_upsampler: Method for alpha channel upsampling ('realesrgan' or default cv2)
+            
+        Returns:
+            tuple: (Enhanced image as a NumPy array, Image mode string)
+        """
         if isinstance(img, PIL.Image.Image):
             img = np.array(img)
         h_input, w_input = img.shape[0:2]
@@ -317,6 +406,12 @@ class RealESRGANer:
         return output, img_mode
 
     def dispose(self):
+        """
+        Clean up resources used by the model.
+        
+        Moves the model to CPU, deletes it, and clears GPU memory
+        to free up resources when the model is no longer needed.
+        """
         self.model.cpu()
         del self.model
         gc.collect()
@@ -336,11 +431,27 @@ class PrefetchReader(threading.Thread):
     """
 
     def __init__(self, img_list, num_prefetch_queue):
+        """
+        Initialize the prefetch reader thread.
+        
+        Creates a queue and prepares to load images in a separate thread
+        to improve processing efficiency.
+        
+        Args:
+            img_list: List of image file paths to process
+            num_prefetch_queue: Size of the prefetch queue
+        """
         super().__init__()
         self.que = queue.Queue(num_prefetch_queue)
         self.img_list = img_list
 
     def run(self):
+        """
+        Thread execution method that loads images into the queue.
+        
+        Reads each image from disk and places it in the queue,
+        then signals completion with None.
+        """
         for img_path in self.img_list:
             img = cv2.imread(img_path, cv2.IMREAD_UNCHANGED)
             self.que.put(img)
@@ -348,23 +459,56 @@ class PrefetchReader(threading.Thread):
         self.que.put(None)
 
     def __next__(self):
+        """
+        Get the next image from the queue for iteration.
+        
+        Returns:
+            The next loaded image, or raises StopIteration
+        """
         next_item = self.que.get()
         if next_item is None:
             raise StopIteration
         return next_item
 
     def __iter__(self):
+        """
+        Make the class iterable.
+        
+        Returns:
+            Self as an iterator
+        """
         return self
 
 
 class IOConsumer(threading.Thread):
+    """
+    Thread for saving processed images to disk.
+    
+    Handles I/O operations in a separate thread to avoid blocking
+    the main processing thread.
+    """
     def __init__(self, opt, que, qid):
+        """
+        Initialize the I/O consumer thread.
+        
+        Args:
+            opt: Options/configuration for the consumer
+            que: Queue from which to get image data for saving
+            qid: Queue ID for identification
+        """
         super().__init__()
         self._queue = que
         self.qid = qid
         self.opt = opt
 
     def run(self):
+        """
+        Thread execution method that saves images from the queue.
+        
+        Continuously processes messages from the queue:
+        - Writes images to disk when image data is received
+        - Exits when a 'quit' message is received
+        """
         while True:
             msg = self._queue.get()
             if isinstance(msg, str) and msg == "quit":
