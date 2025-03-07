@@ -708,6 +708,19 @@ def __callback_on_step_end__(
 def convet_compel_prompt(
         prompt: str, pipe: StableDiffusionPipeline | StableDiffusionXLPipeline
 ):
+    """
+    Process text prompt using Compel for improved text conditioning.
+    
+    Creates text embeddings for model input using Compel, which provides 
+    improved control over text prompt weighting and emphasis.
+    
+    Args:
+        prompt: The text prompt to process
+        pipe: The diffusion pipeline that will use the embeddings
+        
+    Returns:
+        Dictionary of inputs for the pipeline containing processed prompt embeddings
+    """
     custom_inputs = {}
 
     if hasattr(pipe, "text_encoder_2") and hasattr(pipe, "tokenizer_2"):
