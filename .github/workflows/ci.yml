@@ -56,12 +56,79 @@ jobs:
           if [ -f service/requirements.txt ]; then pip install -r service/requirements.txt; fi
           pip install yapf==0.40.2
       
-      - name: Patch torch.xpu module for CI
+      - name: Create mock CUDA environment variables
         run: |
-          echo "import torch" > sitecustomize.py
-          echo "if hasattr(torch, 'xpu'):" >> sitecustomize.py
-          echo "    if not hasattr(torch.xpu, 'has_fp64_dtype'):" >> sitecustomize.py
-          echo "        torch.xpu.has_fp64_dtype = lambda: False" >> sitecustomize.py
+          echo "CUDA_VISIBLE_DEVICES=-1" >> $GITHUB_ENV
+          echo "CUDA_DEVICE_ORDER=PCI_BUS_ID" >> $GITHUB_ENV
+          echo "XPU_VISIBLE_DEVICES=-1" >> $GITHUB_ENV
+          echo "Setting CUDA/XPU environment variables to disable GPU usage"
+      
+      - name: Create force CPU mode patch
+        run: |
+          # This patch creates a sitecustomize.py file that forces CPU mode for most ML frameworks
+          cat > sitecustomize.py << 'EOF'
+          import os
+          import sys
+          
+          # Force CPU-only mode for various ML frameworks
+          os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
+          os.environ['XPU_VISIBLE_DEVICES'] = '-1'
+          os.environ['FORCE_CPU_ONLY'] = '1'
+          
+          # Patch torch to ensure it's in CPU-only mode
+          def patch_torch():
+              try:
+                  import torch
+                  
+                  # Ensure torch.cuda.is_available() returns False
+                  if hasattr(torch, 'cuda'):
+                      torch.cuda.is_available = lambda: False
+                      if hasattr(torch.cuda, '_is_available'):
+                          torch.cuda._is_available = lambda: False
+                  
+                  # Create empty xpu module if not present
+                  if not hasattr(torch, 'xpu'):
+                      # Define a more complete mock XPU module
+                      class XpuModule:
+                          def is_available(self):
+                              return False
+                          def has_fp64_dtype(self):
+                              return False
+                          def device_count(self):
+                              return 0
+                          def current_device(self):
+                              return 0
+                          def get_device_name(self, device=None):
+                              return "CI_MOCK_XPU_DEVICE"
+                          def device(self, index=0):
+                              return torch.device("cpu")  # Return CPU device instead
+                              
+                      torch.xpu = XpuModule()
+                  else:
+                      # Ensure torch.xpu.is_available() returns False
+                      torch.xpu.is_available = lambda: False
+                      if not hasattr(torch.xpu, 'has_fp64_dtype'):
+                          torch.xpu.has_fp64_dtype = lambda: False
+                      # Add other methods if needed
+                      if not hasattr(torch.xpu, 'device_count'):
+                          torch.xpu.device_count = lambda: 0
+                      if not hasattr(torch.xpu, 'current_device'):
+                          torch.xpu.current_device = lambda: 0
+                      if not hasattr(torch.xpu, 'get_device_name'):
+                          torch.xpu.get_device_name = lambda device=None: "CI_MOCK_XPU_DEVICE"
+                      if not hasattr(torch.xpu, 'device'):
+                          torch.xpu.device = lambda index=0: torch.device("cpu")
+                          
+                  print("Patched torch for CPU-only mode")
+              except ImportError:
+                  pass
+          
+          # Apply patches when this module is imported
+          patch_torch()
+          EOF
+          
+          # Make it executable
+          chmod +x sitecustomize.py
       
       - name: Create mock torch.xpu module
         run: |
