@@ -71,7 +71,11 @@ jobs:
           echo "# Provides minimal implementation for CI" >> intel_extension_for_pytorch.py
           cp intel_extension_for_pytorch.py $(python -c 'import site; print(site.getsitepackages()[0])')
       
+      - name: Verify intel_extension_for_pytorch stub
+        run: python -c "import intel_extension_for_pytorch; print('Stub OK')"
+      
       - name: Run tests
         env:
           PYTHONPATH: .
+          PYTHONWARNINGS: "ignore"
         run: python -m unittest discover -s service/tests 
