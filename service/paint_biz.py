@@ -54,6 +54,13 @@ print("workarounds applied")
 
 
 # region class define
+# --------------------------------------------------------------------
+# Parameter Classes Section:
+# These classes encapsulate configuration parameters for different
+# image generation modes offered by the module. They include parameters
+# such as image dimensions, seed, prompt details, and mode-specific attributes.
+# Modify these classes as needed to customize generation behavior.
+# --------------------------------------------------------------------
 
 
 class TextImageParams:
@@ -771,8 +778,11 @@ def text_to_image(
         params: Text-to-image generation parameters
     """
     global _generate_idx, image_out_callback
+    # Retrieve the diffusion model pipeline for the specified model.
     pipe = get_basic_model(params.model_name)
+    # Update model components based on parameters (e.g., LoRA, scheduler adjustments).
     set_components(pipe, params)
+    # Move the model to the configured device (e.g., GPU or CPU) as specified in service_config.
     pipe.to(service_config.device)
 
     custom_inputs = convet_compel_prompt(params.prompt, pipe)

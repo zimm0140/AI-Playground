@@ -1,10 +1,33 @@
+# ==================================================================
+# CI Workflow File:
+#
+# This GitHub Actions workflow is triggered on push and pull_request events to the main branch.
+# It sets up an environment with Python 3.10, installs dependencies (including torch),
+# and runs the test suite using Python's unittest framework.
+# ==================================================================
+
 name: CI
+
+# --------------------------------------------------------------------
+# Trigger Events:
+# This workflow is triggered on push and pull_request events to the main branch.
+# --------------------------------------------------------------------
 
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+
+# --------------------------------------------------------------------
+# Jobs Section:
+# This section defines the jobs that run in the CI workflow.
+# In this workflow, the 'test' job runs on ubuntu-latest and includes steps for:
+# - Checking out the repository
+# - Setting up Python 3.10
+# - Installing dependencies (including torch)
+# - Running the test suite
+# --------------------------------------------------------------------
 
 jobs:
   test:
