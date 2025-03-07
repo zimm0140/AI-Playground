@@ -61,6 +61,7 @@ jobs:
             ${{ runner.os }}-pip-
       
       - name: Install dependencies
+        # Install Python dependencies required for testing and CI process
         run: |
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
