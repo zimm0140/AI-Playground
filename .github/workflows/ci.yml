@@ -214,12 +214,17 @@ jobs:
           python service/xpu_patch.py
       
       - name: Lint code
-        run: yapf -R --diff .
+        run: yapf -r --diff .
       
       - name: Run tests
         env:
           PYTHONPATH: .
           PYTHONWARNINGS: "ignore"
+          # Prevent display-related errors in headless CI
+          DISPLAY: ":99"
+          MPLBACKEND: "Agg"
+          PYTHONNOUSERSITE: "1"
+          CI: "true"
         run: |
           python -m unittest discover -s service/tests -v || {
             echo "Tests failed but continuing the workflow"
