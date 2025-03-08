@@ -754,7 +754,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-results
+          name: test-results-python
           path: test-results/
           retention-days: 5
 
@@ -762,7 +762,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-data
+          name: coverage-data-python
           path: coverage/
           retention-days: 5
 
@@ -770,7 +770,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: pytest-results
+          name: pytest-results-python
           path: pytest-results/
           retention-days: 5
 
@@ -778,7 +778,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: build-artifacts
+          name: build-artifacts-python
           path: dist/
           retention-days: 30
 
@@ -786,6 +786,6 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: release-artifacts
+          name: release-artifacts-python
           path: release/
           retention-days: 30
