@@ -81,4 +81,4 @@ To contribute a new workflow:
 
 ## Documentation
 
-For more detailed information about the workflow validation system, see [docs/comfyui_workflow_validation.md](../../docs/comfyui_workflow_validation.md)
+For more detailed information about the workflow validation system, see [docs/comfyui_workflow_validation.md](../../docs/comfyui_workflow_validation.md) 

@@ -401,7 +401,7 @@ jobs:
       - name: Upload code quality report
         uses: actions/upload-artifact@v4
         with:
-          name: code-quality-report
+          name: code-quality-report-test
           path: |
             yapf_report.txt
             ci_artifacts/code_quality_summary.txt
@@ -694,7 +694,7 @@ jobs:
       - name: Upload API documentation
         uses: actions/upload-artifact@v4
         with:
-          name: api-documentation-python-${{ matrix.python-version }}
+          name: api-documentation-python-${{ matrix.python-version }}-test
           path: api_docs/
           retention-days: 30
 
@@ -746,7 +746,7 @@ jobs:
       - name: Upload tool compatibility report
         uses: actions/upload-artifact@v4
         with:
-          name: tool-compatibility-report
+          name: tool-compatibility-report-test
           path: ci_artifacts/tool_compat/
           retention-days: 30
 
