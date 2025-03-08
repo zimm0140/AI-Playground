@@ -56,7 +56,10 @@ class TestAPI(unittest.TestCase):
             "vae": os.path.join(self.model_dir, "stable_diffusion", "vae"),
         }
 
-        from web_api import app
+        try:
+            from web_api import app
+        except ImportError:
+            from service.web_api import app
 
         self.app = app.test_client()
 

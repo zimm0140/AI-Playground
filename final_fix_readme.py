@@ -1,4 +1,9 @@
-# ComfyUI Workflow Repository
+#!/usr/bin/env python
+"""
+Final fix for README.md to make it pass Prettier checks
+"""
+
+content = """# ComfyUI Workflow Repository
 
 This directory contains curated and validated ComfyUI workflows that have been tested and verified for compatibility with our system.
 
@@ -82,3 +87,10 @@ To contribute a new workflow:
 ## Documentation
 
 For more detailed information about the workflow validation system, see [docs/comfyui_workflow_validation.md](../../docs/comfyui_workflow_validation.md)
+"""
+
+# Write the fixed content to the file
+with open('WebUI/external/workflows/README.md', 'w', encoding='utf-8') as f:
+    f.write(content)
+
+print("Fixed README.md") 
