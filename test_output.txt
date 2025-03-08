@@ -1,0 +1,4 @@
+try:
+    from web_api import app
+except ImportError:
+    from service.web_api import app
