@@ -1,0 +1,138 @@
+name: Ruff Integration
+
+# Run this to integrate Ruff with our custom linting tools
+on:
+  workflow_dispatch:  # Manual trigger
+  pull_request:
+    branches: [ main ]
+    paths:
+      - '**.py'  # Only run on Python file changes
+
+permissions:
+  contents: read
+  pull-requests: write  # Needed to comment on PRs
+  
+jobs:
+  ruff-and-custom-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install ruff psutil
+      
+      - name: Run Ruff for static analysis
+        id: ruff
+        uses: astral-sh/ruff-action@v1
+        continue-on-error: true
+      
+      - name: Run custom lint script
+        id: custom-lint
+        continue-on-error: true
+        run: |
+          python .github/workflows/scripts/lint_python_files.py > custom_lint_output.txt
+          if [ $? -ne 0 ]; then
+            echo "Custom linting found issues"
+            echo "CUSTOM_LINT_FAILED=true" >> $GITHUB_ENV
+            cat custom_lint_output.txt
+          else
+            echo "Custom linting passed"
+            echo "CUSTOM_LINT_FAILED=false" >> $GITHUB_ENV
+          fi
+      
+      - name: Generate combined report
+        run: |
+          echo "# Linting Report" > lint_report.md
+          echo "" >> lint_report.md
+          
+          # Add Ruff results
+          echo "## Ruff Results" >> lint_report.md
+          if [[ "${{ steps.ruff.outcome }}" == "success" ]]; then
+            echo "✅ Ruff found no issues" >> lint_report.md
+          else
+            echo "❌ Ruff found issues:" >> lint_report.md
+            echo '```' >> lint_report.md
+            ruff check . --output-format=text >> lint_report.md
+            echo '```' >> lint_report.md
+          fi
+          
+          # Add custom lint results
+          echo "" >> lint_report.md
+          echo "## Custom Lint Results" >> lint_report.md
+          if [[ "$CUSTOM_LINT_FAILED" == "false" ]]; then
+            echo "✅ Custom linting found no issues" >> lint_report.md
+          else
+            echo "❌ Custom linting found issues:" >> lint_report.md
+            echo '```' >> lint_report.md
+            cat custom_lint_output.txt >> lint_report.md
+            echo '```' >> lint_report.md
+          fi
+          
+          # Add auto-fix instructions
+          echo "" >> lint_report.md
+          echo "## How to Fix" >> lint_report.md
+          echo "### Automatic fixes" >> lint_report.md
+          echo "Run these commands locally to auto-fix many issues:" >> lint_report.md
+          echo '```bash' >> lint_report.md
+          echo "# Fix Ruff issues" >> lint_report.md
+          echo "ruff check --fix ." >> lint_report.md
+          echo "" >> lint_report.md
+          echo "# Fix other issues" >> lint_report.md
+          echo "python .github/workflows/scripts/fix_ci_issues.py" >> lint_report.md
+          echo '```' >> lint_report.md
+          
+          # Add setup hooks reminder
+          echo "" >> lint_report.md
+          echo "### Prevent future issues" >> lint_report.md
+          echo "Set up pre-commit hooks to catch these issues before committing:" >> lint_report.md
+          echo '```bash' >> lint_report.md
+          echo "# On Linux/macOS/Git Bash" >> lint_report.md
+          echo "./.github/setup-hooks.sh" >> lint_report.md
+          echo "" >> lint_report.md
+          echo "# On Windows PowerShell" >> lint_report.md
+          echo ".\.github\setup-hooks.ps1" >> lint_report.md
+          echo '```' >> lint_report.md
+          
+          cat lint_report.md
+      
+      - name: Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('lint_report.md', 'utf8');
+            
+            const hasRuffErrors = "${{ steps.ruff.outcome }}" !== "success";
+            const hasCustomErrors = "${{ env.CUSTOM_LINT_FAILED }}" === "true";
+            
+            // Only comment if there are errors
+            if (hasRuffErrors || hasCustomErrors) {
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: report
+              });
+            }
+      
+      # Fail the workflow if either linting check failed
+      - name: Check results
+        if: always()
+        run: |
+          if [[ "${{ steps.ruff.outcome }}" != "success" || "${{ env.CUSTOM_LINT_FAILED }}" == "true" ]]; then
+            echo "Linting checks failed. See details above."
+            exit 1
+          fi
+          echo "All linting checks passed!" 

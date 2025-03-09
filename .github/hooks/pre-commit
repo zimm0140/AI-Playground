@@ -1,11 +1,25 @@
-#!/bin/bash
+#!/bin/sh
 #
 # Pre-commit hook to run Python linting checks before allowing the commit
-# Save this file to .git/hooks/pre-commit and make it executable:
-# chmod +x .git/hooks/pre-commit
+# This hook detects the OS and runs the appropriate script (bash or PowerShell)
 
-set -e
+# Detect if we're running on Windows
+case "$(uname -s)" in
+    CYGWIN*|MINGW*|MSYS*)
+        # Windows detected - run the PowerShell script if possible
+        if command -v pwsh >/dev/null 2>&1; then
+            pwsh -File "$(dirname "$0")/pre-commit.ps1"
+            exit $?
+        elif command -v powershell >/dev/null 2>&1; then
+            powershell -File "$(dirname "$0")/pre-commit.ps1"
+            exit $?
+        else
+            echo "Warning: Running on Windows but PowerShell not found. Falling back to bash version."
+        fi
+        ;;
+esac
 
+# Unix version (or Windows fallback)
 echo "Running pre-commit checks..."
 
 # Get the list of staged Python files
