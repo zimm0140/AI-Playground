@@ -1,0 +1,114 @@
+name: Auto Fix Ruff Issues
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'service/**.py'
+  workflow_dispatch:  # Manual trigger
+
+# No need for complex commit/push permissions as we're just creating artifacts
+permissions:
+  contents: read
+  
+jobs:
+  fix-ruff:
+    runs-on: ubuntu-latest
+    name: Auto Fix Ruff Issues
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install ruff
+      
+      - name: Run Ruff check to see issues
+        id: check
+        continue-on-error: true
+        run: |
+          echo "Checking for Ruff issues in service directory..."
+          ruff check service --select=E,F --ignore=E501 --statistics
+          
+          # Store exit code for later use
+          echo "CHECK_EXIT_CODE=$?" >> $GITHUB_ENV
+          
+          if [ $? -eq 0 ]; then
+            echo "No issues found!"
+            echo "NEEDS_FIXING=false" >> $GITHUB_ENV
+          else
+            echo "Issues found, will attempt to fix"
+            echo "NEEDS_FIXING=true" >> $GITHUB_ENV
+          fi
+      
+      - name: Generate Ruff Fix Output
+        if: env.NEEDS_FIXING == 'true'
+        run: |
+          # Create output directory
+          mkdir -p ruff_fixes
+          
+          # Log initial issues
+          echo "# Initial Ruff Issues" > ruff_fixes/report.md
+          echo '```' >> ruff_fixes/report.md
+          ruff check service --select=E,F --ignore=E501 >> ruff_fixes/report.md 2>&1
+          echo '```' >> ruff_fixes/report.md
+          
+          # Try to fix issues
+          echo -e "\n# Fix Attempt" >> ruff_fixes/report.md
+          echo '```' >> ruff_fixes/report.md
+          ruff check service --select=E,F --ignore=E501 --fix >> ruff_fixes/report.md 2>&1
+          echo '```' >> ruff_fixes/report.md
+          
+          # Check if fixes worked
+          echo -e "\n# Remaining Issues" >> ruff_fixes/report.md
+          echo '```' >> ruff_fixes/report.md
+          ruff check service --select=E,F --ignore=E501 >> ruff_fixes/report.md 2>&1
+          echo '```' >> ruff_fixes/report.md
+          
+          # Summary section
+          echo -e "\n# How to Fix Remaining Issues" >> ruff_fixes/report.md
+          echo "If issues remain, you can fix them by:" >> ruff_fixes/report.md
+          echo "1. Running our local fix script: \`.github/workflows/scripts/fix_ruff_issues_local.py\`" >> ruff_fixes/report.md
+          echo "2. Or manually addressing each error according to its error code" >> ruff_fixes/report.md
+          
+          # Show final result in workflow
+          echo "Final Ruff fix report:"
+          cat ruff_fixes/report.md
+          
+      - name: Upload fix report
+        if: env.NEEDS_FIXING == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ruff-fix-report
+          path: ruff_fixes/
+          retention-days: 7
+          
+      - name: Add step summary
+        run: |
+          if [ "${{ env.NEEDS_FIXING }}" == "true" ]; then
+            echo "# ⚠️ Ruff Issues Detected" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "Ruff found formatting or style issues in your Python code." >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "## How to Fix" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "Download the 'ruff-fix-report' artifact to see details, or:" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "1. Run this command locally:" >> $GITHUB_STEP_SUMMARY
+            echo "   ```bash" >> $GITHUB_STEP_SUMMARY
+            echo "   python .github/workflows/scripts/fix_ruff_issues_local.py" >> $GITHUB_STEP_SUMMARY
+            echo "   ```" >> $GITHUB_STEP_SUMMARY
+            echo "2. Commit and push the changes" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "# ✅ No Ruff Issues Detected" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "Your Python code in the service directory passed all Ruff checks!" >> $GITHUB_STEP_SUMMARY
+          fi 
