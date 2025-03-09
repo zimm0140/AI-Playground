@@ -1,13 +1,25 @@
 {
+  "$schema": "https://raw.githubusercontent.com/AI-Playground/main/WebUI/external/schemas/workflow-schema.json",
   "name": "Flux.1-Schnell High Quality",
+  "version": "1.0.0",
+  "changeLog": [
+    {
+      "version": "1.0.0",
+      "date": "2024-03-07",
+      "changes": ["Initial release"]
+    }
+  ],
   "displayPriority": 450,
   "backend": "comfyui",
+  "description": "High-quality text-to-image generation using the FLUX.1-schnell model with Q8 quantization for superior image quality.",
   "comfyUIRequirements": {
     "customNodes": ["city96/ComfyUI-GGUF@65a7c895bb0ac9547ba2f89d55fbdb609aa2bfe7"],
     "requiredModels": [
       {
         "type": "unet",
-        "model": "city96/FLUX.1-schnell-gguf/flux1-schnell-Q8_0.gguf"
+        "model": "city96/FLUX.1-schnell-gguf/flux1-schnell-Q8_0.gguf",
+        "version": ">=1.0.0",
+        "fallbacks": ["city96/FLUX.1-schnell-gguf/flux1-schnell-Q6_K.gguf"]
       },
       {
         "type": "clip",
@@ -23,7 +35,7 @@
       }
     ]
   },
-  "tags": ["Q8", "Fast"],
+  "tags": ["Q8", "Fast", "Text-to-Image", "High-Quality"],
   "requirements": ["high-vram"],
   "inputs": [],
   "outputs": [
