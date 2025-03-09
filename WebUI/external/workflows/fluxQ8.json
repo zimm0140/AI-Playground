@@ -12,6 +12,38 @@
   "displayPriority": 450,
   "backend": "comfyui",
   "description": "High-quality text-to-image generation using the FLUX.1-schnell model with Q8 quantization for superior image quality.",
+  "examples": [
+    {
+      "title": "Llama with Neon Sign",
+      "description": "A cool llama wearing sunglasses with a neon sign",
+      "inputSettings": {
+        "prompt": "A cool llama wearing a pair of sunglasses, holding a blue and purple neon sign that says \"Lunar Lake\" in front, vibrant colors, blurry cyberpunk gaming background.",
+        "resolution": "896x896",
+        "inferenceSteps": 4
+      },
+      "outputImage": "https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/diffusers/flux_llama.png"
+    }
+  ],
+  "resourceEstimation": {
+    "vramMinimum": 8192,
+    "vramRecommended": 12288,
+    "diskSpace": 5000,
+    "cpuUsage": "medium"
+  },
+  "components": [
+    {
+      "componentId": "text_encoder_t5_clip",
+      "componentType": "text_encoder",
+      "description": "Dual text encoder for FLUX models",
+      "nodeIds": ["177", "188"]
+    },
+    {
+      "componentId": "flux_sampler",
+      "componentType": "sampler",
+      "description": "High-quality sampler for FLUX models",
+      "nodeIds": ["169", "174", "178", "181", "184", "185"]
+    }
+  ],
   "comfyUIRequirements": {
     "customNodes": ["city96/ComfyUI-GGUF@65a7c895bb0ac9547ba2f89d55fbdb609aa2bfe7"],
     "requiredModels": [

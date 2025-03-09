@@ -1,0 +1,67 @@
+{
+  "name": "T5-CLIP Dual Text Encoder",
+  "description": "Text encoder component that uses both T5 and CLIP encoders for high-quality text embeddings with FLUX models",
+  "version": "1.0.0",
+  "type": "text_encoder",
+  "inputs": [
+    {
+      "name": "text",
+      "type": "string",
+      "description": "Prompt text to encode"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "conditioning",
+      "type": "conditioning",
+      "description": "Text conditioning for the model"
+    }
+  ],
+  "requirements": {
+    "models": [
+      {
+        "type": "clip",
+        "model": "city96/t5-v1_1-xxl-encoder-gguf/t5-v1_1-xxl-encoder-Q3_K_M.gguf"
+      },
+      {
+        "type": "clip",
+        "model": "comfyanonymous/flux_text_encoders/clip_l.safetensors"
+      }
+    ]
+  },
+  "nodes": {
+    "1": {
+      "class_type": "DualCLIPLoaderGGUF",
+      "inputs": {
+        "clip_name1": "city96---t5-v1_1-xxl-encoder-gguf\\t5-v1_1-xxl-encoder-Q3_K_M.gguf",
+        "clip_name2": "comfyanonymous---flux_text_encoders\\clip_l.safetensors",
+        "type": "flux"
+      },
+      "_meta": {
+        "title": "DualCLIPLoader (GGUF)"
+      }
+    },
+    "2": {
+      "class_type": "CLIPTextEncode",
+      "inputs": {
+        "text": "A beautiful landscape with mountains and lakes",
+        "clip": ["1", 0]
+      },
+      "_meta": {
+        "title": "Text Prompt"
+      }
+    }
+  },
+  "inputMappings": {
+    "text": {
+      "nodeId": "2",
+      "inputName": "text"
+    }
+  },
+  "outputMappings": {
+    "conditioning": {
+      "nodeId": "2",
+      "outputIndex": 0
+    }
+  }
+} 

@@ -1,0 +1,135 @@
+{
+  "name": "FLUX Sampler",
+  "description": "High-quality sampler configuration optimized for FLUX models",
+  "version": "1.0.0",
+  "type": "sampler",
+  "inputs": [
+    {
+      "name": "model",
+      "type": "model",
+      "description": "FLUX model to use for sampling"
+    },
+    {
+      "name": "conditioning",
+      "type": "conditioning",
+      "description": "Text conditioning from encoder"
+    },
+    {
+      "name": "latent_image",
+      "type": "latent",
+      "description": "Latent image to sample from"
+    },
+    {
+      "name": "steps",
+      "type": "integer",
+      "description": "Number of sampling steps",
+      "default": 4
+    },
+    {
+      "name": "seed",
+      "type": "integer",
+      "description": "Random seed for noise generation",
+      "default": 42
+    }
+  ],
+  "outputs": [
+    {
+      "name": "latent",
+      "type": "latent",
+      "description": "Sampled latent image"
+    }
+  ],
+  "nodes": {
+    "1": {
+      "class_type": "FluxGuidance",
+      "inputs": {
+        "guidance": 1,
+        "conditioning": ["INPUT_CONDITIONING", 0]
+      },
+      "_meta": {
+        "title": "FluxGuidance"
+      }
+    },
+    "2": {
+      "class_type": "BasicGuider",
+      "inputs": {
+        "model": ["INPUT_MODEL", 0],
+        "conditioning": ["1", 0]
+      },
+      "_meta": {
+        "title": "BasicGuider"
+      }
+    },
+    "3": {
+      "class_type": "BasicScheduler",
+      "inputs": {
+        "scheduler": "normal",
+        "steps": ["INPUT_STEPS", 0],
+        "denoise": 1,
+        "model": ["INPUT_MODEL", 0]
+      },
+      "_meta": {
+        "title": "BasicScheduler"
+      }
+    },
+    "4": {
+      "class_type": "RandomNoise",
+      "inputs": {
+        "noise_seed": ["INPUT_SEED", 0]
+      },
+      "_meta": {
+        "title": "RandomNoise"
+      }
+    },
+    "5": {
+      "class_type": "KSamplerSelect",
+      "inputs": {
+        "sampler_name": "euler"
+      },
+      "_meta": {
+        "title": "KSamplerSelect"
+      }
+    },
+    "6": {
+      "class_type": "SamplerCustomAdvanced",
+      "inputs": {
+        "noise": ["4", 0],
+        "guider": ["2", 0],
+        "sampler": ["5", 0],
+        "sigmas": ["3", 0],
+        "latent_image": ["INPUT_LATENT", 0]
+      },
+      "_meta": {
+        "title": "SamplerCustomAdvanced"
+      }
+    }
+  },
+  "inputMappings": {
+    "model": {
+      "nodeId": "INPUT_MODEL",
+      "inputName": "model"
+    },
+    "conditioning": {
+      "nodeId": "INPUT_CONDITIONING",
+      "inputName": "conditioning"
+    },
+    "latent_image": {
+      "nodeId": "INPUT_LATENT",
+      "inputName": "latent_image"
+    },
+    "steps": {
+      "nodeId": "INPUT_STEPS",
+      "inputName": "steps"
+    },
+    "seed": {
+      "nodeId": "INPUT_SEED",
+      "inputName": "seed"
+    }
+  },
+  "outputMappings": {
+    "latent": {
+      "nodeId": "6",
+      "outputIndex": 1
+    }
+  }
+} 

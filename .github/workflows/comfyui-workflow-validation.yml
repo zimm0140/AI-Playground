@@ -5,10 +5,12 @@ on:
     branches: [ main ]
     paths:
       - 'WebUI/external/workflows/**'
+      - 'WebUI/external/components/**'
   pull_request:
     branches: [ main ]
     paths:
       - 'WebUI/external/workflows/**'
+      - 'WebUI/external/components/**'
   # Enable manual trigger
   workflow_dispatch:
   # Run weekly on Sunday at 00:00 UTC
@@ -34,7 +36,7 @@ jobs:
           pip install argparse pyyaml jsonschema
           
       - name: Create artifacts directory
-        run: mkdir -p ci_artifacts/workflow_validation ci_artifacts/workflow_requirements ci_artifacts/workflow_tests ci_artifacts/workflow_versions ci_artifacts/workflow_dashboard ci_artifacts/workflow_docs
+        run: mkdir -p ci_artifacts/workflow_validation ci_artifacts/workflow_requirements ci_artifacts/workflow_tests ci_artifacts/workflow_versions ci_artifacts/workflow_dashboard ci_artifacts/workflow_docs ci_artifacts/component_validation
           
       # Schema validation (new step)
       - name: Validate workflow schema
@@ -44,6 +46,13 @@ jobs:
             --schema-file WebUI/external/schemas/workflow-schema.json \
             --output-file ci_artifacts/workflow_validation/schema_validation_report.json
           
+      # Component validation (new step)
+      - name: Validate components
+        run: |
+          python .github/workflows/scripts/validate_components.py \
+            --components-dir WebUI/external/components \
+            --output-dir ci_artifacts/component_validation
+            
       # Original workflow validation
       - name: Validate workflow JSON files
         run: |
@@ -70,7 +79,8 @@ jobs:
           python .github/workflows/scripts/generate_workflow_docs.py \
             --workflows-dir WebUI/external/workflows \
             --output-dir ci_artifacts/workflow_docs \
-            --create-index
+            --create-index \
+            --create-gallery
             
       - name: Execute workflow tests
         run: |
@@ -92,6 +102,7 @@ jobs:
             --requirements-dir ci_artifacts/workflow_requirements \
             --tests-dir ci_artifacts/workflow_tests \
             --versions-dir ci_artifacts/workflow_versions \
+            --components-dir WebUI/external/components \
             --output-dir ci_artifacts/workflow_dashboard
             
       - name: Upload workflow artifacts
