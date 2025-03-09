@@ -1,0 +1,201 @@
+name: CI Cleanup and Optimization
+
+# Run this workflow before the main CI workflow
+on:
+  workflow_dispatch:  # Manual trigger
+  push:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/**.yml'
+      - '.github/workflows/**.yaml'
+      - '.github/workflows/scripts/**'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - '.github/workflows/**.yml'
+      - '.github/workflows/**.yaml'
+      - '.github/workflows/scripts/**'
+
+# Sets permissions of the GITHUB_TOKEN to allow updating workflow files
+permissions:
+  contents: write
+  pull-requests: write
+  
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    name: Cleanup and Optimize CI
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml
+          
+      - name: Ensure script directory exists
+        run: mkdir -p .github/workflows/scripts
+        
+      - name: Fix indentation issues in test files
+        if: ${{ !cancelled() }}
+        run: |
+          chmod +x .github/workflows/scripts/fix_ci_issues.py
+          python .github/workflows/scripts/fix_ci_issues.py
+          
+      - name: Ensure unique artifact names
+        if: ${{ !cancelled() }}
+        run: |
+          chmod +x .github/workflows/scripts/ensure_unique_artifacts.py
+          python .github/workflows/scripts/ensure_unique_artifacts.py
+      
+      - name: Optimize CI workflows
+        if: ${{ !cancelled() }}
+        run: |
+          chmod +x .github/workflows/scripts/optimize_ci.py
+          python .github/workflows/scripts/optimize_ci.py
+      
+      - name: Remove duplicate workflow sections
+        if: ${{ !cancelled() }}
+        run: |
+          cat > .github/workflows/scripts/remove_duplicate_sections.py << 'EOF'
+          #!/usr/bin/env python3
+          """
+          Remove Duplicate Workflow Sections
+          
+          This script analyzes workflow files and removes duplicate job, name, and on sections
+          that might have been accidentally duplicated during edits.
+          """
+          
+          import os
+          import glob
+          import re
+          import yaml
+          
+          def clean_workflow_files():
+              """Find and clean workflow files by removing duplicates"""
+              print("Cleaning workflow files...")
+              
+              # Find all workflow files
+              workflow_files = glob.glob(".github/workflows/*.yml") + glob.glob(".github/workflows/*.yaml")
+              workflow_files = [f for f in workflow_files if not f.endswith("ci-cleanup.yml")]
+              
+              if not workflow_files:
+                  print("No workflow files found.")
+                  return
+                  
+              for file_path in workflow_files:
+                  print(f"Checking {file_path} for duplicates...")
+                  
+                  with open(file_path, 'r') as f:
+                      content = f.read()
+                  
+                  # Remove duplicate name: sections
+                  name_match = re.search(r'name:\s*([^\n]+)', content)
+                  if name_match:
+                      workflow_name = name_match.group(1).strip()
+                      pattern = rf'name:\s*{re.escape(workflow_name)}'
+                      matches = re.finditer(pattern, content)
+                      positions = [m.start() for m in matches]
+                      
+                      if len(positions) > 1:
+                          print(f"  • Found {len(positions)} duplicate workflow name declarations")
+                          # Keep the first occurrence, remove others
+                          sections_to_remove = positions[1:]
+                          
+                          # Create a new content without duplicate sections
+                          for pos in reversed(sections_to_remove):
+                              # Find the end of the line
+                              line_end = content.find('\n', pos)
+                              if line_end == -1:
+                                  line_end = len(content)
+                              
+                              # Remove the line
+                              content = content[:pos] + content[line_end+1:]
+                          
+                          print(f"  ✓ Removed {len(sections_to_remove)} duplicate name declarations")
+                  
+                  # Remove duplicate "on:" sections
+                  on_sections = re.findall(r'(\non:(?:\s+[\w-]+:(?:\s+[\w-]+:(?:\s+- [^\n]+)*)*)+)', content)
+                  if len(on_sections) > 1:
+                      print(f"  • Found {len(on_sections)} on: sections")
+                      # Keep the first one, remove the others
+                      for section in on_sections[1:]:
+                          content = content.replace(section, '')
+                      print(f"  ✓ Removed {len(on_sections)-1} duplicate on: sections")
+                  
+                  # Remove duplicate "jobs:" sections
+                  jobs_sections = re.findall(r'(\njobs:(?:\s+[\w-]+:(?:\s+[\w-]+:(?:\s+- [^\n]+)*)*)+)', content)
+                  if len(jobs_sections) > 1:
+                      print(f"  • Found {len(jobs_sections)} jobs: sections")
+                      # This is more complex - we need to merge job definitions
+                      print(f"  ⚠ Multiple jobs sections found, manual review recommended")
+                  
+                  # Write back the cleaned content
+                  if content != open(file_path, 'r').read():
+                      with open(file_path, 'w') as f:
+                          f.write(content)
+                      print(f"  ✓ Updated {file_path} with cleaned content")
+                  else:
+                      print(f"  ✓ No duplicates to remove in {file_path}")
+          
+          if __name__ == "__main__":
+              clean_workflow_files()
+          EOF
+          
+          chmod +x .github/workflows/scripts/remove_duplicate_sections.py
+          python .github/workflows/scripts/remove_duplicate_sections.py
+      
+      - name: Commit changes if any
+        if: github.event_name != 'pull_request'
+        run: |
+          git config user.name "GitHub CI Cleanup"
+          git config user.email "action@github.com"
+          
+          if git diff --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          
+          git add .github/workflows/
+          git commit -m "🧹 CI: Clean up and optimize workflow files [skip ci]"
+          git push
+          
+      - name: Create or update PR with changes
+        if: github.event_name == 'pull_request'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "🧹 CI: Clean up and optimize workflow files"
+          title: "🧹 CI: Clean up and optimize workflow files"
+          body: |
+            This PR includes automated cleanup and optimization of CI workflow files:
+            
+            - ✅ Fixed indentation issues in test files
+            - ✅ Ensured unique artifact names to prevent conflicts
+            - ✅ Optimized CI workflows for better performance
+            - ✅ Removed duplicate workflow sections
+            
+            These changes should make the CI workflow more reliable and faster.
+          branch: ci-workflow-cleanup
+          base: ${{ github.head_ref }}
+          
+      - name: Add job summary
+        run: |
+          echo "# CI Cleanup and Optimization Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "The following optimizations were applied to workflow files:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Fixed indentation issues in test files" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Ensured unique artifact names to prevent conflicts" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Optimized CI workflows for better performance" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Removed duplicate workflow sections" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "These changes should make the CI workflow more reliable and faster." >> $GITHUB_STEP_SUMMARY 
