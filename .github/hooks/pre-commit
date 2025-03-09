@@ -1,0 +1,29 @@
+#!/bin/bash
+#
+# Pre-commit hook to run Python linting checks before allowing the commit
+# Save this file to .git/hooks/pre-commit and make it executable:
+# chmod +x .git/hooks/pre-commit
+
+set -e
+
+echo "Running pre-commit checks..."
+
+# Get the list of staged Python files
+STAGED_PY_FILES=$(git diff --cached --name-only --diff-filter=d | grep -E '\.py$' || true)
+
+if [ -z "$STAGED_PY_FILES" ]; then
+  echo "No Python files to check, skipping linting."
+  exit 0
+fi
+
+# Run the linter on the staged Python files
+python .github/workflows/scripts/lint_python_files.py $STAGED_PY_FILES
+
+# If lint_python_files.py returns a non-zero code, abort the commit
+if [ $? -ne 0 ]; then
+  echo "❌ Pre-commit check failed! Fix the linting issues before committing."
+  exit 1
+fi
+
+echo "✅ All pre-commit checks passed!"
+exit 0 
