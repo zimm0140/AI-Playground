@@ -18,8 +18,8 @@ on:
 
 # Sets permissions of the GITHUB_TOKEN to allow updating workflow files
 permissions:
-  contents: write
-  pull-requests: write
+  contents: write      # Needed to push commits
+  pull-requests: write # Needed to create pull requests
   
 jobs:
   cleanup:
@@ -85,6 +85,18 @@ jobs:
           if [ -f ci_artifacts/linting/ruff_report.md ]; then
             echo "Ruff auto-fix report:"
             cat ci_artifacts/linting/ruff_report.md
+          fi
+      
+      - name: Run Service Directory Ruff auto-fix
+        if: ${{ !cancelled() }}
+        run: |
+          # Run the service-specific Ruff fix script
+          python .github/workflows/scripts/fix_service_ruff_issues.py || echo "Service Ruff auto-fix found issues but continuing"
+          
+          # Display report if it exists
+          if [ -f ci_artifacts/linting/service_ruff_report.md ]; then
+            echo "Service Ruff auto-fix report:"
+            cat ci_artifacts/linting/service_ruff_report.md
           fi
       
       - name: Fix indentation issues in test files
@@ -203,14 +215,26 @@ jobs:
             exit 0
           fi
           
-          # Instead of pushing directly, create a PR with the changes
-          BRANCH_NAME="ci-cleanup-$(date +%Y%m%d%H%M%S)"
-          git checkout -b $BRANCH_NAME
-          git add .github/workflows/
-          git commit -m "🧹 CI: Clean up and optimize workflow files [skip ci]"
+          # Count the number of changed files
+          CHANGED_FILES=$(git diff --name-only | wc -l)
           
-          # Create PR instead of direct push
-          echo "Created commit with changes, will create PR"
+          if [ $CHANGED_FILES -le 5 ]; then
+            # For small changes, commit directly to the branch
+            echo "Making direct commit with $CHANGED_FILES changed files"
+            git add .
+            git commit -m "🧹 CI: Clean up and optimize workflow files [skip ci]"
+            
+            # Try to push directly (may fail due to permissions)
+            git push || echo "Direct push failed, will create PR instead"
+          else
+            # For larger changes, create a PR
+            echo "Creating PR for $CHANGED_FILES changed files"
+            # Create a unique branch name using the run ID
+            BRANCH_NAME="ci-cleanup-${{ github.run_id }}"
+            git checkout -b $BRANCH_NAME
+            git add .
+            git commit -m "🧹 CI: Clean up and optimize workflow files [skip ci]"
+          fi
       
       - name: Create PR for workflow changes
         if: github.event_name != 'pull_request' && success()
@@ -229,7 +253,8 @@ jobs:
             - ✅ Removed duplicate workflow sections
             
             These changes should make the CI workflow more reliable and faster.
-          branch: ci-workflow-cleanup
+          branch: ci-workflow-cleanup-${{ github.run_id }}
+          base: ${{ github.ref }}
           delete-branch: true
       
       - name: Add job summary

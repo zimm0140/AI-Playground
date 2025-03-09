@@ -1,0 +1,56 @@
+name: Create Pull Request Example
+
+# This is an example workflow showing how to properly create PRs from GitHub Actions
+# with the necessary permissions
+
+on:
+  # Manual trigger for demonstration
+  workflow_dispatch:
+
+# These permissions are crucial for creating PRs
+permissions:
+  contents: write      # Needed to push commits
+  pull-requests: write # Needed to create pull requests
+
+jobs:
+  create-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # Using default token with proper permissions
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Make example change
+        run: |
+          # Just an example change to demonstrate PR creation
+          echo "# Example Change" >> example.md
+          echo "This file was created by GitHub Actions to demonstrate PR creation." >> example.md
+          echo "Created at: $(date)" >> example.md
+      
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          # The GITHUB_TOKEN has sufficient permissions as configured at the workflow level
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "docs: add example change"
+          title: "Example PR Created by GitHub Actions"
+          body: |
+            This pull request was automatically created by GitHub Actions to demonstrate 
+            properly configured permissions.
+            
+            Key configuration:
+            ```yaml
+            permissions:
+              contents: write
+              pull-requests: write
+            ```
+          branch: example-pr-branch
+          base: ${{ github.ref }}
+          delete-branch: true
+      
+      - name: Check outputs
+        run: |
+          echo "Pull Request Number - ${{ steps.create-pr.outputs.pull-request-number }}"
+          echo "Pull Request URL - ${{ steps.create-pr.outputs.pull-request-url }}" 
