@@ -10,7 +10,6 @@ It adds job-specific prefixes to artifact names to make them unique.
 import os
 import glob
 import re
-import sys
 
 def ensure_unique_artifacts():
     """Scan all workflow files and ensure unique artifact names"""
@@ -36,7 +35,7 @@ def ensure_unique_artifacts():
             
         # Extract workflow name
         workflow_name_match = re.search(r"name:\s*([^\n]+)", content)
-        workflow_name = workflow_name_match.group(1).strip() if workflow_name_match else os.path.basename(file_path)
+        workflow_id = workflow_name_match.group(1).strip() if workflow_name_match else os.path.basename(file_path)
         
         # Extract jobs and their names
         current_job = None
@@ -99,7 +98,6 @@ def ensure_unique_artifacts():
         current_job = None
         current_job_match = None
         in_upload_section = False
-        artifact_name_line = None
         
         i = 0
         while i < len(lines):
@@ -120,14 +118,12 @@ def ensure_unique_artifacts():
             # Check for start of upload-artifact action
             if "uses: actions/upload-artifact" in line:
                 in_upload_section = True
-                artifact_name_line = None
             
             # Look for name: parameter in an upload-artifact section
             if in_upload_section:
                 artifact_match = re.search(r"^\s*name:\s*(.+)$", line)
                 if artifact_match:
                     artifact_name = artifact_match.group(1).strip().strip('"\'')
-                    artifact_name_line = i
                     
                     # Check if this artifact name has conflicts
                     if artifact_name in conflicts:

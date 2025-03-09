@@ -12,11 +12,8 @@ reduce run time, and fix common issues. It implements best practices like:
 5. Removal of redundant actions
 """
 
-import os
 import glob
 import re
-import yaml
-import sys
 
 def optimize_ci_workflows():
     """Find and optimize CI workflow files"""
@@ -98,7 +95,7 @@ def optimize_caching(content):
         with:
           path: |
             ~/.cache/pip
-            ${{ runner.os == 'Windows' && '~\\AppData\\Local\\pip\\Cache' || runner.os == 'macOS' && '~/Library/Caches/pip' || '~/.cache/pip' }}
+            ${{ runner.os == 'Windows' && '~\\\\AppData\\\\Local\\\\pip\\\\Cache' || runner.os == 'macOS' && '~/Library/Caches/pip' || '~/.cache/pip' }}
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
@@ -112,7 +109,7 @@ def optimize_caching(content):
         print("  + Added optimized pip caching")
     
     # Add dependency hash to cache key if not present
-    if "cache" in content and not "hashFiles" in content:
+    if "cache" in content and "hashFiles" not in content:
         # Update cache keys with proper file hashing
         content = re.sub(
             r'(key:.*?)(\n)',
@@ -126,7 +123,7 @@ def optimize_caching(content):
 def optimize_pip_install(content):
     """Optimize pip install commands for better performance"""
     # Make sure pip is upgraded
-    if "pip install" in content and not "pip install --upgrade pip" in content:
+    if "pip install" in content and "pip install --upgrade pip" not in content:
         # Add pip upgrade
         content = re.sub(
             r'(python -m pip install)',
