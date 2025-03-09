@@ -218,50 +218,33 @@ jobs:
           # Count the number of changed files
           CHANGED_FILES=$(git diff --name-only | wc -l)
           
-          if [ $CHANGED_FILES -le 5 ]; then
-            # For small changes, commit directly to the branch
-            echo "Making direct commit with $CHANGED_FILES changed files"
-            git add .
-            git commit -m "🧹 CI: Clean up and optimize workflow files [skip ci]"
-            
-            # Try to push directly (may fail due to permissions)
-            git push || echo "Direct push failed, will create PR instead"
-          else
-            # For larger changes, create a PR
-            echo "Creating PR for $CHANGED_FILES changed files"
-            # Create a unique branch name using the run ID
-            BRANCH_NAME="ci-cleanup-${{ github.run_id }}"
-            git checkout -b $BRANCH_NAME
-            git add .
-            git commit -m "🧹 CI: Clean up and optimize workflow files [skip ci]"
-          fi
+          # Apply changes directly to the branch - no need for a PR for simple fixes
+          echo "Making direct commit with $CHANGED_FILES changed files"
+          git add .
+          git commit -m "🧹 CI: Clean up and optimize workflow files [skip ci]"
+          
+          # Let the user know we're not pushing in automated mode to avoid permission issues
+          echo "Changes committed but not pushed to avoid permission issues."
+          echo "The changes will be logged in the workflow summary for manual review."
+          
+          # List the files that would be pushed for the workflow summary
+          git diff --name-only HEAD~1 > changed_files.txt
       
-      - name: Create PR for workflow changes
-        if: github.event_name != 'pull_request' && success()
-        uses: peter-evans/create-pull-request@v5
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "🧹 CI: Clean up and optimize workflow files"
-          title: "🧹 CI: Clean up and optimize workflow files"
-          body: |
-            This PR includes automated cleanup and optimization of CI workflow files:
-            
-            - ✅ Fixed Python linting issues
-            - ✅ Fixed indentation issues in test files
-            - ✅ Ensured unique artifact names to prevent conflicts
-            - ✅ Optimized CI workflows for better performance
-            - ✅ Removed duplicate workflow sections
-            
-            These changes should make the CI workflow more reliable and faster.
-          branch: ci-workflow-cleanup-${{ github.run_id }}
-          base: ${{ github.ref }}
-          delete-branch: true
-      
-      - name: Add job summary
+      - name: Add detailed job summary
         run: |
           echo "# CI Cleanup and Optimization Results" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "The following optimizations were applied to workflow files:" >> $GITHUB_STEP_SUMMARY
+          echo "The following files were optimized:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "```" >> $GITHUB_STEP_SUMMARY
+          if [ -f "changed_files.txt" ]; then
+            cat changed_files.txt >> $GITHUB_STEP_SUMMARY
+          else
+            echo "No changes were made" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "```" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Applied Optimizations" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- ✅ Fixed Python linting issues" >> $GITHUB_STEP_SUMMARY
           echo "- ✅ Fixed indentation issues in test files" >> $GITHUB_STEP_SUMMARY
@@ -269,4 +252,14 @@ jobs:
           echo "- ✅ Optimized CI workflows for better performance" >> $GITHUB_STEP_SUMMARY
           echo "- ✅ Removed duplicate workflow sections" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "These changes should make the CI workflow more reliable and faster." >> $GITHUB_STEP_SUMMARY 
+          echo "## How to Apply These Changes" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Since GitHub Actions has limited permissions to update workflow files, you'll need to:" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "1. Run the cleanup script locally" >> $GITHUB_STEP_SUMMARY
+          echo "   ```bash" >> $GITHUB_STEP_SUMMARY
+          echo "   python .github/workflows/scripts/fix_ci_issues.py" >> $GITHUB_STEP_SUMMARY
+          echo "   python .github/workflows/scripts/fix_service_ruff_issues.py" >> $GITHUB_STEP_SUMMARY
+          echo "   ```" >> $GITHUB_STEP_SUMMARY
+          echo "2. Commit and push the changes to your branch" >> $GITHUB_STEP_SUMMARY
+          echo "3. Create a PR if needed" >> $GITHUB_STEP_SUMMARY 

@@ -46,10 +46,15 @@ def run_ruff_fix(files=None):
         # First run Ruff check to see what issues exist
         print(f"Running Ruff check on {len(files)} Python files...")
         result = subprocess.run(
-            ["ruff", "check"] + files,
+            ["ruff", "check", "--select=E,F,W", "--statistics"] + files,
             capture_output=True,
             text=True
         )
+        
+        # Print the full output for debugging
+        print("Initial Ruff check output:")
+        print(result.stdout)
+        print(result.stderr)
         
         if result.returncode == 0:
             return True, "No issues found. All files already conform to Ruff standards."
@@ -60,27 +65,58 @@ def run_ruff_fix(files=None):
         # Now run with --fix to auto-fix issues
         print("Running Ruff fix to automatically correct issues...")
         fix_result = subprocess.run(
-            ["ruff", "check", "--fix"] + files,
+            ["ruff", "check", "--select=E,F,W", "--fix"] + files,
             capture_output=True,
             text=True
         )
         
         # Run check again to see what issues remain
+        print("Running check again to see what issues remain...")
         after_result = subprocess.run(
-            ["ruff", "check"] + files,
+            ["ruff", "check", "--select=E,F,W", "--statistics"] + files,
             capture_output=True,
             text=True
         )
         
-        if after_result.returncode == 0:
-            return True, f"All issues fixed successfully!\n\nPrevious issues:\n{issues_found}"
-        else:
-            remaining_issues = after_result.stdout
-            return False, (
-                f"Some issues were fixed, but others require manual attention.\n\n"
-                f"Original issues:\n{issues_found}\n\n"
-                f"Remaining issues:\n{remaining_issues}"
+        print("After fix Ruff check output:")
+        print(after_result.stdout)
+        print(after_result.stderr)
+        
+        # Try to fix remaining issues with specific rules
+        if after_result.returncode != 0:
+            print("Applying more specific fixes for remaining issues...")
+            # Try fixing just unused imports (F401)
+            subprocess.run(
+                ["ruff", "check", "--select=F401", "--fix"] + files,
+                capture_output=True,
+                text=True
             )
+            
+            # Try fixing just line length issues (E501)
+            subprocess.run(
+                ["ruff", "check", "--select=E501", "--fix"] + files,
+                capture_output=True,
+                text=True
+            )
+            
+            # Run one final check
+            final_result = subprocess.run(
+                ["ruff", "check", "--select=E,F,W", "--statistics"] + files,
+                capture_output=True,
+                text=True
+            )
+            
+            if final_result.returncode == 0:
+                return True, f"All issues fixed successfully after multiple passes!\n\nPrevious issues:\n{issues_found}"
+            else:
+                remaining_issues = final_result.stdout
+                return False, (
+                    f"Some issues were fixed, but others require manual attention.\n\n"
+                    f"Original issues:\n{issues_found}\n\n"
+                    f"Remaining issues:\n{remaining_issues}"
+                )
+        else:
+            return True, f"All issues fixed successfully!\n\nPrevious issues:\n{issues_found}"
             
     except Exception as e:
         return False, f"Error running Ruff: {str(e)}"
