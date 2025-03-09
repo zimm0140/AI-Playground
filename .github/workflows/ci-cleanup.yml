@@ -72,6 +72,21 @@ jobs:
             echo "No Python files found to lint"
           fi
       
+      - name: Run Ruff auto-fix script
+        if: ${{ !cancelled() }}
+        run: |
+          # Install ruff if not already installed
+          pip install ruff || echo "Failed to install ruff but continuing"
+          
+          # Run the auto-fix script
+          python .github/workflows/scripts/fix_ruff_issues.py . ci_artifacts/linting/ruff_report.md || echo "Ruff auto-fix found issues but continuing"
+          
+          # Display report if it exists
+          if [ -f ci_artifacts/linting/ruff_report.md ]; then
+            echo "Ruff auto-fix report:"
+            cat ci_artifacts/linting/ruff_report.md
+          fi
+      
       - name: Fix indentation issues in test files
         if: ${{ !cancelled() }}
         run: |
@@ -188,12 +203,17 @@ jobs:
             exit 0
           fi
           
+          # Instead of pushing directly, create a PR with the changes
+          BRANCH_NAME="ci-cleanup-$(date +%Y%m%d%H%M%S)"
+          git checkout -b $BRANCH_NAME
           git add .github/workflows/
           git commit -m "🧹 CI: Clean up and optimize workflow files [skip ci]"
-          git push
           
-      - name: Create or update PR with changes
-        if: github.event_name == 'pull_request'
+          # Create PR instead of direct push
+          echo "Created commit with changes, will create PR"
+      
+      - name: Create PR for workflow changes
+        if: github.event_name != 'pull_request' && success()
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -210,8 +230,8 @@ jobs:
             
             These changes should make the CI workflow more reliable and faster.
           branch: ci-workflow-cleanup
-          base: ${{ github.head_ref }}
-          
+          delete-branch: true
+      
       - name: Add job summary
         run: |
           echo "# CI Cleanup and Optimization Results" >> $GITHUB_STEP_SUMMARY
