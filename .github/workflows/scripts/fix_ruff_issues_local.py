@@ -16,7 +16,6 @@ import subprocess
 import os
 import sys
 import glob
-from pathlib import Path
 
 def print_header(text):
     """Print a nicely formatted header."""
@@ -96,7 +95,7 @@ def fix_issues():
     
     # Fix issues
     print_header("Fixing Issues")
-    fix_result = run_command(
+    run_command(
         ["ruff", "check"] + ruff_common_args + ["--fix"] + files
     )
     
@@ -115,14 +114,14 @@ def fix_issues():
     
     # Fix unused imports
     print("\n📌 Fixing unused imports (F401)...")
-    unused_imports_result = run_command(
+    run_command(
         ["ruff", "check", "--select=F401"] + ruff_common_args[1:] + ["--fix"] + files, 
         show_output=False
     )
     
     # Fix other formatting issues
     print("\n📌 Fixing formatting issues (E)...")
-    formatting_result = run_command(
+    run_command(
         ["ruff", "check", "--select=E"] + ruff_common_args[1:] + ["--fix"] + files, 
         show_output=False
     )
@@ -141,7 +140,7 @@ def fix_issues():
         
         # Show remaining issues in a more readable way
         print_header("Issues Needing Manual Attention")
-        detailed_result = run_command(
+        run_command(
             ["ruff", "check"] + ruff_common_args + ["--format=text"] + files
         )
         
