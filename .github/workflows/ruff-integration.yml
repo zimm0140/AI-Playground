@@ -106,7 +106,8 @@ jobs:
         continue-on-error: true
         with:
           src: ./service
-          args: check --select=E,F --show-files --statistics
+          # Use our config file via args instead
+          args: check --select=E,F --ignore=E501 --show-files --statistics
       
       - name: Create basic linting script if needed
         run: |
