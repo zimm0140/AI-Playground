@@ -6,7 +6,7 @@ This script automatically generates markdown documentation from workflow JSON fi
 It creates comprehensive documentation including descriptions, requirements, and usage.
 
 Usage:
-    python generate_workflow_docs.py --workflows-dir DIR --output-dir DIR [--create-index]
+    python generate_workflow_docs.py --workflows-dir DIR --output-dir DIR [--create-index] [--create-gallery]
 """
 
 import os
@@ -62,6 +62,87 @@ def generate_workflow_doc(workflow, workflow_file):
         doc.append("## Description")
         doc.append("")
         doc.append(workflow["description"])
+        doc.append("")
+    
+    # Examples (new section)
+    if "examples" in workflow and workflow["examples"]:
+        doc.append("## Examples")
+        doc.append("")
+        
+        for i, example in enumerate(workflow["examples"]):
+            title = example.get("title", f"Example {i+1}")
+            doc.append(f"### {title}")
+            doc.append("")
+            
+            if "description" in example:
+                doc.append(example["description"])
+                doc.append("")
+            
+            # Display input and output images side by side if available
+            if "inputImage" in example or "outputImage" in example:
+                doc.append('<div class="example-images">')
+                
+                if "inputImage" in example:
+                    doc.append('<div class="input-image">')
+                    doc.append('<p><strong>Input:</strong></p>')
+                    doc.append(f'<img src="{example["inputImage"]}" alt="Input for {title}" />')
+                    doc.append('</div>')
+                
+                if "outputImage" in example:
+                    doc.append('<div class="output-image">')
+                    doc.append('<p><strong>Output:</strong></p>')
+                    doc.append(f'<img src="{example["outputImage"]}" alt="Output for {title}" />')
+                    doc.append('</div>')
+                
+                doc.append('</div>')
+                doc.append("")
+            
+            # Display input settings if available
+            if "inputSettings" in example and example["inputSettings"]:
+                doc.append("**Settings used:**")
+                doc.append("")
+                doc.append("```json")
+                doc.append(json.dumps(example["inputSettings"], indent=2))
+                doc.append("```")
+                doc.append("")
+    
+    # Resource Estimation (new section)
+    if "resourceEstimation" in workflow:
+        doc.append("## Resource Requirements")
+        doc.append("")
+        
+        resources = workflow["resourceEstimation"]
+        doc.append("| Resource | Requirement |")
+        doc.append("|----------|-------------|")
+        
+        if "vramMinimum" in resources:
+            doc.append(f"| Minimum VRAM | {resources['vramMinimum']} MB |")
+        
+        if "vramRecommended" in resources:
+            doc.append(f"| Recommended VRAM | {resources['vramRecommended']} MB |")
+        
+        if "diskSpace" in resources:
+            doc.append(f"| Disk Space | {resources['diskSpace']} MB |")
+        
+        if "cpuUsage" in resources:
+            doc.append(f"| CPU Usage | {resources['cpuUsage'].capitalize()} |")
+        
+        doc.append("")
+    
+    # Components (new section)
+    if "components" in workflow and workflow["components"]:
+        doc.append("## Components")
+        doc.append("")
+        doc.append("This workflow uses the following reusable components:")
+        doc.append("")
+        
+        for component in workflow["components"]:
+            component_id = component.get("componentId", "")
+            component_type = component.get("componentType", "")
+            description = component.get("description", "")
+            
+            doc.append(f"- **{component_id}** ({component_type}): {description}")
+        
         doc.append("")
     
     # System Requirements
@@ -185,6 +266,143 @@ def generate_workflow_doc(workflow, workflow_file):
     
     return "\n".join(doc)
 
+def generate_gallery(workflows_dir, output_dir):
+    """Generate a visual gallery of workflow examples."""
+    gallery = ["# ComfyUI Workflow Gallery", "", "Browse visual examples of available workflows:", ""]
+    
+    # Collect workflow information with examples
+    workflows_with_examples = []
+    
+    for filename in os.listdir(workflows_dir):
+        if filename.endswith('.json'):
+            workflow_file = os.path.join(workflows_dir, filename)
+            workflow = load_workflow(workflow_file)
+            
+            if workflow and "examples" in workflow and workflow["examples"]:
+                # Get the first example with an output image
+                example = next((ex for ex in workflow["examples"] if "outputImage" in ex), None)
+                
+                if example:
+                    workflows_with_examples.append({
+                        "name": workflow.get("name", filename),
+                        "description": workflow.get("description", ""),
+                        "tags": workflow.get("tags", []),
+                        "outputImage": example.get("outputImage", ""),
+                        "doc_file": sanitize_filename(workflow.get("name", filename)) + ".md",
+                        "display_priority": workflow.get("displayPriority", 0)
+                    })
+    
+    # Sort by display priority (higher first) and then by name
+    workflows_with_examples.sort(key=lambda w: (-w.get("display_priority", 0), w["name"]))
+    
+    # Create gallery grid
+    gallery.append('<div class="workflow-gallery">')
+    
+    for workflow in workflows_with_examples:
+        gallery.append('<div class="workflow-card">')
+        gallery.append(f'<a href="{workflow["doc_file"]}">')
+        gallery.append(f'<img src="{workflow["outputImage"]}" alt="{workflow["name"]}" />')
+        gallery.append(f'<h3>{workflow["name"]}</h3>')
+        gallery.append('</a>')
+        
+        # Add tags if available
+        if workflow["tags"]:
+            gallery.append('<div class="tags">')
+            for tag in workflow["tags"]:
+                gallery.append(f'<span class="tag">{tag}</span>')
+            gallery.append('</div>')
+        
+        # Add short description
+        if workflow["description"]:
+            short_desc = workflow["description"][:100] + ("..." if len(workflow["description"]) > 100 else "")
+            gallery.append(f'<p>{short_desc}</p>')
+        
+        gallery.append('</div>')
+    
+    gallery.append('</div>')
+    
+    # Add CSS for the gallery
+    gallery.append("""
+<style>
+.workflow-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  margin: 20px 0;
+}
+
+.workflow-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.workflow-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.workflow-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.workflow-card h3 {
+  padding: 10px;
+  margin: 0;
+  font-size: 18px;
+}
+
+.workflow-card p {
+  padding: 0 10px 10px;
+  margin: 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.tags {
+  padding: 0 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.tag {
+  background: #f0f0f0;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  color: #555;
+}
+
+.example-images {
+  display: flex;
+  gap: 20px;
+  margin: 20px 0;
+}
+
+.input-image, .output-image {
+  flex: 1;
+}
+
+.input-image img, .output-image img {
+  max-width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+</style>
+""")
+    
+    # Write gallery file
+    gallery_path = os.path.join(output_dir, "gallery.md")
+    with open(gallery_path, 'w', encoding='utf-8') as f:
+        f.write("\n".join(gallery))
+    
+    print(f"Generated gallery: {gallery_path}")
+    return True
+
 def generate_index(workflows_dir, output_dir):
     """Generate an index page with links to all workflow documentation."""
     index = ["# ComfyUI Workflows", "", "This directory contains documentation for all available ComfyUI workflows.", ""]
@@ -207,6 +425,13 @@ def generate_index(workflows_dir, output_dir):
     
     # Sort by display priority (higher first) and then by name
     workflows.sort(key=lambda w: (-w.get("display_priority", 0), w["name"]))
+    
+    # Add link to gallery if it exists
+    if os.path.exists(os.path.join(output_dir, "gallery.md")):
+        index.append("## Visual Gallery")
+        index.append("")
+        index.append("Browse workflows visually in our [Gallery](gallery.md).")
+        index.append("")
     
     # Create table
     index.append("## Available Workflows")
@@ -232,7 +457,7 @@ def generate_index(workflows_dir, output_dir):
     print(f"Generated index: {index_path}")
     return True
 
-def generate_all_docs(workflows_dir, output_dir, create_index=False):
+def generate_all_docs(workflows_dir, output_dir, create_index=False, create_gallery=False):
     """Generate documentation for all workflow files in a directory."""
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
@@ -262,6 +487,9 @@ def generate_all_docs(workflows_dir, output_dir, create_index=False):
             else:
                 error_count += 1
     
+    if create_gallery:
+        generate_gallery(workflows_dir, output_dir)
+    
     if create_index:
         generate_index(workflows_dir, output_dir)
     
@@ -276,6 +504,7 @@ def main():
     parser.add_argument("--workflows-dir", required=True, help="Directory containing workflow JSON files")
     parser.add_argument("--output-dir", required=True, help="Directory to write documentation files")
     parser.add_argument("--create-index", action="store_true", help="Create an index page with links to all workflows")
+    parser.add_argument("--create-gallery", action="store_true", help="Create a visual gallery of workflow examples")
     
     args = parser.parse_args()
     
@@ -283,7 +512,12 @@ def main():
         print(f"Error: Workflows directory {args.workflows_dir} not found")
         sys.exit(1)
     
-    success = generate_all_docs(args.workflows_dir, args.output_dir, args.create_index)
+    success = generate_all_docs(
+        args.workflows_dir, 
+        args.output_dir, 
+        args.create_index,
+        args.create_gallery
+    )
     sys.exit(0 if success else 1)
 
 if __name__ == "__main__":

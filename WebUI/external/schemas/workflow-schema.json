@@ -118,6 +118,88 @@
       "type": "string",
       "description": "Detailed description of the workflow"
     },
+    "examples": {
+      "type": "array",
+      "description": "Example inputs and outputs for this workflow",
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Title for this example"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of this example"
+          },
+          "inputSettings": {
+            "type": "object",
+            "description": "Input settings used for this example"
+          },
+          "inputImage": {
+            "type": "string",
+            "description": "URL or data URI for example input image"
+          },
+          "outputImage": {
+            "type": "string",
+            "description": "URL or data URI for example output image"
+          }
+        },
+        "required": ["title"]
+      }
+    },
+    "resourceEstimation": {
+      "type": "object",
+      "description": "Estimated resource requirements for this workflow",
+      "properties": {
+        "vramMinimum": {
+          "type": "integer",
+          "description": "Minimum VRAM required in MB"
+        },
+        "vramRecommended": {
+          "type": "integer",
+          "description": "Recommended VRAM in MB"
+        },
+        "diskSpace": {
+          "type": "integer",
+          "description": "Disk space required in MB"
+        },
+        "cpuUsage": {
+          "type": "string",
+          "description": "CPU usage description",
+          "enum": ["low", "medium", "high"]
+        }
+      }
+    },
+    "components": {
+      "type": "array",
+      "description": "Reusable components used in this workflow",
+      "items": {
+        "type": "object",
+        "properties": {
+          "componentId": {
+            "type": "string",
+            "description": "Unique identifier for the component"
+          },
+          "componentType": {
+            "type": "string",
+            "description": "Type of component"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of what this component does"
+          },
+          "nodeIds": {
+            "type": "array",
+            "description": "Node IDs that are part of this component",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": ["componentId", "componentType", "nodeIds"]
+      }
+    },
     "inputs": {
       "type": "array",
       "description": "User inputs for the workflow",
