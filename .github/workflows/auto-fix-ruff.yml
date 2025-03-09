@@ -36,7 +36,10 @@ jobs:
         continue-on-error: true
         run: |
           echo "Checking for Ruff issues in service directory..."
-          ruff check service --select=E,F --ignore=E501 --statistics
+          # Define Ruff arguments consistent with other scripts
+          RUFF_ARGS="--select=E,F --ignore=E501 --extend-exclude=.git,.github,.venv,venv,__pycache__,build,dist --line-length=100"
+          
+          ruff check service $RUFF_ARGS --statistics
           
           # Store exit code for later use
           echo "CHECK_EXIT_CODE=$?" >> $GITHUB_ENV
@@ -52,25 +55,28 @@ jobs:
       - name: Generate Ruff Fix Output
         if: env.NEEDS_FIXING == 'true'
         run: |
+          # Define Ruff arguments consistent with other scripts
+          RUFF_ARGS="--select=E,F --ignore=E501 --extend-exclude=.git,.github,.venv,venv,__pycache__,build,dist --line-length=100"
+          
           # Create output directory
           mkdir -p ruff_fixes
           
           # Log initial issues
           echo "# Initial Ruff Issues" > ruff_fixes/report.md
           echo '```' >> ruff_fixes/report.md
-          ruff check service --select=E,F --ignore=E501 >> ruff_fixes/report.md 2>&1
+          ruff check service $RUFF_ARGS >> ruff_fixes/report.md 2>&1
           echo '```' >> ruff_fixes/report.md
           
           # Try to fix issues
           echo -e "\n# Fix Attempt" >> ruff_fixes/report.md
           echo '```' >> ruff_fixes/report.md
-          ruff check service --select=E,F --ignore=E501 --fix >> ruff_fixes/report.md 2>&1
+          ruff check service $RUFF_ARGS --fix >> ruff_fixes/report.md 2>&1
           echo '```' >> ruff_fixes/report.md
           
           # Check if fixes worked
           echo -e "\n# Remaining Issues" >> ruff_fixes/report.md
           echo '```' >> ruff_fixes/report.md
-          ruff check service --select=E,F --ignore=E501 >> ruff_fixes/report.md 2>&1
+          ruff check service $RUFF_ARGS >> ruff_fixes/report.md 2>&1
           echo '```' >> ruff_fixes/report.md
           
           # Summary section

@@ -76,14 +76,19 @@ def fix_issues():
     
     print(f"Found {len(files)} Python files")
     
+    # Define common Ruff arguments
+    ruff_common_args = [
+        "--select=E,F",
+        "--ignore=E501",
+        "--extend-exclude=.git,.github,.venv,venv,__pycache__,build,dist",
+        "--line-length=100"
+    ]
+    
     # Check for issues first
     print_header("Checking for Issues")
-    check_result = run_command([
-        "ruff", "check", 
-        "--select=E,F", 
-        "--ignore=E501", 
-        "--statistics"
-    ] + files)
+    check_result = run_command(
+        ["ruff", "check"] + ruff_common_args + ["--statistics"] + files
+    )
     
     if check_result.returncode == 0:
         print("\n✅ No issues found! Ruff is happy with your code.")
@@ -91,54 +96,42 @@ def fix_issues():
     
     # Fix issues
     print_header("Fixing Issues")
-    fix_result = run_command([
-        "ruff", "check", 
-        "--select=E,F", 
-        "--ignore=E501", 
-        "--fix"
-    ] + files)
+    fix_result = run_command(
+        ["ruff", "check"] + ruff_common_args + ["--fix"] + files
+    )
     
     # Check again after fixes
     print_header("Checking Again After Fixes")
-    recheck_result = run_command([
-        "ruff", "check", 
-        "--select=E,F", 
-        "--ignore=E501", 
-        "--statistics"
-    ] + files)
+    recheck_result = run_command(
+        ["ruff", "check"] + ruff_common_args + ["--statistics"] + files
+    )
     
     if recheck_result.returncode == 0:
         print("\n✅ All issues fixed!")
         return True
     
-    # Try fixing specific categories of issues
+    # Try more specific fixes
     print_header("Trying More Specific Fixes")
     
     # Fix unused imports
     print("\n📌 Fixing unused imports (F401)...")
-    unused_imports_result = run_command([
-        "ruff", "check", 
-        "--select=F401", 
-        "--fix"
-    ] + files, show_output=False)
+    unused_imports_result = run_command(
+        ["ruff", "check", "--select=F401"] + ruff_common_args[1:] + ["--fix"] + files, 
+        show_output=False
+    )
     
     # Fix other formatting issues
     print("\n📌 Fixing formatting issues (E)...")
-    formatting_result = run_command([
-        "ruff", "check", 
-        "--select=E", 
-        "--ignore=E501", 
-        "--fix"
-    ] + files, show_output=False)
+    formatting_result = run_command(
+        ["ruff", "check", "--select=E"] + ruff_common_args[1:] + ["--fix"] + files, 
+        show_output=False
+    )
     
     # Final check
     print_header("Final Check")
-    final_result = run_command([
-        "ruff", "check", 
-        "--select=E,F", 
-        "--ignore=E501", 
-        "--statistics"
-    ] + files)
+    final_result = run_command(
+        ["ruff", "check"] + ruff_common_args + ["--statistics"] + files
+    )
     
     if final_result.returncode == 0:
         print("\n✅ All issues fixed successfully!")
@@ -148,12 +141,9 @@ def fix_issues():
         
         # Show remaining issues in a more readable way
         print_header("Issues Needing Manual Attention")
-        detailed_result = run_command([
-            "ruff", "check", 
-            "--select=E,F", 
-            "--ignore=E501", 
-            "--format=text"
-        ] + files)
+        detailed_result = run_command(
+            ["ruff", "check"] + ruff_common_args + ["--format=text"] + files
+        )
         
         # Suggest manual fixes
         print_header("Suggestions for Manual Fixes")

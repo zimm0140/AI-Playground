@@ -71,9 +71,17 @@ if ($pythonFiles.Count -eq 0) {
 
 Write-Host "Found $($pythonFiles.Count) Python files" -ForegroundColor Green
 
+# Define common Ruff arguments
+$ruffArgs = @(
+    "--select=E,F",
+    "--ignore=E501",
+    "--extend-exclude=.git,.github,.venv,venv,__pycache__,build,dist",
+    "--line-length=100"
+)
+
 # Check for issues
 Write-Header "Checking for Issues"
-$checkOutput = & ruff check --select=E,F --ignore=E501 --statistics $pythonFiles 2>&1
+$checkOutput = & ruff check @ruffArgs --statistics $pythonFiles 2>&1
 $checkExitCode = $LASTEXITCODE
 
 if ($checkExitCode -eq 0) {
@@ -86,12 +94,12 @@ Write-Host $checkOutput -ForegroundColor Yellow
 
 # Fix issues
 Write-Header "Fixing Issues"
-$fixOutput = & ruff check --select=E,F --ignore=E501 --fix $pythonFiles 2>&1
+$fixOutput = & ruff check @ruffArgs --fix $pythonFiles 2>&1
 Write-Host $fixOutput
 
 # Check again after fixes
 Write-Header "Checking Again After Fixes"
-$recheckOutput = & ruff check --select=E,F --ignore=E501 --statistics $pythonFiles 2>&1
+$recheckOutput = & ruff check @ruffArgs --statistics $pythonFiles 2>&1
 $recheckExitCode = $LASTEXITCODE
 
 if ($recheckExitCode -eq 0) {
@@ -104,15 +112,15 @@ Write-Header "Trying More Specific Fixes"
 
 # Fix unused imports
 Write-Host "`n📌 Fixing unused imports (F401)..." -ForegroundColor Cyan
-$unusedImportsOutput = & ruff check --select=F401 --fix $pythonFiles 2>&1
+$unusedImportsOutput = & ruff check --select=F401 --ignore=E501 --line-length=100 --fix $pythonFiles 2>&1
 
 # Fix other formatting issues
 Write-Host "`n📌 Fixing formatting issues (E)..." -ForegroundColor Cyan
-$formattingOutput = & ruff check --select=E --ignore=E501 --fix $pythonFiles 2>&1
+$formattingOutput = & ruff check --select=E --ignore=E501 --line-length=100 --fix $pythonFiles 2>&1
 
 # Final check
 Write-Header "Final Check"
-$finalOutput = & ruff check --select=E,F --ignore=E501 --statistics $pythonFiles 2>&1
+$finalOutput = & ruff check @ruffArgs --statistics $pythonFiles 2>&1
 $finalExitCode = $LASTEXITCODE
 
 if ($finalExitCode -eq 0) {
@@ -123,7 +131,7 @@ if ($finalExitCode -eq 0) {
     
     # Show remaining issues in a more readable way
     Write-Header "Issues Needing Manual Attention"
-    $detailedOutput = & ruff check --select=E,F --ignore=E501 --format=text $pythonFiles 2>&1
+    $detailedOutput = & ruff check @ruffArgs --format=text $pythonFiles 2>&1
     Write-Host $detailedOutput -ForegroundColor Yellow
     
     # Suggestions for manual fixes
