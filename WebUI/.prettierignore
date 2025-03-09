@@ -1,2 +1,5 @@
 src/auto-import.d.ts
 workflows_intel/
+# Ignore schema files that use JSON5 format
+external/schemas/workflow-schema.json
+external/schemas/workflow-schema.json5
