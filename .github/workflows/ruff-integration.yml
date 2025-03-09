@@ -41,6 +41,9 @@ jobs:
         id: ruff
         uses: astral-sh/ruff-action@v1
         continue-on-error: true
+        with:
+          src: .
+          args: check --output-format=github
       
       - name: Create basic linting script if needed
         run: |
@@ -184,7 +187,40 @@ jobs:
           if [[ "${{ steps.ruff.outcome }}" != "success" || "${{ env.CUSTOM_LINT_FAILED }}" == "true" ]]; then
             echo "Linting checks found issues. See details above."
             echo "These issues should be fixed, but the PR can continue."
-            # Not failing the workflow, just providing a warning
+            
+            # Write detailed information to step summary
+            echo "# ⚠️ Linting Issues Detected" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            
+            if [[ "${{ steps.ruff.outcome }}" != "success" ]]; then
+              echo "## Ruff Issues" >> $GITHUB_STEP_SUMMARY
+              echo "Ruff detected formatting or style issues. Run the following commands to fix:" >> $GITHUB_STEP_SUMMARY
+              echo '```bash' >> $GITHUB_STEP_SUMMARY
+              echo "pip install ruff" >> $GITHUB_STEP_SUMMARY
+              echo "ruff check --fix ." >> $GITHUB_STEP_SUMMARY
+              echo '```' >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+            fi
+            
+            if [[ "${{ env.CUSTOM_LINT_FAILED }}" == "true" ]]; then
+              echo "## Custom Linting Issues" >> $GITHUB_STEP_SUMMARY
+              echo "Our custom linting detected issues. Run the following command to fix:" >> $GITHUB_STEP_SUMMARY
+              echo '```bash' >> $GITHUB_STEP_SUMMARY
+              echo "python .github/workflows/scripts/fix_ci_issues.py" >> $GITHUB_STEP_SUMMARY
+              echo '```' >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+            fi
+            
+            echo "## Setup Pre-commit Hooks" >> $GITHUB_STEP_SUMMARY
+            echo "To prevent these issues in future commits, set up pre-commit hooks:" >> $GITHUB_STEP_SUMMARY
+            echo '```bash' >> $GITHUB_STEP_SUMMARY
+            echo "# On Linux/macOS/Git Bash" >> $GITHUB_STEP_SUMMARY
+            echo "./.github/setup-hooks.sh" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "# On Windows PowerShell" >> $GITHUB_STEP_SUMMARY
+            echo ".\.github\setup-hooks.ps1" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
           else
             echo "All linting checks passed!"
+            echo "# ✅ All Linting Checks Passed" >> $GITHUB_STEP_SUMMARY
           fi 

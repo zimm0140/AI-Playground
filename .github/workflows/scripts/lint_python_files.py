@@ -234,6 +234,9 @@ if __name__ == "__main__":
     # Check CI scripts if the directory exists
     workflows_scripts_dir = ".github/workflows/scripts"
     
+    # Create necessary directories if they don't exist
+    os.makedirs(workflows_scripts_dir, exist_ok=True)
+    
     # First check if files were explicitly provided
     if files_to_check:
         # Check specific files provided as arguments
@@ -244,11 +247,20 @@ if __name__ == "__main__":
         print("Checking all Python files:")
         file_errors = lint_python_files()
     
-    # Check workflow scripts if directory exists
+    # Check workflow scripts if directory exists and has Python files
     if os.path.isdir(workflows_scripts_dir):
-        print("\nChecking CI script files:")
-        workflow_scripts = [os.path.join(workflows_scripts_dir, f) for f in os.listdir(workflows_scripts_dir) if f.endswith('.py')]
-        script_errors = lint_python_files(workflow_scripts)
+        try:
+            workflow_scripts = [os.path.join(workflows_scripts_dir, f) for f in os.listdir(workflows_scripts_dir) if f.endswith('.py')]
+            if workflow_scripts:
+                print("\nChecking CI script files:")
+                script_errors = lint_python_files(workflow_scripts)
+            else:
+                script_errors = 0
+                print("\nNo Python files found in CI scripts directory.")
+        except (FileNotFoundError, PermissionError) as e:
+            script_errors = 0
+            print(f"\nError accessing CI script directory: {e}")
+            print("Skipping CI script checks.")
     else:
         script_errors = 0
         print("\nSkipping CI script checks - directory not found.")
