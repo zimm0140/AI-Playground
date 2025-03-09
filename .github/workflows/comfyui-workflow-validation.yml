@@ -31,11 +31,20 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install argparse pyyaml
+          pip install argparse pyyaml jsonschema
           
       - name: Create artifacts directory
-        run: mkdir -p ci_artifacts/workflow_validation ci_artifacts/workflow_requirements ci_artifacts/workflow_tests ci_artifacts/workflow_versions ci_artifacts/workflow_dashboard
+        run: mkdir -p ci_artifacts/workflow_validation ci_artifacts/workflow_requirements ci_artifacts/workflow_tests ci_artifacts/workflow_versions ci_artifacts/workflow_dashboard ci_artifacts/workflow_docs
           
+      # Schema validation (new step)
+      - name: Validate workflow schema
+        run: |
+          python .github/workflows/scripts/validate_workflow_schema.py \
+            --workflows-dir WebUI/external/workflows \
+            --schema-file WebUI/external/schemas/workflow-schema.json \
+            --output-file ci_artifacts/workflow_validation/schema_validation_report.json
+          
+      # Original workflow validation
       - name: Validate workflow JSON files
         run: |
           python .github/workflows/scripts/validate_comfyui_workflows.py \
@@ -48,33 +57,55 @@ jobs:
             --workflows-dir WebUI/external/workflows \
             --output-dir ci_artifacts/workflow_requirements
             
-      - name: Simulate workflow execution
+      # Version validation (new step)
+      - name: Check workflow versions
         run: |
-          python .github/workflows/scripts/test_workflow_execution.py \
+          python .github/workflows/scripts/version_workflow.py \
+            --workflows-dir WebUI/external/workflows \
+            --check-breaking-changes
+      
+      # Generate documentation (new step)
+      - name: Generate workflow documentation
+        run: |
+          python .github/workflows/scripts/generate_workflow_docs.py \
+            --workflows-dir WebUI/external/workflows \
+            --output-dir ci_artifacts/workflow_docs \
+            --create-index
+            
+      - name: Execute workflow tests
+        run: |
+          python .github/workflows/scripts/test_comfyui_workflows.py \
             --workflows-dir WebUI/external/workflows \
             --output-dir ci_artifacts/workflow_tests
             
-      - name: Track workflow versions
+      - name: Generate workflow versions
         run: |
-          python .github/workflows/scripts/track_workflow_versions.py \
+          python .github/workflows/scripts/generate_workflow_versions.py \
             --workflows-dir WebUI/external/workflows \
             --output-dir ci_artifacts/workflow_versions
             
       - name: Generate workflow dashboard
         run: |
           python .github/workflows/scripts/generate_workflow_dashboard.py \
+            --workflows-dir WebUI/external/workflows \
             --validation-dir ci_artifacts/workflow_validation \
             --requirements-dir ci_artifacts/workflow_requirements \
             --tests-dir ci_artifacts/workflow_tests \
             --versions-dir ci_artifacts/workflow_versions \
             --output-dir ci_artifacts/workflow_dashboard
             
-      - name: Upload validation reports
-        uses: actions/upload-artifact@v4
+      - name: Upload workflow artifacts
+        uses: actions/upload-artifact@v3
         with:
-          name: workflow-validation-reports
-          path: ci_artifacts/workflow_validation/
-          retention-days: 30
+          name: workflow-validation-artifacts
+          path: ci_artifacts
+          
+      - name: Check validation result
+        run: |
+          if [ -f ci_artifacts/workflow_validation/validation_failed ]; then
+            echo "Workflow validation failed. See artifacts for details."
+            exit 1
+          fi
           
       - name: Publish validation summary
         run: |
