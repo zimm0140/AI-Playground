@@ -16,6 +16,10 @@ import argparse
 import jsonschema
 from datetime import datetime
 
+# Add the parent directory to the path so we can import the utils package
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from utils.workflow_parser import get_workflow_nodes
+
 def validate_workflow(workflow_file, schema):
     """
     Validate a single workflow file against the schema.
@@ -31,14 +35,20 @@ def validate_workflow(workflow_file, schema):
         with open(workflow_file, 'r', encoding='utf-8') as f:
             workflow = json.load(f)
         
-        # Handle both workflow formats (nodes at top level or in comfyUiApiWorkflow)
-        # This is just for logging purposes, the actual validation is done by jsonschema
-        if "nodes" in workflow:
-            print(f"Validating {os.path.basename(workflow_file)} (top-level nodes format)")
-        elif "comfyUiApiWorkflow" in workflow and "nodes" in workflow["comfyUiApiWorkflow"]:
-            print(f"Validating {os.path.basename(workflow_file)} (comfyUiApiWorkflow format)")
+        # Use utility function to check for nodes in different formats
+        nodes = get_workflow_nodes(workflow)
+        
+        # Log information about the workflow format for debugging
+        if nodes:
+            if "nodes" in workflow and workflow["nodes"] == nodes:
+                print(f"Validating {os.path.basename(workflow_file)} (top-level nodes format)")
+            elif "comfyUiApiWorkflow" in workflow:
+                if "nodes" in workflow["comfyUiApiWorkflow"] and workflow["comfyUiApiWorkflow"]["nodes"] == nodes:
+                    print(f"Validating {os.path.basename(workflow_file)} (comfyUiApiWorkflow.nodes format)")
+                else:
+                    print(f"Validating {os.path.basename(workflow_file)} (comfyUiApiWorkflow format)")
         else:
-            print(f"Warning: {os.path.basename(workflow_file)} does not contain nodes in either format")
+            print(f"Warning: {os.path.basename(workflow_file)} does not contain nodes in any recognized format")
         
         jsonschema.validate(instance=workflow, schema=schema)
         return True, None
