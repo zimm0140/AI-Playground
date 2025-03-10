@@ -123,6 +123,55 @@ The validation process includes:
 
 For more details, see the [ComfyUI Workflow Validation documentation](docs/comfyui_workflow_validation.md).
 
+## Developer Environment Setup
+
+### Virtual Environment Setup
+
+For development work, we recommend using a virtual environment to isolate dependencies. AI Playground supports both Conda and venv-based workflows:
+
+#### Option 1: Using Conda (Recommended)
+
+```cmd
+# Create a conda environment
+conda env create -f environment.yml
+
+# Activate the environment
+conda activate ai-playground-env
+
+# Install requirements
+pip install -r requirements.txt
+```
+
+#### Option 2: Using venv
+
+```cmd
+# Create a virtual environment
+python -m venv .venv
+
+# Activate on Windows
+.\.venv\Scripts\activate
+
+# Activate on macOS/Linux
+source .venv/bin/activate
+
+# Install requirements
+pip install -r requirements.txt
+```
+
+### Quick Setup
+
+We provide a setup script that checks your environment and installs dependencies:
+
+```cmd
+# On Windows
+scripts\setup_env.bat
+
+# On macOS/Linux
+python scripts/setup_env.py
+```
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for more detailed information about development workflows.
+
 ## Model Support
 AI Playground supports PyTorch LLM, SD1.5, and SDXL models. AI Playground does not ship with any models but does make  models available for all features either directly from the interface or indirectly by the users downloading models from HuggingFace.co or CivitAI.com and placing them in the appropriate model folder. 
 

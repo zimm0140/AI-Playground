@@ -1,0 +1,9 @@
+name: ai-playground-env
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.9
+  - pip
+  - pip:
+    - jsonschema==4.19.2 
