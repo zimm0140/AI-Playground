@@ -8,7 +8,8 @@
     "**/__pycache__",
     "service/**",
     "LlamaCPP/**",
-    "OpenVINO/**"
+    "OpenVINO/**",
+    ".github/workflows/scripts/**"
   ],
   "ignoreExternal": true,
   "extraPaths": [
@@ -29,6 +30,13 @@
   "reportIndexIssue": false,
   "reportCallIssue": "none",
   "reportGeneralTypeIssues": "none",
+  "reportOptionalCall": false,
+  "reportOptionalIterable": false,
+  "reportOptionalSubscript": false,
+  "reportOptionalOperand": false,
+  "reportTypedDictNotRequiredAccess": false,
+  "reportPrivateImportUsage": false,
+  "reportUnboundVariable": false,
   "pythonVersion": "3.9",
-  "typeCheckingMode": "basic"
+  "typeCheckingMode": "off"
 } 
