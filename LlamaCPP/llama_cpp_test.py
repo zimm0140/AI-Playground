@@ -24,10 +24,10 @@ url = "http://127.0.0.1:59003/api/llm/chat"
 # - enable_rag: Whether to use Retrieval Augmented Generation
 # - model_repo_id: The specific LLM model to use (Llama 3.1 8B in GGUF format)
 params = {
-  "prompt": [{"question": "Who is the president of the United States in 5 years?" }],
-  "device": "",
-  "enable_rag": False,
-  "model_repo_id": "meta-llama-3.1-8b-instruct-q5_k_m.gguf",
+    "prompt": [{"question": "Who is the president of the United States in 5 years?"}],
+    "device": "",
+    "enable_rag": False,
+    "model_repo_id": "meta-llama-3.1-8b-instruct-q5_k_m.gguf",
 }
 
 # Send the POST request with streaming enabled
@@ -44,10 +44,10 @@ for line in response.iter_lines():
     e += 1
     if line:
         # Decode the line (assuming UTF-8 encoding)
-        decoded_line = line.decode('utf-8')
+        decoded_line = line.decode("utf-8")
 
         # SSE events typically start with "data: "
         if decoded_line.startswith("data:"):
             # Extract the data part (removing the "data:" prefix)
-            data = decoded_line[len("data:"):]
+            data = decoded_line[len("data:") :]
             print(data)  # Process the data as needed
