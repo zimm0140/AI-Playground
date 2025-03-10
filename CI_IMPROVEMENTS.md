@@ -59,7 +59,8 @@ Improved documentation across the CI system:
 
 The updated CI workflow now follows this structure:
 
-```
+
+```text
 .github/workflows/
 ├── main.yml                # Main workflow file
 ├── WORKFLOW.md             # Workflow documentation
@@ -80,6 +81,7 @@ The updated CI workflow now follows this structure:
     └── verify_environment.sh
 ```
 
+
 ## Future Recommendations
 
 Potential future improvements for the CI workflow:
@@ -90,4 +92,4 @@ Potential future improvements for the CI workflow:
 4. **Automated Dependency Updates**: Integrate Dependabot or similar to keep dependencies up-to-date
 5. **MacOS Testing**: Add MacOS job for complete platform coverage
 6. **UI Testing**: Add browser-based testing if the project has a web interface
-7. **Deployment Testing**: Add tests to verify deployment works correctly 
+7. **Deployment Testing**: Add tests to verify deployment works correctly

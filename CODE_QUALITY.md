@@ -27,19 +27,28 @@ We use [pre-commit](https://pre-commit.com/) to run checks before each commit. T
 ### Setup
 
 1. Install pre-commit:
-   ```bash
+
+   
+```bash
    pip install pre-commit
    ```
 
+
 2. Install the hooks:
-   ```bash
+
+   
+```bash
    pre-commit install
    ```
 
+
 3. Run against all files:
-   ```bash
+
+   
+```bash
    pre-commit run --all-files
    ```
+
 
 ## CI/CD Checks
 
@@ -59,10 +68,12 @@ We've created helper scripts to fix common linting issues:
 
 Run these scripts to quickly identify and fix issues:
 
+
 ```bash
 python check_linting.py
 python fix_unused_variables.py
 ```
+
 
 ## Best Practices
 
@@ -79,4 +90,4 @@ If you encounter CI failures:
 1. Check the CI logs to identify the specific issues.
 2. Run `python check_linting.py` locally to see if you can reproduce the issues.
 3. Fix the issues manually or use the helper scripts.
-4. Run pre-commit to verify your fixes before pushing again. 
+4. Run pre-commit to verify your fixes before pushing again.

@@ -32,9 +32,11 @@ The hardware compatibility testing is automatically run as part of the CI pipeli
 
 To run the hardware compatibility test manually:
 
+
 ```bash
 .github/workflows/scripts/test_hardware_compatibility.sh
 ```
+
 
 ## Reports and Artifacts
 
@@ -108,9 +110,11 @@ The Hardware Compatibility Advisor is an intelligent system that analyzes compat
 
 To run the Hardware Compatibility Advisor:
 
+
 ```bash
 .github/workflows/scripts/run_hardware_advisor.sh
 ```
+
 
 This script will:
 1. Run the hardware compatibility tester
@@ -158,9 +162,11 @@ The Hardware Compatibility Auto-fix Tool provides automated remediation for comp
 
 To run the Auto-fix Tool:
 
+
 ```bash
 .github/workflows/scripts/run_hardware_autofix.sh [options]
 ```
+
 
 Options:
 - `--apply` - Apply the changes (default is dry-run mode)
@@ -201,4 +207,4 @@ If you encounter issues with the hardware compatibility testing:
 1. **Check hardware patterns** - Make sure your requirements file follows the naming conventions
 2. **Review the raw JSON data** - Examine the detailed data for insights
 3. **Run the script manually** with debug flags for more information
-4. **Check for recent changes** to dependency structures 
+4. **Check for recent changes** to dependency structures

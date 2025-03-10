@@ -44,6 +44,7 @@ Pre-commit hooks are used to catch issues before they're committed to the reposi
 
 To set up pre-commit hooks:
 
+
 ```bash
 # On Unix/Linux/macOS or Git Bash
 ./.github/setup-hooks.sh
@@ -51,6 +52,7 @@ To set up pre-commit hooks:
 # On Windows with PowerShell
 .\.github\setup-hooks.ps1
 ```
+
 
 ### Available Hooks
 
@@ -62,9 +64,11 @@ To set up pre-commit hooks:
 
 In case you need to bypass hooks temporarily:
 
+
 ```bash
 git commit --no-verify
 ```
+
 
 ## CI Scripts
 
@@ -98,28 +102,34 @@ To ensure smooth CI operation:
 **Symptom**: CI job fails with `Error: Failed to CreateArtifact: Received non-retryable error: Failed request: (409) Conflict`
 
 **Solution**: Run the CI cleanup workflow which will ensure unique artifact names:
+
 ```bash
 # Via GitHub Actions web UI
 # Go to Actions > CI Cleanup and Optimization > Run workflow
 ```
+
 
 #### Linting Errors
 
 **Symptom**: Ruff or linting check fails with errors like `F401 import xxx is unused`
 
 **Solution**: Run the lint script locally to identify and fix issues:
+
 ```bash
 python .github/workflows/scripts/lint_python_files.py path/to/file.py
 ```
+
 
 #### Indentation Errors in Python Files
 
 **Symptom**: CI fails with indentation errors, particularly in `try/except` blocks
 
 **Solution**: Run the fix_ci_issues script:
+
 ```bash
 python .github/workflows/scripts/fix_ci_issues.py
 ```
+
 
 #### Windows Path Issues
 
@@ -159,4 +169,4 @@ The CI system tracks performance metrics to help identify bottlenecks and improv
 
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
 - [Pre-commit Hooks Guide](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks)
-- [Ruff Documentation](https://docs.astral.sh/ruff/) 
+- [Ruff Documentation](https://docs.astral.sh/ruff/)

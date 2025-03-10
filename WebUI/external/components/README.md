@@ -25,6 +25,8 @@ To use a component in your workflow:
 
 Each component follows this standard format:
 
+
+
 ```json
 {
   "name": "Component Name",
@@ -73,6 +75,8 @@ Each component follows this standard format:
   }
 }
 ```
+
+
 
 ## Available Components
 
