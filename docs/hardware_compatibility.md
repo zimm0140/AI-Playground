@@ -4,7 +4,7 @@ This document provides an overview of the hardware compatibility testing system 
 
 ## Overview
 
-The Hardware Compatibility Testing system analyzes package dependencies across different hardware platforms to ensure compatibility and detect potential conflicts. This is 
+The Hardware Compatibility Testing system analyzes package dependencies across different hardware platforms to ensure compatibility and detect potential conflicts. This is
 particularly important for Intel hardware-specific packages that may have different versions or requirements for different architectures.
 
 ## Features
@@ -29,7 +29,7 @@ The system currently analyzes package compatibility across the following Intel h
 
 ## Workflow Integration
 
-The hardware compatibility testing is automatically run as part of the CI pipeline after the requirements consistency check. It generates reports that are uploaded as artifacts 
+The hardware compatibility testing is automatically run as part of the CI pipeline after the requirements consistency check. It generates reports that are uploaded as artifacts
 and included in the CI summary.
 
 To run the hardware compatibility test manually:
@@ -38,6 +38,7 @@ To run the hardware compatibility test manually:
 .github/workflows/scripts/test_hardware_compatibility.sh
 
 ```text
+
 ## Reports and Artifacts
 
 The system generates the following artifacts:
