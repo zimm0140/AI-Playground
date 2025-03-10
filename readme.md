@@ -58,10 +58,12 @@ The following are known situations where your installation may be blocked or int
 
 To get started, clone the repository and navigate to the project directory:
 
+
 ```cmd
 git clone -b dev <https://github.com/intel/AI-Playground.git>
 cd AI-Playground
 ```
+
 
 ## # Install Node.js Dependencies
 
@@ -69,10 +71,12 @@ cd AI-Playground
 
 1. Navigate to the `WebUI` directory and install all Node.js dependencies:
 
+
 ```cmd
 cd WebUI
 npm install
 ```
+
 
 ## # Prepare Python Environment
 
@@ -80,27 +84,35 @@ npm install
 
 1. Create a Conda environment with Python 3.11 and libuv:
 
+
 ```text
 conda create -n cp311_libuv python=3.11 libuv -y
 ```
 
+
 1. Locate the path to your newly created Conda environment:
+
 
 ```text
 conda env list | findstr cp311_libuv
 ```
 
+
 1. In the `WebUI` directory, execute the `fetch-build-resources` script, replacing `<path_to_cp311_libuv_conda_env>` with the actual path you copied in the previous step:
+
 
 ```text
 npm run fetch-build-resources -- --conda_env_dir=<path_to_cp311_libuv_conda_env>
 ```
 
+
 1. Run the `prepare-build` script:
+
 
 ```text
 npm run prepare-build
 ```
+
 
 You should now have a basic Python environment located at `build-envs\online\prototype-python-env`.
 
@@ -108,17 +120,21 @@ You should now have a basic Python environment located at `build-envs\online\pro
 
 To start the application in development mode, run:
 
+
 ```text
 npm run dev
 ```
+
 
 ## # (Optional) Build the installer
 
 To build the installer, run:
 
+
 ```text
 npm run build
 ```
+
 
 The installer executable will be located in the `release` folder.
 
@@ -144,6 +160,7 @@ For development work, we recommend using a virtual environment to isolate depend
 
 ## # # Option 1: Using Conda (Recommended)
 
+
 ```cmd
 
 # Create a conda environment
@@ -159,7 +176,9 @@ conda activate ai-playground-env
 pip install -r requirements.txt
 ```
 
+
 ## # # Option 2: Using venv
+
 
 ```cmd
 
@@ -180,9 +199,11 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
+
 ## # Quick Setup
 
 We provide a setup script that checks your environment and installs dependencies:
+
 
 ```cmd
 
@@ -194,6 +215,7 @@ scripts\setup_env.bat
 
 python scripts/setup_env.py
 ```
+
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for more detailed information about development workflows.
 

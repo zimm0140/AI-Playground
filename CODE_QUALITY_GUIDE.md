@@ -52,10 +52,12 @@ Pre-commit hooks are configured to run the following checks:
 
 To set up pre-commit hooks:
 
+
 ```bash
 pip install pre-commit
 pre-commit install
 ```
+
 
 ## Troubleshooting Common Issues
 
@@ -75,4 +77,4 @@ Common issues and solutions:
 
 ## Contact
 
-For questions about code quality standards or help with resolving issues, please open an issue on GitHub or contact the project maintainers. 
+For questions about code quality standards or help with resolving issues, please open an issue on GitHub or contact the project maintainers.
