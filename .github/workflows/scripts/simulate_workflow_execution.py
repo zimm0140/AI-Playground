@@ -418,8 +418,8 @@ class ComfyWorkflowSimulator:
             return []
 
         # Build a directed graph using adjacency list and count incoming edges
-        graph = {}
-        in_degree = {}
+        graph: dict[str, list[str]] = {}
+        in_degree: dict[str, int] = {}
 
         # Initialize all nodes with 0 in-degree
         for node_id in nodes:
@@ -501,7 +501,7 @@ class ComfyWorkflowSimulator:
             link_map = build_link_map(workflow)
 
             start_time = time.time()
-            node_outputs = {}
+            node_outputs: dict[str, Any] = {}
             failed_nodes = set()
 
             # Execute nodes in topological order

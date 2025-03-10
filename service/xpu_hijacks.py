@@ -7,6 +7,27 @@ try:
     TORCH_AVAILABLE = True
 except ImportError:
     TORCH_AVAILABLE = False
+    # Create dummy classes for when torch is not available
+    class DummyModule:
+        """Placeholder class when torch is not available."""
+        def __init__(self, *args, **kwargs):
+            pass
+
+        def __getattr__(self, name):
+            return self
+
+        def __call__(self, *args, **kwargs):
+            return self
+
+    class DummyDevice:
+        """Placeholder for torch.device when torch is not available."""
+        def __init__(self, *args, **kwargs):
+            self.type = "cpu"
+
+    # Create dummy torch module
+    torch = DummyModule()  # type: ignore
+    torch.device = DummyDevice  # type: ignore
+    np = DummyModule()  # type: ignore
     
 try:
     import intel_extension_for_pytorch as ipex  # type: ignore # pylint: disable=import-error, unused-import
@@ -14,6 +35,9 @@ try:
 except ImportError:
     IPEX_AVAILABLE = False
     ipex = None
+
+# Define disable_xpu global variable
+disable_xpu = os.environ.get("DISABLE_XPU", "0").lower() in ("1", "true", "yes")
 
 """
 PyTorch XPU Hijacks Module
@@ -38,29 +62,6 @@ Code credit: https://github.com/vladmandic/automatic/blob/master/modules/intel/i
 
 # Global configuration
 disable_xpu = os.environ.get("DISABLE_XPU", "0").lower() in ("1", "true", "yes")
-
-# Initialize placeholders if torch is not available
-if not TORCH_AVAILABLE:
-    class DummyModule:
-        """Placeholder class when torch is not available."""
-        def __init__(self, *args, **kwargs):
-            pass
-        
-        def __getattr__(self, name):
-            return self
-            
-        def __call__(self, *args, **kwargs):
-            return self
-    
-    class DummyDevice:
-        """Placeholder for torch.device when torch is not available."""
-        def __init__(self, *args, **kwargs):
-            self.type = "cpu"
-    
-    # Create dummy torch module
-    torch = DummyModule()
-    torch.device = DummyDevice
-    np = DummyModule()
 
 # =================== GLOBAL VARIABLES AND INITIALIZATION ===================
 # Check if the device supports 64-bit floating point operations
@@ -129,7 +130,7 @@ def check_device(device):
         return False
         
     # Check torch.device objects
-    if isinstance(device, torch.device):
+    if isinstance(device, torch.device):  # type: ignore
         return device.type == "cuda" and not disable_xpu
         
     # Check string device specifiers
@@ -155,7 +156,7 @@ def return_xpu(device):
         else f"xpu:{device}"
         if isinstance(device, int)
         else torch.device("xpu")
-        if isinstance(device, torch.device)
+        if isinstance(device, torch.device)  # type: ignore
         else "xpu"
     )
 
@@ -310,10 +311,10 @@ def as_tensor_hijack(original_as_tensor):
         if check_device(device):
             device = return_xpu(device)
         if (
-            isinstance(data, np.ndarray)
+            isinstance(data, np.ndarray)  # type: ignore
             and data.dtype == float
             and not (
-                (isinstance(device, torch.device) and hasattr(device, "type") and device.type == "cpu")
+                (isinstance(device, torch.device) and hasattr(device, "type") and device.type == "cpu")  # type: ignore
                 or (isinstance(device, str) and "cpu" in device)
             )
         ):
@@ -603,7 +604,7 @@ def torch_tensor(data, *args, dtype=None, device=None, **kwargs):
         device = return_xpu(device)
     if not device_supports_fp64:
         # Add hasattr check to prevent attribute access errors
-        if ((isinstance(device, torch.device) and hasattr(device, "type") and device.type == "xpu") or
+        if ((isinstance(device, torch.device) and hasattr(device, "type") and device.type == "xpu") or  # type: ignore
             (isinstance(device, str) and "xpu" in device)):
             if dtype == torch.float64:
                 dtype = torch.float32

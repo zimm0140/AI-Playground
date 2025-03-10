@@ -32,76 +32,47 @@ Each component follows this standard format:
   "version": "1.0.0",
   "type": "image_loader|text_encoder|sampler|output_processor|etc",
   "inputs": [
-
-```text
-{
-  "name": "input_1",
-  "type": "string|number|image|etc",
-  "description": "Description of this input"
-}
-
-```text
+    {
+      "name": "input_1",
+      "type": "string|number|image|etc",
+      "description": "Description of this input"
+    }
   ],
   "outputs": [
-
-```text
-{
-  "name": "output_1",
-  "type": "latent|image|conditioning|etc",
-  "description": "Description of this output"
-}
-
-```text
+    {
+      "name": "output_1",
+      "type": "latent|image|conditioning|etc",
+      "description": "Description of this output"
+    }
   ],
   "nodes": {
-
-```text
-"1": {
-  "class_type": "NodeType",
-  "inputs": {
-
-```text
-"param1": "value1"
-
-```text
-  }
-},
-"2": {
-  "class_type": "AnotherNodeType",
-  "inputs": {
-
-```text
-"param1": ["1", 0]
-
-```text
-  }
-}
-
-```text
+    "1": {
+      "class_type": "NodeType",
+      "inputs": {
+        "param1": "value1"
+      }
+    },
+    "2": {
+      "class_type": "AnotherNodeType",
+      "inputs": {
+        "param1": ["1", 0]
+      }
+    }
   },
   "inputMappings": {
-
-```text
-"input_1": {
-  "nodeId": "1",
-  "inputName": "param1"
-}
-
-```text
+    "input_1": {
+      "nodeId": "1",
+      "inputName": "param1"
+    }
   },
   "outputMappings": {
-
-```text
-"output_1": {
-  "nodeId": "2",
-  "outputIndex": 0
-}
-
-```text
+    "output_1": {
+      "nodeId": "2",
+      "outputIndex": 0
+    }
   }
 }
-
-```text
+```
 
 ## Available Components
 
