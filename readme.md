@@ -34,7 +34,7 @@ have a PC that meets the following specifications
 ## Installation - Packaged Installer
 
 Starting from v2.0, there is a single packaged installer that works for all supported hardware mentioned above. This installer simplifies the process for end users to install AI
-Playground and get it running on their PC. Please note that while this makes the installation process easier, this is open-source beta software, and there may be component and 
+Playground and get it running on their PC. Please note that while this makes the installation process easier, this is open-source beta software, and there may be component and
 version conflicts. Refer to the Troubleshooting section for known issues.
 
 ## # Download the installer
@@ -54,12 +54,12 @@ several minutes**.
 ## # Troubleshooting Installation
 
 The following are known situations where your installation may be blocked or interrupted.  Review the following to remedy installations issues.  If installation issues persist,
-generate a copy of the log by typing CTRL+SHIFT+I, select the console tab and copy the last few entries of the log written where the installer failed.  Provide these details to us 
+generate a copy of the log by typing CTRL+SHIFT+I, select the console tab and copy the last few entries of the log written where the installer failed.  Provide these details to us
 via the issues tab here, or via the Intel Insiders Discord, or Graphics forum on Intel's support site.
 
 1. **Restart**: Time-out issues have been sighted, which show as a failed install but resolve when restarting AI Playground
 1. **Verify Intel Arc GPU**: Ensure your system has an Intel Arc GPU. Go to your Windows Start Menu, type "Device Manager," and under Display Adapters, check the name of your GPU
-device. It should describe an Intel Arc GPU. If so, then you you have a GPU that means our minimum specifications.  If it says "Intel(R) Graphics," your system does not have a 
+device. It should describe an Intel Arc GPU. If so, then you you have a GPU that means our minimum specifications.  If it says "Intel(R) Graphics," your system does not have a
 built-in Intel Arc GPU and does not meet the minimum specifications.
 1. **Interrupted Installation**: The online installation for backend components can be interrupted or blocked by an IT network, firewall, or sleep settings. Ensure you are on an
 open network, with the firewall off, and set sleep settings to stay awake when powered on.
