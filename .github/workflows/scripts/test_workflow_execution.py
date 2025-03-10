@@ -176,15 +176,28 @@ class ComfyWorkflowTester:
 
     def topological_sort(self, workflow):
         """Sort nodes in topological order for execution"""
-        if "nodes" not in workflow or "links" not in workflow:
-            return [], "Workflow missing nodes or links"
+        if "links" not in workflow:
+            return [], "Workflow missing links"
+            
+        # Get nodes from either workflow format
+        nodes = None
+        if "nodes" in workflow and isinstance(workflow["nodes"], dict):
+            nodes = workflow["nodes"]
+        elif ("comfyUiApiWorkflow" in workflow and 
+              isinstance(workflow["comfyUiApiWorkflow"], dict) and 
+              "nodes" in workflow["comfyUiApiWorkflow"] and
+              isinstance(workflow["comfyUiApiWorkflow"]["nodes"], dict)):
+            nodes = workflow["comfyUiApiWorkflow"]["nodes"]
+            
+        if nodes is None:
+            return [], "Workflow missing nodes or has invalid structure"
         
         # Build a directed graph using adjacency list and count incoming edges
         graph = defaultdict(list)
         in_degree = defaultdict(int)
         
         # Initialize all nodes with 0 in-degree
-        for node_id in workflow["nodes"]:
+        for node_id in nodes:
             in_degree[str(node_id)] = 0
         
         # Count incoming edges
@@ -213,7 +226,7 @@ class ComfyWorkflowTester:
                     queue.append(neighbor)
         
         # Check if we visited all nodes
-        if len(result) != len(workflow["nodes"]):
+        if len(result) != len(nodes):
             return [], "Cannot determine execution order due to cycles"
         
         return result, "Execution order determined successfully"

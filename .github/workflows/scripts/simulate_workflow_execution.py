@@ -429,7 +429,20 @@ class ComfyWorkflowSimulator:
     
     def topological_sort(self, workflow: Dict) -> List[str]:
         """Sort nodes in topological order for execution"""
-        if "nodes" not in workflow or "links" not in workflow:
+        if "links" not in workflow:
+            return []
+            
+        # Get nodes from either workflow format
+        nodes = None
+        if "nodes" in workflow and isinstance(workflow["nodes"], dict):
+            nodes = workflow["nodes"]
+        elif ("comfyUiApiWorkflow" in workflow and 
+              isinstance(workflow["comfyUiApiWorkflow"], dict) and 
+              "nodes" in workflow["comfyUiApiWorkflow"] and
+              isinstance(workflow["comfyUiApiWorkflow"]["nodes"], dict)):
+            nodes = workflow["comfyUiApiWorkflow"]["nodes"]
+            
+        if nodes is None:
             return []
         
         # Build a directed graph using adjacency list and count incoming edges
@@ -437,7 +450,7 @@ class ComfyWorkflowSimulator:
         in_degree = {}
         
         # Initialize all nodes with 0 in-degree
-        for node_id in workflow["nodes"]:
+        for node_id in nodes:
             graph[node_id] = []
             in_degree[node_id] = 0
         
@@ -468,9 +481,9 @@ class ComfyWorkflowSimulator:
                     queue.append(neighbor)
         
         # Check if we visited all nodes
-        if len(result) != len(workflow["nodes"]):
+        if len(result) != len(nodes):
             logger.warning("Cannot determine execution order - graph may have cycles")
-            return list(workflow["nodes"].keys())  # Fallback: return all nodes
+            return list(nodes.keys())  # Fallback: return all nodes
         
         return result
     
@@ -480,59 +493,75 @@ class ComfyWorkflowSimulator:
         
         if "links" not in workflow:
             return link_map
-        
+            
         for link in workflow["links"]:
-            if len(link) < 4:  # Basic validation
+            if len(link) < 4:  # Skip malformed links
                 continue
                 
+            # Extract link data: [from_node, from_slot, to_node, to_slot, ...] 
             from_node, from_slot, to_node, to_slot = link[0:4]
             from_node, to_node = str(from_node), str(to_node)
             
-            # Create a unique key for the link
-            link_key = f"{to_node}:{to_slot}"
-            link_map[link_key] = (from_node, from_slot)
-        
+            # Create a unique key for the target slot
+            target_key = f"{to_node}:{to_slot}"
+            
+            # Map the target slot to the source node and slot
+            link_map[target_key] = (from_node, from_slot, target_key)
+            
         return link_map
     
     def simulate_workflow(self, file_path: str) -> Dict[str, Any]:
-        """Simulate execution of a workflow file"""
-        filename = os.path.basename(file_path)
-        logger.info(f"Simulating workflow: {filename}")
-        
-        start_time = time.time()
-        
-        # Prepare result structure
+        """Simulate the execution of a ComfyUI workflow"""
         result = {
-            "filename": filename,
-            "path": file_path,
-            "success": False,
-            "execution_time": 0,
-            "node_results": {},
+            "file": file_path,
+            "name": os.path.basename(file_path),
+            "status": "failed",
             "errors": [],
-            "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            "warnings": [],
+            "execution_time": 0,
+            "node_execution": [],
+            "output_images": 0
         }
         
+        # Load workflow file
         try:
-            # Load the workflow
             with open(file_path, 'r', encoding='utf-8') as f:
                 workflow = json.load(f)
-            
-            # Get node execution order
+                
+            # Get nodes from either workflow format
+            nodes = None
+            if "nodes" in workflow and isinstance(workflow["nodes"], dict):
+                nodes = workflow["nodes"]
+            elif ("comfyUiApiWorkflow" in workflow and 
+                  isinstance(workflow["comfyUiApiWorkflow"], dict) and 
+                  "nodes" in workflow["comfyUiApiWorkflow"] and
+                  isinstance(workflow["comfyUiApiWorkflow"]["nodes"], dict)):
+                nodes = workflow["comfyUiApiWorkflow"]["nodes"]
+                
+            if nodes is None:
+                result["errors"].append("Workflow does not have required nodes structure")
+                return result
+                
+            if "links" not in workflow:
+                result["errors"].append("Workflow does not have links structure")
+                return result
+                
+            # Sort nodes for execution
             execution_order = self.topological_sort(workflow)
             if not execution_order:
-                result["errors"].append("Failed to determine node execution order")
+                result["errors"].append("Failed to determine execution order")
                 return result
-            
-            # Build link map
+                
+            # Create a map of node connections
             link_map = self.build_link_map(workflow)
             
-            # Initialize node outputs storage
+            start_time = time.time()
             node_outputs = {}
             failed_nodes = set()
             
             # Execute nodes in topological order
             for node_id in execution_order:
-                node_data = workflow["nodes"].get(node_id, {})
+                node_data = nodes.get(node_id, {})
                 
                 # Skip if node doesn't exist
                 if not node_data:
@@ -585,22 +614,24 @@ class ComfyWorkflowSimulator:
                 # Store results
                 if success:
                     node_outputs[node_id] = outputs
-                    result["node_results"][node_id] = {
+                    result["node_execution"].append({
+                        "node_id": node_id,
                         "type": node_type,
                         "success": True,
                         "outputs": {k: str(type(v)) for k, v in outputs.items()}
-                    }
+                    })
                 else:
                     failed_nodes.add(node_id)
-                    result["node_results"][node_id] = {
+                    result["node_execution"].append({
+                        "node_id": node_id,
                         "type": node_type,
                         "success": False,
                         "error": outputs.get("error", "Unknown error")
-                    }
+                    })
                     result["errors"].append(f"Failed to execute node {node_id} ({node_type}): {outputs.get('error')}")
             
             # Set success if at least some nodes executed successfully
-            result["success"] = len(node_outputs) > 0 and len(result["errors"]) == 0
+            result["status"] = "success" if len(node_outputs) > 0 and len(result["errors"]) == 0 else "failed"
             
         except json.JSONDecodeError as e:
             result["errors"].append(f"Invalid JSON: {str(e)}")
@@ -612,7 +643,7 @@ class ComfyWorkflowSimulator:
         end_time = time.time()
         result["execution_time"] = round(end_time - start_time, 2)
         
-        logger.info(f"Completed simulation of {filename} in {result['execution_time']}s - {'Success' if result['success'] else 'Failed'}")
+        logger.info(f"Completed simulation of {result['name']} in {result['execution_time']}s - {'Success' if result['status'] == 'success' else 'Failed'}")
         return result
     
     def simulate_all_workflows(self) -> Dict[str, Any]:
@@ -624,16 +655,16 @@ class ComfyWorkflowSimulator:
             result = self.simulate_workflow(file_path)
             self.simulation_results["workflows"].append(result)
             
-            if result["success"]:
+            if result["status"] == "success":
                 self.simulation_results["summary"]["successful_workflows"] += 1
             else:
                 self.simulation_results["summary"]["failed_workflows"] += 1
                 
             # Print progress summary
-            status = "✅ Success" if result["success"] else f"❌ Failed ({len(result['errors'])} errors)"
-            print(f"Simulated {result['filename']}: {status} in {result['execution_time']}s")
+            status = "✅ Success" if result["status"] == "success" else f"❌ Failed ({len(result['errors'])} errors)"
+            print(f"Simulated {result['name']}: {status} in {result['execution_time']}s")
             
-            if not result["success"] and result["errors"]:
+            if not result["status"] == "success" and result["errors"]:
                 for error in result["errors"][:3]:  # Show first 3 errors
                     print(f"  - {error}")
                 if len(result["errors"]) > 3:
@@ -660,27 +691,27 @@ class ComfyWorkflowSimulator:
             f.write("| Workflow | Status | Duration | Nodes Executed | Errors |\n")
             f.write("|----------|--------|----------|----------------|--------|\n")
             
-            for result in sorted(self.simulation_results["workflows"], key=lambda x: (not x["success"], x["filename"])):
-                status = "✅ Success" if result["success"] else "❌ Failed"
-                executed_node_count = sum(1 for node in result["node_results"].values() if node["success"])
-                total_node_count = len(result["node_results"])
+            for result in sorted(self.simulation_results["workflows"], key=lambda x: (not x["status"] == "success", x["name"])):
+                status = "✅ Success" if result["status"] == "success" else "❌ Failed"
+                executed_node_count = sum(1 for node in result["node_execution"] if node["success"])
+                total_node_count = len(result["node_execution"])
                 error_count = len(result["errors"])
                 
-                f.write(f"| {result['filename']} | {status} | {result['execution_time']}s | {executed_node_count}/{total_node_count} | {error_count} |\n")
+                f.write(f"| {result['name']} | {status} | {result['execution_time']}s | {executed_node_count}/{total_node_count} | {error_count} |\n")
             
             f.write("\n")
             
             # Details for failed workflows
-            failed_workflows = [r for r in self.simulation_results["workflows"] if not r["success"]]
+            failed_workflows = [r for r in self.simulation_results["workflows"] if r["status"] == "failed"]
             if failed_workflows:
                 f.write("## Failed Workflow Details\n\n")
                 
                 for result in failed_workflows:
-                    f.write(f"### {result['filename']}\n\n")
+                    f.write(f"### {result['name']}\n\n")
                     f.write(f"- **Duration**: {result['execution_time']}s\n")
                     
-                    executed_node_count = sum(1 for node in result["node_results"].values() if node["success"])
-                    total_node_count = len(result["node_results"])
+                    executed_node_count = sum(1 for node in result["node_execution"] if node["success"])
+                    total_node_count = len(result["node_execution"])
                     f.write(f"- **Node Execution**: {executed_node_count}/{total_node_count} nodes executed successfully\n\n")
                     
                     if result["errors"]:
@@ -690,12 +721,11 @@ class ComfyWorkflowSimulator:
                         f.write("\n")
                     
                     # List failing nodes
-                    failing_nodes = [node_id for node_id, node in result["node_results"].items() if not node["success"]]
+                    failing_nodes = [node["node_id"] for node in result["node_execution"] if not node["success"]]
                     if failing_nodes:
                         f.write("**Failing Nodes**:\n\n")
                         for node_id in failing_nodes:
-                            node = result["node_results"][node_id]
-                            f.write(f"- Node {node_id} ({node['type']}): {node.get('error', 'Unknown error')}\n")
+                            f.write(f"- Node {node_id}\n")
                         f.write("\n")
             
             # Recommendations
@@ -749,16 +779,16 @@ class ComfyWorkflowSimulator:
                     f.write("| Workflow | Nodes Executed | Top Error |\n")
                     f.write("|----------|----------------|----------|\n")
                     
-                    failed_workflows = [r for r in self.simulation_results["workflows"] if not r["success"]]
+                    failed_workflows = [r for r in self.simulation_results["workflows"] if r["status"] == "failed"]
                     for result in failed_workflows[:10]:  # Limit to 10 most important ones
-                        executed_nodes = sum(1 for node in result["node_results"].values() if node["success"])
-                        total_nodes = len(result["node_results"])
+                        executed_nodes = sum(1 for node in result["node_execution"] if node["success"])
+                        total_nodes = len(result["node_execution"])
                         
                         top_error = result["errors"][0] if result["errors"] else "Unknown error"
                         if len(top_error) > 50:
                             top_error = top_error[:47] + "..."
                         
-                        f.write(f"| {result['filename']} | {executed_nodes}/{total_nodes} | {top_error} |\n")
+                        f.write(f"| {result['name']} | {executed_nodes}/{total_nodes} | {top_error} |\n")
                     
                     if len(failed_workflows) > 10:
                         f.write(f"\n... and {len(failed_workflows) - 10} more failed workflows.\n")

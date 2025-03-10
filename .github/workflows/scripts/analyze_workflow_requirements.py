@@ -8,6 +8,10 @@ This script analyzes ComfyUI workflow JSON files to determine:
 3. Required Python packages
 4. Hardware requirements (GPU memory, etc.)
 
+The analyzer supports two workflow formats:
+- Traditional format with top-level "nodes" property
+- Workflow API format with nodes defined in "comfyUiApiWorkflow.nodes"
+
 It produces a report detailing the requirements for executing each workflow.
 """
 
@@ -57,6 +61,7 @@ class WorkflowRequirementsAnalyzer:
             # Face swap nodes
             "FaceSwapNode": "comfyui-face-swap",
             "CopyFace": "comfyui-face-swap",
+            "ReActorFaceSwap": "comfyui-face-swap",
             
             # IP-Adapter nodes
             "IPAdapterApply": "comfyui-ip-adapter",
@@ -86,19 +91,21 @@ class WorkflowRequirementsAnalyzer:
         # Approximate GPU memory requirements by node type
         self.gpu_memory_estimates = {
             "CheckpointLoader": {
-                "SD1.5": 4, # 4GB base model
-                "SDXL": 8,  # 8GB base model
-                "SD3": 12   # 12GB base model (estimated)
+                "SD1.5": 2.0,  # GB
+                "SDXL": 6.0,   # GB
+                "SD3": 8.0     # GB
             },
-            "VAELoader": 0.5,  # 0.5GB for VAE
+            "VAELoader": 0.5,  # GB
+            "ControlNetLoader": 1.0,  # GB per ControlNet
+            "LoraLoader": 0.2,  # GB per LoRA
             "KSampler": {
-                "base": 2,    # 2GB overhead for sampling
-                "per_batch": 0.5 # Additional 0.5GB per batch size
+                "base": 1.0,  # GB
+                "per_batch": 0.5  # GB per batch size
             },
-            "AnimateDiff": 2,  # 2GB overhead for animation
-            "ControlNetApply": 1, # 1GB per ControlNet
-            "LoraLoader": 0.2,    # 0.2GB per LoRA
-            "UpscaleImage": 2      # 2GB for upscaling
+            "UpscaleModelLoader": 1.0,  # GB
+            "FaceRestoration": 1.0,  # GB
+            "AnimateDiff": 2.0,  # GB
+            "IPAdapterModelLoader": 1.0  # GB
         }
         
         # Results storage
@@ -125,13 +132,22 @@ class WorkflowRequirementsAnalyzer:
         """Find all workflow JSON files in the specified directory"""
         return glob.glob(os.path.join(self.workflows_dir, "*.json"))
 
-    def analyze_workflow(self, file_path):
-        """Analyze a single workflow file for its requirements"""
-        filename = os.path.basename(file_path)
+    def analyze_workflow(self, workflow_file):
+        """
+        Analyze a single workflow file to determine its requirements.
         
+        Args:
+            workflow_file (str): Path to the workflow JSON file
+            
+        Returns:
+            dict: Analysis results including models, custom nodes, and memory requirements
+        """
+        filename = os.path.basename(workflow_file)
+        
+        # Initialize result structure
         workflow_result = {
             "filename": filename,
-            "path": file_path,
+            "path": workflow_file,
             "models": {
                 "checkpoint": [],
                 "vae": [],
@@ -147,16 +163,16 @@ class WorkflowRequirementsAnalyzer:
             "custom_nodes": [],
             "python_packages": [],
             "memory_required": {
-                "min": 4,  # Minimum 4GB estimated baseline
-                "recommended": 8  # Default recommendation
+                "min": 4,  # Minimum 4GB as base requirement
+                "recommended": 8  # Recommended 8GB as base
             },
             "is_analyzed": False,
             "errors": []
         }
         
-        # Try to parse the JSON
+        # Load and parse the workflow file
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
+            with open(workflow_file, 'r', encoding='utf-8') as f:
                 workflow = json.load(f)
         except json.JSONDecodeError as e:
             workflow_result["errors"].append(f"Invalid JSON: {str(e)}")
@@ -165,20 +181,27 @@ class WorkflowRequirementsAnalyzer:
             workflow_result["errors"].append(f"Error reading file: {str(e)}")
             return workflow_result
         
-        # Check if the workflow has the expected structure - accept either top level nodes or comfyUiApiWorkflow.nodes
+        # Check if the workflow has the expected structure
         if not isinstance(workflow, dict):
             workflow_result["errors"].append("Workflow is not a valid JSON object")
             return workflow_result
         
-        # Look for nodes in either location
+        # Look for nodes in different possible locations
         nodes = None
-        if "nodes" in workflow:
+        if "nodes" in workflow and isinstance(workflow["nodes"], dict):
+            # Traditional ComfyUI format with top-level nodes
             nodes = workflow["nodes"]
-        elif "comfyUiApiWorkflow" in workflow and isinstance(workflow["comfyUiApiWorkflow"], dict) and "nodes" in workflow["comfyUiApiWorkflow"]:
-            nodes = workflow["comfyUiApiWorkflow"]["nodes"]
+        elif "comfyUiApiWorkflow" in workflow and isinstance(workflow["comfyUiApiWorkflow"], dict):
+            if "nodes" in workflow["comfyUiApiWorkflow"] and isinstance(workflow["comfyUiApiWorkflow"]["nodes"], dict):
+                # API format with nodes inside comfyUiApiWorkflow.nodes
+                nodes = workflow["comfyUiApiWorkflow"]["nodes"]
+            else:
+                # API format with nodes directly inside comfyUiApiWorkflow (numeric keys)
+                # This is the case for CopyFace.json and other workflows
+                nodes = workflow["comfyUiApiWorkflow"]
         
         if not nodes:
-            workflow_result["errors"].append("Workflow does not have required nodes structure")
+            workflow_result["errors"].append("Workflow does not have required structure")
             return workflow_result
         
         # Extract model requirements
@@ -192,367 +215,356 @@ class WorkflowRequirementsAnalyzer:
             if "class_type" not in node_data:
                 continue
                 
-            node_type = node_data["class_type"]
+            class_type = node_data["class_type"]
             
-            # Check if this is a model loading node
-            if node_type in self.model_nodes:
-                model_type = self.model_nodes[node_type]
+            # Check for model loading nodes
+            if class_type in self.model_nodes:
+                model_type = self.model_nodes[class_type]
                 
-                # Try to extract the model name if available
-                model_name = None
-                if "inputs" in node_data and isinstance(node_data["inputs"], dict):
-                    if "ckpt_name" in node_data["inputs"]:
-                        model_name = node_data["inputs"]["ckpt_name"]
-                    elif "model_name" in node_data["inputs"]:
-                        model_name = node_data["inputs"]["model_name"]
-                    elif "lora_name" in node_data["inputs"]:
-                        model_name = node_data["inputs"]["lora_name"]
-                    elif "vae_name" in node_data["inputs"]:
-                        model_name = node_data["inputs"]["vae_name"]
-                
-                # Add model to requirements
-                if model_name and model_name not in workflow_result["models"][model_type]:
-                    workflow_result["models"][model_type].append(model_name)
+                # Extract model path/name if available
+                model_path = None
+                if "inputs" in node_data:
+                    inputs = node_data["inputs"]
                     
-                    # Check for SDXL or SD3 models for memory estimation
-                    if model_type == "checkpoint" and model_name:
-                        model_name_lower = model_name.lower()
-                        if "sdxl" in model_name_lower or "xl" in model_name_lower:
-                            checkpoint_sd_type = "SDXL"
-                        elif "sd3" in model_name_lower or "sd-3" in model_name_lower:
-                            checkpoint_sd_type = "SD3"
-            
-            # Count control nets
-            if node_type == "ControlNetApply":
-                control_net_count += 1
+                    # Different model nodes have different input parameter names
+                    if "ckpt_name" in inputs:
+                        model_path = inputs["ckpt_name"]
+                    elif "model_name" in inputs:
+                        model_path = inputs["model_name"]
+                    elif "vae_name" in inputs:
+                        model_path = inputs["vae_name"]
+                    elif "lora_name" in inputs:
+                        model_path = inputs["lora_name"]
+                    elif "control_net_name" in inputs:
+                        model_path = inputs["control_net_name"]
+                    elif "model" in inputs:
+                        model_path = inputs["model"]
+                    elif "swap_model" in inputs:
+                        model_path = inputs["swap_model"]
+                    elif "face_restore_model" in inputs:
+                        model_path = inputs["face_restore_model"]
                 
-            # Count LoRAs    
-            if node_type == "LoraLoader":
-                lora_count += 1
+                # Add to the appropriate model type list if not already present
+                if model_path and model_path not in workflow_result["models"][model_type]:
+                    workflow_result["models"][model_type].append(model_path)
                 
-            # Check for upscaling
-            if node_type in ["UpscaleImage", "ImageUpscaleWithModel"]:
-                has_upscaling = True
+                # Count specific model types for memory estimation
+                if model_type == "controlnet":
+                    control_net_count += 1
+                elif model_type == "lora":
+                    lora_count += 1
                 
-            # Check batch size
-            if node_type in ["KSampler", "KSamplerAdvanced"] and "inputs" in node_data:
-                if "batch_size" in node_data["inputs"]:
-                    try:
-                        batch_size = max(batch_size, int(node_data["inputs"]["batch_size"]))
-                    except (ValueError, TypeError):
-                        pass
+                # Detect model type for memory estimation
+                if model_type == "checkpoint" and model_path:
+                    if "xl" in model_path.lower():
+                        checkpoint_sd_type = "SDXL"
+                    elif "sd3" in model_path.lower() or "sd_3" in model_path.lower():
+                        checkpoint_sd_type = "SD3"
             
             # Check for custom nodes
-            if node_type in self.custom_node_types:
-                custom_node_package = self.custom_node_types[node_type]
-                if custom_node_package not in workflow_result["custom_nodes"]:
-                    workflow_result["custom_nodes"].append(custom_node_package)
+            if class_type in self.custom_node_types:
+                custom_node = self.custom_node_types[class_type]
+                if custom_node not in workflow_result["custom_nodes"]:
+                    workflow_result["custom_nodes"].append(custom_node)
                     
-                    # Add associated Python package dependencies
-                    if custom_node_package in self.node_package_dependencies:
-                        for package in self.node_package_dependencies[custom_node_package]:
+                    # Add associated Python packages
+                    if custom_node in self.node_package_dependencies:
+                        for package in self.node_package_dependencies[custom_node]:
                             if package not in workflow_result["python_packages"]:
                                 workflow_result["python_packages"].append(package)
+            
+            # Check for batch size
+            if "inputs" in node_data and "batch_size" in node_data["inputs"]:
+                try:
+                    batch_size = max(batch_size, int(node_data["inputs"]["batch_size"]))
+                except (ValueError, TypeError):
+                    pass
+            
+            # Check for upscaling operations
+            if "Upscale" in class_type or class_type in ["UpscaleModelLoader"]:
+                has_upscaling = True
         
-        # Estimate memory requirements
-        # Start with base model size
-        memory_required = self.gpu_memory_estimates["CheckpointLoader"][checkpoint_sd_type]
+        # Calculate memory requirements
+        memory_required = 4.0  # Base memory requirement in GB
         
-        # Add memory for VAE
-        if workflow_result["models"]["vae"]:
-            memory_required += self.gpu_memory_estimates["VAELoader"]
-        
-        # Add sampling overhead
-        memory_required += self.gpu_memory_estimates["KSampler"]["base"]
-        memory_required += self.gpu_memory_estimates["KSampler"]["per_batch"] * (batch_size - 1)
+        # Add checkpoint memory
+        if checkpoint_sd_type in self.gpu_memory_estimates["CheckpointLoader"]:
+            memory_required += self.gpu_memory_estimates["CheckpointLoader"][checkpoint_sd_type]
         
         # Add ControlNet memory
-        memory_required += control_net_count * self.gpu_memory_estimates["ControlNetApply"]
+        memory_required += control_net_count * self.gpu_memory_estimates["ControlNetLoader"]
         
         # Add LoRA memory
         memory_required += lora_count * self.gpu_memory_estimates["LoraLoader"]
         
-        # Add upscaling memory if needed
-        if has_upscaling:
-            memory_required += self.gpu_memory_estimates["UpscaleImage"]
+        # Add KSampler memory based on batch size
+        if "KSampler" in self.gpu_memory_estimates:
+            memory_required += self.gpu_memory_estimates["KSampler"]["base"]
+            memory_required += (batch_size - 1) * self.gpu_memory_estimates["KSampler"]["per_batch"]
         
-        # If using AnimateDiff, add its overhead
-        if "comfyui-animatediff" in workflow_result["custom_nodes"]:
-            memory_required += self.gpu_memory_estimates["AnimateDiff"]
+        # Add upscaling memory if needed
+        if has_upscaling and "UpscaleModelLoader" in self.gpu_memory_estimates:
+            memory_required += self.gpu_memory_estimates["UpscaleModelLoader"]
         
         # Update memory requirements
-        workflow_result["memory_required"]["min"] = round(memory_required, 1)
-        workflow_result["memory_required"]["recommended"] = round(memory_required * 1.5, 1)  # Add 50% buffer for recommended
+        workflow_result["memory_required"]["min"] = max(workflow_result["memory_required"]["min"], int(memory_required))
+        workflow_result["memory_required"]["recommended"] = max(workflow_result["memory_required"]["recommended"], int(memory_required * 1.5))
         
+        # Mark as successfully analyzed
         workflow_result["is_analyzed"] = True
+        
         return workflow_result
 
     def analyze_all_workflows(self):
-        """Analyze all workflow files"""
-        workflow_files = self.find_workflow_files()
-        self.results["summary"]["total_workflows"] = len(workflow_files)
+        """
+        Analyze all workflow files in the specified directory.
         
-        for file_path in workflow_files:
-            workflow_result = self.analyze_workflow(file_path)
-            self.results["workflows"].append(workflow_result)
-            
-            if workflow_result["is_analyzed"]:
-                self.results["summary"]["analyzed_workflows"] += 1
-                
-                # Update aggregate statistics
-                for model_type, models in workflow_result["models"].items():
-                    for model in models:
-                        self.results["aggregate"]["models"][f"{model_type}: {model}"] += 1
-                
-                for node in workflow_result["custom_nodes"]:
-                    self.results["aggregate"]["custom_nodes"][node] += 1
-                
-                for package in workflow_result["python_packages"]:
-                    self.results["aggregate"]["python_packages"][package] += 1
-                
-                # Track memory requirements
-                memory_required = workflow_result["memory_required"]["min"]
-                memory_category = f"{memory_required:.1f}GB"
-                self.results["aggregate"]["memory_requirements"]["workflows_by_memory"][memory_category].append(workflow_result["filename"])
-                
-                # Update min/max memory stats
-                if self.results["aggregate"]["memory_requirements"]["min"] == 0 or memory_required < self.results["aggregate"]["memory_requirements"]["min"]:
-                    self.results["aggregate"]["memory_requirements"]["min"] = memory_required
-                
-                if memory_required > self.results["aggregate"]["memory_requirements"]["max"]:
-                    self.results["aggregate"]["memory_requirements"]["max"] = memory_required
-                
-            # Print progress
-            status = "✅ Analyzed" if workflow_result["is_analyzed"] else f"❌ Failed ({len(workflow_result['errors'])} errors)"
-            print(f"Analyzed {workflow_result['filename']}: {status}")
-
-        return self.results
-
-    def generate_markdown_report(self):
-        """Generate a markdown report of requirements analysis"""
-        report_path = os.path.join(self.output_dir, "workflow_requirements_report.md")
+        Returns:
+            dict: Analysis results for all workflows
+        """
+        workflow_files = []
         
-        with open(report_path, 'w', encoding='utf-8') as f:
-            f.write("# ComfyUI Workflow Requirements Report\n\n")
-            f.write(f"Generated on: {self.results['summary']['time']}\n\n")
-            
-            # Summary section
-            f.write("## Summary\n\n")
-            f.write(f"- Total workflows analyzed: {self.results['summary']['total_workflows']}\n")
-            f.write(f"- Successfully analyzed: {self.results['summary']['analyzed_workflows']}\n\n")
-            
-            # Aggregate statistics
-            f.write("## Aggregate Requirements\n\n")
-            
-            # Models statistics
-            f.write("### Models\n\n")
-            f.write("| Model | Workflows |\n")
-            f.write("|-------|----------|\n")
-            
-            # Sort by frequency (descending)
-            for model, count in sorted(self.results["aggregate"]["models"].items(), key=lambda x: x[1], reverse=True):
-                f.write(f"| {model} | {count} |\n")
-            
-            f.write("\n")
-            
-            # Custom nodes statistics
-            f.write("### Custom Nodes\n\n")
-            f.write("| Custom Node Extension | Workflows |\n")
-            f.write("|----------------------|----------|\n")
-            
-            for node, count in sorted(self.results["aggregate"]["custom_nodes"].items(), key=lambda x: x[1], reverse=True):
-                f.write(f"| {node} | {count} |\n")
-            
-            f.write("\n")
-            
-            # Python packages statistics
-            f.write("### Python Packages\n\n")
-            f.write("| Package | Workflows |\n")
-            f.write("|---------|----------|\n")
-            
-            for package, count in sorted(self.results["aggregate"]["python_packages"].items(), key=lambda x: x[1], reverse=True):
-                f.write(f"| {package} | {count} |\n")
-            
-            f.write("\n")
-            
-            # Memory requirements statistics
-            f.write("### Memory Requirements\n\n")
-            f.write(f"- Minimum memory required: {self.results['aggregate']['memory_requirements']['min']:.1f}GB\n")
-            f.write(f"- Maximum memory required: {self.results['aggregate']['memory_requirements']['max']:.1f}GB\n\n")
-            
-            f.write("| Memory Requirement | Workflows |\n")
-            f.write("|-------------------|----------|\n")
-            
-            # Sort memory categories
-            memory_categories = sorted(self.results["aggregate"]["memory_requirements"]["workflows_by_memory"].keys(), 
-                                     key=lambda x: float(x.replace("GB", "")))
-            
-            for category in memory_categories:
-                workflows = self.results["aggregate"]["memory_requirements"]["workflows_by_memory"][category]
-                f.write(f"| {category} | {len(workflows)} |\n")
-            
-            f.write("\n")
-            
-            # Individual workflow details
-            f.write("## Individual Workflow Requirements\n\n")
-            
-            for workflow in self.results["workflows"]:
-                f.write(f"### {workflow['filename']}\n\n")
-                
-                if not workflow["is_analyzed"]:
-                    f.write("❌ **Analysis failed**\n\n")
-                    for error in workflow["errors"]:
-                        f.write(f"- Error: {error}\n")
-                    f.write("\n")
-                    continue
-                
-                # Memory requirements
-                f.write("**Memory Requirements**:\n")
-                f.write(f"- Minimum: {workflow['memory_required']['min']}GB\n")
-                f.write(f"- Recommended: {workflow['memory_required']['recommended']}GB\n\n")
-                
-                # Models
-                f.write("**Required Models**:\n")
-                has_models = False
-                
-                for model_type, models in workflow["models"].items():
-                    if models:
-                        has_models = True
-                        type_name = model_type.replace("_", " ").title()
-                        f.write(f"- {type_name}: {', '.join(models)}\n")
-                
-                if not has_models:
-                    f.write("- No explicit model requirements found\n")
-                
-                f.write("\n")
-                
-                # Custom nodes
-                f.write("**Required Custom Nodes**:\n")
-                
-                if workflow["custom_nodes"]:
-                    for node in workflow["custom_nodes"]:
-                        f.write(f"- {node}\n")
-                else:
-                    f.write("- No custom nodes required\n")
-                
-                f.write("\n")
-                
-                # Python packages
-                f.write("**Required Python Packages**:\n")
-                
-                if workflow["python_packages"]:
-                    for package in workflow["python_packages"]:
-                        f.write(f"- {package}\n")
-                else:
-                    f.write("- No additional Python packages required\n")
-                
-                f.write("\n")
-            
-            # Recommendations
-            f.write("## Recommendations\n\n")
-            f.write("1. **Ensure Required Models Availability**: Pre-download the most commonly used models to avoid runtime downloads.\n")
-            f.write("2. **Install Custom Node Extensions**: The custom node extensions listed should be installed before running the workflows.\n")
-            f.write("3. **Install Python Dependencies**: Add required Python packages to your CI environment.\n")
-            f.write("4. **GPU Memory Considerations**: Ensure sufficient GPU memory is available for the workflows you plan to test.\n")
-            f.write("5. **Base Configuration**: Set up a baseline test environment that can run at least the simplest workflows.\n\n")
-            
-            f.write("---\n")
-            f.write("*This report was automatically generated by the CI workflow requirements analyzer.*\n")
+        # Find all JSON files in the workflows directory
+        for file_path in glob.glob(os.path.join(self.workflows_dir, "*.json")):
+            if os.path.isfile(file_path) and file_path.endswith('.json'):
+                workflow_files.append(file_path)
         
-        print(f"Report generated at {report_path}")
-        return report_path
-
-    def generate_json_report(self):
-        """Generate a JSON report of requirements analysis"""
-        report_path = os.path.join(self.output_dir, "workflow_requirements_results.json")
+        # Skip README.md and other non-workflow files
+        workflow_files = [f for f in workflow_files if os.path.basename(f).lower() != "readme.md"]
         
-        # Convert defaultdicts to regular dicts for JSON serialization
-        json_results = self.results.copy()
-        json_results["aggregate"]["models"] = dict(json_results["aggregate"]["models"])
-        json_results["aggregate"]["custom_nodes"] = dict(json_results["aggregate"]["custom_nodes"])
-        json_results["aggregate"]["python_packages"] = dict(json_results["aggregate"]["python_packages"])
-        json_results["aggregate"]["memory_requirements"]["workflows_by_memory"] = {
-            k: v for k, v in json_results["aggregate"]["memory_requirements"]["workflows_by_memory"].items()
+        # Initialize results
+        results = {
+            "summary": {
+                "total_workflows": len(workflow_files),
+                "analyzed_workflows": 0,
+                "failed_workflows": 0
+            },
+            "workflows": [],
+            "aggregate": {
+                "models": {},
+                "custom_nodes": {},
+                "python_packages": {},
+                "memory_requirements": {
+                    "min": 0,
+                    "max": 0,
+                    "workflows_by_memory": {}
+                }
+            }
         }
         
-        with open(report_path, 'w', encoding='utf-8') as f:
-            json.dump(json_results, f, indent=2)
-        
-        print(f"JSON results saved to {report_path}")
-        return report_path
-        
-    def generate_github_summary(self):
-        """Generate GitHub step summary with requirements analysis"""
-        if not os.environ.get('GITHUB_STEP_SUMMARY'):
-            return
-        
-        with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as f:
-            f.write("## ComfyUI Workflow Requirements Analysis\n\n")
-            
-            # Summary stats
-            f.write(f"✅ **Analyzed {self.results['summary']['analyzed_workflows']} of {self.results['summary']['total_workflows']} workflows**\n\n")
-            
-            # Top requirements
-            f.write("### Top Requirements\n\n")
-            
-            # Top models
-            f.write("**Most Common Models**:\n")
-            for model, count in sorted(self.results["aggregate"]["models"].items(), key=lambda x: x[1], reverse=True)[:5]:
-                f.write(f"- {model} ({count} workflows)\n")
-            f.write("\n")
-            
-            # Top custom nodes
-            if self.results["aggregate"]["custom_nodes"]:
-                f.write("**Most Common Custom Nodes**:\n")
-                for node, count in sorted(self.results["aggregate"]["custom_nodes"].items(), key=lambda x: x[1], reverse=True)[:5]:
-                    f.write(f"- {node} ({count} workflows)\n")
-                f.write("\n")
-            
-            # Memory summary
-            f.write("**Memory Requirements**:\n")
-            f.write(f"- Range: {self.results['aggregate']['memory_requirements']['min']:.1f}GB - {self.results['aggregate']['memory_requirements']['max']:.1f}GB\n")
-            
-            # Show distribution of memory requirements
-            if self.results["aggregate"]["memory_requirements"]["workflows_by_memory"]:
-                memory_categories = sorted(self.results["aggregate"]["memory_requirements"]["workflows_by_memory"].keys(), 
-                                         key=lambda x: float(x.replace("GB", "")))
-                memory_counts = [len(self.results["aggregate"]["memory_requirements"]["workflows_by_memory"][cat]) for cat in memory_categories]
-                
-                f.write("- Distribution:\n")
-                for i, category in enumerate(memory_categories):
-                    count = memory_counts[i]
-                    percent = 100 * count / self.results["summary"]["analyzed_workflows"]
-                    f.write(f"  - {category}: {count} workflows ({percent:.1f}%)\n")
-            
-            f.write("\nSee workflow requirements report artifact for details.\n")
-
-    def run(self):
-        """Run the workflow requirements analysis"""
+        # Analyze each workflow
         print(f"Analyzing ComfyUI workflows in {self.workflows_dir}...")
-        self.analyze_all_workflows()
-        self.generate_markdown_report()
-        self.generate_json_report()
-        self.generate_github_summary()
+        for workflow_file in sorted(workflow_files):
+            workflow_result = self.analyze_workflow(workflow_file)
+            results["workflows"].append(workflow_result)
+            
+            # Update summary
+            if workflow_result["is_analyzed"]:
+                results["summary"]["analyzed_workflows"] += 1
+                status = "✅ Analyzed"
+            else:
+                results["summary"]["failed_workflows"] += 1
+                status = f"❌ Failed ({len(workflow_result['errors'])} errors)"
+            
+            print(f"Analyzed {os.path.basename(workflow_file)}: {status}")
         
-        # Return the number of workflows successfully analyzed
-        return self.results["summary"]["analyzed_workflows"]
+        # Aggregate results
+        for workflow in results["workflows"]:
+            if not workflow["is_analyzed"]:
+                continue
+                
+            # Aggregate models
+            for model_type, models in workflow["models"].items():
+                for model in models:
+                    if model_type not in results["aggregate"]["models"]:
+                        results["aggregate"]["models"][model_type] = {}
+                    
+                    if model not in results["aggregate"]["models"][model_type]:
+                        results["aggregate"]["models"][model_type][model] = []
+                    
+                    results["aggregate"]["models"][model_type][model].append(workflow["filename"])
+            
+            # Aggregate custom nodes
+            for node in workflow["custom_nodes"]:
+                if node not in results["aggregate"]["custom_nodes"]:
+                    results["aggregate"]["custom_nodes"][node] = []
+                
+                results["aggregate"]["custom_nodes"][node].append(workflow["filename"])
+            
+            # Aggregate Python packages
+            for package in workflow["python_packages"]:
+                if package not in results["aggregate"]["python_packages"]:
+                    results["aggregate"]["python_packages"][package] = []
+                
+                results["aggregate"]["python_packages"][package].append(workflow["filename"])
+            
+            # Aggregate memory requirements
+            min_memory = workflow["memory_required"]["min"]
+            results["aggregate"]["memory_requirements"]["min"] = min(
+                results["aggregate"]["memory_requirements"]["min"] or min_memory,
+                min_memory
+            )
+            results["aggregate"]["memory_requirements"]["max"] = max(
+                results["aggregate"]["memory_requirements"]["max"],
+                workflow["memory_required"]["recommended"]
+            )
+            
+            memory_key = f"{min_memory}GB"
+            if memory_key not in results["aggregate"]["memory_requirements"]["workflows_by_memory"]:
+                results["aggregate"]["memory_requirements"]["workflows_by_memory"][memory_key] = []
+            
+            results["aggregate"]["memory_requirements"]["workflows_by_memory"][memory_key].append(workflow["filename"])
+        
+        return results
+
+    def generate_markdown_report(self, results):
+        """
+        Generate a markdown report from the analysis results.
+        
+        Args:
+            results (dict): Analysis results
+            
+        Returns:
+            str: Markdown report
+        """
+        report = []
+        
+        # Header
+        report.append("# ComfyUI Workflow Requirements Report\n")
+        report.append(f"Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+        
+        # Summary
+        report.append("## Summary\n")
+        report.append(f"- Total workflows analyzed: {results['summary']['total_workflows']}")
+        report.append(f"- Successfully analyzed: {results['summary']['analyzed_workflows']}\n")
+        
+        # Aggregate Requirements
+        report.append("## Aggregate Requirements\n")
+        
+        # Models
+        report.append("### Models\n")
+        report.append("| Model | Workflows |")
+        report.append("|-------|----------|")
+        
+        for model_type, models in results["aggregate"]["models"].items():
+            for model, workflows in models.items():
+                report.append(f"| {model} ({model_type}) | {', '.join(workflows)} |")
+        
+        report.append("")
+        
+        # Custom Nodes
+        report.append("### Custom Nodes\n")
+        report.append("| Custom Node Extension | Workflows |")
+        report.append("|----------------------|----------|")
+        
+        for node, workflows in results["aggregate"]["custom_nodes"].items():
+            report.append(f"| {node} | {', '.join(workflows)} |")
+        
+        report.append("")
+        
+        # Python Packages
+        report.append("### Python Packages\n")
+        report.append("| Package | Workflows |")
+        report.append("|---------|----------|")
+        
+        for package, workflows in results["aggregate"]["python_packages"].items():
+            report.append(f"| {package} | {', '.join(workflows)} |")
+        
+        report.append("")
+        
+        # Memory Requirements
+        report.append("### Memory Requirements\n")
+        
+        min_memory = results["aggregate"]["memory_requirements"]["min"]
+        max_memory = results["aggregate"]["memory_requirements"]["max"]
+        
+        report.append(f"- Minimum memory required: {min_memory/1024:.1f}GB")
+        report.append(f"- Maximum memory required: {max_memory/1024:.1f}GB\n")
+        
+        report.append("| Memory Requirement | Workflows |")
+        report.append("|-------------------|----------|")
+        
+        for memory, workflows in results["aggregate"]["memory_requirements"]["workflows_by_memory"].items():
+            report.append(f"| {memory} | {', '.join(workflows)} |")
+        
+        report.append("")
+        
+        # Individual Workflow Requirements
+        report.append("## Individual Workflow Requirements\n")
+        
+        for workflow in results["workflows"]:
+            report.append(f"### {workflow['filename']}\n")
+            
+            if workflow["is_analyzed"]:
+                report.append("✅ **Successfully analyzed**\n")
+                
+                # Models
+                if any(workflow["models"].values()):
+                    report.append("**Required Models:**\n")
+                    for model_type, models in workflow["models"].items():
+                        if models:
+                            report.append(f"- {model_type.capitalize()}: {', '.join(models)}")
+                    report.append("")
+                
+                # Custom Nodes
+                if workflow["custom_nodes"]:
+                    report.append("**Required Custom Nodes:**\n")
+                    for node in workflow["custom_nodes"]:
+                        report.append(f"- {node}")
+                    report.append("")
+                
+                # Python Packages
+                if workflow["python_packages"]:
+                    report.append("**Required Python Packages:**\n")
+                    for package in workflow["python_packages"]:
+                        report.append(f"- {package}")
+                    report.append("")
+                
+                # Memory Requirements
+                report.append("**Memory Requirements:**\n")
+                report.append(f"- Minimum: {workflow['memory_required']['min']}GB")
+                report.append(f"- Recommended: {workflow['memory_required']['recommended']}GB")
+                report.append("")
+            else:
+                report.append("❌ **Analysis failed**\n")
+                for error in workflow["errors"]:
+                    report.append(f"- Error: {error}")
+                report.append("")
+        
+        return "\n".join(report)
+
+    def save_results(self, results):
+        """
+        Save analysis results to output files.
+        
+        Args:
+            results (dict): Analysis results
+        """
+        # Save JSON results
+        json_output_path = os.path.join(self.output_dir, "workflow_requirements_results.json")
+        with open(json_output_path, 'w', encoding='utf-8') as f:
+            json.dump(results, f, indent=2)
+        
+        # Generate and save markdown report
+        markdown_report = self.generate_markdown_report(results)
+        markdown_output_path = os.path.join(self.output_dir, "workflow_requirements_report.md")
+        with open(markdown_output_path, 'w', encoding='utf-8') as f:
+            f.write(markdown_report)
+        
+        print(f"Report generated at {markdown_output_path}")
+        print(f"JSON results saved to {json_output_path}")
 
 
 def main():
     parser = argparse.ArgumentParser(description="Analyze ComfyUI workflow requirements")
-    parser.add_argument("--workflows-dir", default="WebUI/external/workflows", help="Directory containing workflow files")
-    parser.add_argument("--output-dir", default="ci_artifacts/workflow_requirements", help="Directory to store analysis results")
+    parser.add_argument("--workflows-dir", help="Directory containing workflow JSON files")
+    parser.add_argument("--output-dir", default="workflow_requirements_output", help="Output directory for reports")
+    
     args = parser.parse_args()
     
-    analyzer = WorkflowRequirementsAnalyzer(
-        workflows_dir=args.workflows_dir,
-        output_dir=args.output_dir
-    )
-    
-    analyzed_count = analyzer.run()
-    
-    # Return success if at least one workflow was analyzed
-    sys.exit(0 if analyzed_count > 0 else 1)
+    analyzer = WorkflowRequirementsAnalyzer(args.workflows_dir, args.output_dir)
+    results = analyzer.analyze_all_workflows()
+    analyzer.save_results(results)
 
 
 if __name__ == "__main__":

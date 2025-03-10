@@ -1,8 +1,8 @@
 {
   "summary": {
     "total_workflows": 8,
-    "analyzed_workflows": 1,
-    "time": "2025-03-10 04:19:18"
+    "analyzed_workflows": 8,
+    "failed_workflows": 0
   },
   "workflows": [
     {
@@ -23,8 +23,8 @@
       "custom_nodes": [],
       "python_packages": [],
       "memory_required": {
-        "min": 6.0,
-        "recommended": 9.0
+        "min": 7,
+        "recommended": 10
       },
       "is_analyzed": true,
       "errors": []
@@ -44,24 +44,32 @@
         "ip_adapter": [],
         "flux_checkpoint": []
       },
-      "custom_nodes": [],
-      "python_packages": [],
+      "custom_nodes": [
+        "comfyui-face-swap"
+      ],
+      "python_packages": [
+        "opencv-python",
+        "insightface",
+        "onnxruntime-gpu"
+      ],
       "memory_required": {
-        "min": 4,
-        "recommended": 8
+        "min": 7,
+        "recommended": 10
       },
-      "is_analyzed": false,
-      "errors": [
-        "Workflow does not have required nodes structure"
-      ]
+      "is_analyzed": true,
+      "errors": []
     },
     {
       "filename": "FaceSwapHD.json",
       "path": "WebUI/external/workflows\\FaceSwapHD.json",
       "models": {
         "checkpoint": [],
-        "vae": [],
-        "lora": [],
+        "vae": [
+          "RunDiffusion---Juggernaut-XL-v9\\vae\\diffusion_pytorch_model.fp16.safetensors"
+        ],
+        "lora": [
+          "latent-consistency---lcm-lora-sdxl\\pytorch_lora_weights.safetensors"
+        ],
         "controlnet": [],
         "clip_vision": [],
         "unet": [],
@@ -70,77 +78,35 @@
         "ip_adapter": [],
         "flux_checkpoint": []
       },
-      "custom_nodes": [],
-      "python_packages": [],
+      "custom_nodes": [
+        "comfyui-face-swap"
+      ],
+      "python_packages": [
+        "opencv-python",
+        "insightface",
+        "onnxruntime-gpu"
+      ],
       "memory_required": {
-        "min": 4,
-        "recommended": 8
+        "min": 7,
+        "recommended": 10
       },
-      "is_analyzed": false,
-      "errors": [
-        "Workflow does not have required nodes structure"
-      ]
-    },
-    {
-      "filename": "fluxQ4.json",
-      "path": "WebUI/external/workflows\\fluxQ4.json",
-      "models": {
-        "checkpoint": [],
-        "vae": [],
-        "lora": [],
-        "controlnet": [],
-        "clip_vision": [],
-        "unet": [],
-        "upscaler": [],
-        "style_model": [],
-        "ip_adapter": [],
-        "flux_checkpoint": []
-      },
-      "custom_nodes": [],
-      "python_packages": [],
-      "memory_required": {
-        "min": 4,
-        "recommended": 8
-      },
-      "is_analyzed": false,
-      "errors": [
-        "Workflow does not have required nodes structure"
-      ]
-    },
-    {
-      "filename": "fluxQ8.json",
-      "path": "WebUI/external/workflows\\fluxQ8.json",
-      "models": {
-        "checkpoint": [],
-        "vae": [],
-        "lora": [],
-        "controlnet": [],
-        "clip_vision": [],
-        "unet": [],
-        "upscaler": [],
-        "style_model": [],
-        "ip_adapter": [],
-        "flux_checkpoint": []
-      },
-      "custom_nodes": [],
-      "python_packages": [],
-      "memory_required": {
-        "min": 4,
-        "recommended": 8
-      },
-      "is_analyzed": false,
-      "errors": [
-        "Workflow does not have required nodes structure"
-      ]
+      "is_analyzed": true,
+      "errors": []
     },
     {
       "filename": "Line2ImageHD-Fast.json",
       "path": "WebUI/external/workflows\\Line2ImageHD-Fast.json",
       "models": {
         "checkpoint": [],
-        "vae": [],
-        "lora": [],
-        "controlnet": [],
+        "vae": [
+          "RunDiffusion---Juggernaut-XL-v9\\vae\\diffusion_pytorch_model.fp16.safetensors"
+        ],
+        "lora": [
+          "latent-consistency---lcm-lora-sdxl\\pytorch_lora_weights.safetensors"
+        ],
+        "controlnet": [
+          "stabilityai---control-lora\\control-LoRAs-rank128\\control-lora-canny-rank128.safetensors"
+        ],
         "clip_vision": [],
         "unet": [],
         "upscaler": [],
@@ -151,22 +117,24 @@
       "custom_nodes": [],
       "python_packages": [],
       "memory_required": {
-        "min": 4,
-        "recommended": 8
+        "min": 8,
+        "recommended": 12
       },
-      "is_analyzed": false,
-      "errors": [
-        "Workflow does not have required nodes structure"
-      ]
+      "is_analyzed": true,
+      "errors": []
     },
     {
       "filename": "Line2ImageHD-Quality.json",
       "path": "WebUI/external/workflows\\Line2ImageHD-Quality.json",
       "models": {
         "checkpoint": [],
-        "vae": [],
+        "vae": [
+          "RunDiffusion---Juggernaut-XL-v9\\vae\\diffusion_pytorch_model.fp16.safetensors"
+        ],
         "lora": [],
-        "controlnet": [],
+        "controlnet": [
+          "stabilityai---control-lora\\control-LoRAs-rank128\\control-lora-canny-rank128.safetensors"
+        ],
         "clip_vision": [],
         "unet": [],
         "upscaler": [],
@@ -177,13 +145,11 @@
       "custom_nodes": [],
       "python_packages": [],
       "memory_required": {
-        "min": 4,
-        "recommended": 8
+        "min": 8,
+        "recommended": 12
       },
-      "is_analyzed": false,
-      "errors": [
-        "Workflow does not have required nodes structure"
-      ]
+      "is_analyzed": true,
+      "errors": []
     },
     {
       "filename": "Video.json",
@@ -203,25 +169,126 @@
       "custom_nodes": [],
       "python_packages": [],
       "memory_required": {
-        "min": 4,
-        "recommended": 8
+        "min": 7,
+        "recommended": 10
       },
-      "is_analyzed": false,
-      "errors": [
-        "Workflow does not have required nodes structure"
-      ]
+      "is_analyzed": true,
+      "errors": []
+    },
+    {
+      "filename": "fluxQ4.json",
+      "path": "WebUI/external/workflows\\fluxQ4.json",
+      "models": {
+        "checkpoint": [],
+        "vae": [
+          "black-forest-labs---FLUX.1-schnell\\ae.safetensors"
+        ],
+        "lora": [],
+        "controlnet": [],
+        "clip_vision": [],
+        "unet": [],
+        "upscaler": [],
+        "style_model": [],
+        "ip_adapter": [],
+        "flux_checkpoint": []
+      },
+      "custom_nodes": [],
+      "python_packages": [],
+      "memory_required": {
+        "min": 7,
+        "recommended": 10
+      },
+      "is_analyzed": true,
+      "errors": []
+    },
+    {
+      "filename": "fluxQ8.json",
+      "path": "WebUI/external/workflows\\fluxQ8.json",
+      "models": {
+        "checkpoint": [],
+        "vae": [
+          "black-forest-labs---FLUX.1-schnell\\ae.safetensors"
+        ],
+        "lora": [],
+        "controlnet": [],
+        "clip_vision": [],
+        "unet": [],
+        "upscaler": [],
+        "style_model": [],
+        "ip_adapter": [],
+        "flux_checkpoint": []
+      },
+      "custom_nodes": [],
+      "python_packages": [],
+      "memory_required": {
+        "min": 7,
+        "recommended": 10
+      },
+      "is_analyzed": true,
+      "errors": []
     }
   ],
   "aggregate": {
-    "models": {},
-    "custom_nodes": {},
-    "python_packages": {},
+    "models": {
+      "vae": {
+        "RunDiffusion---Juggernaut-XL-v9\\vae\\diffusion_pytorch_model.fp16.safetensors": [
+          "FaceSwapHD.json",
+          "Line2ImageHD-Fast.json",
+          "Line2ImageHD-Quality.json"
+        ],
+        "black-forest-labs---FLUX.1-schnell\\ae.safetensors": [
+          "fluxQ4.json",
+          "fluxQ8.json"
+        ]
+      },
+      "lora": {
+        "latent-consistency---lcm-lora-sdxl\\pytorch_lora_weights.safetensors": [
+          "FaceSwapHD.json",
+          "Line2ImageHD-Fast.json"
+        ]
+      },
+      "controlnet": {
+        "stabilityai---control-lora\\control-LoRAs-rank128\\control-lora-canny-rank128.safetensors": [
+          "Line2ImageHD-Fast.json",
+          "Line2ImageHD-Quality.json"
+        ]
+      }
+    },
+    "custom_nodes": {
+      "comfyui-face-swap": [
+        "CopyFace.json",
+        "FaceSwapHD.json"
+      ]
+    },
+    "python_packages": {
+      "opencv-python": [
+        "CopyFace.json",
+        "FaceSwapHD.json"
+      ],
+      "insightface": [
+        "CopyFace.json",
+        "FaceSwapHD.json"
+      ],
+      "onnxruntime-gpu": [
+        "CopyFace.json",
+        "FaceSwapHD.json"
+      ]
+    },
     "memory_requirements": {
-      "min": 6.0,
-      "max": 6.0,
+      "min": 7,
+      "max": 12,
       "workflows_by_memory": {
-        "6.0GB": [
-          "Colorize.json"
+        "7GB": [
+          "Colorize.json",
+          "CopyFace.json",
+          "FaceSwapHD.json",
+          "Video.json",
+          "fluxQ4.json",
+          "fluxQ8.json"
+        ],
+        "8GB": [
+          "Line2ImageHD-Fast.json",
+          "Line2ImageHD-Quality.json"
         ]
       }
     }

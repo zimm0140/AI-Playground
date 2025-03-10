@@ -31,6 +31,15 @@ def validate_workflow(workflow_file, schema):
         with open(workflow_file, 'r', encoding='utf-8') as f:
             workflow = json.load(f)
         
+        # Handle both workflow formats (nodes at top level or in comfyUiApiWorkflow)
+        # This is just for logging purposes, the actual validation is done by jsonschema
+        if "nodes" in workflow:
+            print(f"Validating {os.path.basename(workflow_file)} (top-level nodes format)")
+        elif "comfyUiApiWorkflow" in workflow and "nodes" in workflow["comfyUiApiWorkflow"]:
+            print(f"Validating {os.path.basename(workflow_file)} (comfyUiApiWorkflow format)")
+        else:
+            print(f"Warning: {os.path.basename(workflow_file)} does not contain nodes in either format")
+        
         jsonschema.validate(instance=workflow, schema=schema)
         return True, None
     except json.JSONDecodeError as e:

@@ -87,10 +87,10 @@ class ComfyWorkflowValidator:
             "issues": []
         }
 
-        # Try to parse the JSON
+        # Validate workflow structure
         try:
-            with open(file_path, 'r', encoding='utf-8') as f:
-                workflow = json.load(f)
+            with open(file_path, 'r', encoding='utf-8') as file:
+                workflow = json.load(file)
         except json.JSONDecodeError as e:
             file_result["issues"].append({
                 "type": "json_error",
@@ -104,24 +104,25 @@ class ComfyWorkflowValidator:
             })
             return file_result
 
-        # Check if the workflow has the expected structure
-        if not isinstance(workflow, dict):
+        # Get nodes from either workflow format
+        nodes = None
+        if "nodes" in workflow and isinstance(workflow["nodes"], dict):
+            nodes = workflow["nodes"]
+        elif ("comfyUiApiWorkflow" in workflow and 
+              isinstance(workflow["comfyUiApiWorkflow"], dict) and 
+              "nodes" in workflow["comfyUiApiWorkflow"] and
+              isinstance(workflow["comfyUiApiWorkflow"]["nodes"], dict)):
+            nodes = workflow["comfyUiApiWorkflow"]["nodes"]
+            
+        if nodes is None:
             file_result["issues"].append({
                 "type": "structure_error",
-                "message": "Workflow is not a dictionary object"
-            })
-            return file_result
-
-        # Check for the presence of nodes
-        if "nodes" not in workflow:
-            file_result["issues"].append({
-                "type": "structure_error",
-                "message": "Workflow does not contain 'nodes' key"
+                "message": "No valid nodes structure found. Expected either top-level 'nodes' or 'comfyUiApiWorkflow.nodes'"
             })
             return file_result
 
         # Check if nodes is a dictionary
-        if not isinstance(workflow["nodes"], dict):
+        if not isinstance(nodes, dict):
             file_result["issues"].append({
                 "type": "structure_error",
                 "message": "'nodes' is not a dictionary object"
@@ -129,7 +130,7 @@ class ComfyWorkflowValidator:
             return file_result
 
         # Check for empty nodes
-        if not workflow["nodes"]:
+        if not nodes:
             file_result["issues"].append({
                 "type": "content_warning",
                 "message": "Workflow contains no nodes"
@@ -140,7 +141,7 @@ class ComfyWorkflowValidator:
         node_types = {}
         unknown_node_types = set()
 
-        for node_id, node_data in workflow["nodes"].items():
+        for node_id, node_data in nodes.items():
             node_ids.add(node_id)
             
             # Check if node has a type
