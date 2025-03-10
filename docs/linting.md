@@ -13,6 +13,7 @@ The project uses [Ruff](https://github.com/astral-sh/ruff) for Python code linti
 ruff check --select=E,F --ignore=E501 --extend-exclude=.git,.github,.venv,venv,__pycache__,build,dist --line-length=100 ./service
 
 ```text
+
 ### Key Rules
 
 - **E**: Style errors (from pycodestyle)
@@ -34,6 +35,7 @@ ruff check --select=E,F --ignore=E501 --extend-exclude=.git,.github,.venv,venv,_
 ```text
    python .github/workflows/scripts/fix_ruff_issues_local.py
    ```text
+
 ### Manual Linting
 
 To run Ruff manually:
@@ -53,6 +55,7 @@ ruff check --select=E,F --ignore=E501 --line-length=100 ./service
 ruff check --select=E,F --ignore=E501 --line-length=100 --fix ./service
 
 ```text
+
 ## Common Issues and Fixes
 
 ### Unused Imports (F401)
@@ -69,6 +72,7 @@ import os  # Unused import
 import os  # noqa: F401
 
 ```text
+
 ### Missing Whitespace (E2xx)
 
 Missing spaces around operators or after commas:
@@ -87,6 +91,7 @@ x = 1 + 2  # Correct spacing
 def func(a, b):  # Space after comma
 
 ```text
+
 ## CI Integration
 
 The project's CI system uses GitHub Actions to run Ruff on all Python files. The configuration is maintained in the `.github/workflows/ruff-integration.yml` file.

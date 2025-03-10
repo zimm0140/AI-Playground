@@ -57,6 +57,7 @@ pip install pre-commit
 pre-commit install
 
 ```text
+
 ## Troubleshooting Common Issues
 
 ### Markdown Linting

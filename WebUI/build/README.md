@@ -9,6 +9,7 @@
 
 ```text
    conda create -n cp311_libuv python=3.11 libuv -y
+
 ## copy the path to this conda env
 
    conda env list | findstr cp311_libuv
@@ -26,6 +27,7 @@ npm run prepare-build
 npm run build
 
 ```text
+
 ### offline installer
 
 **FIXME: offline scripts are missing**

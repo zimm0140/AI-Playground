@@ -27,7 +27,7 @@
 - Go to the Workflows folder under AI Playground/resources
 - Select an existing workflow and make a copy of it
 - Change the name of the workflow keeping the .json at the end
-- Open the workflow in a text or code editor and edit the workflow name and other tags for your new workflow needs. Follow the above guide for editing the workflow for your new 
+- Open the workflow in a text or code editor and edit the workflow name and other tags for your new workflow needs. Follow the above guide for editing the workflow for your new
 workflow
 - In AI Playground, refresh the list of workflows to see your workflow in the list - See first row in table above
 - Follow the next steps to edit the "comfyUiApiWorkflow" section
@@ -40,7 +40,7 @@ workflow
   - Select all and copy
   - Open the AI PLayground JSON file and paste that after the colon of the "comfyUiApiWorkflow" tag. There will be one additional backet “}” at the end of what was pasted.
 
-- **Edit Clip Nodes**: To connect the Prompt or Negative Prompt fields of AI Playground into the respective Clip nodes you’ll need to edit the positive and negative clips as 
+- **Edit Clip Nodes**: To connect the Prompt or Negative Prompt fields of AI Playground into the respective Clip nodes you’ll need to edit the positive and negative clips as
 follows.  Clip nodes are usuall numbered 6 and 7 and will have the class type "CLIPTextEncode",
   - Edit the clip node used for the positive prompt <br>"_meta": {"title": "CLIP Text Encode (Prompt)" } <br>To<br> "_meta": {"title": "prompt" }
   - Edit the clip node used for the negative  prompt <br>"_meta": {"title": "CLIP Text Encode (Prompt)" } <br>To<br> "_meta": {"title": "negativePrompt" }
@@ -72,7 +72,7 @@ follows.  Clip nodes are usuall numbered 6 and 7 and will have the class type "C
   }
 
 ```text
-  **Example Explanation:** the batch\_Size field determines how many images will be generated at the same time. In AI Playground this value is set to “1” by default. The code 
+  **Example Explanation:** the batch\_Size field determines how many images will be generated at the same time. In AI Playground this value is set to “1” by default. The code
 above adds a number slider to the settings menu with an input range from 1 to 4\. In the example image below, the batch\_size is set to 2 with a image generation number of 4, generating 8 total images.
 
 ```text
