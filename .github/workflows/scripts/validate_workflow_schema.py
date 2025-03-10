@@ -110,7 +110,7 @@ def validate_all_workflows(workflows_dir, schema_file, output_file):
         json.dump(report, f, indent=2)
     
     # Print summary to console
-    print(f"\nWorkflow Schema Validation Summary:")
+    print("\nWorkflow Schema Validation Summary:")
     print(f"Total workflows: {len(workflow_files)}")
     print(f"Valid workflows: {valid_count}")
     print(f"Invalid workflows: {invalid_count}")
