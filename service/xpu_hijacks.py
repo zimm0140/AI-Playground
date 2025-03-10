@@ -24,13 +24,13 @@ from functools import wraps
 from contextlib import nullcontext
 import torch
 import importlib.util
+import numpy as np
 
 spec = importlib.util.find_spec("intel_extension_for_pytorch")
 if spec is not None:
     import intel_extension_for_pytorch as ipex  # pylint: disable=import-error, unused-import
 else:
     ipex = None
-import numpy as np
 
 
 # =================== GLOBAL VARIABLES AND INITIALIZATION ===================
