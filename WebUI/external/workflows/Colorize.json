@@ -11,6 +11,34 @@
     {
       "nodeTitle": "DDColor_Colorize",
       "nodeInput": "checkpoint",
+      "type": "array",
+      "label": "checkpoint model",
+      "options": [
+        "ddcolor_paper_tiny.pth",
+        "ddcolor_paper.pth",
+        "ddcolor_modelscope.pth",
+        "ddcolor_artistic.pth"
+      ],
+      "defaultValue": "ddcolor_artistic.pth"
+    },
+    {
+      "nodeTitle": "Load Image",
+      "nodeInput": "image",
+      "type": "image",
+      "label": "Reference Image",
+{
+  "name": "Colorize",
+  "backend": "comfyui",
+  "comfyUIRequirements": {
+    "customNodes": ["kijai/ComfyUI-DDColor@30d5b8e7666382a6a78404caee28dfa87f741037"],
+    "requiredModels": []
+  },
+  "tags": [],
+  "requirements": ["high-vram"],
+  "inputs": [
+    {
+      "nodeTitle": "DDColor_Colorize",
+      "nodeInput": "checkpoint",
       "type": "stringList",
       "label": "checkpoint model",
       "options": [
