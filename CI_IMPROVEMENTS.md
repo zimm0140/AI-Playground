@@ -66,13 +66,13 @@ The updated CI workflow now follows this structure:
 ├── WORKFLOW.md             # Workflow documentation
 
 └── scripts/
-```
 
+```text
 ├── README.md           # Scripts documentation
-```
 
-```
+```text
 
+```text
 ├── analyze_test_coverage.sh
 ├── catalog_hardware.sh
 ├── check_code_quality.sh
@@ -86,9 +86,10 @@ The updated CI workflow now follows this structure:
 ├── generate_summary.sh
 ├── scan_dependencies.sh
 └── verify_environment.sh
-```
-```
 
+```text
+
+```text
 ## Future Recommendations
 
 Potential future improvements for the CI workflow:

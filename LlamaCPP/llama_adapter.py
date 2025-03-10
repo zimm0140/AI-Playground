@@ -246,8 +246,8 @@ class LLM_SSE_Adapter:
             full_prompt = convert_prompt(prompt)
             # Note: The abstract interface defines only the 'messages' parameter, but implementations
             # like LlamaCpp also have a 'max_tokens' parameter. This inconsistency causes type errors.
-            # pyright: ignore
-            stream = self.llm_interface.create_chat_completion(
+            # Using type: ignore disables type checking for this line
+            stream = self.llm_interface.create_chat_completion(  # type: ignore
                 full_prompt, params.max_tokens
             )
             self.stream_function(stream)
@@ -341,13 +341,18 @@ def process_rag(
     Returns:
         Augmented prompt with retrieved context
     """
-    import rag
+    # Using try/except block to handle potential import error
+    try:
+        import rag  # type: ignore
 
-    rag.to(device)
-    query_success, context, rag_source = rag.query(prompt)
-    if query_success:
-        print("rag query input\r\n{}output:\r\n{}".format(prompt, context))
-        prompt = RAG_PROMPT_FORMAT.format(prompt=prompt, context=context)
-        if text_out_callback is not None:
-            text_out_callback(rag_source, 2)
-    return prompt
+        rag.to(device)
+        query_success, context, rag_source = rag.query(prompt)
+        if query_success:
+            print("rag query input\r\n{}output:\r\n{}".format(prompt, context))
+            prompt = RAG_PROMPT_FORMAT.format(prompt=prompt, context=context)
+            if text_out_callback is not None:
+                text_out_callback(rag_source, 2)
+        return prompt
+    except ImportError:
+        print("Warning: RAG module couldn't be imported, returning original prompt")
+        return prompt

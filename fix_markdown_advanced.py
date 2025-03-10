@@ -9,6 +9,7 @@ with special handling for:
 3. Line length issues (MD013)
 4. Tables not surrounded by blank lines (MD058)
 5. List marker spacing (MD030)
+6. Code block formatting (MD031, MD040)
 
 Usage:
     python fix_markdown_advanced.py [directory_or_file]
@@ -91,11 +92,19 @@ def fix_list_marker_spacing(content: str) -> str:
     return content
 
 def fix_code_blocks(content: str) -> str:
-    """Ensure code blocks use consistent style (MD046, MD048)."""
+    """Ensure code blocks use consistent style (MD046, MD048, MD040, MD031)."""
     # Convert indented code blocks to fenced code blocks
     content = re.sub(r'(?<!\n\n)(?<!\n```)\n(( {4,}|\t).*\n)+', 
-                     lambda m: f"\n```\n{re.sub(r'^ {4}', '', m.group(0), flags=re.MULTILINE)}```\n", 
-                     content)
+                    lambda m: f"\n```\n{re.sub(r'^ {4}', '', m.group(0), flags=re.MULTILINE)}```\n", 
+                    content)
+    
+    # Add language to code blocks that don't have one (MD040)
+    content = re.sub(r'```\s*\n', '```text\n', content)
+    
+    # Ensure blank lines around fenced code blocks (MD031)
+    content = re.sub(r'([^\n])\n```', r'\1\n\n```', content)
+    content = re.sub(r'```\n([^\n])', r'```\n\n\1', content)
+    
     return content
 
 def fix_table_spacing(content: str) -> str:
@@ -116,6 +125,62 @@ def fix_bare_urls(content: str) -> str:
     url_pattern = r'(?<!\]\()(?<!\<)(https?://[^\s<>]+)(?!\>)'
     return re.sub(url_pattern, r'<\1>', content)
 
+def fix_long_lines(content: str, max_length: int = 180) -> str:
+    """Attempt to fix lines that exceed maximum length (MD013)."""
+    lines = content.splitlines()
+    result = []
+    
+    for line in lines:
+        if len(line) > max_length:
+            # Don't break code blocks or URLs
+            if '```' in line or '|' in line[:10] or '[' in line[:10] or '![' in line[:10]:
+                result.append(line)
+                continue
+                
+            # Find a good place to break the line
+            break_points = [
+                line.rfind(' ', max_length // 2, max_length),
+                line.rfind(',', max_length // 2, max_length),
+                line.rfind(';', max_length // 2, max_length),
+                line.rfind(':', max_length // 2, max_length),
+                line.rfind('.', max_length // 2, max_length),
+            ]
+            
+            # Filter out -1 values (not found)
+            valid_break_points = [p for p in break_points if p != -1]
+            
+            if valid_break_points:
+                # Use the rightmost valid break point
+                break_point = max(valid_break_points)
+                result.append(line[:break_point+1])
+                result.append(line[break_point+1:].lstrip())
+            else:
+                # No good break point found, keep the line as is
+                result.append(line)
+        else:
+            result.append(line)
+    
+    return '\n'.join(result)
+
+def fix_multiple_top_headings(content: str) -> str:
+    """Fix multiple top-level headings in the same document (MD025)."""
+    lines = content.splitlines()
+    result = []
+    
+    found_first_h1 = False
+    for line in lines:
+        if line.strip().startswith('# '):
+            if found_first_h1:
+                # Convert subsequent h1 to h2
+                result.append(f"## {line.strip()[2:]}")
+            else:
+                found_first_h1 = True
+                result.append(line)
+        else:
+            result.append(line)
+    
+    return '\n'.join(result)
+
 def fix_markdown_file(file_path: str) -> bool:
     """Apply all fixes to a markdown file."""
     try:
@@ -134,6 +199,8 @@ def fix_markdown_file(file_path: str) -> bool:
         content = fix_table_spacing(content)
         content = fix_code_blocks(content)
         content = fix_bare_urls(content)
+        content = fix_long_lines(content)
+        content = fix_multiple_top_headings(content)
         content = ensure_trailing_newline(content)
         
         # Write changes if needed
@@ -179,11 +246,10 @@ def main():
     print(f"\n✅ Fixed issues in {fixed_count} files")
     
     print("""
-Note: Some markdown issues may require manual fixing:
-1. MD013/line-length: Lines exceeding 180 characters (consider breaking these manually)
-2. MD025/single-title: Multiple top-level headings in the same document
-3. MD033/no-inline-html: Replace HTML with Markdown syntax where possible
-4. Check markdown files with a markdown linter after running this script
+Note: Some markdown issues may still require manual fixing:
+1. Complex line length issues that couldn't be automatically broken
+2. HTML in markdown files (MD033) - consider using markdown syntax instead
+3. Check markdown files with a markdown linter after running this script
 """)
 
 if __name__ == "__main__":

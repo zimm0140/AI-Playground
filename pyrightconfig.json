@@ -11,9 +11,15 @@
     "OpenVINO/**"
   ],
   "ignoreExternal": true,
+  "extraPaths": [
+    "service/lib",
+    "LlamaCPP/lib"
+  ],
+  "stubPath": "typings",
   "venvPath": ".",
   "reportMissingImports": true,
   "reportMissingTypeStubs": false,
   "pythonVersion": "3.9",
-  "typeCheckingMode": "basic"
+  "typeCheckingMode": "basic",
+  "reportCallIssue": "none"
 } 

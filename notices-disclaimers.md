@@ -1,12 +1,15 @@
-AI Playground is licensed under the MIT (<https://github.com/intel/AI-Playground/blob/main/LICENSE).> The software may include third party components with separate legal notices or governed by other agreements, as may be described in the Third Party Notices file accompanying the software (<https://github.com/intel/AI-Playground/blob/main/3rdpartynoticeslicenses.txt).>
+AI Playground is licensed under the MIT (<https://github.com/intel/AI-Playground/blob/main/LICENSE).> The software may include third party components with separate legal notices 
+or governed by other agreements, as may be described in the Third Party Notices file accompanying the software (<https://github.com/intel/AI-Playground/blob/main/3rdpartynoticeslicenses.txt).>
 
 ## Important AI Playground Notices and Disclaimers
 
-Intel technologies may require enabled hardware, software or service activation. No product or component can be absolutely secure. Your costs and results may vary. Intel does not control or audit third-party data.  You should consult other sources to evaluate accuracy. Intel is committed to respecting human rights and avoiding causing or contributing to adverse impacts on human rights. See Intel’s Global Human Rights Principles (<https://www.intel.com/content/www/us/en/policy/policy-human-rights.html).> Intel’s products and software are intended only to be used in applications that do not cause or contribute to adverse impacts on human rights. The software may include third party components with separate legal notices or governed by other agreements, as may be described in the Third-Party Notices file accompanying the software.
+Intel technologies may require enabled hardware, software or service activation. No product or component can be absolutely secure. Your costs and results may vary. Intel does not 
+control or audit third-party data.  You should consult other sources to evaluate accuracy. Intel is committed to respecting human rights and avoiding causing or contributing to adverse impacts on human rights. See Intel’s Global Human Rights Principles (<https://www.intel.com/content/www/us/en/policy/policy-human-rights.html).> Intel’s products and software are intended only to be used in applications that do not cause or contribute to adverse impacts on human rights. The software may include third party components with separate legal notices or governed by other agreements, as may be described in the Third-Party Notices file accompanying the software.
 
 ### Data Privacy
 
-Prompts and images being used in the application will not be collected or stored by Intel. The user of AI Playground is responsible for storing and processing any personal information using the app. For general information regarding the handling of personal data collected by Intel, refer to Intel’s Global Privacy Notice (<https://www.intel.com/content/www/us/en/privacy/intelprivacy-notice.html).>
+Prompts and images being used in the application will not be collected or stored by Intel. The user of AI Playground is responsible for storing and processing any personal 
+information using the app. For general information regarding the handling of personal data collected by Intel, refer to Intel’s Global Privacy Notice (<https://www.intel.com/content/www/us/en/privacy/intelprivacy-notice.html).>
 
 ### Generative AI Large-Language Model (LLM)/Chatbot Disclaimers
 
@@ -24,7 +27,8 @@ You are solely responsible for your use of output from your operation of the AI 
 
 #### Misuse, Malicious Use, and Out-of-Scope Use
 
-The model should not be used to intentionally create or disseminate images that create hostile or alienating environments for people. This includes generating images that people would foreseeably find disturbing, distressing, or offensive; or content that propagates historical or current stereotypes. The model was not trained to be factual or true representations of people or events, and therefore using the model to generate such content is out-of-scope for the abilities of this model.
+The model should not be used to intentionally create or disseminate images that create hostile or alienating environments for people. This includes generating images that people 
+would foreseeably find disturbing, distressing, or offensive; or content that propagates historical or current stereotypes. The model was not trained to be factual or true representations of people or events, and therefore using the model to generate such content is out-of-scope for the abilities of this model.
 
 #### Misuse and Malicious Use
 
@@ -49,21 +53,27 @@ Using the model to generate content that is cruel to individuals is a misuse of 
 - The model was trained mainly with English captions and will not work as well in other languages.
 - The autoencoding part of the model is lossy
 - The model was trained on a large-scale dataset LAION-5B which contains adult material and is not fit for product use without additional safety mechanisms and considerations.
-- No additional measures were used to deduplicate the dataset. As a result, we observe some degree of memorization for images that are duplicated in the training data. The training data can be searched at <https://rom1504.github.io/clip-retrieval/> to possibly assist in the detection of memorized images.
+- No additional measures were used to deduplicate the dataset. As a result, we observe some degree of memorization for images that are duplicated in the training data. The 
+training data can be searched at <https://rom1504.github.io/clip-retrieval/> to possibly assist in the detection of memorized images.
 
 #### Bias
 
-While the capabilities of image generation models are impressive, they can also reinforce or exacerbate social biases. Stable Diffusion v1 was trained on subsets of LAION-2B(en), which consists of images that are primarily limited to English descriptions. Texts and images from communities and cultures that use other languages are likely to be insufficiently accounted for. This affects the overall output of the model, as white and western cultures are often set as the default. Further, the ability of the model to generate content with non-English prompts is significantly worse than with English-language prompts.
+While the capabilities of image generation models are impressive, they can also reinforce or exacerbate social biases. Stable Diffusion v1 was trained on subsets of LAION-2B(en), 
+which consists of images that are primarily limited to English descriptions. Texts and images from communities and cultures that use other languages are likely to be insufficiently accounted for. This affects the overall output of the model, as white and western cultures are often set as the default. Further, the ability of the model to generate content with non-English prompts is significantly worse than with English-language prompts.
 
 #### Third-Party Models
 
-In the course of using AI Playground, users may choose to download models created and distributed by third parties after reviewing background information about the models and agreeing to the license governing those models.
+In the course of using AI Playground, users may choose to download models created and distributed by third parties after reviewing background information about the models and 
+agreeing to the license governing those models.
 
-Notice:  Intel does not create the content and does not warrant its accuracy or quality. By accessing the third-party content, or using materials trained on or with such content, you are indicating your acceptance of the terms associated with that content and warranting that your use complies with the applicable license.
+Notice:  Intel does not create the content and does not warrant its accuracy or quality. By accessing the third-party content, or using materials trained on or with such content, 
+you are indicating your acceptance of the terms associated with that content and warranting that your use complies with the applicable license.
 
-Intel expressly disclaims the accuracy, adequacy, or completeness of any such third-party content, and is not liable for any errors, omissions, or defects in the content, or for any reliance on the content. You agree Intel is not liable for any liability or damages relating to your use of third-party content.
+Intel expressly disclaims the accuracy, adequacy, or completeness of any such third-party content, and is not liable for any errors, omissions, or defects in the content, or for 
+any reliance on the content. You agree Intel is not liable for any liability or damages relating to your use of third-party content.
 
-Intel’s identification of these resources does not expand or otherwise alter Intel’s applicable published warranties or warranty disclaimers for Intel products or solutions, and you agree that no additional obligations, indemnifications, or liabilities arise from Intel identifying such resources. Intel reserves the right, without notice, to make corrections, enhancements, improvements, and other changes to its materials.
+Intel’s identification of these resources does not expand or otherwise alter Intel’s applicable published warranties or warranty disclaimers for Intel products or solutions, and 
+you agree that no additional obligations, indemnifications, or liabilities arise from Intel identifying such resources. Intel reserves the right, without notice, to make corrections, enhancements, improvements, and other changes to its materials.
 
 The table below contains links to the licenses for certain third-party models and detailed information about the capabilities, limitations, and best practices for those models.
 

@@ -55,8 +55,8 @@ To set up pre-commit hooks:
 ```bash
 pip install pre-commit
 pre-commit install
-```
 
+```text
 ## Troubleshooting Common Issues
 
 ### Markdown Linting
