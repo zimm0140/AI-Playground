@@ -493,7 +493,7 @@ def generate_all_docs(workflows_dir, output_dir, create_index=False, create_gall
     if create_index:
         generate_index(workflows_dir, output_dir)
     
-    print(f"\nDocumentation generation complete:")
+    print("\nDocumentation generation complete:")
     print(f"Successfully generated: {success_count}")
     print(f"Errors: {error_count}")
     
