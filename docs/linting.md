@@ -6,10 +6,12 @@ This document describes the linting practices used in the AI-Playground project 
 
 The project uses [Ruff](https://github.com/astral-sh/ruff) for Python code linting, with the following configuration:
 
+
 ```bash
 # Standard linting configuration
 ruff check --select=E,F --ignore=E501 --extend-exclude=.git,.github,.venv,venv,__pycache__,build,dist --line-length=100 ./service
 ```
+
 
 ### Key Rules
 
@@ -23,18 +25,23 @@ ruff check --select=E,F --ignore=E501 --extend-exclude=.git,.github,.venv,venv,_
 ### Using the Provided Scripts
 
 1. For Windows users:
-   ```
+   
+```text
    .\.github\workflows\scripts\fix_ruff_windows.ps1
    ```
 
+
 2. For Linux/Mac users:
-   ```
+   
+```text
    python .github/workflows/scripts/fix_ruff_issues_local.py
    ```
+
 
 ### Manual Linting
 
 To run Ruff manually:
+
 
 ```bash
 # Install Ruff
@@ -47,37 +54,46 @@ ruff check --select=E,F --ignore=E501 --line-length=100 ./service
 ruff check --select=E,F --ignore=E501 --line-length=100 --fix ./service
 ```
 
+
 ## Common Issues and Fixes
 
 ### Unused Imports (F401)
 
 An import that's not used in the file:
 
+
 ```python
 import os  # Unused import
 ```
 
+
 **Fix**: Either remove the import or add a `# noqa: F401` comment if it's needed for side effects:
+
 
 ```python
 import os  # noqa: F401
 ```
 
+
 ### Missing Whitespace (E2xx)
 
 Missing spaces around operators or after commas:
+
 
 ```python
 x=1+2  # Missing spaces
 def func(a,b):  # Missing space after comma
 ```
 
+
 **Fix**: Add appropriate spacing:
+
 
 ```python
 x = 1 + 2  # Correct spacing
 def func(a, b):  # Space after comma
 ```
+
 
 ## CI Integration
 
@@ -93,6 +109,7 @@ The CI will:
 
 To ensure code quality before committing, you can set up pre-commit hooks locally:
 
+
 ```bash
 # On Linux/macOS/Git Bash
 ./.github/setup-hooks.sh
@@ -101,4 +118,5 @@ To ensure code quality before committing, you can set up pre-commit hooks locall
 .\.github\setup-hooks.ps1
 ```
 
-This will check your Python code for linting issues before each commit. 
+
+This will check your Python code for linting issues before each commit.

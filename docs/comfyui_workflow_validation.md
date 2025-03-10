@@ -158,6 +158,8 @@ The workflow validation results are integrated into the CI pipeline:
 
 You can run the validation process locally using the following scripts:
 
+
+
 ```bash
 # Structural validation
 python .github/workflows/scripts/validate_comfyui_workflows.py --workflows-dir WebUI/external/workflows
@@ -181,6 +183,8 @@ python .github/workflows/scripts/generate_workflow_dashboard.py
 python .github/workflows/scripts/comment_on_workflow_pr.py --changed-files path/to/changed/file1.json,path/to/changed/file2.json
 ```
 
+
+
 Each script supports additional arguments:
 - `--output-dir`: Directory to store validation results
 - `--fail-on-error`: Exit with error code if validation fails
@@ -193,4 +197,4 @@ Planned improvements to the workflow validation process:
 2. **Regression Testing**: Compare execution results between versions to detect regressions
 3. **Performance Benchmarking**: Measure execution time and memory usage for workflows
 4. **Extended Node Support**: Add support for validating more custom node types
-5. **Workflow Generation**: Generate test workflows to validate node compatibility 
+5. **Workflow Generation**: Generate test workflows to validate node compatibility

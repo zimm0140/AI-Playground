@@ -23,7 +23,7 @@ AI Playground alpha and beta installers are currently available downloadable exe
 *	Windows OS
 *	Intel Core Ultra-H Processor, Intel Core Ultra 200V series processor OR Intel Arc GPU Series A or Series B (discrete) with 8GB of vRAM
 
-## Installation - Packaged Installer: 
+## Installation - Packaged Installer:
 Starting from v2.0, there is a single packaged installer that works for all supported hardware mentioned above. This installer simplifies the process for end users to install AI Playground and get it running on their PC. Please note that while this makes the installation process easier, this is open-source beta software, and there may be component and version conflicts. Refer to the Troubleshooting section for known issues.
 
 ### Download the installer
@@ -50,10 +50,12 @@ The following are known situations where your installation may be blocked or int
 
 To get started, clone the repository and navigate to the project directory:
 
+
 ```cmd
 git clone -b dev https://github.com/intel/AI-Playground.git
 cd AI-Playground
 ```
+
 
 ### Install Node.js Dependencies
 
@@ -61,34 +63,44 @@ cd AI-Playground
 
 2. Navigate to the `WebUI` directory and install all Node.js dependencies:
 
+
 ```cmd
 cd WebUI
 npm install
 ```
+
 
 ### Prepare Python Environment
 
 1. Install Miniforge to manage your Conda environment: https://github.com/conda-forge/miniforge
 
 2. Create a Conda environment with Python 3.11 and libuv:
-```
+
+```text
 conda create -n cp311_libuv python=3.11 libuv -y
 ```
 
+
 3. Locate the path to your newly created Conda environment:
-```
+
+```text
 conda env list | findstr cp311_libuv
 ```
 
+
 4. In the `WebUI` directory, execute the `fetch-build-resources` script, replacing `<path_to_cp311_libuv_conda_env>` with the actual path you copied in the previous step:
-```
+
+```text
 npm run fetch-build-resources -- --conda_env_dir=<path_to_cp311_libuv_conda_env>
 ```
 
+
 5. Run the `prepare-build` script:
-```
+
+```text
 npm run prepare-build
 ```
+
 
 You should now have a basic Python environment located at `build-envs\online\prototype-python-env`.
 
@@ -96,17 +108,21 @@ You should now have a basic Python environment located at `build-envs\online\pro
 
 To start the application in development mode, run:
 
-```
+
+```text
 npm run dev
 ```
+
 
 ### (Optional) Build the installer
 
 To build the installer, run:
 
-```
+
+```text
 npm run build
 ```
+
 
 The installer executable will be located in the `release` folder.
 
@@ -131,6 +147,7 @@ For development work, we recommend using a virtual environment to isolate depend
 
 #### Option 1: Using Conda (Recommended)
 
+
 ```cmd
 # Create a conda environment
 conda env create -f environment.yml
@@ -142,7 +159,9 @@ conda activate ai-playground-env
 pip install -r requirements.txt
 ```
 
+
 #### Option 2: Using venv
+
 
 ```cmd
 # Create a virtual environment
@@ -158,9 +177,11 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
+
 ### Quick Setup
 
 We provide a setup script that checks your environment and installs dependencies:
+
 
 ```cmd
 # On Windows
@@ -170,12 +191,13 @@ scripts\setup_env.bat
 python scripts/setup_env.py
 ```
 
+
 See [CONTRIBUTING.md](CONTRIBUTING.md) for more detailed information about development workflows.
 
 ## Model Support
-AI Playground supports PyTorch LLM, SD1.5, and SDXL models. AI Playground does not ship with any models but does make  models available for all features either directly from the interface or indirectly by the users downloading models from HuggingFace.co or CivitAI.com and placing them in the appropriate model folder. 
+AI Playground supports PyTorch LLM, SD1.5, and SDXL models. AI Playground does not ship with any models but does make  models available for all features either directly from the interface or indirectly by the users downloading models from HuggingFace.co or CivitAI.com and placing them in the appropriate model folder.
 
-Models currently linked from the application 
+Models currently linked from the application
 | Model                                      | License                                                                                                                                                                      | Background Information/Model Card                                                                                      |
 | ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
 | Dreamshaper 8 Model                        | [license](https://huggingface.co/spaces/CompVis/stable-diffusion-license)                                             | [site](https://huggingface.co/Lykon/dreamshaper-8)                               |
@@ -191,9 +213,8 @@ Be sure to check license terms for any model used in AI Playground especially ta
 ### Use Alternative Models
 Check the [User Guide](https://github.com/intel/ai-playground/blob/main/AI%20Playground%20Users%20Guide.pdf) for details or [watch this video](https://www.youtube.com/watch?v=1FXrk9Xcx2g) on how to add alternative Stable Diffusion models to AI Playground
 
-### Notices and Disclaimers: 
+### Notices and Disclaimers:
 For information on AI Playground terms, license and disclaimers, visit the project and files on GitHub repo:</br >
 [License](https://github.com/intel/ai-playground/blob/main/LICENSE) | [Notices & Disclaimers](https://github.com/intel/ai-playground/blob/main/notices-disclaimers.md)
 
 The software may include third party components with separate legal notices or governed by other agreements, as may be described in the Third Party Notices file accompanying the software.
-

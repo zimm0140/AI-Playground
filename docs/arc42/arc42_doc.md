@@ -29,7 +29,7 @@ TBD
 
 ![](AI-PG_ContextView.svg)
 
-| Node                     | Description                                                                                                                                                                               | 
+| Node                     | Description                                                                                                                                                                               |
 |--------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | GitHub                   | Github repositories hosting 3rd party extensions. Additional Extensions are cloned and set up on behalf of the user                                                                       |
 | AI Playground Repository | Github repositories of AI Playground. Additional workflows are released by intel and pushed to this repository. The application may update their workflow definitions by the intel source |
@@ -70,7 +70,7 @@ interface of an "apiService", which especially specifies the set up steps needed
     <!--- Default AI Playground backend is not only performing inference --->
     <td>Default AI Playground backend is required for other inference backends</td>
     <td>
-        The default inference backend historically has been the only backend and has been used to perform both: model 
+        The default inference backend historically has been the only backend and has been used to perform both: model
         inference as well as huggingface repository interactions. When additional inference backends had been introduced and
         generalized, this was not corrected.<br>
         As other inference backends also rely on the downloading of models, the other services depend on the default backend.
@@ -85,9 +85,9 @@ interface of an "apiService", which especially specifies the set up steps needed
   <tr>
     <td>Workflow definitions are not fully descriptive on their own</td>
     <td>
-        AI Playground offers pre-configured workflows for image generating AI. For ComfyUI workflows, an approach was 
-        chosen to make the workflow definition contain all relevant pieces of data. For the workflows in the default 
-        Backend, important information may only be computed at later stages in the code, as this is the case for the 
+        AI Playground offers pre-configured workflows for image generating AI. For ComfyUI workflows, an approach was
+        chosen to make the workflow definition contain all relevant pieces of data. For the workflows in the default
+        Backend, important information may only be computed at later stages in the code, as this is the case for the
         model terms URL.
     </td>
     <td>
@@ -101,7 +101,7 @@ interface of an "apiService", which especially specifies the set up steps needed
     <td>"Current Inference" Abstraction is missing</td>
     <td>
         AI Playground support multiple backends to be chosen. Generation depends heavily on the selected backend. There
-        is no abstraction or proxy around the current inference backend. The different tabs in the application instead 
+        is no abstraction or proxy around the current inference backend. The different tabs in the application instead
         rely on ifs and string identifiers to select the backend themselves and at different places
     </td>
     <td>

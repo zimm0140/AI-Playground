@@ -10,65 +10,75 @@ Thank you for your interest in contributing to AI-Playground! This document outl
    - Download and install [Miniconda](https://docs.conda.io/en/latest/miniconda.html) or [Anaconda](https://www.anaconda.com/products/distribution)
 
 2. **Create and activate the environment**:
-   ```bash
+   
+```bash
    # Create a new Conda environment
    conda create -n ai-playground-env python=3.9 -y
-   
+
    # Activate the environment
    conda activate ai-playground-env
-   
+
    # Install required packages
    pip install -r requirements.txt
    ```
 
+
 3. **Verify the environment**:
-   ```bash
+   
+```bash
    # Check which Python is being used (should point to your conda environment)
    python -c "import sys; print(sys.executable)"
-   
+
    # Test that jsonschema is installed
    python -c "import jsonschema; print(f'jsonschema version: {jsonschema.__version__}')"
    ```
 
+
 ### Option 2: Using venv
 
 1. **Create and activate the environment**:
-   ```bash
+   
+```bash
    # On Windows
    python -m venv .venv
    .\.venv\Scripts\activate
-   
+
    # On macOS/Linux
    python -m venv .venv
    source .venv/bin/activate
-   
+
    # Install required packages
    pip install -r requirements.txt
    ```
 
+
 ## Environment Management Best Practices
 
 1. **Always activate your environment before working on the project**:
-   ```bash
+   
+```bash
    # For Conda
    conda activate ai-playground-env
-   
+
    # For venv on Windows
    .\.venv\Scripts\activate
-   
+
    # For venv on macOS/Linux
    source .venv/bin/activate
    ```
 
+
 2. **Add new dependencies to requirements.txt**:
    When adding a new package, update the requirements.txt file:
-   ```bash
+   
+```bash
    # After installing a new package
    pip freeze > requirements.txt
-   
+
    # Or manually add it with a specific version
    echo "package-name==1.2.3" >> requirements.txt
    ```
+
 
 3. **Never commit environment directories**:
    The .gitignore file is set up to exclude environment directories (.venv/, env/, etc.).
@@ -78,10 +88,12 @@ Thank you for your interest in contributing to AI-Playground! This document outl
 
 To validate JSON files against schemas:
 
+
 ```bash
 # Ensure you're in your activated environment
 python validate_colorize.py
 ```
+
 
 # Contributing to AI Playground
 
@@ -145,7 +157,8 @@ AI Playground is licensed under the terms in [LICENSE](/LICENSE). By contributin
 Please use the sign-off line at the end of the patch. Your signature certifies that you wrote the patch or otherwise have the right to pass it on as an open-source patch. The rules are pretty simple: if you can certify
 the below (from [developercertificate.org](http://developercertificate.org/)):
 
-```
+
+```text
 Developer Certificate of Origin
 Version 1.1
 
@@ -182,6 +195,7 @@ By making a contribution to this project, I certify that:
     maintained indefinitely and may be redistributed consistent with
     this project or the open source license(s) involved.
 ```
+
 
 Then you just add a line to every git commit message:
 

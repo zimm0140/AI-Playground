@@ -4,7 +4,8 @@ This document provides an overview of the CI workflow implemented in this reposi
 
 ## Workflow Diagram
 
-```
+
+```text
 ┌────────────────────────────┐                  ┌────────────────────────────┐
 │                            │                  │                            │
 │       Linux Matrix         │                  │      Windows Matrix        │
@@ -64,6 +65,7 @@ This document provides an overview of the CI workflow implemented in this reposi
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
+
 
 ## Key Components
 
@@ -129,4 +131,4 @@ The CI workflow produces several artifacts that provide detailed information abo
 - **Hardware Support Matrix**: Documentation of supported hardware configurations
 - **Compatibility Reports**: Reports on compatibility with different Python versions and platforms
 
-These artifacts are available for download from the GitHub Actions workflow run page. 
+These artifacts are available for download from the GitHub Actions workflow run page.

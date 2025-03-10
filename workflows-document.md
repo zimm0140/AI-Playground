@@ -17,7 +17,7 @@
 | “defaultSettings" | **Required**: No <br>**Description**: Default values for settings when they should differ from the AIPG default <br>**Syntax**: { setting1: value, ... }, e.g. { inferenceSteps: 10 }  |
 | "displayedSettings" | **Required**: Yes, if no default values need leave as empty brackets \[ \] <br>**Description**: Input types you’d like to show in settings, but are not modifiable such as: “resolution”, “seed”, prompt” “inferenceSteps”, “batchSize, “cfg”, “prompt”, “negativePrompt” <br>**Syntax**: “inputField” ie "scheduler", "cfg"  |
 | "modifiableSettings"  | **Required**: Yes, if no default values need leave as empty brackets \[ \] <br>**Description**: Input types you’d like the user to adjust: “resolution”, “seed”, prompt” “inferenceSteps”, “batchSize, “cfg”, “negativePrompt” <br>**Syntax**: “inputField” ie "inferenceSteps", "seed" |
-| "comfyUiApiWorkflow": | **Required**: Yes <br>**Description**: This section should be a copy and paste of the API export of the workflow created in ComfyUI. 
+| "comfyUiApiWorkflow": | **Required**: Yes <br>**Description**: This section should be a copy and paste of the API export of the workflow created in ComfyUI.
 
 ## Instructions
 
@@ -31,7 +31,7 @@
 
 **Adding API data intro an AI Playground Workflow JSON**
 
-* **Paste In API Info:** 
+* **Paste In API Info:**
   * After making the workflow in ComfyUI, go to Workflow Menu in ComfyUI and select Export (API).
   * Open that JSON usually saved to your downloads director.
   * Select all and copy
@@ -46,7 +46,7 @@
 * **Allowable Input Fields Types**: Field names and value types  
   * “number”, float to 1 decimal or integer (20)  
   * “string”, text in quotes up to X characters  
-  * “image”, use this value as default: 
+  * “image”, use this value as default:
 
 * **Batch Size Example**: Adding an input slider to a workflow that has an "Empty Latent Image" node will allow for batch\_Size to be set by the user.  
   {  
@@ -71,7 +71,7 @@
 * “resolution”,   
 * “inferenceSteps”  
 * “seed”  
-* “guidanceScale” 
+* “guidanceScale”
 * “sampler”  
 * “scheduler”  
 * “batchSize”  
