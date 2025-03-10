@@ -1,0 +1,229 @@
+{
+  "summary": {
+    "total_workflows": 8,
+    "analyzed_workflows": 1,
+    "time": "2025-03-10 04:08:20"
+  },
+  "workflows": [
+    {
+      "filename": "Colorize.json",
+      "path": "WebUI/external/workflows\\Colorize.json",
+      "models": {
+        "checkpoint": [],
+        "vae": [],
+        "lora": [],
+        "controlnet": [],
+        "clip_vision": [],
+        "unet": [],
+        "upscaler": [],
+        "style_model": [],
+        "ip_adapter": [],
+        "flux_checkpoint": []
+      },
+      "custom_nodes": [],
+      "python_packages": [],
+      "memory_required": {
+        "min": 6.0,
+        "recommended": 9.0
+      },
+      "is_analyzed": true,
+      "errors": []
+    },
+    {
+      "filename": "CopyFace.json",
+      "path": "WebUI/external/workflows\\CopyFace.json",
+      "models": {
+        "checkpoint": [],
+        "vae": [],
+        "lora": [],
+        "controlnet": [],
+        "clip_vision": [],
+        "unet": [],
+        "upscaler": [],
+        "style_model": [],
+        "ip_adapter": [],
+        "flux_checkpoint": []
+      },
+      "custom_nodes": [],
+      "python_packages": [],
+      "memory_required": {
+        "min": 4,
+        "recommended": 8
+      },
+      "is_analyzed": false,
+      "errors": [
+        "Workflow does not have required structure"
+      ]
+    },
+    {
+      "filename": "FaceSwapHD.json",
+      "path": "WebUI/external/workflows\\FaceSwapHD.json",
+      "models": {
+        "checkpoint": [],
+        "vae": [],
+        "lora": [],
+        "controlnet": [],
+        "clip_vision": [],
+        "unet": [],
+        "upscaler": [],
+        "style_model": [],
+        "ip_adapter": [],
+        "flux_checkpoint": []
+      },
+      "custom_nodes": [],
+      "python_packages": [],
+      "memory_required": {
+        "min": 4,
+        "recommended": 8
+      },
+      "is_analyzed": false,
+      "errors": [
+        "Workflow does not have required structure"
+      ]
+    },
+    {
+      "filename": "fluxQ4.json",
+      "path": "WebUI/external/workflows\\fluxQ4.json",
+      "models": {
+        "checkpoint": [],
+        "vae": [],
+        "lora": [],
+        "controlnet": [],
+        "clip_vision": [],
+        "unet": [],
+        "upscaler": [],
+        "style_model": [],
+        "ip_adapter": [],
+        "flux_checkpoint": []
+      },
+      "custom_nodes": [],
+      "python_packages": [],
+      "memory_required": {
+        "min": 4,
+        "recommended": 8
+      },
+      "is_analyzed": false,
+      "errors": [
+        "Workflow does not have required structure"
+      ]
+    },
+    {
+      "filename": "fluxQ8.json",
+      "path": "WebUI/external/workflows\\fluxQ8.json",
+      "models": {
+        "checkpoint": [],
+        "vae": [],
+        "lora": [],
+        "controlnet": [],
+        "clip_vision": [],
+        "unet": [],
+        "upscaler": [],
+        "style_model": [],
+        "ip_adapter": [],
+        "flux_checkpoint": []
+      },
+      "custom_nodes": [],
+      "python_packages": [],
+      "memory_required": {
+        "min": 4,
+        "recommended": 8
+      },
+      "is_analyzed": false,
+      "errors": [
+        "Workflow does not have required structure"
+      ]
+    },
+    {
+      "filename": "Line2ImageHD-Fast.json",
+      "path": "WebUI/external/workflows\\Line2ImageHD-Fast.json",
+      "models": {
+        "checkpoint": [],
+        "vae": [],
+        "lora": [],
+        "controlnet": [],
+        "clip_vision": [],
+        "unet": [],
+        "upscaler": [],
+        "style_model": [],
+        "ip_adapter": [],
+        "flux_checkpoint": []
+      },
+      "custom_nodes": [],
+      "python_packages": [],
+      "memory_required": {
+        "min": 4,
+        "recommended": 8
+      },
+      "is_analyzed": false,
+      "errors": [
+        "Workflow does not have required structure"
+      ]
+    },
+    {
+      "filename": "Line2ImageHD-Quality.json",
+      "path": "WebUI/external/workflows\\Line2ImageHD-Quality.json",
+      "models": {
+        "checkpoint": [],
+        "vae": [],
+        "lora": [],
+        "controlnet": [],
+        "clip_vision": [],
+        "unet": [],
+        "upscaler": [],
+        "style_model": [],
+        "ip_adapter": [],
+        "flux_checkpoint": []
+      },
+      "custom_nodes": [],
+      "python_packages": [],
+      "memory_required": {
+        "min": 4,
+        "recommended": 8
+      },
+      "is_analyzed": false,
+      "errors": [
+        "Workflow does not have required structure"
+      ]
+    },
+    {
+      "filename": "Video.json",
+      "path": "WebUI/external/workflows\\Video.json",
+      "models": {
+        "checkpoint": [],
+        "vae": [],
+        "lora": [],
+        "controlnet": [],
+        "clip_vision": [],
+        "unet": [],
+        "upscaler": [],
+        "style_model": [],
+        "ip_adapter": [],
+        "flux_checkpoint": []
+      },
+      "custom_nodes": [],
+      "python_packages": [],
+      "memory_required": {
+        "min": 4,
+        "recommended": 8
+      },
+      "is_analyzed": false,
+      "errors": [
+        "Workflow does not have required structure"
+      ]
+    }
+  ],
+  "aggregate": {
+    "models": {},
+    "custom_nodes": {},
+    "python_packages": {},
+    "memory_requirements": {
+      "min": 6.0,
+      "max": 6.0,
+      "workflows_by_memory": {
+        "6.0GB": [
+          "Colorize.json"
+        ]
+      }
+    }
+  }
+}

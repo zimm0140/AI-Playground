@@ -53,6 +53,41 @@
     }
   ],
   "comfyUiApiWorkflow": {
-    "nodes": {}
+    "nodes": {
+      "1": {
+        "class_type": "LoadImage",
+        "inputs": {
+          "filename": "$input.Load Image.image"
+        },
+        "outputs": {
+          "image": "$temp.image"
+        }
+      },
+      "2": {
+        "class_type": "DDColorColorize",
+        "inputs": {
+          "checkpoint": "$input.DDColor_Colorize.checkpoint",
+          "image": { "node": 1, "output": "image" }
+        },
+        "outputs": {
+          "colored_image": "$output.output_image"
+        }
+      }
+    }
+  },
+  "nodes": {
+    "1": {
+      "class_type": "LoadImage",
+      "inputs": {
+        "filename": "$input.Load Image.image"
+      }
+    },
+    "2": {
+      "class_type": "DDColorColorize",
+      "inputs": {
+        "checkpoint": "$input.DDColor_Colorize.checkpoint",
+        "image": { "node": 1, "output": "image" }
+      }
+    }
   }
 }
