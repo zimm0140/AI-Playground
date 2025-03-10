@@ -30,26 +30,26 @@ The model should not be used to intentionally create or disseminate images that 
 
 Using the model to generate content that is cruel to individuals is a misuse of this model. This includes, but is not limited to:
 
--    Generating demeaning, dehumanizing, or otherwise harmful representations of people or their environments, cultures, religions, etc.
--    Intentionally promoting or propagating discriminatory content or harmful stereotypes.
--    Impersonating individuals without their consent.
--    Sexual content without consent of the people who might see it.
--    Mis- and disinformation
--    Representations of egregious violence and gore
--    Sharing of copyrighted or licensed material in violation of its terms of use.
+- Generating demeaning, dehumanizing, or otherwise harmful representations of people or their environments, cultures, religions, etc.
+- Intentionally promoting or propagating discriminatory content or harmful stereotypes.
+- Impersonating individuals without their consent.
+- Sexual content without consent of the people who might see it.
+- Mis- and disinformation
+- Representations of egregious violence and gore
+- Sharing of copyrighted or licensed material in violation of its terms of use.
 
 •    Sharing content that is an alteration of copyrighted or licensed material in violation of its terms of use.
 
 #### Limitations
 
--    The model does not achieve perfect photorealism
--    The model cannot render legible text
--    The model does not perform well on more difficult tasks which involve compositionality, such as rendering an image corresponding to “A red cube on top of a blue sphere”
--    Faces and people in general may not be generated properly.
--    The model was trained mainly with English captions and will not work as well in other languages.
--    The autoencoding part of the model is lossy
--    The model was trained on a large-scale dataset LAION-5B which contains adult material and is not fit for product use without additional safety mechanisms and considerations.
--    No additional measures were used to deduplicate the dataset. As a result, we observe some degree of memorization for images that are duplicated in the training data. The training data can be searched at <https://rom1504.github.io/clip-retrieval/> to possibly assist in the detection of memorized images.
+- The model does not achieve perfect photorealism
+- The model cannot render legible text
+- The model does not perform well on more difficult tasks which involve compositionality, such as rendering an image corresponding to “A red cube on top of a blue sphere”
+- Faces and people in general may not be generated properly.
+- The model was trained mainly with English captions and will not work as well in other languages.
+- The autoencoding part of the model is lossy
+- The model was trained on a large-scale dataset LAION-5B which contains adult material and is not fit for product use without additional safety mechanisms and considerations.
+- No additional measures were used to deduplicate the dataset. As a result, we observe some degree of memorization for images that are duplicated in the training data. The training data can be searched at <https://rom1504.github.io/clip-retrieval/> to possibly assist in the detection of memorized images.
 
 #### Bias
 
@@ -57,7 +57,7 @@ While the capabilities of image generation models are impressive, they can also 
 
 #### Third-Party Models
 
-In the course of using AI Playground, users may choose to download models created and distributed by third parties after reviewing background information about the models and agreeing to the license governing those models.   
+In the course of using AI Playground, users may choose to download models created and distributed by third parties after reviewing background information about the models and agreeing to the license governing those models.
 
 Notice:  Intel does not create the content and does not warrant its accuracy or quality. By accessing the third-party content, or using materials trained on or with such content, you are indicating your acceptance of the terms associated with that content and warranting that your use complies with the applicable license.
 

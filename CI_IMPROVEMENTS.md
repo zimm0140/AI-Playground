@@ -59,37 +59,44 @@ Improved documentation across the CI system:
 
 The updated CI workflow now follows this structure:
 
-
 ```text
 .github/workflows/
 ├── main.yml                # Main workflow file
+
 ├── WORKFLOW.md             # Workflow documentation
+
 └── scripts/
-    ├── README.md           # Scripts documentation
-    ├── analyze_test_coverage.sh
-    ├── catalog_hardware.sh
-    ├── check_code_quality.sh
-    ├── check_shell_scripts.sh
-    ├── check_tool_compatibility.sh
-    ├── cpu_mode_patches.sh
-    ├── custom_test_runner.py
-    ├── fix_ci_issues.py
-    ├── generate_api_docs.sh
-    ├── generate_compatibility_report.sh
-    ├── generate_summary.sh
-    ├── scan_dependencies.sh
-    └── verify_environment.sh
 ```
 
+├── README.md           # Scripts documentation
+```
+
+```
+
+├── analyze_test_coverage.sh
+├── catalog_hardware.sh
+├── check_code_quality.sh
+├── check_shell_scripts.sh
+├── check_tool_compatibility.sh
+├── cpu_mode_patches.sh
+├── custom_test_runner.py
+├── fix_ci_issues.py
+├── generate_api_docs.sh
+├── generate_compatibility_report.sh
+├── generate_summary.sh
+├── scan_dependencies.sh
+└── verify_environment.sh
+```
+```
 
 ## Future Recommendations
 
 Potential future improvements for the CI workflow:
 
 1. **Docker Integration**: Add container-based testing to ensure more consistent environments
-2. **Performance Optimization**: Benchmark test execution times and optimize slow steps
-3. **Release Automation**: Extend CI to automate release processes
-4. **Automated Dependency Updates**: Integrate Dependabot or similar to keep dependencies up-to-date
-5. **MacOS Testing**: Add MacOS job for complete platform coverage
-6. **UI Testing**: Add browser-based testing if the project has a web interface
-7. **Deployment Testing**: Add tests to verify deployment works correctly
+1. **Performance Optimization**: Benchmark test execution times and optimize slow steps
+1. **Release Automation**: Extend CI to automate release processes
+1. **Automated Dependency Updates**: Integrate Dependabot or similar to keep dependencies up-to-date
+1. **MacOS Testing**: Add MacOS job for complete platform coverage
+1. **UI Testing**: Add browser-based testing if the project has a web interface
+1. **Deployment Testing**: Add tests to verify deployment works correctly

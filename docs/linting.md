@@ -6,14 +6,12 @@ This document describes the linting practices used in the AI-Playground project 
 
 The project uses [Ruff](https://github.com/astral-sh/ruff) for Python code linting, with the following configuration:
 
-
 ```bash
 
 # Standard linting configuration
 
 ruff check --select=E,F --ignore=E501 --extend-exclude=.git,.github,.venv,venv,__pycache__,build,dist --line-length=100 ./service
 ```
-
 
 ### Key Rules
 
@@ -28,24 +26,19 @@ ruff check --select=E,F --ignore=E501 --extend-exclude=.git,.github,.venv,venv,_
 
 1. For Windows users:
 
-
 ```text
    .\.github\workflows\scripts\fix_ruff_windows.ps1
    ```
 
-
 1. For Linux/Mac users:
-
 
 ```text
    python .github/workflows/scripts/fix_ruff_issues_local.py
    ```
 
-
 ### Manual Linting
 
 To run Ruff manually:
-
 
 ```bash
 
@@ -62,46 +55,43 @@ ruff check --select=E,F --ignore=E501 --line-length=100 ./service
 ruff check --select=E,F --ignore=E501 --line-length=100 --fix ./service
 ```
 
-
 ## Common Issues and Fixes
 
 ### Unused Imports (F401)
 
 An import that's not used in the file:
 
-
 ```python
 import os  # Unused import
-```
 
+```
 
 **Fix**: Either remove the import or add a `# noqa: F401` comment if it's needed for side effects:
 
-
 ```python
 import os  # noqa: F401
-```
 
+```
 
 ### Missing Whitespace (E2xx)
 
 Missing spaces around operators or after commas:
 
-
 ```python
 x=1+2  # Missing spaces
-def func(a,b):  # Missing space after comma
-```
 
+def func(a,b):  # Missing space after comma
+
+```
 
 **Fix**: Add appropriate spacing:
 
-
 ```python
 x = 1 + 2  # Correct spacing
-def func(a, b):  # Space after comma
-```
 
+def func(a, b):  # Space after comma
+
+```
 
 ## CI Integration
 
@@ -110,14 +100,13 @@ The project's CI system uses GitHub Actions to run Ruff on all Python files. The
 The CI will:
 
 1. Check for linting issues
-2. Generate a report
-3. Comment on PRs if issues are found
-4. Provide instructions for fixing the issues
+1. Generate a report
+1. Comment on PRs if issues are found
+1. Provide instructions for fixing the issues
 
 ## Adding to Pre-commit Hooks
 
 To ensure code quality before committing, you can set up pre-commit hooks locally:
-
 
 ```bash
 
@@ -129,6 +118,5 @@ To ensure code quality before committing, you can set up pre-commit hooks locall
 
 .\.github\setup-hooks.ps1
 ```
-
 
 This will check your Python code for linting issues before each commit.
