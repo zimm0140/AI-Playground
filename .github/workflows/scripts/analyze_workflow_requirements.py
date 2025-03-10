@@ -165,9 +165,20 @@ class WorkflowRequirementsAnalyzer:
             workflow_result["errors"].append(f"Error reading file: {str(e)}")
             return workflow_result
         
-        # Check if the workflow has the expected structure
-        if not isinstance(workflow, dict) or "nodes" not in workflow:
-            workflow_result["errors"].append("Workflow does not have required structure")
+        # Check if the workflow has the expected structure - accept either top level nodes or comfyUiApiWorkflow.nodes
+        if not isinstance(workflow, dict):
+            workflow_result["errors"].append("Workflow is not a valid JSON object")
+            return workflow_result
+        
+        # Look for nodes in either location
+        nodes = None
+        if "nodes" in workflow:
+            nodes = workflow["nodes"]
+        elif "comfyUiApiWorkflow" in workflow and isinstance(workflow["comfyUiApiWorkflow"], dict) and "nodes" in workflow["comfyUiApiWorkflow"]:
+            nodes = workflow["comfyUiApiWorkflow"]["nodes"]
+        
+        if not nodes:
+            workflow_result["errors"].append("Workflow does not have required nodes structure")
             return workflow_result
         
         # Extract model requirements
@@ -177,7 +188,7 @@ class WorkflowRequirementsAnalyzer:
         control_net_count = 0
         lora_count = 0
         
-        for node_id, node_data in workflow["nodes"].items():
+        for node_id, node_data in nodes.items():
             if "class_type" not in node_data:
                 continue
                 

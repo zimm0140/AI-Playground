@@ -1,6 +1,6 @@
 # ComfyUI Workflow Requirements Report
 
-Generated on: 2025-03-10 04:08:20
+Generated on: 2025-03-10 04:19:18
 
 ## Summary
 
@@ -54,43 +54,43 @@ Generated on: 2025-03-10 04:08:20
 
 ❌ **Analysis failed**
 
-- Error: Workflow does not have required structure
+- Error: Workflow does not have required nodes structure
 
 ### FaceSwapHD.json
 
 ❌ **Analysis failed**
 
-- Error: Workflow does not have required structure
+- Error: Workflow does not have required nodes structure
 
 ### fluxQ4.json
 
 ❌ **Analysis failed**
 
-- Error: Workflow does not have required structure
+- Error: Workflow does not have required nodes structure
 
 ### fluxQ8.json
 
 ❌ **Analysis failed**
 
-- Error: Workflow does not have required structure
+- Error: Workflow does not have required nodes structure
 
 ### Line2ImageHD-Fast.json
 
 ❌ **Analysis failed**
 
-- Error: Workflow does not have required structure
+- Error: Workflow does not have required nodes structure
 
 ### Line2ImageHD-Quality.json
 
 ❌ **Analysis failed**
 
-- Error: Workflow does not have required structure
+- Error: Workflow does not have required nodes structure
 
 ### Video.json
 
 ❌ **Analysis failed**
 
-- Error: Workflow does not have required structure
+- Error: Workflow does not have required nodes structure
 
 ## Recommendations
 
