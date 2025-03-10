@@ -1,12 +1,29 @@
 {
+  "$schema": "https://raw.githubusercontent.com/AI-Playground/main/WebUI/external/schemas/workflow-schema.json",
   "name": "Colorize",
+  "version": "1.0.0",
+  "changeLog": [
+    {
+      "version": "1.0.0",
+      "date": "2024-03-08",
+      "changes": ["Initial release"]
+    }
+  ],
+  "displayPriority": 300,
   "backend": "comfyui",
+  "description": "Colorize black and white or grayscale images using DDColor technology.",
   "comfyUIRequirements": {
     "customNodes": ["kijai/ComfyUI-DDColor@30d5b8e7666382a6a78404caee28dfa87f741037"],
     "requiredModels": []
   },
-  "tags": [],
+  "tags": ["colorization", "image-to-image"],
   "requirements": ["high-vram"],
+  "resourceEstimation": {
+    "vramMinimum": 6144,
+    "vramRecommended": 8192,
+    "diskSpace": 2000,
+    "cpuUsage": "medium"
+  },
   "inputs": [
     {
       "nodeTitle": "DDColor_Colorize",
@@ -26,7 +43,7 @@
       "nodeInput": "image",
       "type": "image",
       "label": "Reference Image",
-      "defaultValue": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAZMElEQVR4nO3daXMTZ9aA4aPFFl6wDdgQ2xAChAEya/7/T0hmMkvlTZFJUiSYxYDBOCAv2t4PlKmEAWy1JUutc11fZoqopse2pL776a3y9ddf9wIASKU66gEAAKdPAABAQgIAABISAACQkAAAgIQEAAAkJAAAICEBAAAJCQAASEgAAEBCAgAAEhIAAJCQAACAhAQAACQkAAAgIQEAAAkJAABISAAAQEICAAASEgAAkJAAAICEBAAAJCQAACAhAQA"
+      "defaultValue": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAZMElEQVR4nO3daXMTZ9aA4aPFFl6wDdgQ2xAChAEya/7/T0hmMkvlTZFJUiSYxYDBOCAv2t4PlKmEAWy1JUutc11fZoqopse2pL776a3y9dff9wIASKU66gEAAKdPAABAQgIAABISAACQkAAAgIQEAAAkJAAAICEBAAAJCQAASEgAAEBCAgAAEhIAAJCQAACAhAQAACQkAAAgIQEAAAkJAABISAAAQEICAAASEgAAkJAAAICEBAAAJCQAACAhAQA"
     }
   ],
   "outputs": [
