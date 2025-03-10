@@ -1,3 +1,88 @@
+# Contributing to AI-Playground
+
+Thank you for your interest in contributing to AI-Playground! This document outlines the environment setup process and best practices.
+
+## Development Environment Setup
+
+### Option 1: Using Conda (Recommended)
+
+1. **Install Conda**:
+   - Download and install [Miniconda](https://docs.conda.io/en/latest/miniconda.html) or [Anaconda](https://www.anaconda.com/products/distribution)
+
+2. **Create and activate the environment**:
+   ```bash
+   # Create a new Conda environment
+   conda create -n ai-playground-env python=3.9 -y
+   
+   # Activate the environment
+   conda activate ai-playground-env
+   
+   # Install required packages
+   pip install -r requirements.txt
+   ```
+
+3. **Verify the environment**:
+   ```bash
+   # Check which Python is being used (should point to your conda environment)
+   python -c "import sys; print(sys.executable)"
+   
+   # Test that jsonschema is installed
+   python -c "import jsonschema; print(f'jsonschema version: {jsonschema.__version__}')"
+   ```
+
+### Option 2: Using venv
+
+1. **Create and activate the environment**:
+   ```bash
+   # On Windows
+   python -m venv .venv
+   .\.venv\Scripts\activate
+   
+   # On macOS/Linux
+   python -m venv .venv
+   source .venv/bin/activate
+   
+   # Install required packages
+   pip install -r requirements.txt
+   ```
+
+## Environment Management Best Practices
+
+1. **Always activate your environment before working on the project**:
+   ```bash
+   # For Conda
+   conda activate ai-playground-env
+   
+   # For venv on Windows
+   .\.venv\Scripts\activate
+   
+   # For venv on macOS/Linux
+   source .venv/bin/activate
+   ```
+
+2. **Add new dependencies to requirements.txt**:
+   When adding a new package, update the requirements.txt file:
+   ```bash
+   # After installing a new package
+   pip freeze > requirements.txt
+   
+   # Or manually add it with a specific version
+   echo "package-name==1.2.3" >> requirements.txt
+   ```
+
+3. **Never commit environment directories**:
+   The .gitignore file is set up to exclude environment directories (.venv/, env/, etc.).
+   Do not manually commit these directories.
+
+## Validation Workflow
+
+To validate JSON files against schemas:
+
+```bash
+# Ensure you're in your activated environment
+python validate_colorize.py
+```
+
 # Contributing to AI Playground
 
 First off, thank you for considering contributing to AI Playground. It's people like you that make this project such a great tool. We welcome contributions from everyone as long as they follow the guidelines below.
