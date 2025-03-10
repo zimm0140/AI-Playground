@@ -62,13 +62,23 @@ Each component follows this standard format:
 "1": {
   "class_type": "NodeType",
   "inputs": {
-    "param1": "value1"
+
+```text
+
+"param1": "value1"
+
+```text
   }
 },
 "2": {
   "class_type": "AnotherNodeType",
   "inputs": {
-    "param1": ["1", 0]
+
+```text
+
+"param1": ["1", 0]
+
+```text
   }
 }
 
