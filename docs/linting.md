@@ -8,7 +8,9 @@ The project uses [Ruff](https://github.com/astral-sh/ruff) for Python code linti
 
 
 ```bash
+
 # Standard linting configuration
+
 ruff check --select=E,F --ignore=E501 --extend-exclude=.git,.github,.venv,venv,__pycache__,build,dist --line-length=100 ./service
 ```
 
@@ -25,14 +27,16 @@ ruff check --select=E,F --ignore=E501 --extend-exclude=.git,.github,.venv,venv,_
 ### Using the Provided Scripts
 
 1. For Windows users:
-   
+
+
 ```text
    .\.github\workflows\scripts\fix_ruff_windows.ps1
    ```
 
 
-2. For Linux/Mac users:
-   
+1. For Linux/Mac users:
+
+
 ```text
    python .github/workflows/scripts/fix_ruff_issues_local.py
    ```
@@ -44,13 +48,17 @@ To run Ruff manually:
 
 
 ```bash
+
 # Install Ruff
+
 pip install ruff
 
 # Check for issues
+
 ruff check --select=E,F --ignore=E501 --line-length=100 ./service
 
 # Fix issues automatically
+
 ruff check --select=E,F --ignore=E501 --line-length=100 --fix ./service
 ```
 
@@ -100,6 +108,7 @@ def func(a, b):  # Space after comma
 The project's CI system uses GitHub Actions to run Ruff on all Python files. The configuration is maintained in the `.github/workflows/ruff-integration.yml` file.
 
 The CI will:
+
 1. Check for linting issues
 2. Generate a report
 3. Comment on PRs if issues are found
@@ -111,10 +120,13 @@ To ensure code quality before committing, you can set up pre-commit hooks locall
 
 
 ```bash
+
 # On Linux/macOS/Git Bash
+
 ./.github/setup-hooks.sh
 
 # On Windows PowerShell
+
 .\.github\setup-hooks.ps1
 ```
 

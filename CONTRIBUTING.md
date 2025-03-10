@@ -1,4 +1,8 @@
-# Contributing to AI-Playground
+# Contributing to AI Playground
+
+First off, thank you for considering contributing to AI Playground. It's people like you that make this project such a great tool. We welcome contributions from everyone as long as they follow the guidelines below.
+
+## Contributing Guidelines
 
 Thank you for your interest in contributing to AI-Playground! This document outlines the environment setup process and best practices.
 
@@ -9,8 +13,9 @@ Thank you for your interest in contributing to AI-Playground! This document outl
 1. **Install Conda**:
    - Download and install [Miniconda](https://docs.conda.io/en/latest/miniconda.html) or [Anaconda](https://www.anaconda.com/products/distribution)
 
-2. **Create and activate the environment**:
-   
+1. **Create and activate the environment**:
+
+
 ```bash
    # Create a new Conda environment
    conda create -n ai-playground-env python=3.9 -y
@@ -23,8 +28,9 @@ Thank you for your interest in contributing to AI-Playground! This document outl
    ```
 
 
-3. **Verify the environment**:
-   
+1. **Verify the environment**:
+
+
 ```bash
    # Check which Python is being used (should point to your conda environment)
    python -c "import sys; print(sys.executable)"
@@ -37,7 +43,8 @@ Thank you for your interest in contributing to AI-Playground! This document outl
 ### Option 2: Using venv
 
 1. **Create and activate the environment**:
-   
+
+
 ```bash
    # On Windows
    python -m venv .venv
@@ -55,7 +62,8 @@ Thank you for your interest in contributing to AI-Playground! This document outl
 ## Environment Management Best Practices
 
 1. **Always activate your environment before working on the project**:
-   
+
+
 ```bash
    # For Conda
    conda activate ai-playground-env
@@ -68,9 +76,11 @@ Thank you for your interest in contributing to AI-Playground! This document outl
    ```
 
 
-2. **Add new dependencies to requirements.txt**:
+1. **Add new dependencies to requirements.txt**:
+
    When adding a new package, update the requirements.txt file:
-   
+
+
 ```bash
    # After installing a new package
    pip freeze > requirements.txt
@@ -80,24 +90,21 @@ Thank you for your interest in contributing to AI-Playground! This document outl
    ```
 
 
-3. **Never commit environment directories**:
+1. **Never commit environment directories**:
+
    The .gitignore file is set up to exclude environment directories (.venv/, env/, etc.).
    Do not manually commit these directories.
 
-## Validation Workflow
+# Validation Workflow
 
 To validate JSON files against schemas:
-
 
 ```bash
 # Ensure you're in your activated environment
 python validate_colorize.py
 ```
 
-
-# Contributing to AI Playground
-
-First off, thank you for considering contributing to AI Playground. It's people like you that make this project such a great tool. We welcome contributions from everyone as long as they follow the guidelines below.
+## Additional Guidelines
 
 ## Code of Conduct
 

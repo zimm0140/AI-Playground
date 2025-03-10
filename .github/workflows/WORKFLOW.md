@@ -77,19 +77,19 @@ The Linux workflow performs comprehensive testing and analysis:
    - Installs dependencies
    - Configures the environment for testing
 
-2. **Hardware Patching**
+1. **Hardware Patching**
    - Creates CPU mode patches for hardware acceleration libraries
    - Mocks hardware-dependent modules to enable testing in CI environment
    - Fixes code issues specific to the CI environment
 
-3. **Analysis & Testing**
+1. **Analysis & Testing**
    - Runs code quality checks with yapf
    - Performs security scanning of dependencies with Safety
    - Lints shell scripts with Shellcheck
    - Runs tests with a custom resilient test runner
    - Analyzes test coverage
 
-4. **Documentation**
+1. **Documentation**
    - Generates API documentation
    - Creates compatibility reports
    - Analyzes tool compatibility
@@ -102,12 +102,12 @@ The Windows workflow runs a streamlined version of tests:
    - Installs dependencies with Windows-specific paths
    - Configures environment variables
 
-2. **Basic Testing**
+1. **Basic Testing**
    - Checks for Python syntax errors
    - Runs tests with the custom test runner
    - Checks code formatting
 
-3. **Reporting**
+1. **Reporting**
    - Generates Windows-specific compatibility report
    - Uploads artifacts for review
 

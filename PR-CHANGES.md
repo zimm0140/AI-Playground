@@ -9,6 +9,7 @@ Updated the deprecated `actions/upload-artifact@v3` to the current `actions/uplo
 ## 2. Prettier Formatting
 
 Fixed formatting issues in the workflow schema file to comply with Prettier's formatting expectations. The main changes:
+
 - Used single quotes instead of double quotes
 - Added trailing commas to all object properties
 - Ensured consistent formatting throughout the file
@@ -16,6 +17,7 @@ Fixed formatting issues in the workflow schema file to comply with Prettier's fo
 ## 3. Ruff Python Linting
 
 Added a utility script for addressing common Ruff linting issues in our Python files:
+
 - Automatically fixes unused imports (F401)
 - Adds proper guard clauses for main functions
 - Follows project code style guidelines

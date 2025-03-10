@@ -11,6 +11,7 @@ The ComfyUI workflow validation process consists of three main stages:
 3. **Execution Simulation**: Simulates the workflow execution without requiring models or GPU resources.
 
 The validation runs automatically on:
+
 - Pull requests that modify workflows in the `WebUI/external/workflows` directory
 - Push events to the main branch that modify workflows
 - Weekly (Sunday at 00:00 UTC) to ensure ongoing compatibility
@@ -29,6 +30,7 @@ This stage validates the JSON structure of workflow files:
 ### Validation Report
 
 The validation report includes:
+
 - Number of valid and invalid workflows
 - List of issues found in each workflow
 - Recommendations for fixing issues
@@ -45,6 +47,7 @@ This stage analyzes the requirements for executing each workflow:
 ### Analysis Report
 
 The analysis report includes:
+
 - Aggregate statistics on most common models and custom nodes
 - Memory requirement estimates for each workflow
 - Detailed requirements for each individual workflow
@@ -63,6 +66,7 @@ This stage performs a lightweight simulation of workflow execution:
 ### Simulation Report
 
 The simulation report includes:
+
 - Number of workflows that passed/failed simulation
 - Execution time for each workflow simulation
 - Detailed issues for failed workflows, categorized by severity
@@ -83,6 +87,7 @@ Unlike the static execution simulation, this approach can detect more subtle iss
 ### Simulation Report
 
 The simulation report includes:
+
 - Detailed trace of node execution attempts
 - Success/failure status for each node in the workflow
 - Runtime errors with specific details about failure points
@@ -101,6 +106,7 @@ This stage tracks changes to workflow files over time:
 ### Version Report
 
 The version tracking report includes:
+
 - A complete history of all versions for each workflow
 - Detailed listings of changes between versions
 - Identification of potentially breaking changes
@@ -118,6 +124,7 @@ The dashboard combines information from all validation stages into a single view
 ### Dashboard Contents
 
 The dashboard includes:
+
 - Summary statistics on workflow health
 - A compatibility matrix showing which workflows work on different hardware
 - Detailed information on failing workflows and their issues
@@ -138,6 +145,7 @@ This integration helps contributors understand issues before merging and ensures
 ### PR Comment Format
 
 The PR comment includes:
+
 - Summary of validation status for all changed workflows
 - Table of results with pass/fail indicators for each validation stage
 - Detailed issues for workflows that need attention
@@ -159,33 +167,40 @@ The workflow validation results are integrated into the CI pipeline:
 You can run the validation process locally using the following scripts:
 
 
-
 ```bash
+
 # Structural validation
+
 python .github/workflows/scripts/validate_comfyui_workflows.py --workflows-dir WebUI/external/workflows
 
 # Requirements analysis
+
 python .github/workflows/scripts/analyze_workflow_requirements.py --workflows-dir WebUI/external/workflows
 
 # Execution simulation
+
 python .github/workflows/scripts/test_workflow_execution.py --workflows-dir WebUI/external/workflows
 
 # Model simulation
+
 python .github/workflows/scripts/simulate_workflow_execution.py --workflows-dir WebUI/external/workflows
 
 # Version tracking
+
 python .github/workflows/scripts/track_workflow_versions.py --workflows-dir WebUI/external/workflows
 
 # Dashboard generation
+
 python .github/workflows/scripts/generate_workflow_dashboard.py
 
 # PR comment generation (requires changed files list)
+
 python .github/workflows/scripts/comment_on_workflow_pr.py --changed-files path/to/changed/file1.json,path/to/changed/file2.json
 ```
 
 
-
 Each script supports additional arguments:
+
 - `--output-dir`: Directory to store validation results
 - `--fail-on-error`: Exit with error code if validation fails
 

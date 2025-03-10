@@ -117,6 +117,7 @@ To run the Hardware Compatibility Advisor:
 
 
 This script will:
+
 1. Run the hardware compatibility tester
 2. Analyze the results and generate recommendations
 3. Create a combined report with test results and recommendations
@@ -133,6 +134,7 @@ The advisor categorizes recommendations by priority:
 ### Resolution Plans
 
 The resolution plan provides specific recommendations for each conflict, including:
+
 - Current versions in use across platforms
 - Suggested standardized version
 - Rationale for the suggestion
@@ -142,6 +144,7 @@ The resolution plan provides specific recommendations for each conflict, includi
 ### Optimized Requirements
 
 The advisor generates optimized requirements files for each platform with:
+
 - Standardized versions for conflicting packages
 - Sorted package lists for better readability
 - Consistent formatting and version specifications
@@ -169,6 +172,7 @@ To run the Auto-fix Tool:
 
 
 Options:
+
 - `--apply` - Apply the changes (default is dry-run mode)
 - `--all-priorities` - Apply both high and medium priority recommendations (default is high-priority only)
 
