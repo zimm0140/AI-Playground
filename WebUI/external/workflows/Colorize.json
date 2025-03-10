@@ -28,5 +28,11 @@
       "label": "Reference Image",
       "defaultValue": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAZMElEQVR4nO3daXMTZ9aA4aPFFl6wDdgQ2xAChAEya/7/T0hmMkvlTZFJUiSYxYDBOCAv2t4PlKmEAWy1JUutc11fZoqopse2pL776a3y9ddf9wIASKU66gEAAKdPAABAQgIAABISAACQkAAAgIQEAAAkJAAAICEBAAAJCQAASEgAAEBCAgAAEhIAAJCQAACAhAQAACQkAAAgIQEAAAkJAABISAAAQEICAAASEgAAkJAAAICEBAAAJCQAACAhAQA"
     }
+  ],
+  "outputs": [
+    {
+      "name": "output_image",
+      "type": "image"
+    }
   ]
 }
