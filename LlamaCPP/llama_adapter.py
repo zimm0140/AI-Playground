@@ -199,58 +199,22 @@ class LLM_SSE_Adapter:
 
     def stream_function(self, stream):
         """
-        Process the streaming output from the LLM and collect performance metrics.
-
-        This function iterates through each token of the generated output,
-        sends it to clients via the text_out_callback, and collects performance
-        metrics such as token generation speed and latency.
-
-        It handles different output formats based on the backend type.
+        Process the stream data and send it through the message queue.
 
         Args:
-            stream: Iterator of generated tokens from the LLM
+            stream: Generator of stream data
         """
-        num_tokens = 0
-        start_time = time.time()
-        is_first = True
-        first_token_time = 0.0
-        last_token_time = 0.0
-
-        for output in stream:
+        for s in stream:
             if self.llm_interface.stop_generate:
                 self.llm_interface.stop_generate = False
                 break
 
             if self.llm_interface.get_backend_type() == "ipex_llm":
                 # transformer style
-                self.text_out_callback(output)
+                self.text_out_callback(s)
             else:
                 # openai style
-                self.text_out_callback(output["choices"][0]["delta"].get("content", ""))
-                num_tokens += 1
-
-                if is_first:
-                    first_token_time = time.time()
-                    is_first = False
-
-        last_token_time = time.time()
-
-        # Calculate and report performance metrics
-        metrics_data = {
-            "type": "metrics",
-            "num_tokens": num_tokens,
-            "total_time": last_token_time - start_time,
-            "overall_tokens_per_second": num_tokens / (last_token_time - start_time),
-            "second_plus_tokens_per_second": (num_tokens - 1)
-            / (last_token_time - first_token_time),
-            "first_token_latency": first_token_time - start_time,
-            "after_token_latency": (last_token_time - first_token_time)
-            / (num_tokens - 1)
-            if num_tokens > 1
-            else None,
-        }
-
-        self.put_msg(metrics_data)
+                self.text_out_callback(s["choices"][0]["delta"].get("content", ""))
 
         self.put_msg({"type": "finish"})
 
@@ -273,9 +237,11 @@ class LLM_SSE_Adapter:
             prompt = params.prompt
             if params.enable_rag:
                 last_prompt = prompt[prompt.__len__() - 1]
-                last_prompt.__setitem__(
-                    "question", process_rag(last_prompt.get("question"), params.device)
-                )
+                question = last_prompt.get("question")
+                if question is not None:
+                    last_prompt.__setitem__(
+                        "question", process_rag(question, str(params.device))
+                    )
 
             full_prompt = convert_prompt(prompt)
             stream = self.llm_interface.create_chat_completion(
@@ -307,7 +273,7 @@ class LLM_SSE_Adapter:
                     msg = f"data:{json.dumps(data)}\0"
                     print(msg)
                     yield msg
-                except Empty(Exception):
+                except Empty:
                     break
             if not self.finish:
                 self.singal.clear()
@@ -340,11 +306,14 @@ def convert_prompt(prompt: List[Dict[str, str]]):
     prompt_len = prompt.__len__()
     i = 0
     while i < prompt_len:
-        chat_history.append({"role": "user", "content": prompt[i].get("question")})
+        question = prompt[i].get("question")
+        if question is not None:
+            chat_history.append({"role": "user", "content": question})
+            
         if i < prompt_len - 1:
-            chat_history.append(
-                {"role": "assistant", "content": prompt[i].get("answer")}
-            )
+            answer = prompt[i].get("answer")
+            if answer is not None:
+                chat_history.append({"role": "assistant", "content": answer})
         i = i + 1
     return chat_history
 

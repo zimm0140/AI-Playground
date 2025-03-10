@@ -99,10 +99,14 @@ Thank you for your interest in contributing to AI-Playground! This document outl
 
 To validate JSON files against schemas:
 
+
 ```bash
+
 # Ensure you're in your activated environment
+
 python validate_colorize.py
 ```
+
 
 ## Additional Guidelines
 

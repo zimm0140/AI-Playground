@@ -12,11 +12,11 @@ We use [Ruff](https://github.com/astral-sh/ruff) for Python linting and formatti
    - Remove unused imports or add `# noqa: F401` with an explanation if the import is needed for side effects.
    - Example: `import module  # noqa: F401 - Import needed for registration`
 
-1. **Unused Variables (F841)**
+2. **Unused Variables (F841)**
    - Use `_` for variables you don't need: `_, result = function_with_multiple_returns()`
    - Or add `# noqa: F841` if you need to keep the variable for clarity.
 
-1. **Module Level Import Not at Top of File (E402)**
+3. **Module Level Import Not at Top of File (E402)**
    - Keep all imports at the top of the file.
    - If you need to modify environment variables before importing, add `# noqa: E402` to the imports.
 
@@ -28,27 +28,21 @@ We use [pre-commit](https://pre-commit.com/) to run checks before each commit. T
 
 1. Install pre-commit:
 
+```bash
+pip install pre-commit
+```
+
+2. Install the hooks:
 
 ```bash
-   pip install pre-commit
-   ```
+pre-commit install
+```
 
-
-1. Install the hooks:
-
+3. Run against all files:
 
 ```bash
-   pre-commit install
-   ```
-
-
-1. Run against all files:
-
-
-```bash
-   pre-commit run --all-files
-   ```
-
+pre-commit run --all-files
+```
 
 ## CI/CD Checks
 
@@ -68,12 +62,10 @@ We've created helper scripts to fix common linting issues:
 
 Run these scripts to quickly identify and fix issues:
 
-
 ```bash
 python check_linting.py
 python fix_unused_variables.py
 ```
-
 
 ## Best Practices
 
