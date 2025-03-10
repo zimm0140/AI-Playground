@@ -22,6 +22,8 @@ import glob
 from datetime import datetime
 from collections import defaultdict
 
+from utils.workflow_parser import get_workflow_nodes
+
 
 class WorkflowRequirementsAnalyzer:
     """Analyzer for ComfyUI workflow dependencies"""
@@ -185,19 +187,8 @@ class WorkflowRequirementsAnalyzer:
             workflow_result["errors"].append("Workflow is not a valid JSON object")
             return workflow_result
         
-        # Look for nodes in different possible locations
-        nodes = None
-        if "nodes" in workflow and isinstance(workflow["nodes"], dict):
-            # Traditional ComfyUI format with top-level nodes
-            nodes = workflow["nodes"]
-        elif "comfyUiApiWorkflow" in workflow and isinstance(workflow["comfyUiApiWorkflow"], dict):
-            if "nodes" in workflow["comfyUiApiWorkflow"] and isinstance(workflow["comfyUiApiWorkflow"]["nodes"], dict):
-                # API format with nodes inside comfyUiApiWorkflow.nodes
-                nodes = workflow["comfyUiApiWorkflow"]["nodes"]
-            else:
-                # API format with nodes directly inside comfyUiApiWorkflow (numeric keys)
-                # This is the case for CopyFace.json and other workflows
-                nodes = workflow["comfyUiApiWorkflow"]
+        # Get nodes using the utility function
+        nodes = get_workflow_nodes(workflow)
         
         if not nodes:
             workflow_result["errors"].append("Workflow does not have required structure")
