@@ -1,0 +1,36 @@
+{
+  "timestamp": "2025-03-10T04:43:46.277629",
+  "schema_file": "WebUI/external/schemas/workflow-schema.json",
+  "workflows_directory": "WebUI/external/workflows",
+  "summary": {
+    "total_workflows": 8,
+    "valid_workflows": 8,
+    "invalid_workflows": 0
+  },
+  "results": {
+    "Colorize.json": {
+      "valid": true
+    },
+    "CopyFace.json": {
+      "valid": true
+    },
+    "FaceSwapHD.json": {
+      "valid": true
+    },
+    "fluxQ4.json": {
+      "valid": true
+    },
+    "fluxQ8.json": {
+      "valid": true
+    },
+    "Line2ImageHD-Fast.json": {
+      "valid": true
+    },
+    "Line2ImageHD-Quality.json": {
+      "valid": true
+    },
+    "Video.json": {
+      "valid": true
+    }
+  }
+}

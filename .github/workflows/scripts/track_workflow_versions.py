@@ -155,14 +155,25 @@ class WorkflowVersionTracker:
         return hashlib.sha256(serialized.encode()).hexdigest()
     
     def calculate_structure_hash(self, workflow: Dict) -> str:
-        """Calculate a hash of just the workflow structure (nodes and connections)
-        This ignores certain volatile elements like exact parameter values"""
+        """Calculate a hash representing the workflow structure (nodes and connections)
+        This ignores node positions, workflow title, and specific parameter values.
+        It focuses on the types of nodes, their input parameters (keys only), and how they're connected.
+        """
         structure = {}
         
         # Extract node types and their connections
-        if "nodes" in workflow:
+        nodes = None
+        if "nodes" in workflow and isinstance(workflow["nodes"], dict):
+            nodes = workflow["nodes"]
+        elif ("comfyUiApiWorkflow" in workflow and 
+              isinstance(workflow["comfyUiApiWorkflow"], dict) and 
+              "nodes" in workflow["comfyUiApiWorkflow"] and
+              isinstance(workflow["comfyUiApiWorkflow"]["nodes"], dict)):
+            nodes = workflow["comfyUiApiWorkflow"]["nodes"]
+            
+        if nodes:
             nodes_structure = {}
-            for node_id, node_data in workflow["nodes"].items():
+            for node_id, node_data in nodes.items():
                 node_structure = {
                     "class_type": node_data.get("class_type"),
                     # Include only input keys but not their values
@@ -188,29 +199,43 @@ class WorkflowVersionTracker:
         """Detect changes between two versions of a workflow"""
         changes = []
         
+        # Get nodes from either workflow format
+        def get_nodes(workflow):
+            if "nodes" in workflow and isinstance(workflow["nodes"], dict):
+                return workflow["nodes"]
+            elif ("comfyUiApiWorkflow" in workflow and 
+                  isinstance(workflow["comfyUiApiWorkflow"], dict) and 
+                  "nodes" in workflow["comfyUiApiWorkflow"] and
+                  isinstance(workflow["comfyUiApiWorkflow"]["nodes"], dict)):
+                return workflow["comfyUiApiWorkflow"]["nodes"]
+            return {}
+            
+        old_nodes_dict = get_nodes(old_workflow)
+        new_nodes_dict = get_nodes(new_workflow)
+        
         # Check for added/removed/changed nodes
-        old_nodes = set(old_workflow.get("nodes", {}).keys())
-        new_nodes = set(new_workflow.get("nodes", {}).keys())
+        old_nodes = set(old_nodes_dict.keys())
+        new_nodes = set(new_nodes_dict.keys())
         
         added_nodes = new_nodes - old_nodes
         removed_nodes = old_nodes - new_nodes
         common_nodes = old_nodes.intersection(new_nodes)
         
         if added_nodes:
-            node_types = [new_workflow["nodes"][node_id].get("class_type", "unknown") 
+            node_types = [new_nodes_dict[node_id].get("class_type", "unknown") 
                          for node_id in added_nodes]
             changes.append(f"Added {len(added_nodes)} node(s): {', '.join(node_types)}")
         
         if removed_nodes:
-            node_types = [old_workflow["nodes"][node_id].get("class_type", "unknown") 
+            node_types = [old_nodes_dict[node_id].get("class_type", "unknown") 
                          for node_id in removed_nodes]
             changes.append(f"Removed {len(removed_nodes)} node(s): {', '.join(node_types)}")
         
         # Check for changed node configurations
         changed_nodes = []
         for node_id in common_nodes:
-            old_node = old_workflow["nodes"][node_id]
-            new_node = new_workflow["nodes"][node_id]
+            old_node = old_nodes_dict[node_id]
+            new_node = new_nodes_dict[node_id]
             
             # Check if node type changed
             if old_node.get("class_type") != new_node.get("class_type"):
