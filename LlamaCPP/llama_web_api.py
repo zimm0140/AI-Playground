@@ -16,14 +16,18 @@ on various hardware including CPUs and GPUs.
 """
 
 import os
-# Ensure Llama.cpp libraries are in the PATH
-os.environ['PATH'] = os.path.abspath('../llama-cpp-env/Library/bin') + os.pathsep + os.environ['PATH']
 
-from apiflask import APIFlask
-from flask import jsonify, request, Response, stream_with_context
-from llama_adapter import LLM_SSE_Adapter
-from llama_cpp_backend import LlamaCpp
-from llama_params import LLMParams
+# Ensure Llama.cpp libraries are in the PATH
+os.environ["PATH"] = (
+    os.path.abspath("../llama-cpp-env/Library/bin") + os.pathsep + os.environ["PATH"]
+)
+
+# Import after setting PATH environment variable
+from apiflask import APIFlask  # noqa: E402
+from flask import jsonify, request, Response, stream_with_context  # noqa: E402
+from llama_adapter import LLM_SSE_Adapter  # noqa: E402
+from llama_cpp_backend import LlamaCpp  # noqa: E402
+from llama_params import LLMParams  # noqa: E402
 
 # Initialize Flask application and Llama.cpp backend
 app = APIFlask(__name__)
@@ -33,9 +37,9 @@ llm_backend = LlamaCpp()
 @app.get("/health")
 def health():
     """Health check endpoint.
-    
+
     Provides a simple way to verify the service is running and responsive.
-    
+
     Returns:
         JSON response with status code and success message.
     """
@@ -45,16 +49,16 @@ def health():
 @app.post("/api/llm/chat")
 def llm_chat():
     """LLM chat endpoint that handles text generation requests.
-    
+
     Processes the incoming JSON parameters, initializes the LLM with those parameters,
     and returns a streaming response with generated text using Server-Sent Events (SSE).
-    
+
     The function:
     1. Extracts parameters from the request JSON
     2. Converts them to an LLMParams object
     3. Creates an adapter for streaming
     4. Generates text and streams it back to the client
-    
+
     Returns:
         Streaming response with generated text chunks.
     """
@@ -69,10 +73,10 @@ def llm_chat():
 @app.post("/api/free")
 def free():
     """Frees resources by unloading the model from memory.
-    
+
     This endpoint allows clients to explicitly release memory used by LLM models
     when they're no longer needed, which is useful for resource management.
-    
+
     Returns:
         JSON response with status code and success message.
     """
@@ -83,10 +87,10 @@ def free():
 @app.get("/api/llm/stopGenerate")
 def stop_llm_generate():
     """Stops any ongoing text generation process.
-    
+
     Sets a flag in the backend to stop the generation process, which is useful
     for canceling long generations or when the user no longer needs the output.
-    
+
     Returns:
         JSON response with status code and success message.
     """
@@ -109,6 +113,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="AI Playground Web service")
     parser.add_argument("--port", type=int, default=59997, help="Service listen port")
     args = parser.parse_args()
-    
+
     # Start the Flask application with the specified configuration
     app.run(host="127.0.0.1", port=args.port, use_reloader=False)

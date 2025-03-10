@@ -10,14 +10,15 @@ including conversation prompts, device selection, RAG configuration, and model s
 
 from typing import Any, Dict, List
 
+
 class LLMParams:
     """
     Parameter class for Llama.cpp LLM inference.
-    
+
     This class encapsulates all configuration parameters needed for text generation
     with Large Language Models optimized through Llama.cpp. It handles both
     basic configuration (model selection, device) and advanced generation parameters.
-    
+
     Attributes:
         prompt: List of conversation turns as dictionaries with 'question' from user
                and optional 'answer' from the model
@@ -28,19 +29,26 @@ class LLMParams:
         generation_parameters: Additional parameters for controlling text generation
                               (temperature, top_p, etc.)
     """
+
     prompt: List[Dict[str, str]]
     device: int
-    enable_rag: bool 
+    enable_rag: bool
     model_repo_id: str
     max_tokens: int
     generation_parameters: Dict[str, Any]
 
     def __init__(
-        self, prompt: list, device: int, enable_rag: bool, model_repo_id: str, max_tokens: int, **kwargs
+        self,
+        prompt: list,
+        device: int,
+        enable_rag: bool,
+        model_repo_id: str,
+        max_tokens: int,
+        **kwargs,
     ) -> None:
         """
         Initialize LLM parameters with required and optional configuration.
-        
+
         Args:
             prompt: Conversation history as a list of dictionaries, each containing
                    'question' from user and optional 'answer' from model

@@ -49,17 +49,18 @@ MAX_NEW_TOKENS = 320  # Max length of LLM output
 class EmbeddingWrapper:
     """
     A wrapper class for the LlamaCppEmbeddings model.
-    
+
     This class provides an interface for embedding documents and queries
     using the LlamaCppEmbeddings model, with performance timing.
-    
+
     Attributes:
         model: An instance of LlamaCppEmbeddings used for generating embeddings
     """
+
     def __init__(self, model_path: str):
         """
         Initialize the embedding model with the specified model path.
-        
+
         Args:
             model_path: Path to the embedding model file
         """
@@ -75,10 +76,10 @@ class EmbeddingWrapper:
     def embed_documents(self, texts: List[str]) -> List[List[float]]:
         """
         Generate embeddings for a list of documents.
-        
+
         Args:
             texts: List of text strings to embed
-            
+
         Returns:
             List of embedding vectors (as lists of floats)
         """
@@ -91,10 +92,10 @@ class EmbeddingWrapper:
     def embed_query(self, text: str) -> List[float]:
         """
         Generate an embedding for a single query text.
-        
+
         Args:
             text: The query text to embed
-            
+
         Returns:
             Embedding vector as a list of floats
         """
@@ -105,17 +106,18 @@ class EmbeddingWrapper:
 class EmbeddingDatabase:
     """
     Manages a FAISS vector database for document embeddings and retrieval.
-    
+
     This class handles document loading, chunking, embedding, indexing,
     and similarity search operations. It supports various document formats
     and maintains metadata about indexed files.
-    
+
     Attributes:
         db: FAISS vector store instance
         embeddings: EmbeddingWrapper for generating embeddings
         text_splitter: For splitting documents into chunks
         index_list: List of indexed files with metadata
     """
+
     db: FAISS
     embeddings: EmbeddingWrapper
     text_splitter: RecursiveCharacterTextSplitter
@@ -124,7 +126,7 @@ class EmbeddingDatabase:
     def __init__(self, embeddings: EmbeddingWrapper):
         """
         Initialize the embedding database with the provided embedding model.
-        
+
         Args:
             embeddings: An EmbeddingWrapper instance for generating embeddings
         """
@@ -148,10 +150,10 @@ class EmbeddingDatabase:
     def __load_exists_index(self, index_json: str):
         """
         Load existing index metadata from a JSON file.
-        
+
         Args:
             index_json: Path to the index metadata JSON file
-            
+
         Returns:
             List of indexed file metadata or empty list on error
         """
@@ -165,7 +167,7 @@ class EmbeddingDatabase:
     def __save_index(self, file_base_name: str, md5: str, doc_ids: str):
         """
         Save index metadata to the index list and JSON file.
-        
+
         Args:
             file_base_name: Base name of the indexed file
             md5: MD5 hash of the file content
@@ -182,7 +184,7 @@ class EmbeddingDatabase:
     def __add_documents(self, file_base_name: str, docs: List[Document], md5: str):
         """
         Add documents to the FAISS vector store.
-        
+
         Args:
             file_base_name: Base name of the source file
             docs: List of Document objects to add
@@ -198,14 +200,14 @@ class EmbeddingDatabase:
     def __analyze_file_to_db(self, file: str, md5: str):
         """
         Process a file, split it into chunks, and add to the database.
-        
+
         This method handles different file types with appropriate loaders,
         splits the content into chunks, and adds them to the vector store.
-        
+
         Args:
             file: Path to the file to process
             md5: MD5 hash of the file content
-            
+
         Raises:
             Exception: If file type is unsupported or analysis fails
         """
@@ -235,10 +237,10 @@ class EmbeddingDatabase:
     def add_index_file(self, file: str):
         """
         Add a file to the index if it hasn't been indexed already.
-        
+
         Args:
             file: Path to the file to index
-            
+
         Returns:
             Tuple of (status_code, md5_hash)
             status_code: 0 for newly indexed, 1 for already indexed
@@ -255,16 +257,16 @@ class EmbeddingDatabase:
     def query_database(self, query: str):
         """
         Query the database for documents similar to the query text.
-        
+
         Args:
             query: The query text to find relevant documents for
-            
+
         Returns:
             Tuple of (success, context, sources)
             success: Boolean indicating if relevant documents were found
             context: Combined text of relevant documents
             sources: List of source file names
-            
+
         Raises:
             Exception: If query is empty or None
         """
@@ -288,10 +290,10 @@ class EmbeddingDatabase:
     def __calculate_md5(self, file_path: str) -> str:
         """
         Calculate MD5 hash for a file.
-        
+
         Args:
             file_path: Path to the file
-            
+
         Returns:
             MD5 hash as a hexadecimal string
         """
@@ -312,7 +314,7 @@ embedding_database = None
 def init(model_path: str):
     """
     Initialize the RAG system with the specified embedding model.
-    
+
     Args:
         model_path: Path to the embedding model file
     """
@@ -324,10 +326,10 @@ def init(model_path: str):
 def add_index_file(file: str):
     """
     Add a file to the index.
-    
+
     Args:
         file: Path to the file to index
-        
+
     Returns:
         Result from EmbeddingDatabase.add_index_file()
     """
@@ -337,10 +339,10 @@ def add_index_file(file: str):
 def query(query: str):
     """
     Query the database for relevant content.
-    
+
     Args:
         query: The query text to find relevant documents for
-        
+
     Returns:
         Result from EmbeddingDatabase.query_database()
     """
@@ -360,7 +362,9 @@ def dispose():
 
 if __name__ == "__main__":
     # Example Usage
-    init(model_path="/Users/daniel/silicon/AI-Playground/LlamaCPP/models/llm/gguf/bge-large-en-v1.5-q8_0.gguf")
+    init(
+        model_path="/Users/daniel/silicon/AI-Playground/LlamaCPP/models/llm/gguf/bge-large-en-v1.5-q8_0.gguf"
+    )
     add_index_file("/Users/daniel/silicon/AI-Playground/hello.txt")
     success, context, source = query("What is the content about?")
     print("Query success:", success)

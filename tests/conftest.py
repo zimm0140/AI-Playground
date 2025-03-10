@@ -20,16 +20,11 @@ def sample_workflow_traditional():
         "nodes": {
             "1": {
                 "class_type": "CheckpointLoader",
-                "inputs": {
-                    "ckpt_name": "model.safetensors"
-                }
+                "inputs": {"ckpt_name": "model.safetensors"},
             },
             "2": {
                 "class_type": "CLIPTextEncode",
-                "inputs": {
-                    "text": "a photo of a cat",
-                    "clip": ["1", 0]
-                }
+                "inputs": {"text": "a photo of a cat", "clip": ["1", 0]},
             },
             "3": {
                 "class_type": "KSampler",
@@ -39,17 +34,17 @@ def sample_workflow_traditional():
                     "negative": ["4", 0],
                     "latent_image": ["5", 0],
                     "seed": 42,
-                    "steps": 20
-                }
-            }
+                    "steps": 20,
+                },
+            },
         },
         "links": [
             [1, 0, 2, 1],  # Model to CLIP
             [1, 0, 3, 0],  # Model to KSampler
             [2, 0, 3, 1],  # Positive prompt to KSampler
             [4, 0, 3, 2],  # Negative prompt to KSampler
-            [5, 0, 3, 3]   # Latent image to KSampler
-        ]
+            [5, 0, 3, 3],  # Latent image to KSampler
+        ],
     }
 
 
@@ -63,22 +58,15 @@ def sample_workflow_api_format():
             "nodes": {
                 "1": {
                     "class_type": "CheckpointLoader",
-                    "inputs": {
-                        "ckpt_name": "model.safetensors"
-                    }
+                    "inputs": {"ckpt_name": "model.safetensors"},
                 },
                 "2": {
                     "class_type": "VAELoader",
-                    "inputs": {
-                        "vae_name": "vae.safetensors"
-                    }
-                }
+                    "inputs": {"vae_name": "vae.safetensors"},
+                },
             },
-            "links": [
-                [1, 0, 3, 0],
-                [2, 0, 3, 1]
-            ]
-        }
+            "links": [[1, 0, 3, 0], [2, 0, 3, 1]],
+        },
     }
 
 
@@ -89,21 +77,11 @@ def sample_workflow_direct_nodes():
         "name": "Test Direct Nodes Workflow",
         "version": "1.0.0",
         "comfyUiApiWorkflow": {
-            "1": {
-                "class_type": "LoadImage",
-                "inputs": {
-                    "image": "input.png"
-                }
-            },
+            "1": {"class_type": "LoadImage", "inputs": {"image": "input.png"}},
             "2": {
                 "class_type": "SaveImage",
-                "inputs": {
-                    "images": ["1", 0],
-                    "filename_prefix": "output"
-                }
+                "inputs": {"images": ["1", 0], "filename_prefix": "output"},
             },
-            "links": [
-                [1, 0, 2, 0]
-            ]
-        }
-    } 
+            "links": [[1, 0, 2, 0]],
+        },
+    }

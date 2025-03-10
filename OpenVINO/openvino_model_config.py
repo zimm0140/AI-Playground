@@ -14,4 +14,3 @@ making it easier to update paths without modifying the core implementation code.
 openVINOConfig = {
     "openvinoLLM": "../service/models/llm/openvino",
 }
-

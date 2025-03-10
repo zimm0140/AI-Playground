@@ -107,13 +107,13 @@ def find_service_python_files():
         print(f"Current directory: {os.getcwd()}")
         print("Contents:", os.listdir("."))
         sys.exit(1)
-        
+
     files = []
     for root, _, filenames in os.walk("service"):
         for filename in filenames:
             if filename.endswith(".py"):
                 files.append(os.path.join(root, filename))
-    
+
     print(f"Found {len(files)} Python files in the service directory.")
     return files
 
@@ -124,50 +124,54 @@ def test_ruff_fixes(args):
     if os.path.basename(os.getcwd()) == "scripts" and os.path.exists("../../service"):
         os.chdir("../..")
         print(f"Changed to directory: {os.getcwd()}")
-        
+
     # Create a Ruff config file
     if not args.skip_config:
         create_config_file()
-    
+
     # Find service Python files
     service_files = find_service_python_files()
     if not service_files:
         print("No Python files found to check.")
         return 0
-    
+
     # Initial check to see what issues exist
     print_header("Checking for Ruff issues")
     result = run_cmd(["ruff", "check", "--select=E,F", "--statistics"] + service_files)
-    
+
     if result.returncode == 0:
         print("No issues found! All files pass Ruff checks.")
         return 0
-    
+
     # Try to fix the issues
     print_header("Attempting to fix issues")
-    fix_result = run_cmd(["ruff", "check", "--select=E,F", "--fix"] + service_files)
-    
+    _ = run_cmd(["ruff", "check", "--select=E,F", "--fix"] + service_files)  # noqa: F841 (was fix_result)
+
     # Check if fixes were successful
     print_header("Checking if fixes were successful")
-    after_result = run_cmd(["ruff", "check", "--select=E,F", "--statistics"] + service_files)
-    
+    after_result = run_cmd(
+        ["ruff", "check", "--select=E,F", "--statistics"] + service_files
+    )
+
     if after_result.returncode == 0:
         print("All issues fixed successfully!")
         return 0
-    
+
     # Try more specific fixes
     print_header("Applying more specific fixes")
-    
+
     # Try fixing just unused imports (F401)
     run_cmd(["ruff", "check", "--select=F401", "--fix"] + service_files)
-    
+
     # Try fixing just line length issues (E501)
     run_cmd(["ruff", "check", "--select=E501", "--fix"] + service_files)
-    
+
     # Final check
     print_header("Final check")
-    final_result = run_cmd(["ruff", "check", "--select=E,F", "--statistics"] + service_files)
-    
+    final_result = run_cmd(
+        ["ruff", "check", "--select=E,F", "--statistics"] + service_files
+    )
+
     if final_result.returncode == 0:
         print("All issues fixed successfully after multiple passes!")
         return 0
@@ -181,13 +185,17 @@ def test_ruff_fixes(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Test Ruff fixes on service directory")
-    parser.add_argument("--skip-config", action="store_true", help="Skip creating config file")
-    parser.add_argument("--quiet", action="store_true", help="Don't show detailed error output")
+    parser.add_argument(
+        "--skip-config", action="store_true", help="Skip creating config file"
+    )
+    parser.add_argument(
+        "--quiet", action="store_true", help="Don't show detailed error output"
+    )
     args = parser.parse_args()
-    
+
     try:
         exit_code = test_ruff_fixes(args)
         sys.exit(exit_code)
     except Exception as e:
         print(f"Error: {str(e)}")
-        sys.exit(1) 
+        sys.exit(1)

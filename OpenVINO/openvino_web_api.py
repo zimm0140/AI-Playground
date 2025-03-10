@@ -15,13 +15,17 @@ The service uses OpenVINO's optimized runtime for efficient inference on Intel h
 """
 
 import os
+
 # Ensure OpenVINO libraries are in the PATH
-os.environ['PATH'] = os.path.abspath('../openvino-env/Library/bin') + os.pathsep + os.environ['PATH']
-from apiflask import APIFlask
-from flask import jsonify, request, Response, stream_with_context
-from openvino_backend import OpenVino
-from openvino_adapter import LLM_SSE_Adapter
-from openvino_params import LLMParams
+os.environ["PATH"] = (
+    os.path.abspath("../openvino-env/Library/bin") + os.pathsep + os.environ["PATH"]
+)
+# Import after setting PATH environment variable
+from apiflask import APIFlask  # noqa: E402
+from flask import jsonify, request, Response, stream_with_context  # noqa: E402
+from openvino_backend import OpenVino  # noqa: E402
+from openvino_adapter import LLM_SSE_Adapter  # noqa: E402
+from openvino_params import LLMParams  # noqa: E402
 
 # Initialize Flask application and OpenVINO backend
 app = APIFlask(__name__)
@@ -31,7 +35,7 @@ llm_backend = OpenVino()
 @app.get("/health")
 def health():
     """Health check endpoint.
-    
+
     Returns:
         JSON response with status code and success message.
     """
@@ -41,10 +45,10 @@ def health():
 @app.post("/api/llm/chat")
 def llm_chat():
     """LLM chat endpoint that handles text generation requests.
-    
+
     Processes the incoming JSON parameters, initializes the LLM with those parameters,
     and returns a streaming response with generated text using Server-Sent Events (SSE).
-    
+
     Returns:
         Streaming response with generated text chunks.
     """
@@ -59,7 +63,7 @@ def llm_chat():
 @app.post("/api/free")
 def free():
     """Frees resources by unloading the model from memory.
-    
+
     Returns:
         JSON response with status code and success message.
     """
@@ -70,9 +74,9 @@ def free():
 @app.get("/api/llm/stopGenerate")
 def stop_llm_generate():
     """Stops any ongoing text generation process.
-    
+
     Sets a flag in the backend to stop the generation process.
-    
+
     Returns:
         JSON response with status code and success message.
     """
