@@ -4,7 +4,7 @@ This document outlines the code quality standards and tools used in this project
 
 ## Linting and Formatting
 
-We use [Ruff](https://github.com/astral-sh/ruff) for Python linting and formatting. Ruff is a fast Python linter 
+We use [Ruff](https://github.com/astral-sh/ruff) for Python linting and formatting. Ruff is a fast Python linter
 written in Rust that combines the functionality of multiple Python linting tools.
 
 ### Common Linting Issues
