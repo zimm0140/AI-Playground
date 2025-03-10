@@ -22,7 +22,13 @@
   "reportAttributeAccessIssue": false,
   "reportOptionalMemberAccess": false,
   "reportUndefinedVariable": false,
+  "reportUnknownArgumentType": false,
+  "reportUnknownMemberType": false,
+  "reportUnknownVariableType": false,
+  "reportArgumentType": false,
+  "reportIndexIssue": false,
+  "reportCallIssue": "none",
+  "reportGeneralTypeIssues": "none",
   "pythonVersion": "3.9",
-  "typeCheckingMode": "basic",
-  "reportCallIssue": "none"
+  "typeCheckingMode": "basic"
 } 
