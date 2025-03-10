@@ -102,6 +102,7 @@ Each component follows this standard format:
 }
 
 ```text
+
 ## Available Components
 
 - **Image Loaders**: Components for loading and processing input images

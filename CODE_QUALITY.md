@@ -45,6 +45,7 @@ pre-commit install
 pre-commit run --all-files
 
 ```text
+
 ## CI/CD Checks
 
 Our GitHub Actions workflow runs the following checks:
@@ -68,6 +69,7 @@ python check_linting.py
 python fix_unused_variables.py
 
 ```text
+
 ## Best Practices
 
 1. **Run pre-commit before pushing**: This catches issues before they reach CI.
