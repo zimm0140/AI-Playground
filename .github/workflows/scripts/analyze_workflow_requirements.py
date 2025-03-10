@@ -16,7 +16,6 @@ It produces a report detailing the requirements for executing each workflow.
 """
 
 import os
-import sys
 import json
 import argparse
 import glob

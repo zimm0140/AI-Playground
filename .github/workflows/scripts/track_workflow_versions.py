@@ -12,15 +12,12 @@ This helps track workflow changes over time and identify potential compatibility
 """
 
 import os
-import sys
 import json
 import hashlib
 import argparse
 import glob
-import difflib
 import datetime
-from pathlib import Path
-from typing import Dict, List, Tuple, Any, Optional, Set
+from typing import Dict, List, Tuple, Any, Optional
 
 
 class WorkflowVersion:

@@ -19,12 +19,8 @@ import glob
 import logging
 import time
 import traceback
-import tempfile
-import shutil
 from datetime import datetime
-from pathlib import Path
-from typing import Dict, List, Any, Optional, Tuple, Set
-import importlib.util
+from typing import Dict, List, Any, Tuple
 import numpy as np
 try:
     import torch
@@ -220,7 +216,8 @@ class NodeSimulation:
     
     def _execute_VAELoader(self):
         """Simulate VAE loader node"""
-        vae_name = self.inputs.get("vae_name", "vae.pt")
+        # Variable captured for future implementation
+        _ = self.inputs.get("vae_name", "vae.pt")
         model_sim = ModelSimulation("vae")
         
         return {
@@ -231,8 +228,9 @@ class NodeSimulation:
         """Simulate LoRA loader node"""
         model = self.inputs.get("model", None)
         clip = self.inputs.get("clip", None)
-        lora_name = self.inputs.get("lora_name", "lora.safetensors")
-        strength = self.inputs.get("strength", 1.0)
+        # Variables captured for future implementation
+        _ = self.inputs.get("lora_name", "lora.safetensors")
+        _ = self.inputs.get("strength", 1.0)
         
         # Apply "modifications" to the input model and clip
         if model is not None and clip is not None:
@@ -253,7 +251,8 @@ class NodeSimulation:
     def _execute_CLIPTextEncode(self):
         """Simulate CLIP text encoding"""
         text = self.inputs.get("text", "")
-        clip = self.inputs.get("clip", None)
+        # Variable captured for future implementation
+        _ = self.inputs.get("clip", None)
         
         # Create a conditioning tensor that would represent encoded text
         if TORCH_AVAILABLE:
@@ -289,9 +288,10 @@ class NodeSimulation:
     
     def _execute_KSampler(self):
         """Simulate K-Sampler node"""
-        model = self.inputs.get("model")
-        positive = self.inputs.get("positive")
-        negative = self.inputs.get("negative")
+        # Variables captured for future implementation
+        _ = self.inputs.get("model")
+        _ = self.inputs.get("positive")
+        _ = self.inputs.get("negative")
         latent = self.inputs.get("latent_image")
         
         # In reality, this would run diffusion steps
@@ -320,7 +320,8 @@ class NodeSimulation:
     
     def _execute_VAEDecode(self):
         """Simulate VAE decoding from latent to image"""
-        vae = self.inputs.get("vae")
+        # Variable captured for future implementation
+        _ = self.inputs.get("vae")
         samples = self.inputs.get("samples")
         
         # In reality, this would decode the latent using the VAE
@@ -367,7 +368,8 @@ class NodeSimulation:
     def _execute_UpscaleImage(self):
         """Simulate image upscaling"""
         image = self.inputs.get("image")
-        upscale_method = self.inputs.get("upscale_method", "nearest")
+        # Variable captured for future implementation
+        _ = self.inputs.get("upscale_method", "nearest")
         scale = self.inputs.get("scale", 2.0)
         
         if image is not None:
