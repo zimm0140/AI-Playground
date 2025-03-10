@@ -98,4 +98,4 @@ To create a new component:
 - Document all inputs and outputs clearly
 - Version your components using semantic versioning
 - Test components in isolation before including them in workflows
-- Consider resource requirements when designing components 
+- Consider resource requirements when designing components

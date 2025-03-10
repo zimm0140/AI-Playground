@@ -1,3 +1,16 @@
+import os
+from functools import wraps
+from contextlib import nullcontext
+import torch
+import importlib.util
+import numpy as np
+
+spec = importlib.util.find_spec("intel_extension_for_pytorch")
+if spec is not None:
+    import intel_extension_for_pytorch as ipex  # pylint: disable=import-error, unused-import
+else:
+    ipex = None
+
 """
 PyTorch XPU Hijacks Module
 --------------------------
@@ -18,20 +31,6 @@ Key features:
 
 Code credit: https://github.com/vladmandic/automatic/blob/master/modules/intel/ipex/hijacks.py
 """
-
-import os
-from functools import wraps
-from contextlib import nullcontext
-import torch
-import importlib.util
-import numpy as np
-
-spec = importlib.util.find_spec("intel_extension_for_pytorch")
-if spec is not None:
-    import intel_extension_for_pytorch as ipex  # pylint: disable=import-error, unused-import
-else:
-    ipex = None
-
 
 # =================== GLOBAL VARIABLES AND INITIALIZATION ===================
 # Check if the device supports 64-bit floating point operations
