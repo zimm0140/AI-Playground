@@ -1,0 +1,18 @@
+{
+  "include": [
+    ".github/workflows/scripts/**",
+    "tests/**"
+  ],
+  "exclude": [
+    "**/node_modules",
+    "**/__pycache__",
+    "service/**",
+    "LlamaCPP/**",
+    "OpenVINO/**"
+  ],
+  "venvPath": ".",
+  "reportMissingImports": true,
+  "reportMissingTypeStubs": false,
+  "pythonVersion": "3.9",
+  "typeCheckingMode": "basic"
+} 

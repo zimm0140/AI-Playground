@@ -3,6 +3,7 @@
 This document provides information about the CI (Continuous Integration) system used in the AI-Playground project, how to use it, and how to troubleshoot common issues.
 
 ## Table of Contents
+
 - [Overview](#overview)
 - [Workflow Files](#workflow-files)
 - [Pre-commit Hooks](#pre-commit-hooks)
@@ -46,10 +47,13 @@ To set up pre-commit hooks:
 
 
 ```bash
+
 # On Unix/Linux/macOS or Git Bash
+
 ./.github/setup-hooks.sh
 
 # On Windows with PowerShell
+
 .\.github\setup-hooks.ps1
 ```
 
@@ -103,9 +107,13 @@ To ensure smooth CI operation:
 
 **Solution**: Run the CI cleanup workflow which will ensure unique artifact names:
 
+
 ```bash
+
 # Via GitHub Actions web UI
+
 # Go to Actions > CI Cleanup and Optimization > Run workflow
+
 ```
 
 
@@ -114,6 +122,7 @@ To ensure smooth CI operation:
 **Symptom**: Ruff or linting check fails with errors like `F401 import xxx is unused`
 
 **Solution**: Run the lint script locally to identify and fix issues:
+
 
 ```bash
 python .github/workflows/scripts/lint_python_files.py path/to/file.py
@@ -125,6 +134,7 @@ python .github/workflows/scripts/lint_python_files.py path/to/file.py
 **Symptom**: CI fails with indentation errors, particularly in `try/except` blocks
 
 **Solution**: Run the fix_ci_issues script:
+
 
 ```bash
 python .github/workflows/scripts/fix_ci_issues.py

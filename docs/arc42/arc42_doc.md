@@ -10,14 +10,19 @@ including image generation and conversational AI.
 ### Requirements Overview
 
 - **Generative AI with Intel Graphics Cards**  
+
   The AI Playground enables model inference specifically on Intel devices. Users can interact with chat models, image
   generation, and image modification models, all via configurable generation pipelines ("workflows"). Different models
   may be selected.
+
 - **Self-contained Inference Environments**  
+
   AI Playground automatically handles the installation of required models, the inference environment, and other
   dependencies necessary for execution, ensuring a seamless experience for users. Various inference libraries are
   offered to the user, most of them fully optional and only installed on explicit approval by the user.
+
 - **Dynamic Workflow Updates**  
+
   Users can fetch new workflows published by Intel directly from within AI Playground. These updates are provided
   without requiring new installations or releases, allowing users to stay up to date with the latest offerings.
 

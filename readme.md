@@ -1,43 +1,50 @@
 # AI Playground
 
-<a href="https://scan.coverity.com/projects/ai-playground">
+<a href="<https://scan.coverity.com/projects/ai-playground>">
   <img alt="Coverity Scan Build Status"
-       src="https://scan.coverity.com/projects/30694/badge.svg"/>
+       src="<https://scan.coverity.com/projects/30694/badge.svg">/>
 </a>
 
 ![image](https://github.com/user-attachments/assets/ee1efc30-4dd1-4934-9233-53fba00c71bd)
 
-
 This example is based on the xpu implementation of Intel® Arc™ GPU.
 
 Welcome to AI Playground open source project and AI PC starter app for doing AI image creation, image stylizing, and chatbot on a PC powered by an Intel® Arc™ GPU. AI Playground leverages libraries from GitHub and Huggingface which may not be available in all countries world-wide.  AI Playground supports many Gen AI libraries and models including:
+
 - Image Diffusion: Stable Diffusion 1.5, SDXL, Flux.1-Schnell, LTX-Video
 - LLM: Safetensor PyTorch LLMs - DeepSeek R1 models, Phi3, Qwen2, Mistral, GGUF LLMs -  Llama 3.1, Llama 3.2: OpenVINO - TinyLlama, Mistral 7B, Phi3 mini, Phi3.5 mini
 
 ## README.md
+
 - English (readme.md)
 
 ## Min Specs
+
 AI Playground alpha and beta installers are currently available downloadable executables, or available as a source code from our Github repository.  To run AI Playground you must have a PC that meets the following specifications
 
-*	Windows OS
-*	Intel Core Ultra-H Processor, Intel Core Ultra 200V series processor OR Intel Arc GPU Series A or Series B (discrete) with 8GB of vRAM
+-    Windows OS
+-    Intel Core Ultra-H Processor, Intel Core Ultra 200V series processor OR Intel Arc GPU Series A or Series B (discrete) with 8GB of vRAM
 
-## Installation - Packaged Installer:
+## Installation - Packaged Installer
+
 Starting from v2.0, there is a single packaged installer that works for all supported hardware mentioned above. This installer simplifies the process for end users to install AI Playground and get it running on their PC. Please note that while this makes the installation process easier, this is open-source beta software, and there may be component and version conflicts. Refer to the Troubleshooting section for known issues.
 
-### Download the installer
+## # Download the installer
+
 :new: **AI Playground 2.2.1 Beta (all SKUs)** - [Release Notes](https://github.com/intel/AI-Playground/releases/tag/v2.2.1-beta) | [Download](https://github.com/intel/AI-Playground/releases/download/v2.2.1-beta/AI.Playground-2.2.1-beta.exe) :new:
-> [!IMPORTANT]  
+> [!IMPORTANT]
 > This release fixes video generation and image generation bugs from 2.2
 
-### Installation Process for v2.0
+## # Installation Process for v2.0
+
 1. The installer only installs the Electron frontend, so it completes very quickly.
 2. On the first run, you need to install additional backend components for AI Playground to function properly. This process requires a strong and open network and may **take several minutes**.
 3. Download the Users Guide for application information: [AI Playground Users Guide](https://github.com/intel/ai-playground/blob/main/AI%20Playground%20Users%20Guide.pdf)
 
-### Troubleshooting Installation
+## # Troubleshooting Installation
+
 The following are known situations where your installation may be blocked or interrupted.  Review the following to remedy installations issues.  If installation issues persist, generate a copy of the log by typing CTRL+SHIFT+I, select the console tab and copy the last few entries of the log written where the installer failed.  Provide these details to us via the issues tab here, or via the Intel Insiders Discord, or Graphics forum on Intel's support site.
+
 1. **Restart**: Time-out issues have been sighted, which show as a failed install but resolve when restarting AI Playground
 2. **Verify Intel Arc GPU**: Ensure your system has an Intel Arc GPU. Go to your Windows Start Menu, type "Device Manager," and under Display Adapters, check the name of your GPU device. It should describe an Intel Arc GPU. If so, then you you have a GPU that means our minimum specifications.  If it says "Intel(R) Graphics," your system does not have a built-in Intel Arc GPU and does not meet the minimum specifications.
 3. **Interrupted Installation**: The online installation for backend components can be interrupted or blocked by an IT network, firewall, or sleep settings. Ensure you are on an open network, with the firewall off, and set sleep settings to stay awake when powered on.
@@ -46,93 +53,83 @@ The following are known situations where your installation may be blocked or int
 6.  **Temp Files**: Should the installation be interrupted because of any of the above issues it is possible that temporary installation files have been left behind and trying to install with these files in place can block the installation. Remove these files or do a clean install of AI Playground to remedy
 
 ## Project Development
-### Checkout Source Code
+
+## # Checkout Source Code
 
 To get started, clone the repository and navigate to the project directory:
 
-
 ```cmd
-git clone -b dev https://github.com/intel/AI-Playground.git
+git clone -b dev <https://github.com/intel/AI-Playground.git>
 cd AI-Playground
 ```
 
-
-### Install Node.js Dependencies
+## # Install Node.js Dependencies
 
 1. Install the Node.js development environment from [Node.js](https://nodejs.org/en/download).
 
-2. Navigate to the `WebUI` directory and install all Node.js dependencies:
-
+1. Navigate to the `WebUI` directory and install all Node.js dependencies:
 
 ```cmd
 cd WebUI
 npm install
 ```
 
+## # Prepare Python Environment
 
-### Prepare Python Environment
+1. Install Miniforge to manage your Conda environment: <https://github.com/conda-forge/miniforge>
 
-1. Install Miniforge to manage your Conda environment: https://github.com/conda-forge/miniforge
-
-2. Create a Conda environment with Python 3.11 and libuv:
+1. Create a Conda environment with Python 3.11 and libuv:
 
 ```text
 conda create -n cp311_libuv python=3.11 libuv -y
 ```
 
-
-3. Locate the path to your newly created Conda environment:
+1. Locate the path to your newly created Conda environment:
 
 ```text
 conda env list | findstr cp311_libuv
 ```
 
-
-4. In the `WebUI` directory, execute the `fetch-build-resources` script, replacing `<path_to_cp311_libuv_conda_env>` with the actual path you copied in the previous step:
+1. In the `WebUI` directory, execute the `fetch-build-resources` script, replacing `<path_to_cp311_libuv_conda_env>` with the actual path you copied in the previous step:
 
 ```text
 npm run fetch-build-resources -- --conda_env_dir=<path_to_cp311_libuv_conda_env>
 ```
 
-
-5. Run the `prepare-build` script:
+1. Run the `prepare-build` script:
 
 ```text
 npm run prepare-build
 ```
 
-
 You should now have a basic Python environment located at `build-envs\online\prototype-python-env`.
 
-### Launch the application
+## # Launch the application
 
 To start the application in development mode, run:
-
 
 ```text
 npm run dev
 ```
 
-
-### (Optional) Build the installer
+## # (Optional) Build the installer
 
 To build the installer, run:
-
 
 ```text
 npm run build
 ```
 
-
 The installer executable will be located in the `release` folder.
 
 ## CI Features
 
-### ComfyUI Workflow Validation
+## # ComfyUI Workflow Validation
 
 AI Playground includes automated validation for ComfyUI workflows in the CI pipeline. This ensures that all workflow JSON files in the `WebUI/external/workflows` directory are properly structured and executable.
 
 The validation process includes:
+
 - Structural validation of workflow JSON files
 - Analysis of model, custom node, and hardware requirements
 - Simulation of workflow execution without requiring actual models
@@ -141,60 +138,67 @@ For more details, see the [ComfyUI Workflow Validation documentation](docs/comfy
 
 ## Developer Environment Setup
 
-### Virtual Environment Setup
+## # Virtual Environment Setup
 
 For development work, we recommend using a virtual environment to isolate dependencies. AI Playground supports both Conda and venv-based workflows:
 
-#### Option 1: Using Conda (Recommended)
-
+## # # Option 1: Using Conda (Recommended)
 
 ```cmd
+
 # Create a conda environment
+
 conda env create -f environment.yml
 
 # Activate the environment
+
 conda activate ai-playground-env
 
 # Install requirements
+
 pip install -r requirements.txt
 ```
 
-
-#### Option 2: Using venv
-
+## # # Option 2: Using venv
 
 ```cmd
+
 # Create a virtual environment
+
 python -m venv .venv
 
 # Activate on Windows
+
 .\.venv\Scripts\activate
 
 # Activate on macOS/Linux
+
 source .venv/bin/activate
 
 # Install requirements
+
 pip install -r requirements.txt
 ```
 
-
-### Quick Setup
+## # Quick Setup
 
 We provide a setup script that checks your environment and installs dependencies:
 
-
 ```cmd
+
 # On Windows
+
 scripts\setup_env.bat
 
 # On macOS/Linux
+
 python scripts/setup_env.py
 ```
-
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for more detailed information about development workflows.
 
 ## Model Support
+
 AI Playground supports PyTorch LLM, SD1.5, and SDXL models. AI Playground does not ship with any models but does make  models available for all features either directly from the interface or indirectly by the users downloading models from HuggingFace.co or CivitAI.com and placing them in the appropriate model folder.
 
 Models currently linked from the application
@@ -210,10 +214,12 @@ Models currently linked from the application
 
 Be sure to check license terms for any model used in AI Playground especially taking note of any restrictions.
 
-### Use Alternative Models
+## # Use Alternative Models
+
 Check the [User Guide](https://github.com/intel/ai-playground/blob/main/AI%20Playground%20Users%20Guide.pdf) for details or [watch this video](https://www.youtube.com/watch?v=1FXrk9Xcx2g) on how to add alternative Stable Diffusion models to AI Playground
 
-### Notices and Disclaimers:
+## # Notices and Disclaimers
+
 For information on AI Playground terms, license and disclaimers, visit the project and files on GitHub repo:</br >
 [License](https://github.com/intel/ai-playground/blob/main/LICENSE) | [Notices & Disclaimers](https://github.com/intel/ai-playground/blob/main/notices-disclaimers.md)
 
