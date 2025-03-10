@@ -15,80 +15,83 @@ Thank you for your interest in contributing to AI-Playground! This document outl
 
 1. **Create and activate the environment**:
 
-
 ```bash
    # Create a new Conda environment
+
    conda create -n ai-playground-env python=3.9 -y
 
    # Activate the environment
+
    conda activate ai-playground-env
 
    # Install required packages
+
    pip install -r requirements.txt
    ```
 
-
 1. **Verify the environment**:
-
 
 ```bash
    # Check which Python is being used (should point to your conda environment)
+
    python -c "import sys; print(sys.executable)"
 
    # Test that jsonschema is installed
+
    python -c "import jsonschema; print(f'jsonschema version: {jsonschema.__version__}')"
    ```
-
 
 ### Option 2: Using venv
 
 1. **Create and activate the environment**:
 
-
 ```bash
    # On Windows
+
    python -m venv .venv
    .\.venv\Scripts\activate
 
    # On macOS/Linux
+
    python -m venv .venv
    source .venv/bin/activate
 
    # Install required packages
+
    pip install -r requirements.txt
    ```
-
 
 ## Environment Management Best Practices
 
 1. **Always activate your environment before working on the project**:
 
-
 ```bash
    # For Conda
+
    conda activate ai-playground-env
 
    # For venv on Windows
+
    .\.venv\Scripts\activate
 
    # For venv on macOS/Linux
+
    source .venv/bin/activate
    ```
-
 
 1. **Add new dependencies to requirements.txt**:
 
    When adding a new package, update the requirements.txt file:
 
-
 ```bash
    # After installing a new package
+
    pip freeze > requirements.txt
 
    # Or manually add it with a specific version
+
    echo "package-name==1.2.3" >> requirements.txt
    ```
-
 
 1. **Never commit environment directories**:
 
@@ -99,14 +102,12 @@ Thank you for your interest in contributing to AI-Playground! This document outl
 
 To validate JSON files against schemas:
 
-
 ```bash
 
 # Ensure you're in your activated environment
 
 python validate_colorize.py
 ```
-
 
 ## Additional Guidelines
 
@@ -149,9 +150,9 @@ The process described here has several goals:
 Please follow these steps to have your contribution considered by the maintainers:
 
 1. Always set base branch to [dev](https://github.com/intel/AI-Playground/tree/dev), do NOT make pull requests to the main branch without a strong reason.
-2. Follow all instructions in [the template](/.github/pull_request_template.md).
-3. After you submit your pull request, verify that all [status checks](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/about-status-checks) are passing.
-4. [Sign your work](/CONTRIBUTING.md#sign-your-work).
+1. Follow all instructions in [the template](/.github/pull_request_template.md).
+1. After you submit your pull request, verify that all [status checks](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/about-status-checks) are passing.
+1. [Sign your work](/CONTRIBUTING.md#sign-your-work).
 
 While the prerequisites above must be satifisfied prior to have your pull request reviewed, the reviewer(s) may ask you to complete additional design work, tests, or other changes before your pull request can be ultimately accepted.
 
@@ -167,7 +168,6 @@ AI Playground is licensed under the terms in [LICENSE](/LICENSE). By contributin
 
 Please use the sign-off line at the end of the patch. Your signature certifies that you wrote the patch or otherwise have the right to pass it on as an open-source patch. The rules are pretty simple: if you can certify
 the below (from [developercertificate.org](http://developercertificate.org/)):
-
 
 ```text
 Developer Certificate of Origin
@@ -185,32 +185,46 @@ Developer's Certificate of Origin 1.1
 By making a contribution to this project, I certify that:
 
 (a) The contribution was created in whole or in part by me and I
-    have the right to submit it under the open source license
-    indicated in the file; or
-
-(b) The contribution is based upon previous work that, to the best
-    of my knowledge, is covered under an appropriate open source
-    license and I have the right under that license to submit that
-    work with modifications, whether created in whole or in part
-    by me, under the same open source license (unless I am
-    permitted to submit under a different license), as indicated
-    in the file; or
-
-(c) The contribution was provided directly to me by some other
-    person who certified (a), (b) or (c) and I have not modified
-    it.
-
-(d) I understand and agree that this project and the contribution
-    are public and that a record of the contribution (including all
-    personal information I submit with it, including my sign-off) is
-    maintained indefinitely and may be redistributed consistent with
-    this project or the open source license(s) involved.
 ```
 
+have the right to submit it under the open source license
+indicated in the file; or
+```
+
+(b) The contribution is based upon previous work that, to the best
+```
+
+of my knowledge, is covered under an appropriate open source
+license and I have the right under that license to submit that
+work with modifications, whether created in whole or in part
+by me, under the same open source license (unless I am
+permitted to submit under a different license), as indicated
+in the file; or
+```
+
+(c) The contribution was provided directly to me by some other
+```
+
+person who certified (a), (b) or (c) and I have not modified
+it.
+```
+
+(d) I understand and agree that this project and the contribution
+```
+
+are public and that a record of the contribution (including all
+personal information I submit with it, including my sign-off) is
+maintained indefinitely and may be redistributed consistent with
+this project or the open source license(s) involved.
+```
+```
 
 Then you just add a line to every git commit message:
 
-    Signed-off-by: Joe Smith <joe.smith@email.com>
+```
+
+Signed-off-by: Joe Smith <joe.smith@email.com>
+```
 
 Use your real name (sorry, no pseudonyms or anonymous contributions.)
 

@@ -19,6 +19,7 @@
 | "modifiableSettings"  | **Required**: Yes, if no default values need leave as empty brackets \[ \] <br>**Description**: Input types you’d like the user to adjust: “resolution”, “seed”, prompt” “inferenceSteps”, “batchSize, “cfg”, “negativePrompt” <br>**Syntax**: “inputField” ie "inferenceSteps", "seed" |
 | "comfyUiApiWorkflow": | **Required**: Yes <br>**Description**: This section should be a copy and paste of the API export of the workflow created in ComfyUI.
 
+
 ## Instructions
 
 **Creating a New An AI Playground Workflow**
@@ -44,37 +45,43 @@
 
 **Adding Input Fields:**  Input Fields allows you to add inputs to the AI Playground Settings UI to influence parameters of the workflow in ComfyUI
 
-- **Allowable Input Fields Types**: Field names and value types  
-  - “number”, float to 1 decimal or integer (20)  
-  - “string”, text in quotes up to X characters  
+- **Allowable Input Fields Types**: Field names and value types
+  - “number”, float to 1 decimal or integer (20)
+  - “string”, text in quotes up to X characters
   - “image”, use this value as default:
 
-- **Batch Size Example**: Adding an input slider to a workflow that has an "Empty Latent Image" node will allow for batch\_Size to be set by the user.  
+- **Batch Size Example**: Adding an input slider to a workflow that has an "Empty Latent Image" node will allow for batch\_Size to be set by the user.
 
-  {  
-        "nodeTitle": "Empty Latent Image",  
-        "nodeInput": "batch\_size",  
-        "type": "number",  
-        "label": "Batch Size",  
-        "defaultValue": 1,  
-        "step": 1,  
-        "min": 1,  
-        "max": 4  
-      }
+  {
+```
+
+    "nodeTitle": "Empty Latent Image",
+    "nodeInput": "batch\_size",
+    "type": "number",
+    "label": "Batch Size",
+    "defaultValue": 1,
+    "step": 1,
+    "min": 1,
+    "max": 4
+  }
+```
 
   **Example Explanation:** the batch\_Size field determines how many images will be generated at the same time. In AI Playground this value is set to “1” by default. The code above adds a number slider to the settings menu with an input range from 1 to 4\. In the example image below, the batch\_size is set to 2 with a image generation number of 4, generating 8 total images.
 
-    ![image](https://github.com/user-attachments/assets/b5fb5c88-ca86-457d-8496-d182a4fcfea8)
+```
+
+![image](https://github.com/user-attachments/assets/b5fb5c88-ca86-457d-8496-d182a4fcfea8)
+```
 
 **Allowed AI Playground Settings Names** for “displayedSettings” or “modifiableSettings”
 
-- “resolution”,   
-- “inferenceSteps”  
-- “seed”  
+- “resolution”,
+- “inferenceSteps”
+- “seed”
 - “guidanceScale”
-- “sampler”  
-- “scheduler”  
-- “batchSize”  
+- “sampler”
+- “scheduler”
+- “batchSize”
 - “imagePreview”
 
 Input image default value:

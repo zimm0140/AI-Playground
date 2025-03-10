@@ -28,17 +28,17 @@ This document outlines the code quality standards, tools, and practices implemen
 ### Python
 
 1. Use type hints for all function parameters and return values.
-2. Follow PEP 8 style guidelines.
-3. Keep functions small and focused (preferably under 50 lines).
-4. Write docstrings for all modules, classes, and functions.
-5. Use meaningful variable and function names.
+1. Follow PEP 8 style guidelines.
+1. Keep functions small and focused (preferably under 50 lines).
+1. Write docstrings for all modules, classes, and functions.
+1. Use meaningful variable and function names.
 
 ### Documentation
 
 1. Keep documentation up-to-date with code changes.
-2. Use consistent formatting in markdown files.
-3. Document complex functionality with examples.
-4. Include installation and setup instructions for developers.
+1. Use consistent formatting in markdown files.
+1. Document complex functionality with examples.
+1. Include installation and setup instructions for developers.
 
 ## Pre-commit Hooks
 
@@ -52,12 +52,10 @@ Pre-commit hooks are configured to run the following checks:
 
 To set up pre-commit hooks:
 
-
 ```bash
 pip install pre-commit
 pre-commit install
 ```
-
 
 ## Troubleshooting Common Issues
 
@@ -66,14 +64,15 @@ pre-commit install
 Common issues and solutions:
 
 1. **Line Length (MD013)**: Break long lines or use the `<!-- markdownlint-disable MD013 -->` comment to disable for specific sections.
-2. **Multiple Top-level Headings (MD025)**: Use only one H1 (#) heading per document.
-3. **List Formatting**: Ensure lists have blank lines before and after, and use consistent formatting (- for unordered, 1. for ordered).
+1. **Multiple Top-level Headings (MD025)**: Use only one H1 (#) heading per document.
+1. **List Formatting**: Ensure lists have blank lines before and after, and use consistent formatting (- for unordered, 1. for ordered).
 
 ### Python Linting
 
 1. **Import Issues**: Update `pyrightconfig.json` or `mypy.ini` to handle special imports.
-2. **Line Length**: Use line breaks or, in rare cases, `# noqa: E501` to ignore specific lines.
-3. **Type Checking**: Use `# type: ignore` for legitimate cases where types cannot be properly resolved.
+1. **Line Length**: Use line breaks or, in rare cases, `# noqa: E501` to ignore specific lines.
+
+1. **Type Checking**: Use `# type: ignore` for legitimate cases where types cannot be properly resolved.
 
 ## Contact
 

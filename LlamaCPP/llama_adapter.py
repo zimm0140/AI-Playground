@@ -16,7 +16,7 @@ from queue import Empty, Queue
 import json
 import time
 import traceback
-from typing import Dict, List, Callable
+from typing import Dict, List, Callable, Optional
 
 # from model_downloader import NotEnoughDiskSpaceException, DownloadException
 # from psutil._common import bytes2human
@@ -244,6 +244,9 @@ class LLM_SSE_Adapter:
                     )
 
             full_prompt = convert_prompt(prompt)
+            # Note: The abstract interface defines only the 'messages' parameter, but implementations
+            # like LlamaCpp also have a 'max_tokens' parameter. This inconsistency causes type errors.
+            # pyright: ignore
             stream = self.llm_interface.create_chat_completion(
                 full_prompt, params.max_tokens
             )
@@ -321,7 +324,7 @@ def convert_prompt(prompt: List[Dict[str, str]]):
 def process_rag(
     prompt: str,
     device: str,
-    text_out_callback: Callable[[str, int], None] = None,
+    text_out_callback: Optional[Callable[[str, int], None]] = None,
 ):
     """
     Process a prompt using Retrieval Augmented Generation (RAG).
