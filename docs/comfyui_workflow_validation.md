@@ -168,35 +168,35 @@ You can run the validation process locally using the following scripts:
 
 ```bash
 
-# Structural validation
+## Structural validation
 
 python .github/workflows/scripts/validate_comfyui_workflows.py --workflows-dir WebUI/external/workflows
 
-# Requirements analysis
+## Requirements analysis
 
 python .github/workflows/scripts/analyze_workflow_requirements.py --workflows-dir WebUI/external/workflows
 
-# Execution simulation
+## Execution simulation
 
 python .github/workflows/scripts/test_workflow_execution.py --workflows-dir WebUI/external/workflows
 
-# Model simulation
+## Model simulation
 
 python .github/workflows/scripts/simulate_workflow_execution.py --workflows-dir WebUI/external/workflows
 
-# Version tracking
+## Version tracking
 
 python .github/workflows/scripts/track_workflow_versions.py --workflows-dir WebUI/external/workflows
 
-# Dashboard generation
+## Dashboard generation
 
 python .github/workflows/scripts/generate_workflow_dashboard.py
 
-# PR comment generation (requires changed files list)
+## PR comment generation (requires changed files list)
 
 python .github/workflows/scripts/comment_on_workflow_pr.py --changed-files path/to/changed/file1.json,path/to/changed/file2.json
-```
 
+```text
 Each script supports additional arguments:
 
 - `--output-dir`: Directory to store validation results

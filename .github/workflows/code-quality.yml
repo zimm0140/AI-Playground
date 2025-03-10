@@ -139,6 +139,11 @@ jobs:
               content = re.sub(r'(?<!\n\n)(?<!\n```)\n(( {4,}|\t).*\n)+', 
                                lambda m: f"\n```\n{re.sub(r'^ {4}', '', m.group(0), flags=re.MULTILINE)}```\n", 
                                content)
+              # Add language to code blocks that don't have one (MD040)
+              content = re.sub(r'```\n', '```text\n', content)
+              # Ensure blank lines around fenced code blocks (MD031)
+              content = re.sub(r'([^\n])(\n```)', r'\1\n\2', content)
+              content = re.sub(r'(```\n)([^\n])', r'\1\n\2', content)
               return content
           
           def fix_table_spacing(content: str) -> str:
@@ -298,66 +303,3 @@ jobs:
           pip install pre-commit
       - name: Run pre-commit on all files
         run: pre-commit run --all-files 
-        
-  markdown-lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pytest
-      - name: Setup fix script
-        run: |
-          cat > fix_markdown.py << 'EOF'
-          #!/usr/bin/env python3
-          import re
-          import os
-          import glob
-          
-          def fix_markdown_files():
-              """Apply fixes to markdown files."""
-              for file_path in glob.glob("**/*.md", recursive=True):
-                  try:
-                      with open(file_path, 'r', encoding='utf-8') as f:
-                          content = f.read()
-                      
-                      # Fix trailing whitespace
-                      content = '\n'.join([line.rstrip() for line in content.split('\n')])
-                      
-                      # Fix multiple consecutive blank lines
-                      content = re.sub(r'\n{3,}', '\n\n', content)
-                      
-                      # Ensure file ends with single newline
-                      content = content.rstrip('\n') + '\n'
-                      
-                      with open(file_path, 'w', encoding='utf-8') as f:
-                          f.write(content)
-                      
-                      print(f"Fixed {file_path}")
-                  except Exception as e:
-                      print(f"Error fixing {file_path}: {str(e)}")
-          
-          if __name__ == "__main__":
-              fix_markdown_files()
-          EOF
-          chmod +x fix_markdown.py
-      - name: Run fix script
-        run: python fix_markdown.py
-      - name: Run markdownlint
-        uses: DavidAnson/markdownlint-cli2-action@v14
-        with:
-          globs: '**/*.md'
-          config: '.markdownlint.yaml'
-      - name: Commit changes if needed
-        run: |
-          if [[ -n $(git status --porcelain) ]]; then
-            git config --local user.email "action@github.com"
-            git config --local user.name "GitHub Action"
-            git add .
-            git commit -m "Fix markdown linting issues [skip ci]"
-            git push
-          fi 

@@ -8,11 +8,11 @@ The project uses [Ruff](https://github.com/astral-sh/ruff) for Python code linti
 
 ```bash
 
-# Standard linting configuration
+## Standard linting configuration
 
 ruff check --select=E,F --ignore=E501 --extend-exclude=.git,.github,.venv,venv,__pycache__,build,dist --line-length=100 ./service
-```
 
+```text
 ### Key Rules
 
 - **E**: Style errors (from pycodestyle)
@@ -28,33 +28,31 @@ ruff check --select=E,F --ignore=E501 --extend-exclude=.git,.github,.venv,venv,_
 
 ```text
    .\.github\workflows\scripts\fix_ruff_windows.ps1
-   ```
-
+   ```text
 1. For Linux/Mac users:
 
 ```text
    python .github/workflows/scripts/fix_ruff_issues_local.py
-   ```
-
+   ```text
 ### Manual Linting
 
 To run Ruff manually:
 
 ```bash
 
-# Install Ruff
+## Install Ruff
 
 pip install ruff
 
-# Check for issues
+## Check for issues
 
 ruff check --select=E,F --ignore=E501 --line-length=100 ./service
 
-# Fix issues automatically
+## Fix issues automatically
 
 ruff check --select=E,F --ignore=E501 --line-length=100 --fix ./service
-```
 
+```text
 ## Common Issues and Fixes
 
 ### Unused Imports (F401)
@@ -64,15 +62,13 @@ An import that's not used in the file:
 ```python
 import os  # Unused import
 
-```
-
+```text
 **Fix**: Either remove the import or add a `# noqa: F401` comment if it's needed for side effects:
 
 ```python
 import os  # noqa: F401
 
-```
-
+```text
 ### Missing Whitespace (E2xx)
 
 Missing spaces around operators or after commas:
@@ -82,8 +78,7 @@ x=1+2  # Missing spaces
 
 def func(a,b):  # Missing space after comma
 
-```
-
+```text
 **Fix**: Add appropriate spacing:
 
 ```python
@@ -91,8 +86,7 @@ x = 1 + 2  # Correct spacing
 
 def func(a, b):  # Space after comma
 
-```
-
+```text
 ## CI Integration
 
 The project's CI system uses GitHub Actions to run Ruff on all Python files. The configuration is maintained in the `.github/workflows/ruff-integration.yml` file.
@@ -110,13 +104,13 @@ To ensure code quality before committing, you can set up pre-commit hooks locall
 
 ```bash
 
-# On Linux/macOS/Git Bash
+## On Linux/macOS/Git Bash
 
 ./.github/setup-hooks.sh
 
-# On Windows PowerShell
+## On Windows PowerShell
 
 .\.github\setup-hooks.ps1
-```
 
+```text
 This will check your Python code for linting issues before each commit.

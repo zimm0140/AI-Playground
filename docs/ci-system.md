@@ -48,15 +48,15 @@ To set up pre-commit hooks:
 
 ```bash
 
-# On Unix/Linux/macOS or Git Bash
+## On Unix/Linux/macOS or Git Bash
 
 ./.github/setup-hooks.sh
 
-# On Windows with PowerShell
+## On Windows with PowerShell
 
 .\.github\setup-hooks.ps1
-```
 
+```text
 ### Available Hooks
 
 - `pre-commit`: Runs linting checks on Python files that are being committed
@@ -69,8 +69,8 @@ In case you need to bypass hooks temporarily:
 
 ```bash
 git commit --no-verify
-```
 
+```text
 ## CI Scripts
 
 The CI system includes several utility scripts that help maintain code quality and workflow efficiency:
@@ -107,12 +107,11 @@ To ensure smooth CI operation:
 
 ```bash
 
-# Via GitHub Actions web UI
+## Via GitHub Actions web UI
 
-# Go to Actions > CI Cleanup and Optimization > Run workflow
+## Go to Actions > CI Cleanup and Optimization > Run workflow
 
-```
-
+```text
 #### Linting Errors
 
 **Symptom**: Ruff or linting check fails with errors like `F401 import xxx is unused`
@@ -121,8 +120,8 @@ To ensure smooth CI operation:
 
 ```bash
 python .github/workflows/scripts/lint_python_files.py path/to/file.py
-```
 
+```text
 #### Indentation Errors in Python Files
 
 **Symptom**: CI fails with indentation errors, particularly in `try/except` blocks
@@ -131,8 +130,8 @@ python .github/workflows/scripts/lint_python_files.py path/to/file.py
 
 ```bash
 python .github/workflows/scripts/fix_ci_issues.py
-```
 
+```text
 #### Windows Path Issues
 
 **Symptom**: Backslash escaping issues in regex patterns

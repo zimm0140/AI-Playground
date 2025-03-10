@@ -31,20 +31,20 @@ We use [pre-commit](https://pre-commit.com/) to run checks before each commit. T
 
 ```bash
 pip install pre-commit
-```
 
+```text
 1. Install the hooks:
 
 ```bash
 pre-commit install
-```
 
+```text
 1. Run against all files:
 
 ```bash
 pre-commit run --all-files
-```
 
+```text
 ## CI/CD Checks
 
 Our GitHub Actions workflow runs the following checks:
@@ -66,8 +66,8 @@ Run these scripts to quickly identify and fix issues:
 ```bash
 python check_linting.py
 python fix_unused_variables.py
-```
 
+```text
 ## Best Practices
 
 1. **Run pre-commit before pushing**: This catches issues before they reach CI.

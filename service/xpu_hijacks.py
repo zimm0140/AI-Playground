@@ -1,14 +1,18 @@
 import os
 from functools import wraps
 from contextlib import nullcontext
-import torch
-import importlib.util
-import numpy as np
-
-spec = importlib.util.find_spec("intel_extension_for_pytorch")
-if spec is not None:
+try:
+    import torch
+    import numpy as np
+    TORCH_AVAILABLE = True
+except ImportError:
+    TORCH_AVAILABLE = False
+    
+try:
     import intel_extension_for_pytorch as ipex  # pylint: disable=import-error, unused-import
-else:
+    IPEX_AVAILABLE = True
+except ImportError:
+    IPEX_AVAILABLE = False
     ipex = None
 
 """
@@ -79,19 +83,34 @@ def is_cuda(self):
 
 def check_device(device):
     """
-    Check if a device is a CUDA device.
+    Check if the device can be converted to XPU.
+    
+    This function determines if a given device parameter can and should
+    be converted to an XPU device based on its type and value.
     
     Args:
-        device: Device to check, can be a torch.device, string, or integer.
-        
+        device: A device specifier, can be a torch.device, string, or None
+    
     Returns:
-        bool: True if the device is a CUDA device, False otherwise.
+        bool: True if the device should be converted to XPU, False otherwise
     """
-    return bool(
-        (isinstance(device, torch.device) and device.type == "cuda")
-        or (isinstance(device, str) and "cuda" in device)
-        or isinstance(device, int)
-    )
+    # Guard for when torch is not available
+    if not TORCH_AVAILABLE:
+        return False
+        
+    # Skip conversion of None values
+    if device is None:
+        return False
+        
+    # Check torch.device objects
+    if isinstance(device, torch.device):
+        return device.type == "cuda" and not disable_xpu
+        
+    # Check string device specifiers
+    if isinstance(device, str):
+        return "cuda" in device and not disable_xpu
+        
+    return False
 
 
 def return_xpu(device):
@@ -236,32 +255,45 @@ def from_numpy(ndarray):
 original_as_tensor = torch.as_tensor
 
 
-@wraps(torch.as_tensor)
-def as_tensor(data, dtype=None, device=None):
+def as_tensor_hijack(original_as_tensor):
     """
-    Hijacked version of torch.as_tensor that handles float64 conversion for XPU devices.
+    Intercepts torch.as_tensor calls to handle XPU devices.
     
     Args:
-        data: Data to convert to a tensor.
-        dtype: Data type of the returned tensor.
-        device: Device to place the tensor on.
+        original_as_tensor: The original torch.as_tensor function
         
     Returns:
-        torch.Tensor: The converted tensor.
+        Function: Wrapped version of torch.as_tensor with XPU support
     """
-    if check_device(device):
-        device = return_xpu(device)
-    if (
-        isinstance(data, np.ndarray)
-        and data.dtype == float
-        and not (
-            (isinstance(device, torch.device) and device.type == "cpu")
-            or (isinstance(device, str) and "cpu" in device)
-        )
-    ):
-        return original_as_tensor(data, dtype=torch.float32, device=device)
-    else:
-        return original_as_tensor(data, dtype=dtype, device=device)
+    @wraps(original_as_tensor)
+    def wrapped_as_tensor(data, dtype=None, device=None):
+        """
+        Convert the data to a tensor with XPU support.
+        
+        Args:
+            data: Input data to convert to tensor
+            dtype: Desired data type of returned tensor
+            device: Device where the returned tensor will be placed
+            
+        Returns:
+            torch.Tensor: The converted tensor.
+        """
+        if not TORCH_AVAILABLE:
+            return original_as_tensor(data, dtype=dtype, device=device)
+            
+        if check_device(device):
+            device = return_xpu(device)
+        if (
+            isinstance(data, np.ndarray)
+            and data.dtype == float
+            and not (
+                (isinstance(device, torch.device) and hasattr(device, "type") and device.type == "cpu")
+                or (isinstance(device, str) and "cpu" in device)
+            )
+        ):
+            return original_as_tensor(data, dtype=torch.float32, device=device)
+        else:
+            return original_as_tensor(data, dtype=dtype, device=device)
 
 
 # Handle 32-bit attention workarounds for devices that don't support float64
@@ -857,4 +889,4 @@ def ipex_hijacks():
     torch.cat = torch_cat
     if not device_supports_fp64:
         torch.from_numpy = from_numpy
-        torch.as_tensor = as_tensor
+        torch.as_tensor = as_tensor_hijack(torch.as_tensor)
