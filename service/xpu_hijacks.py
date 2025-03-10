@@ -2,14 +2,14 @@ import os
 from functools import wraps
 from contextlib import nullcontext
 try:
-    import torch
-    import numpy as np
+    import torch  # type: ignore
+    import numpy as np  # type: ignore
     TORCH_AVAILABLE = True
 except ImportError:
     TORCH_AVAILABLE = False
     
 try:
-    import intel_extension_for_pytorch as ipex  # pylint: disable=import-error, unused-import
+    import intel_extension_for_pytorch as ipex  # type: ignore # pylint: disable=import-error, unused-import
     IPEX_AVAILABLE = True
 except ImportError:
     IPEX_AVAILABLE = False
@@ -35,6 +35,32 @@ Key features:
 
 Code credit: https://github.com/vladmandic/automatic/blob/master/modules/intel/ipex/hijacks.py
 """
+
+# Global configuration
+disable_xpu = os.environ.get("DISABLE_XPU", "0").lower() in ("1", "true", "yes")
+
+# Initialize placeholders if torch is not available
+if not TORCH_AVAILABLE:
+    class DummyModule:
+        """Placeholder class when torch is not available."""
+        def __init__(self, *args, **kwargs):
+            pass
+        
+        def __getattr__(self, name):
+            return self
+            
+        def __call__(self, *args, **kwargs):
+            return self
+    
+    class DummyDevice:
+        """Placeholder for torch.device when torch is not available."""
+        def __init__(self, *args, **kwargs):
+            self.type = "cpu"
+    
+    # Create dummy torch module
+    torch = DummyModule()
+    torch.device = DummyDevice
+    np = DummyModule()
 
 # =================== GLOBAL VARIABLES AND INITIALIZATION ===================
 # Check if the device supports 64-bit floating point operations
@@ -563,24 +589,22 @@ original_torch_tensor = torch.tensor
 @wraps(torch.tensor)
 def torch_tensor(data, *args, dtype=None, device=None, **kwargs):
     """
-    Hijacked version of torch.tensor that handles CUDA to XPU device conversion and float64 to float32 conversion.
+    Hijacked version of torch.tensor that handles XPU devices.
     
     Args:
-        data: Data to create a tensor from.
-        *args: Additional arguments.
-        dtype: Data type of the tensor.
-        device: Device to place the tensor on.
-        **kwargs: Additional keyword arguments.
+        data: Data to convert to a tensor
+        dtype: Data type of the returned tensor
+        device: Device to place the tensor on
         
     Returns:
-        torch.Tensor: The created tensor.
+        torch.Tensor: The tensor
     """
     if check_device(device):
         device = return_xpu(device)
     if not device_supports_fp64:
-        if (isinstance(device, torch.device) and device.type == "xpu") or (
-            isinstance(device, str) and "xpu" in device
-        ):
+        # Add hasattr check to prevent attribute access errors
+        if ((isinstance(device, torch.device) and hasattr(device, "type") and device.type == "xpu") or
+            (isinstance(device, str) and "xpu" in device)):
             if dtype == torch.float64:
                 dtype = torch.float32
             elif dtype is None and (
