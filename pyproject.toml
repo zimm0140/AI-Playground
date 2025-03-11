@@ -71,4 +71,14 @@ ignore = []
 testpaths = ["tests"]
 python_files = "test_*.py"
 python_classes = "Test*"
-python_functions = "test_*" 
+python_functions = "test_*"
+
+[tool.uv]
+# uv-specific features for the pyproject.toml
+no-binary = []
+exclude-newer = []
+link-mode = "copy"
+compile-bytecode = true
+
+[tool.uv.environments]
+dev = { dependencies = ["pytest", "mypy", "ruff", "pre-commit"] } 
