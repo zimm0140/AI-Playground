@@ -21,7 +21,8 @@ To run all tests:
 
 ```bash
 pytest
-```
+
+```text
 
 ### Running Tests with Detailed Output
 
@@ -29,7 +30,8 @@ To run tests with detailed output:
 
 ```bash
 pytest -v
-```
+
+```text
 
 ### Running a Specific Test File
 
@@ -37,7 +39,8 @@ To run tests from a specific file:
 
 ```bash
 pytest tests/test_hardware_detection.py
-```
+
+```text
 
 ### Running a Specific Test Function
 
@@ -45,7 +48,8 @@ To run a specific test function:
 
 ```bash
 pytest tests/test_hardware_detection.py::TestHardwareDetection::test_detect_arc_gpu
-```
+
+```text
 
 ### Running Tests with Coverage Report
 
@@ -53,13 +57,15 @@ To run tests with a coverage report:
 
 ```bash
 pytest --cov=. tests/
-```
+
+```text
 
 For a more detailed coverage report:
 
 ```bash
 pytest --cov=. --cov-report=html tests/
-```
+
+```text
 
 This will generate an HTML coverage report in the `htmlcov` directory.
 
@@ -71,7 +77,8 @@ To run the coverage assessment:
 
 ```bash
 pytest tests/test_coverage.py -v
-```
+
+```text
 
 The output will show which core modules have tests and which functions might lack test coverage.
 
@@ -80,10 +87,10 @@ The output will show which core modules have tests and which functions might lac
 When adding tests:
 
 1. Create a file named `test_<module_name>.py` for the module you want to test
-2. Use appropriate fixtures from `conftest.py` to set up test conditions
-3. Follow the unittest or pytest patterns as shown in existing tests
-4. Focus on testing functionality without modifying the implementation
-5. Use the mock library to isolate tests from external dependencies
+1. Use appropriate fixtures from `conftest.py` to set up test conditions
+1. Follow the unittest or pytest patterns as shown in existing tests
+1. Focus on testing functionality without modifying the implementation
+1. Use the mock library to isolate tests from external dependencies
 
 ## Test Guidelines
 
