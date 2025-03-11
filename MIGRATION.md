@@ -6,9 +6,9 @@ This document outlines the process of migrating AI Playground to Python 3.10+ wh
 
 We've implemented a pragmatic approach that:
 1. Modernizes the development environment and CI with tools like uv and Rye
-2. Maintains backward compatibility using traditional pip installation
-3. Updates type annotations for Python 3.10+ compatibility
-4. Implements better linting and formatting tools
+1. Maintains backward compatibility using traditional pip installation
+1. Updates type annotations for Python 3.10+ compatibility
+1. Implements better linting and formatting tools
 
 ## For Developers
 
@@ -17,32 +17,48 @@ We've implemented a pragmatic approach that:
 Choose one of the following development approaches:
 
 #### Primary Method (Recommended - uv)
+
 ```bash
+
 # Install uv
+
 # On macOS and Linux
-curl -LsSf https://astral.sh/uv/install.sh | sh
+
+curl -LsSf <https://astral.sh/uv/install.sh> | sh
+
 # On Windows
-powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+powershell -ExecutionPolicy ByPass -c "irm <https://astral.sh/uv/install.ps1> | iex"
+
 
 # Set up the environment
+
 uv venv
 uv pip install -e ".[dev]"
 
 # Install pre-commit hooks
+
 pre-commit install
-```
+
+```text
 
 #### Alternative Modern Method (Rye)
+
 ```bash
+
 # Install Rye
-curl -sSf https://rye-up.com/get | bash
+
+curl -sSf <https://rye-up.com/get> | bash
 
 # Set up the environment
+
 rye sync
 
 # Install pre-commit hooks
+
 pre-commit install
-```
+
+```text
 
 #### Traditional Method
 
@@ -71,6 +87,7 @@ We've updated our type annotations to be compatible with Python 3.10+:
    # Before (Python 3.10+)
 
    def some_function(param: str | int) -> list[str] | None:
+
 
 ```text
 
@@ -139,7 +156,12 @@ def process_file(file_path: Optional[str]) -> None:
 ```text
 
 with open(os.path.join(file_path, "subfile"), "r") as f:
-    ...
+
+```text
+
+...
+
+```text
 
 ```text
 
@@ -151,7 +173,12 @@ def process_file(file_path: Optional[str]) -> None:
 
 path = file_path or ""
 with open(os.path.join(path, "subfile"), "r") as f:
-    ...
+
+```text
+
+...
+
+```text
 
 ```text
 
