@@ -1,207 +1,171 @@
-# Migration Guide: Python 3.10+ Upgrade
+# Migration Guide for AI Playground
 
-This document outlines the process of migrating AI Playground to Python 3.10+ while maintaining backward compatibility with upstream.
+This guide helps you migrate to the modern Python development workflow using uv and Python 3.10+.
 
-## Overview
+## Table of Contents
 
-We've implemented a pragmatic approach that:
-1. Modernizes the development environment and CI with tools like uv and Rye
-1. Maintains backward compatibility using traditional pip installation
-1. Updates type annotations for Python 3.10+ compatibility
-1. Implements better linting and formatting tools
+1. [Migrating from pip to uv](#migrating-from-pip-to-uv)
+2. [Updating Type Annotations for Python 3.10+](#updating-type-annotations-for-python-310)
+3. [Using Lockfiles for Reproducible Environments](#using-lockfiles-for-reproducible-environments)
+4. [Working with Docker](#working-with-docker)
+5. [CI/CD Pipeline Updates](#cicd-pipeline-updates)
+6. [Migration FAQs](#migration-faqs)
 
-## For Developers
+## Migrating from pip to uv
 
-### Getting Started
+### Why Migrate to uv?
 
-Choose one of the following development approaches:
+- **Speed**: uv is 10-100x faster than pip for dependency resolution
+- **Reliability**: Improved dependency resolution and conflict handling
+- **Features**: Better support for modern Python packaging standards
+- **Lockfiles**: Native support for lockfile generation and updating
 
-#### Primary Method (Recommended - uv)
+### Step-by-Step Migration
 
-```bash
-
-# Install uv
-
-# On macOS and Linux
-
-curl -LsSf <https://astral.sh/uv/install.sh> | sh
-
-# On Windows
-
-powershell -ExecutionPolicy ByPass -c "irm <https://astral.sh/uv/install.ps1> | iex"
-
-
-# Set up the environment
-
-uv venv
-uv pip install -e ".[dev]"
-
-# Install pre-commit hooks
-
-pre-commit install
-
-```text
-
-#### Alternative Modern Method (Rye)
-
-```bash
-
-# Install Rye
-
-curl -sSf <https://rye-up.com/get> | bash
-
-# Set up the environment
-
-rye sync
-
-# Install pre-commit hooks
-
-pre-commit install
-
-```text
-
-#### Traditional Method
-
-```bash
-
-# Install dependencies using pip
-
-pip install -e .
-
-# Install development dependencies
-
-pip install -e ".[dev]"
-
-# Install pre-commit hooks
-
-pre-commit install
-
-```text
-
-### Type Annotation Changes
-
-We've updated our type annotations to be compatible with Python 3.10+:
-
-1. Replaced pipe syntax (`|`) with `Union` from typing:
-   ```python
-   # Before (Python 3.10+)
-
-   def some_function(param: str | int) -> list[str] | None:
-
-
-```text
-
-   ...
-
-```text
-
-   # After (Compatible with Python 3.10+)
-
-   from typing import Union, List, Optional
-   def some_function(param: Union[str, int]) -> Optional[List[str]]:
-
-```text
-
-   ...
-
-```text
-   ```text
-
-1. Fixed Optional handling:
-   ```python
-   # Before (problematic)
-
-   os.path.join(maybe_none, "subdir")  # Type error if maybe_none is None
-
-   # After (safe)
-
-   path = os.path.join(maybe_none or "", "subdir")
-   ```text
-
-### Dependencies Management
-
-When adding or updating dependencies:
-
-1. Edit either `setup.py` or `pyproject.toml`
-1. Run the sync script to keep them in sync:
+1. **Install uv**:
    ```bash
-   python .github/sync_dependencies.py
-   ```text
+   # Unix/Linux/macOS
+   curl -LsSf https://astral.sh/uv/install.sh | sh
+   
+   # Windows
+   powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+   ```
 
-### CI Pipeline
+2. **Migrate existing environments**:
+   ```bash
+   # Generate lockfiles from your existing requirements
+   uv pip compile requirements.txt --output-file requirements.lock
+   uv pip compile requirements-dev.txt --output-file requirements-dev.lock
+   
+   # Create a new environment using uv
+   uv venv
+   
+   # Install using lockfiles
+   uv pip sync requirements.lock requirements-dev.lock
+   ```
 
-Our CI now uses a hybrid approach with:
-- Tests on multiple Python versions (3.10, 3.11, 3.13)
-- Testing with multiple installation methods (uv, Rye, and pip)
-- Comprehensive linting and type checking using uv for improved performance
+3. **Use the helper scripts**:
+   
+   We've provided convenient script wrappers in `scripts/run_with_uv.sh` (Unix/macOS) and `scripts/run_with_uv.ps1` (Windows).
+   
+   ```bash
+   # Run tests
+   ./scripts/run_with_uv.sh test
+   
+   # Run linters
+   ./scripts/run_with_uv.sh lint
+   ```
 
-## Common Issues and Solutions
+## Updating Type Annotations for Python 3.10+
 
-### Type Checking Failures
+Python 3.10 introduced new type annotation syntax. We've provided a helper script to identify type annotations that can be updated:
 
-If you encounter type checking errors:
+```bash
+# Scan the entire project
+python scripts/fix_type_annotations.py .
 
-1. Import necessary types from `typing` module
-1. Replace pipe syntax (`|`) with `Union[Type1, Type2]`
-1. Fix `Optional` type handling with safe defaults
+# Scan a specific file
+python scripts/fix_type_annotations.py path/to/file.py
+```
 
-Example:
+### Common Type Annotation Updates
 
-```python
+1. **Union Types**:
+   
+   Before (Python 3.9 and earlier):
+   ```python
+   from typing import Union
+   
+   def func(x: Union[int, str]) -> Union[float, None]:
+       ...
+   ```
+   
+   After (Python 3.10+):
+   ```python
+   def func(x: int | str) -> float | None:
+       ...
+   ```
 
-# Error-prone
+2. **Optional Types**:
+   
+   Before:
+   ```python
+   from typing import Optional
+   
+   def func(x: Optional[int] = None) -> Optional[str]:
+       ...
+   ```
+   
+   After:
+   ```python
+   def func(x: int | None = None) -> str | None:
+       ...
+   ```
 
-def process_file(file_path: Optional[str]) -> None:
+## Using Lockfiles for Reproducible Environments
 
-```text
+The project now uses lockfiles to ensure reproducible environments:
 
-with open(os.path.join(file_path, "subfile"), "r") as f:
+1. **Sync your environment** using the lockfiles:
+   ```bash
+   uv pip sync requirements.lock requirements-dev.lock
+   ```
 
-```text
+2. **Update lockfiles** when dependencies change:
+   ```bash
+   uv pip compile requirements.txt --output-file requirements.lock
+   uv pip compile requirements-dev.txt --output-file requirements-dev.lock
+   ```
 
-...
+## Working with Docker
 
-```text
+The project includes a Dockerfile optimized for uv:
 
-```text
+```bash
+# Build and run the development image
+docker build --target development -t ai-playground-dev .
+docker run -p 5000:5000 -v $(pwd):/app ai-playground-dev
 
-# Fixed
+# Build and run the production image
+docker build --target production -t ai-playground .
+docker run -p 5000:5000 ai-playground
+```
 
-def process_file(file_path: Optional[str]) -> None:
+### Benefits of the uv-based Dockerfile
 
-```text
+- **Faster builds**: uv's speed dramatically reduces build times
+- **Reproducible environments**: Using lockfiles ensures consistent environments
+- **Multi-stage builds**: Separate development and production images
+- **Smaller images**: Only necessary dependencies are included
 
-path = file_path or ""
-with open(os.path.join(path, "subfile"), "r") as f:
+## CI/CD Pipeline Updates
 
-```text
+The CI/CD pipeline has been updated to use uv for faster and more reliable builds:
 
-...
+1. **Testing across Python versions**: CI tests against Python 3.10, 3.11, and 3.13
+2. **Dual testing**: Tests both traditional and modern installation methods
+3. **Caching**: Optimized caching of dependencies to speed up CI runs
+4. **Markdown linting**: Automated linting of markdown files
 
-```text
+## Migration FAQs
 
-```text
+**Q: Do I need to uninstall pip?**
+A: No. uv works alongside pip and doesn't replace it completely. The helper scripts will install uv if needed.
 
-```text
+**Q: Will my existing scripts still work?**
+A: Yes. We maintain backward compatibility with traditional workflows while offering improved alternatives.
 
-### Package Compatibility
+**Q: How do I add a new dependency?**
+A: Add it to `requirements.txt` or `requirements-dev.txt`, then run:
+   ```bash
+   uv pip compile requirements.txt --output-file requirements.lock
+   ```
 
-Some packages may require updates for Python 3.10+ compatibility. Check for:
+**Q: Can I still use requirements.txt?**
+A: Yes. We maintain compatibility with requirements.txt while leveraging uv's improved handling.
 
-1. Deprecated `collections` imports (use `collections.abc` instead)
-1. Updated typing syntax
-1. Changes in function signatures
+**Q: Will these changes affect existing installations?**
+A: No. Users installing via pip will still be able to do so. These changes enhance the development experience without breaking compatibility.
 
-## Future Improvements
-
-- Gradually adopt more Python 3.10+ features
-- Migrate to native type annotations as Python 3.9 support is phased out
-- Consider adopting Rust extensions for performance-critical code
-- Explore uv's workspace features for better monorepo support
-
-## Help and Support
-
-If you encounter issues during migration, please:
-1. Check this guide for solutions
-1. Review the existing issues on GitHub
-1. Open a new issue with detailed reproduction steps
+**Q: What if I encounter type checking errors after migration?**
+A: Use the `scripts/fix_type_annotations.py` script to help identify and fix type annotation issues.
