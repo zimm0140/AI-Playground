@@ -7,51 +7,62 @@ A modern AI development environment with support for multiple models and backend
 ### Requirements
 
 - Python 3.10 or newer (3.13 recommended for development)
-- pip or Rye for package management
+- uv (recommended) or pip for package management
+
+### Primary Method (Recommended)
+
+```bash
+# Install uv (once)
+# On macOS and Linux
+curl -LsSf https://astral.sh/uv/install.sh | sh
+# On Windows
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+# Clone the repository
+git clone https://github.com/zimm0140/AI-Playground.git
+cd AI-Playground
+
+# Create virtual environment and install dependencies
+uv venv
+uv pip install -e .
+
+# For development dependencies
+uv pip install -e ".[dev]"
+```
+
+### Alternative Method (Modern)
+
+```bash
+# Install Rye (once)
+curl -sSf https://rye-up.com/get | bash
+
+# Clone the repository
+git clone https://github.com/zimm0140/AI-Playground.git
+cd AI-Playground
+
+# Setup development environment with Rye
+rye sync
+```
 
 ### Traditional Method (Compatible with Upstream)
 
 ```bash
-
 # Clone the repository
-
-git clone <https://github.com/zimm0140/AI-Playground.git>
+git clone https://github.com/zimm0140/AI-Playground.git
 cd AI-Playground
 
 # Install dependencies
-
 pip install -e .
 
 # For development dependencies
-
 pip install -e ".[dev]"
-
-```text
-
-### Modern Development Method
-
-```bash
-
-# Install Rye (once)
-
-curl -sSf <https://rye-up.com/get> | bash
-
-# Clone the repository
-
-git clone <https://github.com/zimm0140/AI-Playground.git>
-cd AI-Playground
-
-# Setup development environment with Rye
-
-rye sync
-
-```text
+```
 
 ## Python 3.10+ Migration
 
 As of version 2.2.0, we have migrated to Python 3.10+ to leverage modern language features and better type checking. For developers, we maintain a hybrid approach with:
 
-- Support for both traditional (pip) and modern (Rye) installation methods
+- Support for both traditional (pip) and modern (uv/Rye) installation methods
 - Comprehensive CI testing across multiple Python versions
 - Updated type annotations for compatibility
 
@@ -65,30 +76,29 @@ See [MIGRATION.md](MIGRATION.md) for detailed guidance on the migration process,
 ### Running Tests
 
 ```bash
-
-# Traditional method
-
-pytest
+# Using uv (recommended)
+uv run pytest
 
 # Using Rye
-
 rye run pytest
 
-```text
+# Traditional method
+pytest
+```
 
 ### Linting and Type Checking
 
 ```bash
-
 # Install pre-commit hooks
-
 pre-commit install
 
 # Run manually
-
 pre-commit run --all-files
 
-```text
+# Using uv for on-demand checks
+uv run ruff check .
+uv run mypy .
+```
 
 ## Supported Features
 
@@ -201,7 +211,7 @@ install with these files in place can block the installation. Remove these files
 To get started, clone the repository and navigate to the project directory:
 
 ```cmd
-git clone -b dev <https://github.com/intel/AI-Playground.git>
+git clone -b dev https://github.com/intel/AI-Playground.git
 cd AI-Playground
 
 ```text
