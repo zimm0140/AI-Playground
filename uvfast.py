@@ -1,21 +1,9 @@
 #!/usr/bin/env python3
-"""
-uvfast.py - Simplified uv-based package management for AI projects with hardware acceleration
+"""uvfast: Fast hardware-optimized Python environment manager.
 
-This script provides a streamlined approach to managing Python dependencies for projects
-with hardware-specific requirements using the ultra-fast uv package manager.
-
-Usage:
-  python uvfast.py setup [--hardware TYPE] [--dev]  # Set up environment
-  python uvfast.py info                            # Show environment info
-  python uvfast.py lockfiles [--all]               # Generate lockfiles
-  python uvfast.py run [command]                   # Run command in the environment
-
-Features:
-  - Automatic hardware detection (Intel Arc, Meteor Lake, etc.)
-  - Fast dependency resolution with uv
-  - Lockfile generation for reproducible environments
-  - Backward compatibility with existing requirements files
+This script provides tools for managing Python environments optimized for
+different hardware configurations (Intel Arc GPUs, OpenVINO, etc.).
+It leverages the 'uv' package manager for fast dependency installation.
 """
 
 import argparse
@@ -25,456 +13,626 @@ import platform
 import shutil
 import subprocess
 import sys
+import textwrap
 from pathlib import Path
+from typing import Dict, List
 
-# Configuration - can be overridden with a uvfast.json file
+# Try to import hardware detection module, which should be in the same directory
+try:
+    import hardware_detection
+except ImportError:
+    print("Warning: hardware_detection.py not found, some features will be limited")
+    HARDWARE_TYPES = ["base", "acm", "bmg", "mtl", "lnl", "ovino", "arl_h"]
+
+
+# Default config values
 DEFAULT_CONFIG = {
-    "hardware_types": ["base", "acm", "bmg", "mtl", "lnl", "ovino"],
-    "lockfiles_dir": ".lockfiles",
-    "venv_dir": ".venv",
-    "cache_dir": ".uvcache",
-    "parallel_jobs": 4,
+    "project_name": "ai-playground",
+    "python_version": "3.10",
+    "hardware_types": ["base", "acm", "bmg", "mtl", "lnl", "ovino", "arl_h"],
+    "default_hardware": "base",
+    "requirements": {
+        "base": "requirements.txt",
+        "dev": "requirements-dev.txt",
+        "hardware": {
+            "base": "requirements-hardware-base.txt",
+            "acm": "service/requirements-acm.txt",
+            "bmg": "service/requirements-bmg.txt",
+            "mtl": "service/requirements-mtl.txt",
+            "lnl": "service/requirements-lnl.txt",
+            "ovino": "requirements-hardware-ovino.txt",
+            "arl_h": "service/requirements-arl_h.txt",
+        },
+    },
+    "lockfiles": {
+        "base": "requirements.lock",
+        "dev": "requirements-dev.lock",
+        "hardware": {
+            "base": "requirements-hardware-base.lock",
+            "acm": "requirements-hardware-acm.lock",
+            "bmg": "requirements-hardware-bmg.lock",
+            "mtl": "requirements-hardware-mtl.lock",
+            "lnl": "requirements-hardware-lnl.lock",
+            "ovino": "requirements-hardware-ovino.lock",
+            "arl_h": "requirements-hardware-arl_h.lock",
+        },
+    },
+    "environment": {
+        "venv_path": ".venv",
+        "cache_dir": ".cache/uv",
+    },
 }
 
 
-def ensure_uv():
-    """Ensure uv is installed, installing it if necessary."""
-    try:
-        subprocess.run(["uv", "--version"], stdout=subprocess.PIPE, check=True)
-        return True
-    except (FileNotFoundError, subprocess.SubprocessError):
-        print("Installing uv package manager...")
+class UVFast:
+    """Main class for uvfast functionality."""
 
-        if platform.system() == "Windows":
-            install_cmd = 'powershell -c "irm https://astral.sh/uv/install.ps1 | iex"'
+    def __init__(self):
+        """Initialize uvfast with configuration."""
+        self.config = self._load_config()
+
+        # Ensure we have hardware detection or use simple detection
+        if "hardware_detection" in sys.modules:
+            self.hardware_type = hardware_detection.detect_hardware_type()
         else:
-            install_cmd = "curl -LsSf https://astral.sh/uv/install.sh | sh"
+            # Simple detection as fallback
+            self.hardware_type = self._simple_hardware_detection()
 
-        try:
-            subprocess.run(install_cmd, shell=True, check=True)
-            # Verify installation worked
-            subprocess.run(["uv", "--version"], stdout=subprocess.PIPE, check=True)
-            return True
-        except subprocess.SubprocessError:
-            print(
-                "Failed to install uv. Please install manually from https://github.com/astral-sh/uv"
-            )
-            return False
-
-
-def detect_hardware():
-    """Detect Intel hardware and return appropriate hardware type."""
-    if platform.system() == "Windows":
-        try:
-            # Check for Intel GPU
-            gpu_cmd = "wmic path win32_VideoController get name"
-            gpu_output = subprocess.check_output(gpu_cmd, shell=True, text=True).lower()
-
-            if "arc" in gpu_output or "intel graphics" in gpu_output:
-                if "a770" in gpu_output or "a750" in gpu_output:
-                    return "acm"  # Intel Arc A-Series
-                elif any(x in gpu_output for x in ["battlemage", "bmg"]):
-                    return "bmg"  # Intel Battlemage
-
-            # Check for CPU type
-            cpu_cmd = "wmic cpu get name"
-            cpu_output = subprocess.check_output(cpu_cmd, shell=True, text=True).lower()
-
-            if "meteor lake" in cpu_output:
-                return "mtl"  # Intel Meteor Lake
-            elif "lunar lake" in cpu_output:
-                return "lnl"  # Intel Lunar Lake
-        except Exception as e:
-            print(f"Hardware detection error (Windows): {e}")
-
-    else:  # Linux/macOS
-        try:
-            if shutil.which("lspci"):
-                # Check for GPU
-                gpu_cmd = "lspci | grep -i vga"
-                gpu_output = subprocess.check_output(gpu_cmd, shell=True, text=True).lower()
-
-                if "intel" in gpu_output:
-                    if "arc" in gpu_output:
-                        return "acm"  # Intel Arc
-
-            # Check for CPU
-            if shutil.which("lscpu"):
-                cpu_cmd = "lscpu"
-                cpu_output = subprocess.check_output(cpu_cmd, shell=True, text=True).lower()
-
-                if "intel" in cpu_output:
-                    if "meteor lake" in cpu_output:
-                        return "mtl"  # Intel Meteor Lake
-                    elif "lunar lake" in cpu_output:
-                        return "lnl"  # Intel Lunar Lake
-        except Exception as e:
-            print(f"Hardware detection error (Unix): {e}")
-
-    # Check for OpenVINO
-    try:
-        with open(os.devnull, "w") as devnull:
-            subprocess.check_call(
-                [sys.executable, "-c", "import openvino"], stdout=devnull, stderr=devnull
-            )
-            return "ovino"  # OpenVINO is installed
-    except:
-        pass
-
-    return "base"  # Default fallback
-
-
-def load_config():
-    """Load configuration from uvfast.json if present, otherwise use defaults."""
-    config = DEFAULT_CONFIG.copy()
-
-    config_file = Path("uvfast.json")
-    if config_file.exists():
-        try:
-            with open(config_file, "r") as f:
-                user_config = json.load(f)
-                config.update(user_config)
-        except json.JSONDecodeError:
-            print(f"Warning: Invalid JSON in {config_file}. Using default config.")
-
-    return config
-
-
-def get_requirements_files(hardware_type, dev=False):
-    """Get the appropriate requirements file paths for the hardware type."""
-    # Start with base requirements
-    files = ["requirements.txt"]
-
-    # Add hardware-specific requirements if they exist and not base
-    if hardware_type != "base":
-        hw_file = Path(f"requirements-hardware-{hardware_type}.txt")
-        if hw_file.exists():
-            files.append(str(hw_file))
-
-    # Add dev requirements if requested
-    if dev:
-        dev_file = Path("requirements-dev.txt")
-        if dev_file.exists():
-            files.append(str(dev_file))
-
-    return files
-
-
-def generate_lockfile(config, hardware_type, dev=False):
-    """Generate a lockfile for the given hardware type."""
-    lockdir = Path(config["lockfiles_dir"])
-    lockdir.mkdir(exist_ok=True)
-
-    # Determine lockfile name
-    lockfile_suffix = "-dev" if dev else ""
-    lockfile = lockdir / f"{hardware_type}{lockfile_suffix}.lock"
-
-    # Get requirements files
-    req_files = get_requirements_files(hardware_type, dev)
-
-    # Check if requirements files exist
-    existing_files = [f for f in req_files if os.path.exists(f)]
-    if not existing_files:
-        print(f"Error: No requirements files found for {hardware_type}")
-        return None
-
-    # Build command for generating lockfile
-    cmd = ["uv", "pip", "compile"]
-    for req_file in existing_files:
-        cmd.extend(["-r", req_file])
-
-    cmd.extend(["--output-file", str(lockfile)])
-
-    # Execute command
-    print(f"Generating lockfile: {lockfile}")
-    try:
-        subprocess.run(cmd, check=True)
-        print(f"Created lockfile: {lockfile}")
-        return lockfile
-    except subprocess.CalledProcessError as e:
-        print(f"Error generating lockfile: {e}")
-        return None
-
-
-def setup_environment(config, hardware_type, dev=False, use_lockfile=True):
-    """Set up a Python environment for the given hardware type."""
-    # Ensure uv is installed
-    if not ensure_uv():
-        sys.exit(1)
-
-    # Create virtual environment
-    venv_dir = Path(config["venv_dir"])
-    if not venv_dir.exists():
-        print(f"Creating virtual environment in {venv_dir}")
-        subprocess.run(["uv", "venv", "--path", str(venv_dir)], check=True)
-
-    # Determine if we should use lockfiles
-    if use_lockfile:
-        lockdir = Path(config["lockfiles_dir"])
-        lockfile_suffix = "-dev" if dev else ""
-        lockfile = lockdir / f"{hardware_type}{lockfile_suffix}.lock"
-
-        # Generate lockfile if it doesn't exist
-        if not lockfile.exists():
-            lockfile = generate_lockfile(config, hardware_type, dev)
-            if lockfile is None:
-                print("Falling back to direct installation without lockfile")
-                use_lockfile = False
-
-        if use_lockfile:
-            # Install from lockfile
-            print(f"Installing dependencies from lockfile: {lockfile}")
-            cmd = [
-                "uv",
-                "pip",
-                "sync",
-                "--path",
-                str(venv_dir),
-                "--cache-dir",
-                config["cache_dir"],
-                "--jobs",
-                str(config["parallel_jobs"]),
-                str(lockfile),
-            ]
-            subprocess.run(cmd, check=True)
-
-    if not use_lockfile:
-        # Install directly from requirements files
-        req_files = get_requirements_files(hardware_type, dev)
-        existing_files = [f for f in req_files if os.path.exists(f)]
-
-        if not existing_files:
-            print(f"Error: No requirements files found for {hardware_type}")
-            sys.exit(1)
-
-        print(f"Installing dependencies from: {', '.join(existing_files)}")
-
-        cmd = [
-            "uv",
-            "pip",
-            "install",
-            "--path",
-            str(venv_dir),
-            "--cache-dir",
-            config["cache_dir"],
-            "--jobs",
-            str(config["parallel_jobs"]),
-        ]
-
-        for req_file in existing_files:
-            cmd.extend(["-r", req_file])
-
-        subprocess.run(cmd, check=True)
-
-    # Support editable install if setup.py exists
-    if Path("setup.py").exists():
-        print("Installing package in development mode...")
-        setup_cmd = ["uv", "pip", "install", "--path", str(venv_dir), "-e", "."]
-        subprocess.run(setup_cmd, check=True)
-
-    # Print activation instructions
-    print("\nSetup complete! Activate your environment:")
-    if platform.system() == "Windows":
-        print(f"  {venv_dir}\\Scripts\\activate")
-    else:
-        print(f"  source {venv_dir}/bin/activate")
-
-
-def run_command(config, cmd_args):
-    """Run a command in the virtual environment using uv run."""
-    venv_dir = Path(config["venv_dir"])
-    if not venv_dir.exists():
-        print(f"Virtual environment not found at {venv_dir}")
-        print("Run 'python uvfast.py setup' first")
-        sys.exit(1)
-
-    cmd = ["uv", "run", "--path", str(venv_dir)]
-    cmd.extend(cmd_args)
-
-    subprocess.run(cmd)
-
-
-def show_info(config):
-    """Show information about the environment and detected hardware."""
-    print("=== Environment Information ===")
-
-    # Python info
-    print(f"Python: {platform.python_version()}")
-    print(f"Platform: {platform.system()} {platform.release()}")
-
-    # Hardware detection
-    hw_type = detect_hardware()
-    print(f"Detected hardware: {hw_type}")
-
-    # uv info
-    try:
-        uv_version = subprocess.check_output(["uv", "--version"], text=True).strip()
-        print(f"uv version: {uv_version}")
-    except:
-        print("uv: Not installed")
-
-    # Requirements files
-    print("\nAvailable requirement files:")
-    base_reqs = Path("requirements.txt")
-    if base_reqs.exists():
-        size = base_reqs.stat().st_size
-        print(f"- requirements.txt ({size} bytes)")
-
-    dev_reqs = Path("requirements-dev.txt")
-    if dev_reqs.exists():
-        size = dev_reqs.stat().st_size
-        print(f"- requirements-dev.txt ({size} bytes)")
-
-    for hw in config["hardware_types"]:
-        if hw != "base":
-            hw_file = Path(f"requirements-hardware-{hw}.txt")
-            if hw_file.exists():
-                size = hw_file.stat().st_size
-                print(f"- requirements-hardware-{hw}.txt ({size} bytes)")
-
-    # Check virtual environment
-    venv_dir = Path(config["venv_dir"])
-    if venv_dir.exists():
-        print(f"\nVirtual environment: {venv_dir} (exists)")
-        # Try to get installed packages
-        if platform.system() == "Windows":
-            pip_path = venv_dir / "Scripts" / "pip"
-        else:
-            pip_path = venv_dir / "bin" / "pip"
-
-        if pip_path.with_suffix(".exe").exists() or pip_path.exists():
+    def _load_config(self) -> Dict:
+        """Load configuration from uvfast.json or use defaults."""
+        config_path = Path("uvfast.json")
+        if config_path.exists():
             try:
-                cmd = [str(pip_path), "list"]
-                output = subprocess.check_output(cmd, text=True)
-                pkg_count = len(output.splitlines()) - 2  # Subtract header lines
-                print(f"Installed packages: {pkg_count}")
-            except:
-                print("Could not get installed packages")
-    else:
-        print(f"\nVirtual environment: {venv_dir} (does not exist)")
+                with open(config_path, "r", encoding="utf-8") as f:
+                    config = json.load(f)
+                return config
+            except (json.JSONDecodeError, IOError) as e:
+                print(f"Error loading configuration: {e}")
+                print("Using default configuration")
+                return DEFAULT_CONFIG.copy()
+        return DEFAULT_CONFIG.copy()
 
-    # Check lockfiles
-    lockdir = Path(config["lockfiles_dir"])
-    if lockdir.exists():
-        lockfiles = list(lockdir.glob("*.lock"))
-        if lockfiles:
-            print(f"\nLockfiles ({len(lockfiles)}):")
-            for lockfile in lockfiles:
-                size = lockfile.stat().st_size
-                print(f"- {lockfile.name} ({size} bytes)")
-        else:
-            print("\nNo lockfiles generated yet")
-    else:
-        print("\nNo lockfiles generated yet")
+    def _simple_hardware_detection(self) -> str:
+        """Simple hardware detection as a fallback when the module is not available."""
+        system = platform.system()
 
+        # Check for GPU presence on Windows
+        if system == "Windows":
+            try:
+                output = subprocess.check_output(
+                    ["wmic", "path", "win32_VideoController", "get", "Name"],
+                    universal_newlines=True,
+                )
+                gpu_names = [
+                    line.strip() for line in output.strip().split("\n")[1:] if line.strip()
+                ]
 
-def main():
-    """Main entry point."""
-    config = load_config()
+                # Check for Intel Arc GPU
+                for gpu_name in gpu_names:
+                    if (
+                        "Arc" in gpu_name
+                        or "Intel" in gpu_name
+                        and any(f"A{num}" in gpu_name for num in range(300, 800))
+                    ):
+                        return "acm"
 
-    parser = argparse.ArgumentParser(description="Fast uv-based setup for AI projects")
-    subparsers = parser.add_subparsers(dest="command", help="Command to run")
+            except (subprocess.SubprocessError, FileNotFoundError):
+                pass
 
-    # Setup command
-    setup_parser = subparsers.add_parser("setup", help="Set up a Python environment")
-    setup_parser.add_argument(
-        "--hardware",
-        choices=config["hardware_types"],
-        default="detect",
-        help="Hardware type (default: auto-detect)",
-    )
-    setup_parser.add_argument("--dev", action="store_true", help="Include development dependencies")
-    setup_parser.add_argument("--no-lockfile", action="store_true", help="Don't use lockfiles")
-
-    # Info command
-    info_parser = subparsers.add_parser("info", help="Show environment information")
-
-    # Lockfiles command
-    lockfiles_parser = subparsers.add_parser("lockfiles", help="Generate lockfiles")
-    lockfiles_parser.add_argument("--all", action="store_true", help="Generate all lockfiles")
-    lockfiles_parser.add_argument(
-        "--hardware", choices=config["hardware_types"], help="Hardware type for lockfile"
-    )
-    lockfiles_parser.add_argument(
-        "--dev", action="store_true", help="Include development dependencies"
-    )
-
-    # Run command
-    run_parser = subparsers.add_parser("run", help="Run a command in the virtual environment")
-    run_parser.add_argument(
-        "cmd_args", nargs=argparse.REMAINDER, help="Command and arguments to run"
-    )
-
-    # Legacy install command
-    legacy_parser = subparsers.add_parser(
-        "legacy-install", help="Install using traditional requirements.txt (but faster)"
-    )
-    legacy_parser.add_argument(
-        "--dev", action="store_true", help="Include development dependencies"
-    )
-
-    args = parser.parse_args()
-
-    # Handle commands
-    if args.command == "setup":
-        hardware = args.hardware
-        if hardware == "detect":
-            hardware = detect_hardware()
-            print(f"Detected hardware: {hardware}")
-
-        setup_environment(config, hardware, args.dev, not args.no_lockfile)
-
-    elif args.command == "info":
-        show_info(config)
-
-    elif args.command == "lockfiles":
-        if args.all:
-            for hw_type in config["hardware_types"]:
-                generate_lockfile(config, hw_type, dev=False)
-                generate_lockfile(config, hw_type, dev=True)
-        elif args.hardware:
-            generate_lockfile(config, args.hardware, args.dev)
-        else:
-            print("Error: Specify --all or --hardware")
-            sys.exit(1)
-
-    elif args.command == "run":
-        if not args.cmd_args:
-            print("Error: No command specified")
-            sys.exit(1)
-        run_command(config, args.cmd_args)
-
-    elif args.command == "legacy-install":
-        # Simulate the old workflow but with uv's better performance
-        ensure_uv()
-
-        venv_dir = Path(config["venv_dir"])
-        if not venv_dir.exists():
-            subprocess.run(["uv", "venv", "--path", str(venv_dir)], check=True)
-
-        print("Installing using legacy workflow with uv acceleration...")
-        legacy_req = Path("requirements.txt")
-        legacy_dev = Path("requirements-dev.txt")
-
-        if legacy_req.exists():
-            subprocess.run(
-                ["uv", "pip", "install", "--path", str(venv_dir), "-r", str(legacy_req)], check=True
+        # Check for OpenVINO
+        try:
+            subprocess.check_call(
+                [sys.executable, "-c", "import openvino"],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
             )
+            return "ovino"
+        except (subprocess.SubprocessError, FileNotFoundError):
+            pass
 
-        if legacy_dev.exists() and args.dev:
-            subprocess.run(
-                ["uv", "pip", "install", "--path", str(venv_dir), "-r", str(legacy_dev)], check=True
-            )
+        # Default to base
+        return self.config.get("default_hardware", "base")
 
-        print("\nLegacy installation complete! Activate your environment:")
+    def _get_venv_path(self) -> Path:
+        """Get the path to the virtual environment."""
+        return Path(self.config.get("environment", {}).get("venv_path", ".venv"))
+
+    def _get_python_executable(self) -> Path:
+        """Get the path to the Python executable in the virtual environment."""
+        venv_path = self._get_venv_path()
         if platform.system() == "Windows":
-            print(f"  {venv_dir}\\Scripts\\activate")
-        else:
-            print(f"  source {venv_dir}/bin/activate")
+            return venv_path / "Scripts" / "python.exe"
+        return venv_path / "bin" / "python"
 
-    else:
-        parser.print_help()
+    def _get_requirements_files(self, hardware_type: str, dev: bool = False) -> List[str]:
+        """Get the requirements files for the specified hardware type."""
+        req_config = self.config.get("requirements", {})
+        result = []
+
+        # Add hardware-specific requirements if available
+        if hardware_type != "base" and "hardware" in req_config:
+            hw_req = req_config.get("hardware", {}).get(hardware_type)
+            if hw_req and Path(hw_req).exists():
+                result.append(hw_req)
+
+        # Add base requirements if not already included or if no hardware-specific requirements
+        base_req = req_config.get("base", "requirements.txt")
+        if base_req and Path(base_req).exists() and base_req not in result:
+            result.append(base_req)
+
+        # Add development requirements if requested
+        if dev and "dev" in req_config:
+            dev_req = req_config.get("dev")
+            if dev_req and Path(dev_req).exists():
+                result.append(dev_req)
+
+        return result
+
+    def _get_lockfile_path(self, hardware_type: str, dev: bool = False) -> str:
+        """Get the path to the lockfile for the specified hardware type."""
+        lock_config = self.config.get("lockfiles", {})
+
+        # Get hardware-specific lockfile if available
+        if hardware_type != "base" and "hardware" in lock_config:
+            hw_lock = lock_config.get("hardware", {}).get(hardware_type)
+            if hw_lock:
+                return hw_lock
+
+        # Default to base lockfile
+        return lock_config.get("base", "requirements.lock")
+
+    def _ensure_uv_installed(self) -> bool:
+        """Ensure that uv is installed and available."""
+        try:
+            subprocess.run(
+                ["uv", "--version"],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                check=True,
+            )
+            return True
+        except (subprocess.SubprocessError, FileNotFoundError):
+            print("uv not found, attempting to install...")
+            try:
+                if platform.system() == "Windows":
+                    # Install uv on Windows using powershell
+                    subprocess.run(
+                        [
+                            "powershell",
+                            "-Command",
+                            "(Invoke-WebRequest -Uri https://astral.sh/uv/install.ps1 -UseBasicParsing).Content | powershell -",
+                        ],
+                        check=True,
+                    )
+                else:
+                    # Install uv on Unix-like systems
+                    subprocess.run(
+                        ["curl", "-sSf", "https://astral.sh/uv/install.sh", "|", "sh"], check=True
+                    )
+                return True
+            except subprocess.SubprocessError:
+                print(
+                    "Failed to install uv. Please install it manually from https://github.com/astral-sh/uv"
+                )
+                return False
+
+    def _create_venv(self, clean: bool = False) -> bool:
+        """Create a virtual environment."""
+        venv_path = self._get_venv_path()
+
+        # Clean existing environment if requested
+        if clean and venv_path.exists():
+            print(f"Removing existing environment at {venv_path}")
+            shutil.rmtree(venv_path)
+
+        # Create virtual environment if it doesn't exist
+        if not venv_path.exists():
+            print(f"Creating virtual environment at {venv_path}")
+            try:
+                if self._ensure_uv_installed():
+                    subprocess.run(["uv", "venv", str(venv_path)], check=True)
+                else:
+                    import venv
+
+                    venv.create(venv_path, with_pip=True)
+                return True
+            except (subprocess.SubprocessError, ImportError) as e:
+                print(f"Error creating virtual environment: {e}")
+                return False
+
+        print(f"Using existing virtual environment at {venv_path}")
+        return True
+
+    def setup(self, args: argparse.Namespace) -> int:
+        """Set up the environment for the specified hardware."""
+        hardware_type = args.hardware or self.hardware_type
+        print(f"Setting up environment for hardware type: {hardware_type}")
+
+        # Create virtual environment
+        if not self._create_venv(args.clean):
+            return 1
+
+        # Get requirements files
+        req_files = self._get_requirements_files(hardware_type, args.dev)
+        if not req_files:
+            print(f"No requirements files found for hardware type: {hardware_type}")
+            return 1
+
+        # Get Python executable
+        python_executable = self._get_python_executable()
+
+        # Install dependencies
+        for req_file in req_files:
+            print(f"Installing dependencies from {req_file}")
+
+            try:
+                if args.use_lockfile:
+                    # Use lockfile if available
+                    lockfile = self._get_lockfile_path(hardware_type, args.dev)
+                    if Path(lockfile).exists():
+                        print(f"Using lockfile: {lockfile}")
+                        if self._ensure_uv_installed():
+                            subprocess.run(["uv", "pip", "sync", lockfile], check=True)
+                        else:
+                            subprocess.run(
+                                [str(python_executable), "-m", "pip", "install", "-r", lockfile],
+                                check=True,
+                            )
+                    else:
+                        print(f"Lockfile not found: {lockfile}")
+                        if self._ensure_uv_installed():
+                            subprocess.run(["uv", "pip", "install", "-r", req_file], check=True)
+                        else:
+                            subprocess.run(
+                                [str(python_executable), "-m", "pip", "install", "-r", req_file],
+                                check=True,
+                            )
+                else:
+                    # Install from requirements file
+                    if self._ensure_uv_installed():
+                        subprocess.run(["uv", "pip", "install", "-r", req_file], check=True)
+                    else:
+                        subprocess.run(
+                            [str(python_executable), "-m", "pip", "install", "-r", req_file],
+                            check=True,
+                        )
+            except subprocess.SubprocessError as e:
+                print(f"Error installing dependencies: {e}")
+                return 1
+
+        print("\nEnvironment setup complete!")
+        print("To activate the environment:")
+        if platform.system() == "Windows":
+            print(f"    {self._get_venv_path()}\\Scripts\\activate")
+        else:
+            print(f"    source {self._get_venv_path()}/bin/activate")
+
+        return 0
+
+    def run(self, args: argparse.Namespace) -> int:
+        """Run a command in the configured environment."""
+        python_executable = self._get_python_executable()
+
+        if not python_executable.exists():
+            print(f"Error: Python executable not found at {python_executable}")
+            print("Please run 'python uvfast.py setup' first")
+            return 1
+
+        print(f"Running command with {python_executable}")
+        cmd = [str(python_executable)] + args.command
+
+        try:
+            env = os.environ.copy()
+            # Add XPU_VISIBLE_DEVICES=0 for acm hardware if not already set
+            if self.hardware_type == "acm" and "XPU_VISIBLE_DEVICES" not in env:
+                env["XPU_VISIBLE_DEVICES"] = "0"
+
+            result = subprocess.run(cmd, env=env)
+            return result.returncode
+        except subprocess.SubprocessError as e:
+            print(f"Error running command: {e}")
+            return 1
+
+    def lock(self, args: argparse.Namespace) -> int:
+        """Generate lockfiles for dependencies."""
+        if not self._ensure_uv_installed():
+            print("uv is required for lockfile generation")
+            return 1
+
+        hardware_types = []
+        if args.all:
+            hardware_types = self.config.get("hardware_types", ["base"])
+        else:
+            hardware_types = [args.hardware or self.hardware_type]
+
+        for hw_type in hardware_types:
+            req_files = self._get_requirements_files(hw_type, args.dev)
+            if not req_files:
+                print(f"No requirements files found for hardware type: {hw_type}")
+                continue
+
+            lockfile = self._get_lockfile_path(hw_type, args.dev)
+            print(f"Generating lockfile for {hw_type}: {lockfile}")
+
+            cmd = ["uv", "pip", "compile"]
+            for req_file in req_files:
+                cmd.extend(["--requirement", req_file])
+            cmd.extend(["--output-file", lockfile])
+
+            try:
+                subprocess.run(cmd, check=True)
+                print(f"Lockfile generated: {lockfile}")
+            except subprocess.SubprocessError as e:
+                print(f"Error generating lockfile: {e}")
+                return 1
+
+        return 0
+
+    def info(self, args: argparse.Namespace) -> int:
+        """Display information about the environment and detected hardware."""
+        print("uvfast v1.0.0")
+        print(f"Python version: {platform.python_version()}")
+        print(f"System: {platform.system()} {platform.release()}")
+
+        print(f"\nDetected hardware type: {self.hardware_type}")
+
+        # Get GPU information if available
+        if "hardware_detection" in sys.modules:
+            hardware_info = hardware_detection.get_hardware_info()
+
+            print("\nGPUs:")
+            if hardware_info["gpus"]:
+                for gpu in hardware_info["gpus"]:
+                    print(f"  - {gpu}")
+            else:
+                print("  No GPUs detected")
+
+            print(f"\nCPU: {hardware_info['cpu'].get('name', 'Unknown')}")
+            print(f"OpenVINO available: {hardware_info['openvino_available']}")
+        else:
+            # Simple fallback
+            print("\nNote: hardware_detection.py not found, showing limited information")
+            if platform.system() == "Windows":
+                try:
+                    output = subprocess.check_output(
+                        ["wmic", "path", "win32_VideoController", "get", "Name"],
+                        universal_newlines=True,
+                    )
+                    gpu_names = [
+                        line.strip() for line in output.strip().split("\n")[1:] if line.strip()
+                    ]
+                    print("\nGPUs:")
+                    for gpu in gpu_names:
+                        print(f"  - {gpu}")
+                except (subprocess.SubprocessError, FileNotFoundError):
+                    print("  Unable to detect GPUs")
+
+        # Display environment information
+        venv_path = self._get_venv_path()
+        if venv_path.exists():
+            print(f"\nVirtual environment: {venv_path} (exists)")
+            python_executable = self._get_python_executable()
+            print(f"Python executable: {python_executable}")
+
+            if python_executable.exists():
+                # Get installed packages
+                try:
+                    output = subprocess.check_output(
+                        [str(python_executable), "-m", "pip", "list"],
+                        universal_newlines=True,
+                    )
+                    package_count = len(output.strip().split("\n")) - 2  # Subtract header rows
+                    print(f"Installed packages: {package_count}")
+
+                    # Check for key packages
+                    key_packages = [
+                        "torch",
+                        "numpy",
+                        "flask",
+                        "intel-extension-for-pytorch",
+                        "openvino",
+                    ]
+                    print("\nKey packages:")
+                    for package in key_packages:
+                        try:
+                            result = subprocess.run(
+                                [
+                                    str(python_executable),
+                                    "-c",
+                                    f"import {package.replace('-', '_')}; print({package.replace('-', '_')}.__version__)",
+                                ],
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE,
+                                universal_newlines=True,
+                            )
+                            if result.returncode == 0:
+                                print(f"  {package}: {result.stdout.strip()}")
+                            else:
+                                print(f"  {package}: not installed")
+                        except subprocess.SubprocessError:
+                            print(f"  {package}: not installed")
+                except subprocess.SubprocessError:
+                    print("Unable to list installed packages")
+        else:
+            print(f"\nVirtual environment: {venv_path} (does not exist)")
+            print("Run 'python uvfast.py setup' to create the environment")
+
+        # Show configuration
+        if args.verbose:
+            print("\nConfiguration:")
+            print(json.dumps(self.config, indent=2))
+
+        return 0
+
+    def legacy_install(self, args: argparse.Namespace) -> int:
+        """Install dependencies using traditional pip (but accelerated with uv)."""
+        hardware_type = args.hardware or self.hardware_type
+        req_files = self._get_requirements_files(hardware_type, args.dev)
+
+        if not req_files:
+            print(f"No requirements files found for hardware type: {hardware_type}")
+            return 1
+
+        for req_file in req_files:
+            print(f"Installing dependencies from {req_file}")
+
+            try:
+                if self._ensure_uv_installed():
+                    subprocess.run(["uv", "pip", "install", "-r", req_file], check=True)
+                else:
+                    subprocess.run(
+                        [sys.executable, "-m", "pip", "install", "-r", req_file], check=True
+                    )
+            except subprocess.SubprocessError as e:
+                print(f"Error installing dependencies: {e}")
+                return 1
+
+        print("Installation complete")
+        return 0
+
+    def hardware_check(self, args: argparse.Namespace) -> int:
+        """Check if hardware-specific requirements are available for the current hardware."""
+        if "hardware_detection" in sys.modules:
+            hardware_detection.print_hardware_info(verbose=args.verbose)
+        else:
+            print(f"Detected hardware type: {self.hardware_type}")
+            print("Note: hardware_detection.py not found, showing limited information")
+
+        req_files = self._get_requirements_files(self.hardware_type)
+        print(f"\nRequirements files for {self.hardware_type}:")
+        for req_file in req_files:
+            exists = Path(req_file).exists()
+            print(f"  - {req_file} ({'exists' if exists else 'not found'})")
+
+        return 0
+
+    def main(self) -> int:
+        """Main entry point for the uvfast CLI."""
+        parser = argparse.ArgumentParser(
+            description="Fast hardware-optimized Python environment manager",
+            formatter_class=argparse.RawDescriptionHelpFormatter,
+            epilog=textwrap.dedent(
+                """
+                Examples:
+                  # Set up environment for detected hardware
+                  python uvfast.py setup
+                  
+                  # Set up environment for specific hardware with development dependencies
+                  python uvfast.py setup --hardware acm --dev
+                  
+                  # Generate lockfiles for all hardware types
+                  python uvfast.py lock --all
+                  
+                  # Run a command in the configured environment
+                  python uvfast.py run pytest
+                  
+                  # Show hardware and environment information
+                  python uvfast.py info
+                  
+                  # Install dependencies using traditional pip (but accelerated with uv)
+                  python uvfast.py legacy-install
+            """
+            ),
+        )
+
+        subparsers = parser.add_subparsers(dest="command", help="Command to run")
+
+        # setup command
+        setup_parser = subparsers.add_parser(
+            "setup", help="Set up the environment for the specified hardware"
+        )
+        setup_parser.add_argument(
+            "--hardware",
+            choices=self.config.get("hardware_types", ["base"]),
+            help="Hardware type (detected by default)",
+        )
+        setup_parser.add_argument(
+            "--dev", action="store_true", help="Include development dependencies"
+        )
+        setup_parser.add_argument(
+            "--clean", action="store_true", help="Clean existing environment before setup"
+        )
+        setup_parser.add_argument(
+            "--use-lockfile",
+            action="store_true",
+            help="Use lockfiles for reproducible environments",
+        )
+
+        # run command
+        run_parser = subparsers.add_parser(
+            "run", help="Run a command in the configured environment"
+        )
+        run_parser.add_argument("command", nargs="+", help="Command to run")
+
+        # lock command
+        lock_parser = subparsers.add_parser("lock", help="Generate lockfiles for dependencies")
+        lock_parser.add_argument(
+            "--hardware",
+            choices=self.config.get("hardware_types", ["base"]),
+            help="Hardware type (detected by default)",
+        )
+        lock_parser.add_argument(
+            "--dev", action="store_true", help="Include development dependencies"
+        )
+        lock_parser.add_argument(
+            "--all", action="store_true", help="Generate lockfiles for all hardware types"
+        )
+
+        # info command
+        info_parser = subparsers.add_parser(
+            "info", help="Display information about the environment and detected hardware"
+        )
+        info_parser.add_argument(
+            "--verbose", "-v", action="store_true", help="Show verbose information"
+        )
+
+        # legacy-install command
+        legacy_parser = subparsers.add_parser(
+            "legacy-install",
+            help="Install dependencies using traditional pip (but accelerated with uv)",
+        )
+        legacy_parser.add_argument(
+            "--hardware",
+            choices=self.config.get("hardware_types", ["base"]),
+            help="Hardware type (detected by default)",
+        )
+        legacy_parser.add_argument(
+            "--dev", action="store_true", help="Include development dependencies"
+        )
+
+        # hardware-check command
+        hardware_parser = subparsers.add_parser(
+            "hardware-check",
+            help="Check if hardware-specific requirements are available for the current hardware",
+        )
+        hardware_parser.add_argument(
+            "--verbose", "-v", action="store_true", help="Show verbose information"
+        )
+
+        args = parser.parse_args()
+
+        # Default to info if no command specified
+        if not args.command:
+            print("No command specified, showing environment information\n")
+            return self.info(argparse.Namespace(verbose=False))
+
+        # Run the appropriate command
+        if args.command == "setup":
+            return self.setup(args)
+        elif args.command == "run":
+            return self.run(args)
+        elif args.command == "lock":
+            return self.lock(args)
+        elif args.command == "info":
+            return self.info(args)
+        elif args.command == "legacy-install":
+            return self.legacy_install(args)
+        elif args.command == "hardware-check":
+            return self.hardware_check(args)
+        else:
+            parser.print_help()
+            return 1
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(UVFast().main())

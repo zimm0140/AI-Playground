@@ -1,0 +1,126 @@
+name: Hardware Matrix Testing
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+    inputs:
+      hardware_type:
+        description: 'Hardware type to test'
+        required: true
+        default: 'base'
+        type: choice
+        options:
+          - base
+          - acm
+          - ovino
+
+jobs:
+  test-matrix:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python-version: ['3.10', '3.11', '3.13']
+        hardware: ['base', 'simulated-acm', 'simulated-ovino']
+        exclude:
+          # Exclude some combinations to reduce matrix size
+          - os: ubuntu-latest
+            python-version: '3.10'
+            hardware: 'simulated-acm'
+          - os: windows-latest
+            python-version: '3.13'
+            hardware: 'simulated-ovino'
+
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      
+      - name: Install uv
+        shell: bash
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install uv
+      
+      - name: Setup simulated hardware environment
+        run: |
+          echo "Setting up simulated hardware: ${{ matrix.hardware }}"
+          if [ "${{ matrix.hardware }}" = "simulated-acm" ]; then
+            echo "SIMULATED_HARDWARE=acm" >> $GITHUB_ENV
+            # Create mock files to simulate Intel Arc GPU detection
+            mkdir -p $HOME/.uvfast/mock
+            echo "Intel(R) Arc(TM) A770 Graphics" > $HOME/.uvfast/mock/gpu_info.txt
+          elif [ "${{ matrix.hardware }}" = "simulated-ovino" ]; then
+            echo "SIMULATED_HARDWARE=ovino" >> $GITHUB_ENV
+            # Install minimal OpenVINO
+            pip install openvino-stub
+          else
+            echo "SIMULATED_HARDWARE=base" >> $GITHUB_ENV
+          fi
+        shell: bash
+      
+      - name: Install project with uvfast
+        run: |
+          python uvfast.py setup --hardware $SIMULATED_HARDWARE --dev
+        shell: bash
+        env:
+          UVFAST_MOCK_DIR: $HOME/.uvfast/mock
+          SIMULATED_HARDWARE: ${{ env.SIMULATED_HARDWARE }}
+      
+      - name: Run basic tests
+        run: |
+          python uvfast.py run pytest -xvs tests/
+        shell: bash
+      
+      - name: Run hardware-specific tests
+        if: matrix.hardware != 'base'
+        run: |
+          python uvfast.py run pytest -xvs tests/hardware/
+        shell: bash
+      
+      - name: Run linting checks
+        run: |
+          python uvfast.py run ruff check .
+          python uvfast.py run mypy service/
+        shell: bash
+  
+  # Additional job for lockfile validation
+  validate-lockfiles:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      
+      - name: Install uv
+        shell: bash
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+      
+      - name: Validate lockfiles
+        run: |
+          python uvfast.py lock --all
+          if git diff --quiet requirements*.lock; then
+            echo "Lockfiles are up to date"
+          else
+            echo "Lockfiles are not up to date. Please run 'python uvfast.py lock --all' and commit the changes."
+            git diff requirements*.lock
+            exit 1
+          fi
+        shell: bash 
