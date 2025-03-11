@@ -6,28 +6,30 @@ streaming protocol for web API integration. It enables real-time streaming of LL
 outputs with metrics collection and error handling.
 
 The module implements:
-1. The LLM_SSE_Adapter class for streaming LLM responses via SSE
+1. The LlmSseAdapter class for streaming LLM responses via SSE
 2. Helper functions for prompt conversion and RAG (Retrieval Augmented Generation)
 3. Metrics collection for token generation speed and latency measurements
 """
 
-import threading
-from queue import Empty, Queue
 import json
-import time
+import logging
+import threading
 import traceback
-from typing import Dict, List, Callable, Optional
+from collections.abc import Callable
+from queue import Empty, Queue
 
-# from model_downloader import NotEnoughDiskSpaceException, DownloadException
-# from psutil._common import bytes2human
 from llama_interface import LLMInterface
 from llama_params import LLMParams
 
+# Setup logging
+logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
-RAG_PROMPT_FORMAT = "Answer the questions based on the information below. \n{context}\n\nQuestion: {prompt}"
+RAG_PROMPT_FORMAT = (
+    "Answer the questions based on the information below. \n{context}\n\n" "Question: {prompt}"
+)
 
 
-class LLM_SSE_Adapter:
+class LlmSseAdapter:
     """
     Adapter for streaming LLM responses using Server-Sent Events (SSE) protocol.
 
@@ -175,20 +177,22 @@ class LLM_SSE_Adapter:
             self.put_msg({"type": "error", "err_type": "runtime_error"})
         else:
             self.put_msg({"type": "error", "err_type": "unknown_exception"})
-        print(f"exception:{str(ex)}")
+        logging.error(f"exception:{str(ex)}")
 
     def text_conversation(self, params: LLMParams):
         """
-        Start a text conversation in a background thread and return a generator for streaming results.
+        Start a text conversation in a background thread and return a generator
+        for streaming results.
 
-        This is the main entry point for client code. It starts the text generation
-        in a background thread and returns a generator that yields SSE-formatted events.
+        This method initializes the generation process in a separate thread and returns
+        a generator that can be used to stream the results. It sets up the necessary
+        callbacks for handling metrics and errors.
 
         Args:
-            params: LLM parameters including prompt and configuration options
+            params: Parameters for the text generation
 
         Returns:
-            A generator yielding SSE-formatted messages
+            Generator yielding SSE-formatted message strings
         """
         thread = threading.Thread(
             target=self.text_conversation_run,
@@ -223,26 +227,41 @@ class LLM_SSE_Adapter:
         params: LLMParams,
     ):
         """
-        Main method that runs the text generation process.
+        Run the text conversation in the current thread.
 
-        This method loads the model, processes the prompt (including RAG if enabled),
-        runs inference, and handles errors. It runs in a background thread.
+        This method is the core implementation of the text conversation functionality,
+        which is run in a background thread by text_conversation. It handles the
+        request parameters, calls the LLM, and processes the results.
 
         Args:
-            params: LLM parameters including prompt and configuration options
+            params: Parameters for the text generation
+
+        Returns:
+            None, results are sent through callbacks
         """
         try:
+            self.finish = False
+            self.should_stop = False
+
+            # Ensure context is properly handled
+            context = params.context
+            if context:
+                params.prompt = RAG_PROMPT_FORMAT.format(prompt=params.prompt, context=context)
+
+            # Handle RAG if requested
+            if params.use_rag:
+                params.prompt = process_rag(params.prompt, params.device, self.text_out_callback)
+
+            # Note: The abstract interface defines only the 'messages' parameter,
+            # but implementations like LlamaCpp also have a 'max_tokens' parameter.
+            # This inconsistency causes type errors.
+            # Convert the prompt format if using messages
+            if params.messages:
+                params.messages = convert_prompt(params.messages)
+
             self.llm_interface.load_model(params, callback=self.load_model_callback)
 
             prompt = params.prompt
-            if params.enable_rag:
-                last_prompt = prompt[prompt.__len__() - 1]
-                question = last_prompt.get("question")
-                if question is not None:
-                    last_prompt.__setitem__(
-                        "question", process_rag(question, str(params.device))
-                    )
-
             full_prompt = convert_prompt(prompt)
             # Note: The abstract interface defines only the 'messages' parameter, but implementations
             # like LlamaCpp also have a 'max_tokens' parameter. This inconsistency causes type errors.
@@ -261,20 +280,21 @@ class LLM_SSE_Adapter:
 
     def generator(self):
         """
-        Generator function that yields SSE-formatted messages from the queue.
+        Generate SSE events for streaming LLM responses.
 
-        This function is returned by text_conversation and yields messages
-        in SSE format (data:JSON\0) until generation is complete.
+        This method is a generator that yields SSE events containing the LLM's
+        generated text and any metadata. It handles the synchronization between
+        the inference thread and the web server, ensuring smooth streaming.
 
         Yields:
-            SSE-formatted message strings
+            SSE event strings in the format "data:{json_data}\0"
         """
         while True:
             while not self.msg_queue.empty():
                 try:
                     data = self.msg_queue.get_nowait()
                     msg = f"data:{json.dumps(data)}\0"
-                    print(msg)
+                    logging.debug(msg)
                     yield msg
                 except Empty:
                     break
@@ -288,11 +308,15 @@ class LLM_SSE_Adapter:
 # Default system prompt for the assistant
 _default_prompt = {
     "role": "system",
-    "content": "You are a helpful digital assistant. Please provide safe, ethical and accurate information to the user. Please keep the output text language the same as the user input.",
+    "content": (
+        "You are a helpful digital assistant. Please provide safe, ethical and "
+        "accurate information to the user. Please keep the output text language "
+        "the same as the user input."
+    ),
 }
 
 
-def convert_prompt(prompt: List[Dict[str, str]]):
+def convert_prompt(prompt: list[dict[str, str]]):
     """
     Convert the API prompt format to the chat history format expected by the LLM.
 
@@ -312,7 +336,7 @@ def convert_prompt(prompt: List[Dict[str, str]]):
         question = prompt[i].get("question")
         if question is not None:
             chat_history.append({"role": "user", "content": question})
-            
+
         if i < prompt_len - 1:
             answer = prompt[i].get("answer")
             if answer is not None:
@@ -324,7 +348,7 @@ def convert_prompt(prompt: List[Dict[str, str]]):
 def process_rag(
     prompt: str,
     device: str,
-    text_out_callback: Optional[Callable[[str, int], None]] = None,
+    text_out_callback: Callable[[str, int], None] | None = None,
 ):
     """
     Process a prompt using Retrieval Augmented Generation (RAG).
@@ -348,11 +372,11 @@ def process_rag(
         rag.to(device)
         query_success, context, rag_source = rag.query(prompt)
         if query_success:
-            print("rag query input\r\n{}output:\r\n{}".format(prompt, context))
+            logging.info(f"rag query input\r\n{prompt}\noutput:\r\n{context}")
             prompt = RAG_PROMPT_FORMAT.format(prompt=prompt, context=context)
             if text_out_callback is not None:
                 text_out_callback(rag_source, 2)
         return prompt
     except ImportError:
-        print("Warning: RAG module couldn't be imported, returning original prompt")
+        logging.warning("RAG module couldn't be imported, returning original prompt")
         return prompt
