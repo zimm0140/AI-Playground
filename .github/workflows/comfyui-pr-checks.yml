@@ -73,6 +73,8 @@ jobs:
             --requirements-dir ci_artifacts/workflow_requirements \
             --tests-dir ci_artifacts/workflow_tests \
             --versions-dir ci_artifacts/workflow_versions \
+            --workflows-dir WebUI/external/workflows \
+            --components-dir WebUI/external/components \
             --output-dir ci_artifacts/workflow_dashboard
             
       - name: Generate PR comment

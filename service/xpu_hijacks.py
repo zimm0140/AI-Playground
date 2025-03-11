@@ -65,7 +65,10 @@ disable_xpu = os.environ.get("DISABLE_XPU", "0").lower() in ("1", "true", "yes")
 
 # =================== GLOBAL VARIABLES AND INITIALIZATION ===================
 # Check if the device supports 64-bit floating point operations
-device_supports_fp64 = torch.xpu.has_fp64_dtype()
+if hasattr(torch, 'xpu') and hasattr(torch.xpu, 'has_fp64_dtype'):
+    device_supports_fp64 = torch.xpu.has_fp64_dtype()
+else:
+    device_supports_fp64 = False
 
 # pylint: disable=protected-access, missing-function-docstring, line-too-long, unnecessary-lambda, no-else-return
 

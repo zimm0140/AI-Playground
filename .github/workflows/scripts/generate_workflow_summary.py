@@ -6,7 +6,6 @@ for GitHub Actions workflow step summary.
 
 import os
 import json
-import sys
 
 def main():
     """Generate summary from validation and requirements results"""
