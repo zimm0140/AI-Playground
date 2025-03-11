@@ -72,9 +72,23 @@ else:
 
 # pylint: disable=protected-access, missing-function-docstring, line-too-long, unnecessary-lambda, no-else-return
 
-# Redirect torch.cuda to torch.xpu to make CUDA code work with Intel XPU
+if not hasattr(torch, 'xpu'):
+    # Create a dummy xpu attribute as an empty object
+    torch.xpu = type('XPU', (), {})()
+
+# Redirect torch.cuda to torch.xpu
 torch.cuda = torch.xpu
 
+# Add dummy implementations for torch.xpu if not provided
+if not hasattr(torch.xpu, 'device_count'):
+    def dummy_device_count():
+        return 1
+    torch.xpu.device_count = dummy_device_count
+
+if not hasattr(torch.xpu, 'get_device_name'):
+    def dummy_get_device_name(index):
+        return "Dummy XPU Device"
+    torch.xpu.get_device_name = dummy_get_device_name
 
 # =================== HELPER FUNCTIONS ===================
 def return_null_context(*args, **kwargs):  # pylint: disable=unused-argument
