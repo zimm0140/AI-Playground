@@ -1,0 +1,37 @@
+# OpenVINO Hardware Acceleration Requirements
+# -----------------------------------
+# This file contains dependencies specific to OpenVINO acceleration.
+
+# Additional package index for OpenVINO releases
+--extra-index-url https://storage.openvinotoolkit.org/simple/wheels/nightly
+
+# OpenVINO Core Components
+openvino==2025.1.0.dev20250203
+openvino-dev==2025.1.0.dev20250203
+openvino-genai==2025.1.0.0.dev20250203
+openvino-tokenizers==2025.1.0.0.dev20250203
+
+# OpenVINO model optimization tools
+pot==2025.1.0.dev20250203
+openvino-telemetry==2025.1.0.dev20250203
+
+# Required dependencies with pinned versions
+numpy==1.26.4
+opencv-python==4.8.1.78
+
+# For OpenVINO neural network compression
+nncf==2.7.0
+
+# For model conversion and acceleration
+onnx==1.15.0
+onnxruntime==1.16.3
+
+# For visualization and debugging
+networkx==3.2.1
+matplotlib==3.8.2
+
+# Hardware detection
+py-cpuinfo==9.0.0
+
+# API Framework (if needed)
+apiflask==2.3.0 
