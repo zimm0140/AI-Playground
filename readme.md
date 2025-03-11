@@ -1,5 +1,93 @@
 # AI Playground
 
+A modern AI development environment with support for multiple models and backends.
+
+## Installation
+
+### Requirements
+- Python 3.10 or newer (3.13 recommended for development)
+- pip or Rye for package management
+
+### Traditional Method (Compatible with Upstream)
+```bash
+# Clone the repository
+git clone https://github.com/zimm0140/AI-Playground.git
+cd AI-Playground
+
+# Install dependencies
+pip install -e .
+
+# For development dependencies
+pip install -e ".[dev]"
+```
+
+### Modern Development Method
+```bash
+# Install Rye (once)
+curl -sSf https://rye-up.com/get | bash
+
+# Clone the repository
+git clone https://github.com/zimm0140/AI-Playground.git
+cd AI-Playground
+
+# Setup development environment with Rye
+rye sync
+```
+
+## Development
+
+### Running Tests
+```bash
+# Traditional method
+pytest
+
+# Using Rye
+rye run pytest
+```
+
+### Linting and Type Checking
+```bash
+# Install pre-commit hooks
+pre-commit install
+
+# Run manually
+pre-commit run --all-files
+```
+
+## Supported Features
+
+- **Text Generation**: Leverage state-of-the-art LLMs
+- **Image Generation**: Create and manipulate images with Stable Diffusion
+- **Multi-backend Support**: Support for Llama.cpp, OpenVINO, and more
+- **GPU Acceleration**: Optimized for Intel GPUs through XPU hijacks
+
+## Project Structure
+
+- `/service` - Core API services
+- `/LlamaCPP` - Llama.cpp integration
+- `/OpenVINO` - OpenVINO integration
+- `/.github` - CI/CD workflows
+
+## CI/CD Pipeline
+
+Our project uses a hybrid approach for CI/CD:
+- Python 3.10+ compatibility (3.13 recommended for development)
+- Dual testing with both traditional pip and modern Rye
+- Comprehensive linting and type checking
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+Before submitting, please ensure:
+- Tests pass with both installation methods
+- Pre-commit hooks run without errors
+- Documentation is updated as needed
+
 <a href="<https://scan.coverity.com/projects/ai-playground>">
   <img alt="Coverity Scan Build Status"
 
