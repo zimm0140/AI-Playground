@@ -813,31 +813,41 @@ class ComfyWorkflowDashboard:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Generate ComfyUI workflow dashboard")
+    parser = argparse.ArgumentParser(description="Generate workflow dashboard markdown and JSON")
     parser.add_argument(
         "--validation-dir",
+        help="Directory containing workflow validation results",
         default="ci_artifacts/workflow_validation",
-        help="Directory containing validation results",
     )
     parser.add_argument(
         "--requirements-dir",
+        help="Directory containing workflow requirements analysis",
         default="ci_artifacts/workflow_requirements",
-        help="Directory containing requirements analysis",
     )
     parser.add_argument(
         "--tests-dir",
+        help="Directory containing workflow test results",
         default="ci_artifacts/workflow_tests",
-        help="Directory containing test results",
     )
     parser.add_argument(
         "--versions-dir",
+        help="Directory containing workflow version history",
         default="ci_artifacts/workflow_versions",
-        help="Directory containing version history",
+    )
+    parser.add_argument(
+        "--workflows-dir",
+        help="Directory containing workflow JSON files",
+        default="WebUI/external/workflows",
+    )
+    parser.add_argument(
+        "--components-dir",
+        help="Directory containing component JSON files",
+        default="WebUI/external/components",
     )
     parser.add_argument(
         "--output-dir",
+        help="Directory to write dashboard files",
         default="ci_artifacts/workflow_dashboard",
-        help="Directory to store dashboard",
     )
     args = parser.parse_args()
 

@@ -25,10 +25,10 @@ This directory contains scripts used by the CI workflow in GitHub Actions. These
 The CI workflow now includes:
 
 1. **Multi-platform Testing** - Tests on both Linux and Windows to ensure cross-platform compatibility
-2. **Security Scanning** - Checks dependencies for known vulnerabilities
-3. **Test Coverage Analysis** - Measures and reports code coverage with visual indicators
-4. **Shell Script Linting** - Ensures shell scripts follow best practices
-5. **Comprehensive Reporting** - Generates detailed reports for all aspects of the CI process
+1. **Security Scanning** - Checks dependencies for known vulnerabilities
+1. **Test Coverage Analysis** - Measures and reports code coverage with visual indicators
+1. **Shell Script Linting** - Ensures shell scripts follow best practices
+1. **Comprehensive Reporting** - Generates detailed reports for all aspects of the CI process
 
 ## Usage
 
@@ -45,7 +45,7 @@ cd /path/to/repository
 When modifying the CI workflow:
 
 1. Prefer to modify the individual scripts rather than inlining code in the main workflow file
-2. Keep scripts focused on a single responsibility
-3. Include appropriate documentation and error handling in each script
-4. Ensure all scripts have proper execution permissions (`chmod +x`)
-5. Update the Windows job in main.yml if adding new functionality that should work cross-platform 
+1. Keep scripts focused on a single responsibility
+1. Include appropriate documentation and error handling in each script
+1. Ensure all scripts have proper execution permissions (`chmod +x`)
+1. Update the Windows job in main.yml if adding new functionality that should work cross-platform 

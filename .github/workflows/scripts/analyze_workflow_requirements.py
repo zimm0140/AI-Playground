@@ -372,7 +372,10 @@ class WorkflowRequirementsAnalyzer:
             # Add to memory tracking
             min_memory = workflow["memory_required"]["min"]
             
-            # Use setdefault to avoid KeyError
+            # Use defaultdict to avoid KeyError
+            if "workflows_by_memory" not in results["aggregate"]["memory_requirements"]:
+                results["aggregate"]["memory_requirements"]["workflows_by_memory"] = {}
+                
             if min_memory not in results["aggregate"]["memory_requirements"]["workflows_by_memory"]:
                 results["aggregate"]["memory_requirements"]["workflows_by_memory"][min_memory] = []
                 
