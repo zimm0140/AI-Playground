@@ -5,7 +5,7 @@ This document outlines the process of migrating AI Playground to Python 3.10+ wh
 ## Overview
 
 We've implemented a pragmatic approach that:
-1. Modernizes the development environment and CI with tools like Rye
+1. Modernizes the development environment and CI with tools like uv and Rye
 2. Maintains backward compatibility using traditional pip installation
 3. Updates type annotations for Python 3.10+ compatibility
 4. Implements better linting and formatting tools
@@ -14,7 +14,35 @@ We've implemented a pragmatic approach that:
 
 ### Getting Started
 
-Choose either the traditional or modern development approach:
+Choose one of the following development approaches:
+
+#### Primary Method (Recommended - uv)
+```bash
+# Install uv
+# On macOS and Linux
+curl -LsSf https://astral.sh/uv/install.sh | sh
+# On Windows
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+# Set up the environment
+uv venv
+uv pip install -e ".[dev]"
+
+# Install pre-commit hooks
+pre-commit install
+```
+
+#### Alternative Modern Method (Rye)
+```bash
+# Install Rye
+curl -sSf https://rye-up.com/get | bash
+
+# Set up the environment
+rye sync
+
+# Install pre-commit hooks
+pre-commit install
+```
 
 #### Traditional Method
 ```bash
@@ -23,18 +51,6 @@ pip install -e .
 
 # Install development dependencies
 pip install -e ".[dev]"
-
-# Install pre-commit hooks
-pre-commit install
-```
-
-#### Modern Method (Recommended)
-```bash
-# Install Rye
-curl -sSf https://rye-up.com/get | bash
-
-# Set up the environment
-rye sync
 
 # Install pre-commit hooks
 pre-commit install
@@ -79,8 +95,8 @@ When adding or updating dependencies:
 
 Our CI now uses a hybrid approach with:
 - Tests on multiple Python versions (3.10, 3.11, 3.13)
-- Both traditional (pip) and modern (Rye) installation methods
-- Comprehensive linting and type checking
+- Testing with multiple installation methods (uv, Rye, and pip)
+- Comprehensive linting and type checking using uv for improved performance
 
 ## Common Issues and Solutions
 
@@ -119,6 +135,7 @@ Some packages may require updates for Python 3.10+ compatibility. Check for:
 - Gradually adopt more Python 3.10+ features
 - Migrate to native type annotations as Python 3.9 support is phased out
 - Consider adopting Rust extensions for performance-critical code
+- Explore uv's workspace features for better monorepo support
 
 ## Help and Support
 
