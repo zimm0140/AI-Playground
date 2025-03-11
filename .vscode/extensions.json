@@ -1,0 +1,16 @@
+{
+    "recommendations": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "charliermarsh.ruff",
+        "matangover.mypy",
+        "davidanson.vscode-markdownlint",
+        "github.vscode-github-actions",
+        "tamasfe.even-better-toml",
+        "editorconfig.editorconfig",
+        "streetsidesoftware.code-spell-checker",
+        "njpwerner.autodocstring",
+        "redhat.vscode-yaml",
+        "ms-azuretools.vscode-docker"
+    ]
+}

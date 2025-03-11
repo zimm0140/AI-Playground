@@ -1,7 +1,29 @@
+# Node.js specific
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+.npm/
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+*.tsbuildinfo
+
 # Virtual environments
 .venv/
 venv/
 env/
+*env_tmp/
+*service_tmp/
+*-env/
+build-envs/
+llama-cpp-env/
 
 # uv specific files
 .lockfiles/
@@ -17,14 +39,23 @@ __pycache__/
 
 # Distribution / packaging
 dist/
+dist-ssr/
 build/
 *.egg-info/
+release/
+*.local
 
 # IDE files
 .idea/
-.vscode/
+.vscode/*
+!.vscode/extensions.json
 *.swp
 *.swo
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 
 # OS specific files
 .DS_Store
@@ -35,7 +66,6 @@ desktop.ini
 package_res/
 build_resources/
 build_envs/
-release/
 WebUI/external/service/
 WebUI/external/workflows_intel/
 WebUI/external/workflows_bak/
@@ -47,20 +77,34 @@ site/
 # Database files
 *.sqlite
 *.db
+db/
 
 # Jupyter Notebook
 .ipynb_checkpoints/
 
+# Logs
+logs/
+*.log
+
+# Binaries and large files
 *.exe
 *.7z
 *.whl
+
+# Project-specific directories
 ComfyUI/
-env
-llama-cpp-env/
-*env_tmp/
-*service_tmp/
-*-env/
-build-envs/
-portable-git/
-llm_cache/*
+LlamaCPP/
+OpenVino/
+llm_cache/
+cache/
+temp/
+static/*
+!static/assets/
+models/llm/
+models/stable_diffusion/*
+!models/stable_diffusion/ESRGAN/
+!models/stable_diffusion/preview/
 .qodo
+
+# Allow specific tool executables
+!tools/*.exe
