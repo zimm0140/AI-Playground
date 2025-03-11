@@ -32,12 +32,12 @@ We welcome suggestions for enhancements. Please create an issue with:
 ### Pull Requests
 
 1. Fork the repository
-2. Create a new branch for your feature (`git checkout -b feature/amazing-feature`)
-3. Make your changes
-4. Run tests to ensure your changes don't break existing functionality
-5. Commit your changes (`git commit -m 'Add some amazing feature'`)
-6. Push to your branch (`git push origin feature/amazing-feature`)
-7. Open a Pull Request
+1. Create a new branch for your feature (`git checkout -b feature/amazing-feature`)
+1. Make your changes
+1. Run tests to ensure your changes don't break existing functionality
+1. Commit your changes (`git commit -m 'Add some amazing feature'`)
+1. Push to your branch (`git push origin feature/amazing-feature`)
+1. Open a Pull Request
 
 ## Development Environment Setup
 
@@ -51,43 +51,54 @@ We welcome suggestions for enhancements. Please create an issue with:
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/intel/AI-Playground.git
+   git clone <https://github.com/intel/AI-Playground.git>
    cd AI-Playground
-   ```
+   ```text
 
-2. Set up a virtual environment:
+1. Set up a virtual environment:
 
    ```bash
    # Using venv
-   python -m venv .venv
-   
-   # Activate on Windows
-   .venv\Scripts\activate
-   
-   # Activate on macOS/Linux
-   source .venv/bin/activate
-   ```
 
-3. Install dependencies:
+   python -m venv .venv
+
+   # Activate on Windows
+
+   .venv\Scripts\activate
+
+   # Activate on macOS/Linux
+
+   source .venv/bin/activate
+   ```text
+
+1. Install dependencies:
 
    ```bash
    # For automatic hardware detection and environment setup
+
    python setup_hardware_env.py --dev
-   ```
+   ```text
 
 ### Using uv for Dependency Management
 
 We recommend using `uv` for faster dependency management:
 
 ```bash
+
 # Install uv
-curl -LsSf https://astral.sh/uv/install.sh | sh  # Unix/Linux/macOS
+
+curl -LsSf <https://astral.sh/uv/install.sh> | sh  # Unix/Linux/macOS
+
 # or
-powershell -c "irm https://astral.sh/uv/install.ps1 | iex"  # Windows
+
+powershell -c "irm <https://astral.sh/uv/install.ps1> | iex"  # Windows
+
 
 # Install dependencies with uv
+
 uv pip install -e ".[dev]"
-```
+
+```text
 
 ## Development Workflow
 
@@ -96,17 +107,17 @@ uv pip install -e ".[dev]"
    - Create a new branch for your feature or fix
    - Install development dependencies
 
-2. **Making Changes**:
+1. **Making Changes**:
    - Write clean, well-documented code
    - Follow the existing code style
    - Add tests for new functionality
 
-3. **Testing Your Changes**:
+1. **Testing Your Changes**:
    - Run the existing test suite: `pytest`
    - Add tests for your new functionality
    - Ensure all tests pass
 
-4. **Submitting Changes**:
+1. **Submitting Changes**:
    - Commit your changes with a clear message
    - Push your branch to your fork
    - Create a Pull Request against the main branch
@@ -142,9 +153,9 @@ After submitting a PR, maintainers will review your changes. They may suggest im
 When contributing code that deals with specific hardware:
 
 1. Clearly document hardware requirements
-2. Add defensive checks for hardware availability
-3. Provide fallback implementations when possible
-4. Test on multiple hardware configurations if possible
+1. Add defensive checks for hardware availability
+1. Provide fallback implementations when possible
+1. Test on multiple hardware configurations if possible
 
 ---
 **Next**: [Code Quality Standards](code-quality.md) | **See also**: [Testing Guide](testing.md)

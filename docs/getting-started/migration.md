@@ -48,8 +48,13 @@ Configuration files have changed format in v2.x. If you have custom configuratio
    "base": "requirements.txt",
    "dev": "requirements-dev.txt",
    "hardware": {
-     "base": "requirements-hardware-base.txt",
-     "acm": "requirements-hardware-acm.txt"
+
+```text
+
+ "base": "requirements-hardware-base.txt",
+ "acm": "requirements-hardware-acm.txt"
+
+```text
    }
  }
 

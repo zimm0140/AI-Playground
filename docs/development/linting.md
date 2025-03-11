@@ -17,14 +17,17 @@ AI-Playground primarily uses the following linting tools:
 The project uses Ruff with the following settings:
 
 ```toml
+
 # in pyproject.toml
+
 [tool.ruff]
 target-version = "py310"
 line-length = 100
 select = ["E", "F", "I", "W", "N", "B", "C4", "UP", "T20"]
 ignore = ["E501"]
 extend-exclude = [".git", ".github", ".venv", "venv", "__pycache__", "build", "dist"]
-```
+
+```text
 
 #### Key Rules
 
@@ -43,7 +46,9 @@ extend-exclude = [".git", ".github", ".venv", "venv", "__pycache__", "build", "d
 For static type checking, we use mypy with these settings:
 
 ```toml
+
 # in pyproject.toml
+
 [tool.mypy]
 python_version = "3.10"
 warn_return_any = true
@@ -54,7 +59,8 @@ check_untyped_defs = true
 disallow_untyped_decorators = true
 no_implicit_optional = true
 strict_optional = true
-```
+
+```text
 
 ## Running Linters Locally
 
@@ -64,48 +70,61 @@ strict_optional = true
 
    ```powershell
    .\.github\workflows\scripts\fix_ruff_windows.ps1
-   ```
+   ```text
 
-2. For Linux/Mac users:
+1. For Linux/Mac users:
 
    ```bash
    python .github/workflows/scripts/fix_ruff_issues_local.py
-   ```
+   ```text
 
 ### Manual Linting
 
 To run Ruff manually:
 
 ```bash
+
 # Install Ruff
+
 pip install ruff
 
 # Check for issues
+
 ruff check .
 
 # Fix issues automatically
+
 ruff check --fix .
-```
+
+```text
 
 To run mypy:
 
 ```bash
+
 # Install mypy
+
 pip install mypy
 
 # Run type checking
+
 mypy .
-```
+
+```text
 
 To run markdownlint on Markdown files:
 
 ```bash
+
 # Install markdownlint (requires Node.js)
+
 npm install -g markdownlint-cli
 
 # Check Markdown files
+
 markdownlint "**/*.md"
-```
+
+```text
 
 ## Common Linting Issues and Fixes
 
@@ -115,13 +134,15 @@ An import that's not used in the file:
 
 ```python
 import os  # Unused import
-```
+
+```text
 
 **Fix**: Either remove the import or add a `# noqa: F401` comment if it's needed for side effects:
 
 ```python
 import os  # noqa: F401
-```
+
+```text
 
 ### Missing Whitespace (E2xx)
 
@@ -129,15 +150,19 @@ Missing spaces around operators or after commas:
 
 ```python
 x=1+2  # Missing spaces
+
 def func(a,b):  # Missing space after comma
-```
+
+```text
 
 **Fix**: Add appropriate spacing:
 
 ```python
 x = 1 + 2  # Correct spacing
+
 def func(a, b):  # Space after comma
-```
+
+```text
 
 ### Type Annotation Issues
 
@@ -145,15 +170,27 @@ Missing or incorrect type annotations:
 
 ```python
 def process_data(data):  # Missing type annotations
-    return data + 1
-```
+
+```text
+
+return data + 1
+
+```text
+
+```text
 
 **Fix**: Add proper type annotations:
 
 ```python
 def process_data(data: int) -> int:
-    return data + 1
-```
+
+```text
+
+return data + 1
+
+```text
+
+```text
 
 ### Hardware-Specific Import Issues
 
@@ -161,17 +198,29 @@ Importing hardware-specific modules that might not be available:
 
 ```python
 import intel_extension_for_pytorch  # May not be available on all systems
-```
+
+```text
 
 **Fix**: Use conditional imports:
 
 ```python
 try:
-    import intel_extension_for_pytorch
-    HAS_INTEL_EXTENSION = True
+
+```text
+
+import intel_extension_for_pytorch
+HAS_INTEL_EXTENSION = True
+
+```text
 except ImportError:
-    HAS_INTEL_EXTENSION = False
-```
+
+```text
+
+HAS_INTEL_EXTENSION = False
+
+```text
+
+```text
 
 ## CI Integration
 
@@ -184,21 +233,25 @@ The project's CI system uses GitHub Actions to run linters on all files. The con
 The CI will:
 
 1. Check for linting issues
-2. Generate a report
-3. Comment on PRs if issues are found
-4. Provide instructions for fixing the issues
+1. Generate a report
+1. Comment on PRs if issues are found
+1. Provide instructions for fixing the issues
 
 ## Pre-commit Hooks
 
 To ensure code quality before committing, you can set up pre-commit hooks locally:
 
 ```bash
+
 # On Linux/macOS/Git Bash
+
 ./.github/setup-hooks.sh
 
 # On Windows PowerShell
+
 .\.github\setup-hooks.ps1
-```
+
+```text
 
 This will check your code for linting issues before each commit.
 
@@ -207,13 +260,22 @@ This will check your code for linting issues before each commit.
 There are cases where linter rules need to be temporarily disabled:
 
 ```python
+
 # In situations where a line is necessarily long
-long_url = "https://very-long-url-that-cannot-be-split.com/path/to/resource"  # noqa: E501
+
+long_url = "<https://very-long-url-that-cannot-be-split.com/path/to/resource">  # noqa: E501
 
 # When using a variable name that doesn't match conventions
+
 def connect_to_API():  # noqa: N802
-    pass
-```
+
+```text
+
+pass
+
+```text
+
+```text
 
 Use `# noqa:` comments sparingly and only when necessary.
 
@@ -222,30 +284,54 @@ Use `# noqa:` comments sparingly and only when necessary.
 When writing hardware-specific code:
 
 1. Use conditional imports for hardware-specific dependencies
-2. Consider using feature checking rather than relying on specific hardware
-3. Add appropriate comments where hardware specifics affect code structure
-4. Use type annotations that reflect hardware-specific considerations
+1. Consider using feature checking rather than relying on specific hardware
+1. Add appropriate comments where hardware specifics affect code structure
+1. Use type annotations that reflect hardware-specific considerations
 
 ```python
 def optimize_for_hardware(model: torch.nn.Module, hardware_type: str) -> torch.nn.Module:
-    """
-    Optimize model for specific hardware.
-    
-    Args:
-        model: The PyTorch model
-        hardware_type: One of "acm", "bmg", or "base"
-        
-    Returns:
-        Optimized model
-    """
-    if hardware_type == "acm":
-        try:
-            import intel_extension_for_pytorch as ipex  # noqa: F401
-            model = ipex.optimize(model)
-        except ImportError:
-            pass  # Fall back to unoptimized model
-    return model
-```
+
+```text
+
+"""
+Optimize model for specific hardware.
+
+```text
+
+```text
+
+Args:
+    model: The PyTorch model
+    hardware_type: One of "acm", "bmg", or "base"
+
+```text
+
+```text
+
+Returns:
+    Optimized model
+"""
+if hardware_type == "acm":
+    try:
+        import intel_extension_for_pytorch as ipex  # noqa: F401
+
+```text
+
+```text
+
+        model = ipex.optimize(model)
+    except ImportError:
+        pass  # Fall back to unoptimized model
+
+```text
+
+```text
+
+return model
+
+```text
+
+```text
 
 ## Additional Resources
 

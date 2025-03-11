@@ -20,14 +20,19 @@ All Python code should adhere to [PEP 8](https://peps.python.org/pep-0008/), wit
 - **Indentation**: 4 spaces per indentation level (no tabs)
 - **Imports**: Group imports in the following order:
   1. Standard library imports
-  2. Related third-party imports
-  3. Local application/library-specific imports
+  1. Related third-party imports
+  1. Local application/library-specific imports
 - **Whitespace**: Use whitespace consistently as specified in PEP 8
 - **Comments**: Use complete sentences in comments
 - **Naming Conventions**:
-    - `snake_case` for functions, methods, and variables
-    - `PascalCase` for class names
-    - `UPPER_CASE` for constants
+
+```text
+
+- `snake_case` for functions, methods, and variables
+- `PascalCase` for class names
+- `UPPER_CASE` for constants
+
+```text
 
 ### Type Hints
 
@@ -35,9 +40,15 @@ Use type hints for all function parameters and return values:
 
 ```python
 def process_data(input_data: list[str], max_items: int = 10) -> dict[str, any]:
-    """Process the input data and return results."""
-    ...
-```
+
+```text
+
+"""Process the input data and return results."""
+...
+
+```text
+
+```text
 
 ### Docstrings
 
@@ -45,20 +56,38 @@ All modules, classes, and functions should have docstrings:
 
 ```python
 def validate_config(config: dict) -> bool:
-    """
-    Validate the configuration dictionary.
-    
-    Args:
-        config: The configuration dictionary to validate
-        
-    Returns:
-        True if the configuration is valid, False otherwise
-    
-    Raises:
-        ValueError: If the configuration is missing required fields
-    """
-    ...
-```
+
+```text
+
+"""
+Validate the configuration dictionary.
+
+```text
+
+```text
+
+Args:
+    config: The configuration dictionary to validate
+
+```text
+
+```text
+
+Returns:
+    True if the configuration is valid, False otherwise
+
+```text
+
+```text
+
+Raises:
+    ValueError: If the configuration is missing required fields
+"""
+...
+
+```text
+
+```text
 
 ## Code Organization
 
@@ -93,9 +122,15 @@ def validate_config(config: dict) -> bool:
 
 ```python
 class ConfigurationError(Exception):
-    """Raised when there is an error in the configuration."""
-    pass
-```
+
+```text
+
+"""Raised when there is an error in the configuration."""
+pass
+
+```text
+
+```text
 
 ## Testing Standards
 
@@ -115,16 +150,45 @@ class ConfigurationError(Exception):
 
 ```python
 def test_hardware_detection_with_arc_gpu():
-    # Arrange
-    mock_gpu_info = ["Intel(R) Arc(TM) A770 Graphics"]
-    
-    # Act
-    with patch("hardware_detection.get_gpu_info", return_value=mock_gpu_info):
-        result = hardware_detection.detect_hardware_type()
-    
-    # Assert
-    assert result == "acm"
-```
+
+```text
+
+# Arrange
+
+```text
+
+```text
+
+mock_gpu_info = ["Intel(R) Arc(TM) A770 Graphics"]
+
+```text
+
+```text
+
+# Act
+
+```text
+
+```text
+
+with patch("hardware_detection.get_gpu_info", return_value=mock_gpu_info):
+    result = hardware_detection.detect_hardware_type()
+
+```text
+
+```text
+
+# Assert
+
+```text
+
+```text
+
+assert result == "acm"
+
+```text
+
+```text
 
 ## Code Quality Tools
 
@@ -164,7 +228,9 @@ Configuration for code quality tools is stored in:
 ### Example Settings
 
 ```toml
+
 # pyproject.toml example
+
 [tool.ruff]
 target-version = "py310"
 line-length = 100
@@ -177,7 +243,8 @@ warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
 disallow_incomplete_defs = true
-```
+
+```text
 
 ## Continuous Integration
 
@@ -191,9 +258,9 @@ disallow_incomplete_defs = true
 When working with hardware-specific code:
 
 1. Use clear abstractions to separate hardware-specific code
-2. Add conditional imports for hardware-specific dependencies
-3. Use feature detection rather than version detection
-4. Include fallback implementations for unsupported hardware
+1. Add conditional imports for hardware-specific dependencies
+1. Use feature detection rather than version detection
+1. Include fallback implementations for unsupported hardware
 
 ## Documentation Quality
 

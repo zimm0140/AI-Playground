@@ -7,22 +7,27 @@ This document provides a high-level overview of the AI-Playground architecture, 
 AI-Playground is designed as a modular, extensible platform for running, optimizing, and experimenting with AI models across different hardware platforms. The architecture follows these key principles:
 
 1. **Hardware abstraction**: Abstract hardware-specific optimizations behind clean interfaces
-2. **Modularity**: Components can be developed and tested independently
-3. **Extensibility**: Easy to add support for new hardware platforms and models
-4. **Performance**: Optimized for speed and efficiency on supported hardware
-5. **Reliability**: Robust error handling and fallback mechanisms
+1. **Modularity**: Components can be developed and tested independently
+1. **Extensibility**: Easy to add support for new hardware platforms and models
+1. **Performance**: Optimized for speed and efficiency on supported hardware
+1. **Reliability**: Robust error handling and fallback mechanisms
 
 ### Architecture Diagram
 
-```
+```text
 ┌────────────────────────────────────────────────────────────────┐
 │                         API Layer                              │
 │  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌──────────┐  │
 │  │ REST API    │ │ CLI         │ │ Python API  │ │ WebUI    │  │
 │  └─────────────┘ └─────────────┘ └─────────────┘ └──────────┘  │
 └────────────────────────────────────────────────────────────────┘
-                │                 │
-                ▼                 ▼
+
+```text
+
+            │                 │
+            ▼                 ▼
+
+```text
 ┌────────────────────────────────────────────────────────────────┐
 │                      Core Services                             │
 │  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐              │
@@ -30,8 +35,13 @@ AI-Playground is designed as a modular, extensible platform for running, optimiz
 │  │ Management  │ │ Execution   │ │ Orchestrator│              │
 │  └─────────────┘ └─────────────┘ └─────────────┘              │
 └────────────────────────────────────────────────────────────────┘
-                │                 │
-                ▼                 ▼
+
+```text
+
+            │                 │
+            ▼                 ▼
+
+```text
 ┌────────────────────────────────────────────────────────────────┐
 │                  Hardware Abstraction Layer                    │
 │  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐              │
@@ -39,8 +49,13 @@ AI-Playground is designed as a modular, extensible platform for running, optimiz
 │  │ Detection   │ │ Environment │ │ Profiles    │              │
 │  └─────────────┘ └─────────────┘ └─────────────┘              │
 └────────────────────────────────────────────────────────────────┘
-                │                 │
-                ▼                 ▼
+
+```text
+
+            │                 │
+            ▼                 ▼
+
+```text
 ┌────────────────────────────────────────────────────────────────┐
 │                   Hardware-Specific Backends                   │
 │  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌──────────┐ │
@@ -48,7 +63,8 @@ AI-Playground is designed as a modular, extensible platform for running, optimiz
 │  │ (XPU)       │ │ (NPU/MKL)   │ │ (CUDA)      │ │          │ │
 │  └─────────────┘ └─────────────┘ └─────────────┘ └──────────┘ │
 └────────────────────────────────────────────────────────────────┘
-```
+
+```text
 
 ## Key Components
 
@@ -85,17 +101,17 @@ The API layer provides multiple interfaces for interacting with AI-Playground:
 ### Startup Sequence
 
 1. **Hardware detection** identifies available hardware
-2. **Environment setup** configures the appropriate backends
-3. **Service initialization** prepares core services
-4. **API endpoints** become available
+1. **Environment setup** configures the appropriate backends
+1. **Service initialization** prepares core services
+1. **API endpoints** become available
 
 ### Request Processing
 
 1. Request arrives through one of the API interfaces
-2. Core services validate and parse the request
-3. The hardware abstraction layer selects appropriate optimizations
-4. Hardware-specific backends execute the computation
-5. Results are returned through the API interface
+1. Core services validate and parse the request
+1. The hardware abstraction layer selects appropriate optimizations
+1. Hardware-specific backends execute the computation
+1. Results are returned through the API interface
 
 ## Design Decisions
 
@@ -104,23 +120,33 @@ The API layer provides multiple interfaces for interacting with AI-Playground:
 The project uses a layered approach to hardware abstraction:
 
 1. **Feature detection**: Instead of hardcoding for specific hardware models
-2. **Graceful degradation**: Falls back to less optimized paths when specialized hardware is unavailable
-3. **Runtime optimization**: Adapts execution strategy based on available resources
+1. **Graceful degradation**: Falls back to less optimized paths when specialized hardware is unavailable
+1. **Runtime optimization**: Adapts execution strategy based on available resources
 
 ```python
 def get_optimal_backend(model_type):
-    """Example of hardware abstraction logic"""
-    hardware_type = detect_hardware_type()
-    
-    if hardware_type == "acm" and model_type == "transformer":
-        return "xpu"
-    elif hardware_type == "npu" and model_type == "transformer":
-        return "npu"
-    elif hardware_type == "nvidia":
-        return "cuda"
-    else:
-        return "cpu"
-```
+
+```text
+
+"""Example of hardware abstraction logic"""
+hardware_type = detect_hardware_type()
+
+```text
+
+```text
+
+if hardware_type == "acm" and model_type == "transformer":
+    return "xpu"
+elif hardware_type == "npu" and model_type == "transformer":
+    return "npu"
+elif hardware_type == "nvidia":
+    return "cuda"
+else:
+    return "cpu"
+
+```text
+
+```text
 
 ### Module Structure
 
@@ -138,23 +164,34 @@ This structure allows components to be developed, tested, and maintained indepen
 Configuration is handled through a layered approach:
 
 1. **Default configuration**: Sensible defaults for all settings
-2. **Hardware profiles**: Optimized settings for specific hardware
-3. **User configuration**: Custom settings provided by users
-4. **Environment variables**: Runtime overrides
+1. **Hardware profiles**: Optimized settings for specific hardware
+1. **User configuration**: Custom settings provided by users
+1. **Environment variables**: Runtime overrides
 
 ```json
 {
   "hardware": {
-    "detection": "auto",
-    "preferred": ["acm", "nvidia", "cpu"]
+
+```text
+
+"detection": "auto",
+"preferred": ["acm", "nvidia", "cpu"]
+
+```text
   },
   "optimization": {
-    "precision": "mixed",
-    "batch_size": "auto",
-    "threads": 4
+
+```text
+
+"precision": "mixed",
+"batch_size": "auto",
+"threads": 4
+
+```text
   }
 }
-```
+
+```text
 
 ## Code Examples
 
@@ -162,39 +199,73 @@ Configuration is handled through a layered approach:
 
 ```python
 def detect_hardware_type():
-    """Detect available hardware and return the hardware type."""
-    gpu_info = get_gpu_info()
-    
-    for gpu in gpu_info:
-        if "Intel(R) Arc(TM)" in gpu:
-            return "acm"
-        elif "Intel(R) Battlemage(TM)" in gpu:
-            return "bmg"
-        elif "NVIDIA" in gpu:
-            return "nvidia"
-    
-    # Check for NPU
-    if has_dptf_driver():
-        return "npu"
-    
-    # Default to base CPU implementation
-    return "base"
-```
+
+```text
+
+"""Detect available hardware and return the hardware type."""
+gpu_info = get_gpu_info()
+
+```text
+
+```text
+
+for gpu in gpu_info:
+    if "Intel(R) Arc(TM)" in gpu:
+        return "acm"
+    elif "Intel(R) Battlemage(TM)" in gpu:
+        return "bmg"
+    elif "NVIDIA" in gpu:
+        return "nvidia"
+
+```text
+
+```text
+
+# Check for NPU
+
+```text
+
+```text
+
+if has_dptf_driver():
+    return "npu"
+
+```text
+
+```text
+
+# Default to base CPU implementation
+
+```text
+
+```text
+
+return "base"
+
+```text
+
+```text
 
 ### Environment Setup
 
 ```python
 def setup_environment(hardware_type):
-    """Set up environment variables for specific hardware."""
-    if hardware_type == "acm":
-        os.environ["SYCL_CACHE_PERSISTENT"] = "1"
-        os.environ["SYCL_PI_LEVEL_ZERO_USE_IMMEDIATE_COMMANDLISTS"] = "1"
-    elif hardware_type == "npu":
-        os.environ["DNNL_DEFAULT_FPMATH_MODE"] = "BF16"
-        os.environ["ONEDNN_MAX_CPU_ISA"] = "AVX512_CORE_AMX"
-    elif hardware_type == "nvidia":
-        os.environ["CUDA_VISIBLE_DEVICES"] = "0"
-```
+
+```text
+
+"""Set up environment variables for specific hardware."""
+if hardware_type == "acm":
+    os.environ["SYCL_CACHE_PERSISTENT"] = "1"
+    os.environ["SYCL_PI_LEVEL_ZERO_USE_IMMEDIATE_COMMANDLISTS"] = "1"
+elif hardware_type == "npu":
+    os.environ["DNNL_DEFAULT_FPMATH_MODE"] = "BF16"
+    os.environ["ONEDNN_MAX_CPU_ISA"] = "AVX512_CORE_AMX"
+elif hardware_type == "nvidia":
+    os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+
+```text
+
+```text
 
 ## Performance Considerations
 
@@ -221,9 +292,9 @@ def setup_environment(hardware_type):
 Planned architectural improvements include:
 
 1. **Multi-device execution**: Distributing computation across multiple hardware devices
-2. **Dynamic compilation**: JIT compilation of critical paths for specific hardware
-3. **Enhanced caching**: Intelligent caching of intermediate results
-4. **Distributed execution**: Scaling across multiple machines
+1. **Dynamic compilation**: JIT compilation of critical paths for specific hardware
+1. **Enhanced caching**: Intelligent caching of intermediate results
+1. **Distributed execution**: Scaling across multiple machines
 
 ## Additional Resources
 
