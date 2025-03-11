@@ -1,0 +1,296 @@
+{
+  "summary": {
+    "total_workflows": 8,
+    "analyzed_workflows": 8,
+    "time": "2025-03-10 20:57:53"
+  },
+  "workflows": [
+    {
+      "filename": "Colorize.json",
+      "path": "WebUI\\external\\workflows\\Colorize.json",
+      "models": {
+        "checkpoint": [],
+        "vae": [],
+        "lora": [],
+        "controlnet": [],
+        "clip_vision": [],
+        "unet": [],
+        "upscaler": [],
+        "style_model": [],
+        "ip_adapter": [],
+        "flux_checkpoint": []
+      },
+      "custom_nodes": [],
+      "python_packages": [],
+      "memory_required": {
+        "min": 7,
+        "recommended": 12
+      },
+      "is_analyzed": true,
+      "errors": []
+    },
+    {
+      "filename": "CopyFace.json",
+      "path": "WebUI\\external\\workflows\\CopyFace.json",
+      "models": {
+        "checkpoint": [],
+        "vae": [],
+        "lora": [],
+        "controlnet": [],
+        "clip_vision": [],
+        "unet": [],
+        "upscaler": [],
+        "style_model": [],
+        "ip_adapter": [],
+        "flux_checkpoint": []
+      },
+      "custom_nodes": [
+        "comfyui-face-swap"
+      ],
+      "python_packages": [
+        "opencv-python",
+        "insightface",
+        "onnxruntime-gpu"
+      ],
+      "memory_required": {
+        "min": 7,
+        "recommended": 12
+      },
+      "is_analyzed": true,
+      "errors": []
+    },
+    {
+      "filename": "FaceSwapHD.json",
+      "path": "WebUI\\external\\workflows\\FaceSwapHD.json",
+      "models": {
+        "checkpoint": [],
+        "vae": [
+          "RunDiffusion---Juggernaut-XL-v9\\vae\\diffusion_pytorch_model.fp16.safetensors"
+        ],
+        "lora": [
+          "latent-consistency---lcm-lora-sdxl\\pytorch_lora_weights.safetensors"
+        ],
+        "controlnet": [],
+        "clip_vision": [],
+        "unet": [],
+        "upscaler": [],
+        "style_model": [],
+        "ip_adapter": [],
+        "flux_checkpoint": []
+      },
+      "custom_nodes": [
+        "comfyui-face-swap"
+      ],
+      "python_packages": [
+        "opencv-python",
+        "insightface",
+        "onnxruntime-gpu"
+      ],
+      "memory_required": {
+        "min": 7,
+        "recommended": 12
+      },
+      "is_analyzed": true,
+      "errors": []
+    },
+    {
+      "filename": "Line2ImageHD-Fast.json",
+      "path": "WebUI\\external\\workflows\\Line2ImageHD-Fast.json",
+      "models": {
+        "checkpoint": [],
+        "vae": [
+          "RunDiffusion---Juggernaut-XL-v9\\vae\\diffusion_pytorch_model.fp16.safetensors"
+        ],
+        "lora": [
+          "latent-consistency---lcm-lora-sdxl\\pytorch_lora_weights.safetensors"
+        ],
+        "controlnet": [
+          "stabilityai---control-lora\\control-LoRAs-rank128\\control-lora-canny-rank128.safetensors"
+        ],
+        "clip_vision": [],
+        "unet": [],
+        "upscaler": [],
+        "style_model": [],
+        "ip_adapter": [],
+        "flux_checkpoint": []
+      },
+      "custom_nodes": [],
+      "python_packages": [],
+      "memory_required": {
+        "min": 8,
+        "recommended": 13
+      },
+      "is_analyzed": true,
+      "errors": []
+    },
+    {
+      "filename": "Line2ImageHD-Quality.json",
+      "path": "WebUI\\external\\workflows\\Line2ImageHD-Quality.json",
+      "models": {
+        "checkpoint": [],
+        "vae": [
+          "RunDiffusion---Juggernaut-XL-v9\\vae\\diffusion_pytorch_model.fp16.safetensors"
+        ],
+        "lora": [],
+        "controlnet": [
+          "stabilityai---control-lora\\control-LoRAs-rank128\\control-lora-canny-rank128.safetensors"
+        ],
+        "clip_vision": [],
+        "unet": [],
+        "upscaler": [],
+        "style_model": [],
+        "ip_adapter": [],
+        "flux_checkpoint": []
+      },
+      "custom_nodes": [],
+      "python_packages": [],
+      "memory_required": {
+        "min": 8,
+        "recommended": 13
+      },
+      "is_analyzed": true,
+      "errors": []
+    },
+    {
+      "filename": "Video.json",
+      "path": "WebUI\\external\\workflows\\Video.json",
+      "models": {
+        "checkpoint": [],
+        "vae": [],
+        "lora": [],
+        "controlnet": [],
+        "clip_vision": [],
+        "unet": [],
+        "upscaler": [],
+        "style_model": [],
+        "ip_adapter": [],
+        "flux_checkpoint": []
+      },
+      "custom_nodes": [],
+      "python_packages": [],
+      "memory_required": {
+        "min": 7,
+        "recommended": 12
+      },
+      "is_analyzed": true,
+      "errors": []
+    },
+    {
+      "filename": "fluxQ4.json",
+      "path": "WebUI\\external\\workflows\\fluxQ4.json",
+      "models": {
+        "checkpoint": [],
+        "vae": [
+          "black-forest-labs---FLUX.1-schnell\\ae.safetensors"
+        ],
+        "lora": [],
+        "controlnet": [],
+        "clip_vision": [],
+        "unet": [],
+        "upscaler": [],
+        "style_model": [],
+        "ip_adapter": [],
+        "flux_checkpoint": []
+      },
+      "custom_nodes": [],
+      "python_packages": [],
+      "memory_required": {
+        "min": 7,
+        "recommended": 12
+      },
+      "is_analyzed": true,
+      "errors": []
+    },
+    {
+      "filename": "fluxQ8.json",
+      "path": "WebUI\\external\\workflows\\fluxQ8.json",
+      "models": {
+        "checkpoint": [],
+        "vae": [
+          "black-forest-labs---FLUX.1-schnell\\ae.safetensors"
+        ],
+        "lora": [],
+        "controlnet": [],
+        "clip_vision": [],
+        "unet": [],
+        "upscaler": [],
+        "style_model": [],
+        "ip_adapter": [],
+        "flux_checkpoint": []
+      },
+      "custom_nodes": [],
+      "python_packages": [],
+      "memory_required": {
+        "min": 7,
+        "recommended": 12
+      },
+      "is_analyzed": true,
+      "errors": []
+    }
+  ],
+  "aggregate": {
+    "models": {
+      "vae": {
+        "RunDiffusion---Juggernaut-XL-v9\\vae\\diffusion_pytorch_model.fp16.safetensors": [
+          "FaceSwapHD.json",
+          "Line2ImageHD-Fast.json",
+          "Line2ImageHD-Quality.json"
+        ],
+        "black-forest-labs---FLUX.1-schnell\\ae.safetensors": [
+          "fluxQ4.json",
+          "fluxQ8.json"
+        ]
+      },
+      "lora": {
+        "latent-consistency---lcm-lora-sdxl\\pytorch_lora_weights.safetensors": [
+          "FaceSwapHD.json",
+          "Line2ImageHD-Fast.json"
+        ]
+      },
+      "controlnet": {
+        "stabilityai---control-lora\\control-LoRAs-rank128\\control-lora-canny-rank128.safetensors": [
+          "Line2ImageHD-Fast.json",
+          "Line2ImageHD-Quality.json"
+        ]
+      }
+    },
+    "custom_nodes": {
+      "comfyui-face-swap": [
+        "CopyFace.json",
+        "FaceSwapHD.json"
+      ]
+    },
+    "python_packages": {
+      "opencv-python": [
+        "CopyFace.json",
+        "FaceSwapHD.json"
+      ],
+      "insightface": [
+        "CopyFace.json",
+        "FaceSwapHD.json"
+      ],
+      "onnxruntime-gpu": [
+        "CopyFace.json",
+        "FaceSwapHD.json"
+      ]
+    },
+    "memory_requirements": {
+      "min": 7,
+      "max": 8,
+      "workflows_by_memory": {
+        "7": [
+          "Colorize.json",
+          "CopyFace.json",
+          "FaceSwapHD.json",
+          "Video.json",
+          "fluxQ4.json",
+          "fluxQ8.json"
+        ],
+        "8": [
+          "Line2ImageHD-Fast.json",
+          "Line2ImageHD-Quality.json"
+        ]
+      }
+    }
+  }
+}
