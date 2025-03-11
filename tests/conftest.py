@@ -2,13 +2,22 @@
 Pytest configuration and fixtures for testing.
 """
 
+import json
 import os
+import platform
 import sys
+from pathlib import Path
+from unittest.mock import MagicMock
+
 import pytest
 
 # Add the GitHub workflows scripts directory to the Python path
 script_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(os.path.join(script_dir, ".github", "workflows", "scripts"))
+
+# Add the project root to the Python path
+if script_dir not in sys.path:
+    sys.path.append(script_dir)
 
 
 @pytest.fixture
@@ -85,3 +94,119 @@ def sample_workflow_direct_nodes():
             "links": [[1, 0, 2, 0]],
         },
     }
+
+
+@pytest.fixture
+def sample_hardware_detection_config():
+    """Fixture providing a sample hardware detection configuration."""
+    return {
+        "hardware_types": ["base", "acm", "bmg", "mtl", "lnl", "ovino", "arl_h"],
+        "default_hardware": "base",
+        "detection": {
+            "acm": {"gpu_name_pattern": "Intel.*Arc|Intel.*A[1-9][0-9][0-9]"},
+            "bmg": {"gpu_name_pattern": "Intel.*Battlemage|Intel.*B[1-9][0-9][0-9]"},
+            "mtl": {"cpu_name_pattern": "Intel.*Core.*Ultra"},
+            "lnl": {"cpu_name_pattern": "Intel.*Lunar Lake"},
+            "ovino": {"platform_flags": ["has_openvino"]},
+            "arl_h": {"platform_flags": ["arc_specific_flag"]},
+        },
+    }
+
+
+@pytest.fixture
+def sample_uvfast_config():
+    """Fixture providing a sample uvfast configuration."""
+    return {
+        "project_name": "test-project",
+        "python_version": "3.10",
+        "hardware_types": ["base", "acm", "bmg", "mtl", "lnl", "ovino", "arl_h"],
+        "default_hardware": "base",
+        "requirements": {
+            "base": "requirements.txt",
+            "dev": "requirements-dev.txt",
+            "hardware": {
+                "base": "requirements-hardware-base.txt",
+                "acm": "requirements-hardware-acm.txt",
+                "bmg": "requirements-hardware-bmg.txt",
+                "mtl": "requirements-hardware-mtl.txt",
+                "lnl": "requirements-hardware-lnl.txt",
+                "ovino": "requirements-hardware-ovino.txt",
+                "arl_h": "requirements-hardware-arl_h.txt",
+            },
+        },
+        "lockfiles": {
+            "base": "requirements.lock",
+            "dev": "requirements-dev.lock",
+            "hardware": {
+                "base": "requirements-hardware-base.lock",
+                "acm": "requirements-hardware-acm.lock",
+                "bmg": "requirements-hardware-bmg.lock",
+                "mtl": "requirements-hardware-mtl.lock",
+                "lnl": "requirements-hardware-lnl.lock",
+                "ovino": "requirements-hardware-ovino.lock",
+                "arl_h": "requirements-hardware-arl_h.lock",
+            },
+        },
+    }
+
+
+@pytest.fixture
+def mock_gpu_info():
+    """Fixture providing common mock GPU information for different hardware."""
+    return {
+        "acm": ["Intel(R) Arc(TM) A770 Graphics"],
+        "bmg": ["Intel(R) Battlemage(TM) B770 Graphics"],
+        "mtl": ["Intel(R) Graphics"],
+        "none": ["NVIDIA GeForce RTX 3080"],
+        "multiple": ["NVIDIA GeForce RTX 3080", "Intel(R) Arc(TM) A770 Graphics"],
+    }
+
+
+@pytest.fixture
+def mock_cpu_info():
+    """Fixture providing common mock CPU information for different hardware."""
+    return {
+        "mtl": {"name": "Intel(R) Core(TM) Ultra 7 155H", "manufacturer": "Intel Corporation"},
+        "lnl": {"name": "Intel(R) Core(TM) Ultra Lunar Lake", "manufacturer": "Intel Corporation"},
+        "standard": {"name": "Intel(R) Core(TM) i9-9900K", "manufacturer": "Intel Corporation"},
+        "amd": {"name": "AMD Ryzen 9 5950X", "manufacturer": "Advanced Micro Devices, Inc."},
+        "apple": {"name": "Apple M1 Pro"},
+    }
+
+
+@pytest.fixture
+def mock_subprocess_run():
+    """Fixture providing a mock for subprocess.run that returns success."""
+    mock = MagicMock()
+    mock.return_value.returncode = 0
+    return mock
+
+
+@pytest.fixture
+def temp_venv_path(tmpdir):
+    """Fixture providing a temporary virtual environment path."""
+    venv_dir = tmpdir.mkdir(".venv")
+    if platform.system() == "Windows":
+        scripts_dir = venv_dir.mkdir("Scripts")
+        python_exe = scripts_dir.join("python.exe")
+        python_exe.write("#!/bin/env python\n")
+    else:
+        bin_dir = venv_dir.mkdir("bin")
+        python_exe = bin_dir.join("python")
+        python_exe.write("#!/bin/env python\n")
+
+    return Path(str(venv_dir))
+
+
+@pytest.fixture
+def temp_config_file(tmpdir):
+    """Fixture providing a temporary configuration file."""
+    config_file = tmpdir.join("uvfast.json")
+    config_data = {
+        "project_name": "test-project",
+        "python_version": "3.10",
+        "hardware_types": ["base", "acm"],
+        "default_hardware": "base",
+    }
+    config_file.write(json.dumps(config_data))
+    return Path(str(config_file))
