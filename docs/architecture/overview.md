@@ -24,8 +24,12 @@ AI-Playground is designed as a modular, extensible platform for running, optimiz
 
 ```text
 
-            │                 │
-            ▼                 ▼
+```text
+
+        │                 │
+        ▼                 ▼
+
+```text
 
 ```text
 ┌────────────────────────────────────────────────────────────────┐
@@ -38,8 +42,12 @@ AI-Playground is designed as a modular, extensible platform for running, optimiz
 
 ```text
 
-            │                 │
-            ▼                 ▼
+```text
+
+        │                 │
+        ▼                 ▼
+
+```text
 
 ```text
 ┌────────────────────────────────────────────────────────────────┐
@@ -52,8 +60,12 @@ AI-Playground is designed as a modular, extensible platform for running, optimiz
 
 ```text
 
-            │                 │
-            ▼                 ▼
+```text
+
+        │                 │
+        ▼                 ▼
+
+```text
 
 ```text
 ┌────────────────────────────────────────────────────────────────┐
@@ -136,13 +148,33 @@ hardware_type = detect_hardware_type()
 ```text
 
 if hardware_type == "acm" and model_type == "transformer":
-    return "xpu"
+
+```text
+
+return "xpu"
+
+```text
 elif hardware_type == "npu" and model_type == "transformer":
-    return "npu"
+
+```text
+
+return "npu"
+
+```text
 elif hardware_type == "nvidia":
-    return "cuda"
+
+```text
+
+return "cuda"
+
+```text
 else:
-    return "cpu"
+
+```text
+
+return "cpu"
+
+```text
 
 ```text
 
@@ -210,12 +242,17 @@ gpu_info = get_gpu_info()
 ```text
 
 for gpu in gpu_info:
-    if "Intel(R) Arc(TM)" in gpu:
-        return "acm"
-    elif "Intel(R) Battlemage(TM)" in gpu:
-        return "bmg"
-    elif "NVIDIA" in gpu:
-        return "nvidia"
+
+```text
+
+if "Intel(R) Arc(TM)" in gpu:
+    return "acm"
+elif "Intel(R) Battlemage(TM)" in gpu:
+    return "bmg"
+elif "NVIDIA" in gpu:
+    return "nvidia"
+
+```text
 
 ```text
 
@@ -228,7 +265,12 @@ for gpu in gpu_info:
 ```text
 
 if has_dptf_driver():
-    return "npu"
+
+```text
+
+return "npu"
+
+```text
 
 ```text
 
@@ -255,13 +297,28 @@ def setup_environment(hardware_type):
 
 """Set up environment variables for specific hardware."""
 if hardware_type == "acm":
-    os.environ["SYCL_CACHE_PERSISTENT"] = "1"
-    os.environ["SYCL_PI_LEVEL_ZERO_USE_IMMEDIATE_COMMANDLISTS"] = "1"
+
+```text
+
+os.environ["SYCL_CACHE_PERSISTENT"] = "1"
+os.environ["SYCL_PI_LEVEL_ZERO_USE_IMMEDIATE_COMMANDLISTS"] = "1"
+
+```text
 elif hardware_type == "npu":
-    os.environ["DNNL_DEFAULT_FPMATH_MODE"] = "BF16"
-    os.environ["ONEDNN_MAX_CPU_ISA"] = "AVX512_CORE_AMX"
+
+```text
+
+os.environ["DNNL_DEFAULT_FPMATH_MODE"] = "BF16"
+os.environ["ONEDNN_MAX_CPU_ISA"] = "AVX512_CORE_AMX"
+
+```text
 elif hardware_type == "nvidia":
-    os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+
+```text
+
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+
+```text
 
 ```text
 

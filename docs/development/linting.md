@@ -301,27 +301,46 @@ Optimize model for specific hardware.
 ```text
 
 Args:
-    model: The PyTorch model
-    hardware_type: One of "acm", "bmg", or "base"
+
+```text
+
+model: The PyTorch model
+hardware_type: One of "acm", "bmg", or "base"
+
+```text
 
 ```text
 
 ```text
 
 Returns:
-    Optimized model
+
+```text
+
+Optimized model
+
+```text
 """
 if hardware_type == "acm":
-    try:
-        import intel_extension_for_pytorch as ipex  # noqa: F401
+
+```text
+
+try:
+    import intel_extension_for_pytorch as ipex  # noqa: F401
 
 ```text
 
 ```text
 
-        model = ipex.optimize(model)
-    except ImportError:
-        pass  # Fall back to unoptimized model
+```text
+
+```text
+
+    model = ipex.optimize(model)
+except ImportError:
+    pass  # Fall back to unoptimized model
+
+```text
 
 ```text
 

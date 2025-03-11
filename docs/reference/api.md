@@ -104,8 +104,13 @@ Response:
   "created_at": "2023-05-10T12:00:00Z",
   "updated_at": "2023-05-10T12:00:00Z",
   "metadata": {
-    "parameters": 7000000000,
-    "context_length": 4096
+
+```text
+
+"parameters": 7000000000,
+"context_length": 4096
+
+```text
   }
 },
 {
@@ -117,8 +122,13 @@ Response:
   "created_at": "2023-05-09T10:30:00Z",
   "updated_at": "2023-05-09T10:30:00Z",
   "metadata": {
-    "classes": 1000,
-    "architecture": "resnet50"
+
+```text
+
+"classes": 1000,
+"architecture": "resnet50"
+
+```text
   }
 }
 
@@ -342,18 +352,28 @@ Response:
   "input_id": 0,
   "result": "Cats are small carnivorous mammals known for their agility...",
   "usage": {
-    "prompt_tokens": 4,
-    "generated_tokens": 50,
-    "total_tokens": 54
+
+```text
+
+"prompt_tokens": 4,
+"generated_tokens": 50,
+"total_tokens": 54
+
+```text
   }
 },
 {
   "input_id": 1,
   "result": "Dogs are domesticated mammals known for their loyalty...",
   "usage": {
-    "prompt_tokens": 4,
-    "generated_tokens": 50,
-    "total_tokens": 54
+
+```text
+
+"prompt_tokens": 4,
+"generated_tokens": 50,
+"total_tokens": 54
+
+```text
   }
 }
 
@@ -811,9 +831,14 @@ Response:
   "service": "inference",
   "message": "Inference request completed successfully",
   "metadata": {
-    "model_id": "text-generation-large",
-    "job_id": "infer-123456",
-    "duration_ms": 1250
+
+```text
+
+"model_id": "text-generation-large",
+"job_id": "infer-123456",
+"duration_ms": 1250
+
+```text
   }
 },
 {
@@ -822,8 +847,13 @@ Response:
   "service": "inference",
   "message": "Inference request received",
   "metadata": {
-    "model_id": "text-generation-large",
-    "job_id": "infer-123456"
+
+```text
+
+"model_id": "text-generation-large",
+"job_id": "infer-123456"
+
+```text
   }
 }
 
@@ -1032,9 +1062,14 @@ client.optimize_hardware(
 
 device_type="arc",
 settings={
-    "precision": "mixed",
-    "batch_size": 4,
-    "memory_optimization": "balanced"
+
+```text
+
+"precision": "mixed",
+"batch_size": 4,
+"memory_optimization": "balanced"
+
+```text
 }
 
 ```text
@@ -1050,9 +1085,14 @@ name="custom-arc-profile",
 description="My custom Arc GPU profile",
 device_type="arc",
 settings={
-    "precision": "int8",
-    "batch_size": 1,
-    "memory_optimization": "conservative"
+
+```text
+
+"precision": "int8",
+"batch_size": 1,
+"memory_optimization": "conservative"
+
+```text
 }
 
 ```text
@@ -1218,6 +1258,7 @@ except HardwareNotSupportedError as e:
 ```text
 
 print(f"Hardware not supported: {e}")
+
 # Fall back to CPU
 
 ```text

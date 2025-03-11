@@ -67,21 +67,36 @@ Validate the configuration dictionary.
 ```text
 
 Args:
-    config: The configuration dictionary to validate
+
+```text
+
+config: The configuration dictionary to validate
+
+```text
 
 ```text
 
 ```text
 
 Returns:
-    True if the configuration is valid, False otherwise
+
+```text
+
+True if the configuration is valid, False otherwise
+
+```text
 
 ```text
 
 ```text
 
 Raises:
-    ValueError: If the configuration is missing required fields
+
+```text
+
+ValueError: If the configuration is missing required fields
+
+```text
 """
 ...
 
@@ -172,7 +187,12 @@ mock_gpu_info = ["Intel(R) Arc(TM) A770 Graphics"]
 ```text
 
 with patch("hardware_detection.get_gpu_info", return_value=mock_gpu_info):
-    result = hardware_detection.detect_hardware_type()
+
+```text
+
+result = hardware_detection.detect_hardware_type()
+
+```text
 
 ```text
 

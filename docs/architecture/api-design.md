@@ -172,15 +172,25 @@ Content-Type: application/json
 {
   "image_id": 0,
   "classifications": [
-    {"label": "dog", "confidence": 0.92},
-    {"label": "golden retriever", "confidence": 0.85}
+
+```text
+
+{"label": "dog", "confidence": 0.92},
+{"label": "golden retriever", "confidence": 0.85}
+
+```text
   ]
 },
 {
   "image_id": 1,
   "classifications": [
-    {"label": "cat", "confidence": 0.97},
-    {"label": "tabby", "confidence": 0.82}
+
+```text
+
+{"label": "cat", "confidence": 0.97},
+{"label": "tabby", "confidence": 0.82}
+
+```text
   ]
 }
 
@@ -382,9 +392,14 @@ client.create_hardware_profile(
 
 name="low-memory",
 settings={
-    "precision": "int8",
-    "batch_size": 1,
-    "dynamic_shape": True
+
+```text
+
+"precision": "int8",
+"batch_size": 1,
+"dynamic_shape": True
+
+```text
 }
 
 ```text
@@ -428,6 +443,7 @@ except HardwareNotSupportedError as e:
 ```text
 
 print(f"Hardware not supported: {e}")
+
 # Fall back to CPU
 
 ```text

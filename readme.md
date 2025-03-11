@@ -1,8 +1,13 @@
 # AI Playground
 
-<a href="https://scan.coverity.com/projects/ai-playground">
+<a href="<https://scan.coverity.com/projects/ai-playground>">
   <img alt="Coverity Scan Build Status"
-       src="https://scan.coverity.com/projects/30694/badge.svg"/>
+
+```text
+
+   src="<https://scan.coverity.com/projects/30694/badge.svg">/>
+
+```text
 </a>
 
 ![image](https://github.com/user-attachments/assets/ee1efc30-4dd1-4934-9233-53fba00c71bd)
@@ -43,14 +48,14 @@ Starting from v2.0, there is a single packaged installer that works for all supp
 ### Download the installer
 
 :new: **AI Playground 2.2.1 Beta (all SKUs)** - [Release Notes](https://github.com/intel/AI-Playground/releases/tag/v2.2.1-beta) | [Download](https://github.com/intel/AI-Playground/releases/download/v2.2.1-beta/AI.Playground-2.2.1-beta.exe) :new:
-> [!IMPORTANT]  
+> [!IMPORTANT]
 > This release fixes video generation and image generation bugs from 2.2
 
 ### Installation Process for v2.0
 
 1. The installer only installs the Electron frontend, so it completes very quickly.
-2. On the first run, you need to install additional backend components for AI Playground to function properly. This process requires a strong and open network and may **take several minutes**.
-3. Download the Users Guide for application information: [AI Playground Users Guide](https://github.com/intel/ai-playground/blob/main/AI%20Playground%20Users%20Guide.pdf)
+1. On the first run, you need to install additional backend components for AI Playground to function properly. This process requires a strong and open network and may **take several minutes**.
+1. Download the Users Guide for application information: [AI Playground Users Guide](https://github.com/intel/ai-playground/blob/main/AI%20Playground%20Users%20Guide.pdf)
 
 For more detailed installation instructions, see our [Installation Guide](docs/getting-started/installation.md).
 
@@ -59,11 +64,11 @@ For more detailed installation instructions, see our [Installation Guide](docs/g
 The following are known situations where your installation may be blocked or interrupted. Review the following to remedy installations issues. If installation issues persist, generate a copy of the log by typing CTRL+SHIFT+I, select the console tab and copy the last few entries of the log written where the installer failed. Provide these details to us via the issues tab here, or via the Intel Insiders Discord, or Graphics forum on Intel's support site.
 
 1. **Restart**: Time-out issues have been sighted, which show as a failed install but resolve when restarting AI Playground
-2. **Verify Intel Arc GPU**: Ensure your system has an Intel Arc GPU. Go to your Windows Start Menu, type "Device Manager," and under Display Adapters, check the name of your GPU device. It should describe an Intel Arc GPU. If so, then you you have a GPU that means our minimum specifications. If it says "Intel(R) Graphics," your system does not have a built-in Intel Arc GPU and does not meet the minimum specifications.
-3. **Interrupted Installation**: The online installation for backend components can be interrupted or blocked by an IT network, firewall, or sleep settings. Ensure you are on an open network, with the firewall off, and set sleep settings to stay awake when powered on.
-4. **Missing Libraries**: Some Windows systems may be missing needed libraries. This can be fixed by installing the 64-bit VC++ redistribution from Microsoft [here](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170). It is recommended this be done after updating the Graphics drivers. Then install AI Playground.
-5. **Python Conflict**: Some PCs with an existing installation of Python can cause a conflict with AI Playground installation, where the wrong or conflicting packages are installed due to the incorrect version or location of Python on the system. This is usually remedied by uninstalling Python environment, restarting and reinstalling AI Playground
-6. **Temp Files**: Should the installation be interrupted because of any of the above issues it is possible that temporary installation files have been left behind and trying to install with these files in place can block the installation. Remove these files or do a clean install of AI Playground to remedy
+1. **Verify Intel Arc GPU**: Ensure your system has an Intel Arc GPU. Go to your Windows Start Menu, type "Device Manager," and under Display Adapters, check the name of your GPU device. It should describe an Intel Arc GPU. If so, then you you have a GPU that means our minimum specifications. If it says "Intel(R) Graphics," your system does not have a built-in Intel Arc GPU and does not meet the minimum specifications.
+1. **Interrupted Installation**: The online installation for backend components can be interrupted or blocked by an IT network, firewall, or sleep settings. Ensure you are on an open network, with the firewall off, and set sleep settings to stay awake when powered on.
+1. **Missing Libraries**: Some Windows systems may be missing needed libraries. This can be fixed by installing the 64-bit VC++ redistribution from Microsoft [here](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170). It is recommended this be done after updating the Graphics drivers. Then install AI Playground.
+1. **Python Conflict**: Some PCs with an existing installation of Python can cause a conflict with AI Playground installation, where the wrong or conflicting packages are installed due to the incorrect version or location of Python on the system. This is usually remedied by uninstalling Python environment, restarting and reinstalling AI Playground
+1. **Temp Files**: Should the installation be interrupted because of any of the above issues it is possible that temporary installation files have been left behind and trying to install with these files in place can block the installation. Remove these files or do a clean install of AI Playground to remedy
 
 For additional troubleshooting resources, see our [Common Problems Guide](docs/troubleshooting/common-problems.md).
 
@@ -74,48 +79,54 @@ For additional troubleshooting resources, see our [Common Problems Guide](docs/t
 To get started, clone the repository and navigate to the project directory:
 
 ```cmd
-git clone -b dev https://github.com/intel/AI-Playground.git
+git clone -b dev <https://github.com/intel/AI-Playground.git>
 cd AI-Playground
-```
+
+```text
 
 ### Install Node.js Dependencies
 
 1. Install the Node.js development environment from [Node.js](https://nodejs.org/en/download).
 
-2. Navigate to the `WebUI` directory and install all Node.js dependencies:
+1. Navigate to the `WebUI` directory and install all Node.js dependencies:
 
 ```cmd
 cd WebUI
 npm install
-```
+
+```text
 
 ### Prepare Python Environment
 
 1. Install Miniforge to manage your Conda environment: <https://github.com/conda-forge/miniforge>
 
-2. Create a Conda environment with Python 3.11 and libuv:
+1. Create a Conda environment with Python 3.11 and libuv:
 
-```
+```text
 conda create -n cp311_libuv python=3.11 libuv -y
-```
 
-3. Locate the path to your newly created Conda environment:
+```text
 
-```
+1. Locate the path to your newly created Conda environment:
+
+```text
 conda env list | findstr cp311_libuv
-```
 
-4. In the `WebUI` directory, execute the `fetch-build-resources` script, replacing `<path_to_cp311_libuv_conda_env>` with the actual path you copied in the previous step:
+```text
 
-```
+1. In the `WebUI` directory, execute the `fetch-build-resources` script, replacing `<path_to_cp311_libuv_conda_env>` with the actual path you copied in the previous step:
+
+```text
 npm run fetch-build-resources -- --conda_env_dir=<path_to_cp311_libuv_conda_env>
-```
 
-5. Run the `prepare-build` script:
+```text
 
-```
+1. Run the `prepare-build` script:
+
+```text
 npm run prepare-build
-```
+
+```text
 
 You should now have a basic Python environment located at `build-envs\online\prototype-python-env`.
 
@@ -123,17 +134,19 @@ You should now have a basic Python environment located at `build-envs\online\pro
 
 To start the application in development mode, run:
 
-```
+```text
 npm run dev
-```
+
+```text
 
 ### (Optional) Build the installer
 
 To build the installer, run:
 
-```
+```text
 npm run build
-```
+
+```text
 
 The installer executable will be located in the `release` folder.
 
@@ -154,6 +167,7 @@ Models currently linked from the application
 | bge-large-en-v1.5                          | [license](https://huggingface.co/datasets/choosealicense/licenses/blob/main/markdown/mit.md)                 | [site](https://huggingface.co/BAAI/bge-large-en-v1.5)                         |
 | Latent Consistency Model (LCM) LoRA: SD1.5 | [license](https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/blob/main/LICENSE.md) | [site](https://huggingface.co/latent-consistency/lcm-lora-sdv1-5) |
 | Latent Consistency Model (LCM) LoRA:SDXL   | [license](https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/blob/main/LICENSE.md) | [site](https://huggingface.co/latent-consistency/lcm-lora-sdxl)     |
+
 
 Be sure to check license terms for any model used in AI Playground especially taking note of any restrictions.
 

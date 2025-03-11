@@ -23,8 +23,12 @@ The hardware integration consists of several layers:
 
 ```text
 
-            │                 │
-            ▼                 ▼
+```text
+
+        │                 │
+        ▼                 ▼
+
+```text
 
 ```text
 ┌────────────────────────────────────────────────────────────────┐
@@ -33,8 +37,12 @@ The hardware integration consists of several layers:
 
 ```text
 
-            │                 │
-            ▼                 ▼
+```text
+
+        │                 │
+        ▼                 ▼
+
+```text
 
 ```text
 ┌────────────────────────────────────────────────────────────────┐
@@ -43,8 +51,12 @@ The hardware integration consists of several layers:
 
 ```text
 
-    │             │              │               │
-    ▼             ▼              ▼               ▼
+```text
+
+│             │              │               │
+▼             ▼              ▼               ▼
+
+```text
 
 ```text
 ┌──────────────┐ ┌──────────┐ ┌────────────┐ ┌────────────────┐
@@ -54,8 +66,12 @@ The hardware integration consists of several layers:
 
 ```text
 
-    │             │              │               │
-    ▼             ▼              ▼               ▼
+```text
+
+│             │              │               │
+▼             ▼              ▼               ▼
+
+```text
 
 ```text
 ┌──────────────┐ ┌──────────┐ ┌────────────┐ ┌────────────────┐
@@ -130,20 +146,25 @@ available_devices = []
 
 gpu_info = get_gpu_info()
 for gpu in gpu_info:
-    if "Intel(R) Arc(TM)" in gpu:
-        available_devices.append({
-            "type": "arc",
-            "name": gpu,
-            "priority": 100,
-            "backend": "xpu"
-        })
-    elif "Intel(R) Battlemage(TM)" in gpu:
-        available_devices.append({
-            "type": "bmg",
-            "name": gpu,
-            "priority": 100,
-            "backend": "xpu"
-        })
+
+```text
+
+if "Intel(R) Arc(TM)" in gpu:
+    available_devices.append({
+        "type": "arc",
+        "name": gpu,
+        "priority": 100,
+        "backend": "xpu"
+    })
+elif "Intel(R) Battlemage(TM)" in gpu:
+    available_devices.append({
+        "type": "bmg",
+        "name": gpu,
+        "priority": 100,
+        "backend": "xpu"
+    })
+
+```text
 
 ```text
 
@@ -156,13 +177,18 @@ for gpu in gpu_info:
 ```text
 
 for gpu in gpu_info:
-    if "NVIDIA" in gpu:
-        available_devices.append({
-            "type": "nvidia",
-            "name": gpu,
-            "priority": 90,
-            "backend": "cuda"
-        })
+
+```text
+
+if "NVIDIA" in gpu:
+    available_devices.append({
+        "type": "nvidia",
+        "name": gpu,
+        "priority": 90,
+        "backend": "cuda"
+    })
+
+```text
 
 ```text
 
@@ -175,12 +201,17 @@ for gpu in gpu_info:
 ```text
 
 if has_dptf_driver() and has_npu_capability():
-    available_devices.append({
-        "type": "npu",
-        "name": "Integrated Neural Processing Unit",
-        "priority": 80,
-        "backend": "npu"
-    })
+
+```text
+
+available_devices.append({
+    "type": "npu",
+    "name": "Integrated Neural Processing Unit",
+    "priority": 80,
+    "backend": "npu"
+})
+
+```text
 
 ```text
 
@@ -193,10 +224,15 @@ if has_dptf_driver() and has_npu_capability():
 ```text
 
 available_devices.append({
-    "type": "cpu",
-    "name": "CPU",
-    "priority": 10,
-    "backend": "cpu"
+
+```text
+
+"type": "cpu",
+"name": "CPU",
+"priority": 10,
+"backend": "cpu"
+
+```text
 })
 
 ```text
@@ -237,11 +273,21 @@ os.environ["ONEAPI_DEVICE_SELECTOR"] = "level_zero:gpu"
 ```text
 
 try:
-    import intel_extension_for_pytorch as ipex
-    torch.xpu.set_device(0)
-    print("Intel Extension for PyTorch and XPU backend enabled")
+
+```text
+
+import intel_extension_for_pytorch as ipex
+torch.xpu.set_device(0)
+print("Intel Extension for PyTorch and XPU backend enabled")
+
+```text
 except ImportError:
-    print("Intel Extension for PyTorch not found, running with limited optimizations")
+
+```text
+
+print("Intel Extension for PyTorch not found, running with limited optimizations")
+
+```text
 
 ```text
 
@@ -263,10 +309,20 @@ os.environ["ONEDNN_MAX_CPU_ISA"] = "AVX512_CORE_AMX"
 ```text
 
 try:
-    import neural_compressor
-    print("Neural Compressor found, NPU optimizations enabled")
+
+```text
+
+import neural_compressor
+print("Neural Compressor found, NPU optimizations enabled")
+
+```text
 except ImportError:
-    print("Neural Compressor not found, running with limited NPU optimizations")
+
+```text
+
+print("Neural Compressor not found, running with limited NPU optimizations")
+
+```text
 
 ```text
 
@@ -288,12 +344,22 @@ os.environ["TF_FORCE_GPU_ALLOW_GROWTH"] = "true"
 ```text
 
 try:
-    import torch
-    if torch.cuda.is_available():
-        torch.cuda.set_device(0)
-        print(f"CUDA enabled: {torch.cuda.get_device_name(0)}")
+
+```text
+
+import torch
+if torch.cuda.is_available():
+    torch.cuda.set_device(0)
+    print(f"CUDA enabled: {torch.cuda.get_device_name(0)}")
+
+```text
 except ImportError:
-    print("PyTorch with CUDA not found")
+
+```text
+
+print("PyTorch with CUDA not found")
+
+```text
 
 ```text
 
@@ -349,11 +415,21 @@ model = ipex.optimize(model, dtype=torch.float16)
 ```text
 
 try:
-    example_input = torch.rand(1, 3, 224, 224).to("xpu")
-    model = torch.jit.trace(model, example_input)
-    model = torch.jit.freeze(model)
+
+```text
+
+example_input = torch.rand(1, 3, 224, 224).to("xpu")
+model = torch.jit.trace(model, example_input)
+model = torch.jit.freeze(model)
+
+```text
 except Exception as e:
-    print(f"Model tracing failed: {e}")
+
+```text
+
+print(f"Model tracing failed: {e}")
+
+```text
 
 ```text
 
@@ -456,7 +532,12 @@ model = model.to("cuda")
 ```text
 
 if hasattr(model, "half") and torch.cuda.is_available():
-    model = model.half()  # Use FP16 if available
+
+```text
+
+model = model.half()  # Use FP16 if available
+
+```text
 
 ```text
 
@@ -469,11 +550,21 @@ if hasattr(model, "half") and torch.cuda.is_available():
 ```text
 
 try:
-    example_input = torch.rand(1, 3, 224, 224).to("cuda")
-    model = torch.jit.trace(model, example_input)
-    model = torch.jit.freeze(model)
+
+```text
+
+example_input = torch.rand(1, 3, 224, 224).to("cuda")
+model = torch.jit.trace(model, example_input)
+model = torch.jit.freeze(model)
+
+```text
 except Exception as e:
-    print(f"Model tracing failed: {e}")
+
+```text
+
+print(f"Model tracing failed: {e}")
+
+```text
 
 ```text
 
@@ -735,57 +826,92 @@ class HardwareBackend:
 ```text
 
 def __init__(self, config=None):
-    """Initialize the backend with optional configuration."""
-    self.config = config or {}
-    self.device_type = "cpu"  # Default device type
+
+```text
+
+"""Initialize the backend with optional configuration."""
+self.config = config or {}
+self.device_type = "cpu"  # Default device type
+
+```text
 
 ```text
 
 ```text
 
 def setup(self):
-    """Set up the environment for this backend."""
-    raise NotImplementedError
+
+```text
+
+"""Set up the environment for this backend."""
+raise NotImplementedError
+
+```text
 
 ```text
 
 ```text
 
 def is_available(self):
-    """Check if this backend is available on the current system."""
-    raise NotImplementedError
+
+```text
+
+"""Check if this backend is available on the current system."""
+raise NotImplementedError
+
+```text
 
 ```text
 
 ```text
 
 def optimize_model(self, model):
-    """Optimize a model for this backend."""
-    raise NotImplementedError
+
+```text
+
+"""Optimize a model for this backend."""
+raise NotImplementedError
+
+```text
 
 ```text
 
 ```text
 
 def run_inference(self, model, inputs, **kwargs):
-    """Run inference with the given model and inputs."""
-    raise NotImplementedError
+
+```text
+
+"""Run inference with the given model and inputs."""
+raise NotImplementedError
+
+```text
 
 ```text
 
 ```text
 
 def get_memory_info(self):
-    """Get memory information for this backend."""
-    raise NotImplementedError
+
+```text
+
+"""Get memory information for this backend."""
+raise NotImplementedError
+
+```text
 
 ```text
 
 ```text
 
 def cleanup(self):
-    """Clean up resources used by this backend."""
-    raise NotImplementedError
+
+```text
+
+"""Clean up resources used by this backend."""
+raise NotImplementedError
+
+```text
 
 ```text
 
@@ -807,191 +933,286 @@ class XPUBackend(HardwareBackend):
 ```text
 
 def __init__(self, config=None):
-    """Initialize the XPU backend."""
-    super().__init__(config)
-    self.device_type = "xpu"
+
+```text
+
+"""Initialize the XPU backend."""
+super().__init__(config)
+self.device_type = "xpu"
+
+```text
 
 ```text
 
 ```text
 
 def setup(self):
-    """Set up the XPU environment."""
-    # Set environment variables
+
+```text
+
+"""Set up the XPU environment."""
+# Set environment variables
 
 ```text
 
 ```text
 
-    os.environ["SYCL_CACHE_PERSISTENT"] = "1"
-    os.environ["SYCL_PI_LEVEL_ZERO_USE_IMMEDIATE_COMMANDLISTS"] = "1"
+```text
+
+```text
+
+os.environ["SYCL_CACHE_PERSISTENT"] = "1"
+os.environ["SYCL_PI_LEVEL_ZERO_USE_IMMEDIATE_COMMANDLISTS"] = "1"
 
 ```text
 
 ```text
 
-    # Import required libraries
+```text
+
+```text
+
+# Import required libraries
 
 ```text
 
 ```text
 
-    try:
-        import intel_extension_for_pytorch as ipex
-        import torch
-        self.torch = torch
-        self.ipex = ipex
-        return True
-    except ImportError:
-        print("Intel Extension for PyTorch not found")
-        return False
+```text
+
+```text
+
+try:
+    import intel_extension_for_pytorch as ipex
+    import torch
+    self.torch = torch
+    self.ipex = ipex
+    return True
+except ImportError:
+    print("Intel Extension for PyTorch not found")
+    return False
+
+```text
 
 ```text
 
 ```text
 
 def is_available(self):
-    """Check if XPU is available."""
-    try:
-        import intel_extension_for_pytorch as ipex
-        import torch
-        return hasattr(torch, "xpu") and torch.xpu.is_available()
-    except ImportError:
-        return False
+
+```text
+
+"""Check if XPU is available."""
+try:
+    import intel_extension_for_pytorch as ipex
+    import torch
+    return hasattr(torch, "xpu") and torch.xpu.is_available()
+except ImportError:
+    return False
+
+```text
 
 ```text
 
 ```text
 
 def optimize_model(self, model):
-    """Optimize model for XPU."""
-    if not self.is_available():
-        return model
 
 ```text
 
-```text
-
-    # Move model to XPU
-
-```text
-
-```text
-
-    model = model.to("xpu")
-
-```text
-
-```text
-
-    # Apply IPEX optimizations
-
-```text
-
-```text
-
-    precision = self.config.get("precision", "mixed")
-    if precision == "mixed" or precision == "fp16":
-        model = self.ipex.optimize(model, dtype=self.torch.float16)
-    else:
-        model = self.ipex.optimize(model)
-
-```text
-
-```text
-
+"""Optimize model for XPU."""
+if not self.is_available():
     return model
 
 ```text
 
 ```text
 
+```text
+
+```text
+
+# Move model to XPU
+
+```text
+
+```text
+
+```text
+
+```text
+
+model = model.to("xpu")
+
+```text
+
+```text
+
+```text
+
+```text
+
+# Apply IPEX optimizations
+
+```text
+
+```text
+
+```text
+
+```text
+
+precision = self.config.get("precision", "mixed")
+if precision == "mixed" or precision == "fp16":
+    model = self.ipex.optimize(model, dtype=self.torch.float16)
+else:
+    model = self.ipex.optimize(model)
+
+```text
+
+```text
+
+```text
+
+```text
+
+return model
+
+```text
+
+```text
+
+```text
+
 def run_inference(self, model, inputs, **kwargs):
-    """Run inference on XPU."""
-    if isinstance(inputs, dict):
-        # Convert input dict values to XPU
+
+```text
+
+"""Run inference on XPU."""
+if isinstance(inputs, dict):
+    # Convert input dict values to XPU
 
 ```text
 
 ```text
 
-        inputs = {k: v.to("xpu") if hasattr(v, "to") else v
-                 for k, v in inputs.items()}
-        with self.torch.no_grad():
-            outputs = model(**inputs)
-    else:
-        # Convert inputs to XPU
+```text
+
+```text
+
+    inputs = {k: v.to("xpu") if hasattr(v, "to") else v
+             for k, v in inputs.items()}
+    with self.torch.no_grad():
+        outputs = model(**inputs)
+else:
+    # Convert inputs to XPU
 
 ```text
 
 ```text
 
-        if hasattr(inputs, "to"):
-            inputs = inputs.to("xpu")
-        with self.torch.no_grad():
-            outputs = model(inputs)
+```text
+
+```text
+
+    if hasattr(inputs, "to"):
+        inputs = inputs.to("xpu")
+    with self.torch.no_grad():
+        outputs = model(inputs)
 
 ```text
 
 ```text
 
-    # Convert outputs back to CPU if needed
+```text
+
+```text
+
+# Convert outputs back to CPU if needed
 
 ```text
 
 ```text
 
-    if kwargs.get("return_cpu", True):
-        if isinstance(outputs, dict):
-            outputs = {k: v.to("cpu") if hasattr(v, "to") else v
-                      for k, v in outputs.items()}
-        elif hasattr(outputs, "to"):
-            outputs = outputs.to("cpu")
+```text
+
+```text
+
+if kwargs.get("return_cpu", True):
+    if isinstance(outputs, dict):
+        outputs = {k: v.to("cpu") if hasattr(v, "to") else v
+                  for k, v in outputs.items()}
+    elif hasattr(outputs, "to"):
+        outputs = outputs.to("cpu")
 
 ```text
 
 ```text
 
-    return outputs
+```text
+
+```text
+
+return outputs
+
+```text
 
 ```text
 
 ```text
 
 def get_memory_info(self):
-    """Get XPU memory information."""
-    if not self.is_available():
-        return {"error": "XPU not available"}
+
+```text
+
+"""Get XPU memory information."""
+if not self.is_available():
+    return {"error": "XPU not available"}
 
 ```text
 
 ```text
 
-    device = self.torch.xpu.current_device()
-    total_mem = self.torch.xpu.get_device_properties(device).total_memory
-    reserved_mem = self.torch.xpu.memory_reserved(device)
-    allocated_mem = self.torch.xpu.memory_allocated(device)
-    free_mem = total_mem - reserved_mem
+```text
+
+```text
+
+device = self.torch.xpu.current_device()
+total_mem = self.torch.xpu.get_device_properties(device).total_memory
+reserved_mem = self.torch.xpu.memory_reserved(device)
+allocated_mem = self.torch.xpu.memory_allocated(device)
+free_mem = total_mem - reserved_mem
 
 ```text
 
 ```text
 
-    return {
-        "total": total_mem,
-        "reserved": reserved_mem,
-        "allocated": allocated_mem,
-        "free": free_mem
-    }
+```text
+
+```text
+
+return {
+    "total": total_mem,
+    "reserved": reserved_mem,
+    "allocated": allocated_mem,
+    "free": free_mem
+}
+
+```text
 
 ```text
 
 ```text
 
 def cleanup(self):
-    """Clean up XPU resources."""
-    if self.is_available():
-        self.torch.xpu.empty_cache()
+
+```text
+
+"""Clean up XPU resources."""
+if self.is_available():
+    self.torch.xpu.empty_cache()
+
+```text
 
 ```text
 
@@ -1024,8 +1245,13 @@ class NewHardwareBackend(HardwareBackend):
 ```text
 
 def __init__(self, config=None):
-    super().__init__(config)
-    self.device_type = "new_hardware"
+
+```text
+
+super().__init__(config)
+self.device_type = "new_hardware"
+
+```text
 
 ```text
 
@@ -1038,28 +1264,46 @@ def __init__(self, config=None):
 ```text
 
 def setup(self):
-    """Set up environment for new hardware."""
-    # Setup code
+
+```text
+
+"""Set up environment for new hardware."""
+# Setup code
 
 ```text
 
 ```text
 
-    return True
+```text
+
+```text
+
+return True
+
+```text
 
 ```text
 
 ```text
 
 def is_available(self):
-    """Check if new hardware is available."""
-    # Detection code
+
+```text
+
+"""Check if new hardware is available."""
+# Detection code
 
 ```text
 
 ```text
 
-    return has_new_hardware()
+```text
+
+```text
+
+return has_new_hardware()
+
+```text
 
 ```text
 
@@ -1076,6 +1320,7 @@ def detect_new_hardware():
 ```text
 
 """Detect if new hardware is available."""
+
 # Detection code
 
 ```text
@@ -1116,18 +1361,29 @@ Monitor and benchmark hardware performance.
 ```text
 
 Args:
-    backend: Hardware backend to use
-    model: Model to benchmark
-    inputs: Inputs for the model
-    iterations: Number of iterations to run
+
+```text
+
+backend: Hardware backend to use
+model: Model to benchmark
+inputs: Inputs for the model
+iterations: Number of iterations to run
+
+```text
 
 ```text
 
 ```text
 
 Returns:
-    Performance metrics
+
+```text
+
+Performance metrics
+
+```text
 """
+
 # Warm-up run
 
 ```text
@@ -1148,7 +1404,12 @@ backend.run_inference(model, inputs)
 
 start_time = time.time()
 for _ in range(iterations):
-    backend.run_inference(model, inputs)
+
+```text
+
+backend.run_inference(model, inputs)
+
+```text
 end_time = time.time()
 
 ```text
@@ -1182,11 +1443,16 @@ throughput = iterations / total_time
 ```text
 
 return {
-    "backend": backend.device_type,
-    "avg_inference_time_ms": avg_time * 1000,
-    "throughput_per_second": throughput,
-    "iterations": iterations,
-    "memory": memory_info
+
+```text
+
+"backend": backend.device_type,
+"avg_inference_time_ms": avg_time * 1000,
+"throughput_per_second": throughput,
+"iterations": iterations,
+"memory": memory_info
+
+```text
 }
 
 ```text

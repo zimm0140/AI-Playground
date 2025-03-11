@@ -121,7 +121,12 @@ mock_gpu_info = ["Intel(R) Arc(TM) A770 Graphics"]
 ```text
 
 with patch("hardware_detection.get_gpu_info", return_value=mock_gpu_info):
-    result = hardware_detection.detect_hardware_type()
+
+```text
+
+result = hardware_detection.detect_hardware_type()
+
+```text
 
 ```text
 
@@ -151,8 +156,13 @@ def sample_config():
 
 """Fixture providing a sample configuration."""
 return {
-    "hardware_types": ["base", "acm"],
-    "default_hardware": "base",
+
+```text
+
+"hardware_types": ["base", "acm"],
+"default_hardware": "base",
+
+```text
 }
 
 ```text
@@ -168,13 +178,22 @@ def test_hardware_detection(sample_config):
 ```text
 
 with patch("hardware_detection.load_config", return_value=sample_config):
-    # Test code here
+
+```text
+
+# Test code here
 
 ```text
 
 ```text
 
-    pass
+```text
+
+```text
+
+pass
+
+```text
 
 ```text
 
@@ -253,8 +272,13 @@ def test_multiple_hardware_types(gpu_info, expected_type):
 ```text
 
 with patch("hardware_detection.get_gpu_info", return_value=gpu_info):
-    result = hardware_detection.detect_hardware_type()
-    assert result == expected_type
+
+```text
+
+result = hardware_detection.detect_hardware_type()
+assert result == expected_type
+
+```text
 
 ```text
 
