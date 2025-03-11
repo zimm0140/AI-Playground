@@ -45,16 +45,22 @@ pre-commit install
 ```
 
 #### Traditional Method
+
 ```bash
+
 # Install dependencies using pip
+
 pip install -e .
 
 # Install development dependencies
+
 pip install -e ".[dev]"
 
 # Install pre-commit hooks
+
 pre-commit install
-```
+
+```text
 
 ### Type Annotation Changes
 
@@ -63,33 +69,47 @@ We've updated our type annotations to be compatible with Python 3.10+:
 1. Replaced pipe syntax (`|`) with `Union` from typing:
    ```python
    # Before (Python 3.10+)
+
    def some_function(param: str | int) -> list[str] | None:
-       ...
+
+```text
+
+   ...
+
+```text
 
    # After (Compatible with Python 3.10+)
+
    from typing import Union, List, Optional
    def some_function(param: Union[str, int]) -> Optional[List[str]]:
-       ...
-   ```
 
-2. Fixed Optional handling:
+```text
+
+   ...
+
+```text
+   ```text
+
+1. Fixed Optional handling:
    ```python
    # Before (problematic)
+
    os.path.join(maybe_none, "subdir")  # Type error if maybe_none is None
 
    # After (safe)
+
    path = os.path.join(maybe_none or "", "subdir")
-   ```
+   ```text
 
 ### Dependencies Management
 
 When adding or updating dependencies:
 
 1. Edit either `setup.py` or `pyproject.toml`
-2. Run the sync script to keep them in sync:
+1. Run the sync script to keep them in sync:
    ```bash
    python .github/sync_dependencies.py
-   ```
+   ```text
 
 ### CI Pipeline
 
@@ -105,30 +125,45 @@ Our CI now uses a hybrid approach with:
 If you encounter type checking errors:
 
 1. Import necessary types from `typing` module
-2. Replace pipe syntax (`|`) with `Union[Type1, Type2]`
-3. Fix `Optional` type handling with safe defaults
+1. Replace pipe syntax (`|`) with `Union[Type1, Type2]`
+1. Fix `Optional` type handling with safe defaults
 
 Example:
-```python
-# Error-prone:
-def process_file(file_path: Optional[str]) -> None:
-    with open(os.path.join(file_path, "subfile"), "r") as f:
-        ...
 
-# Fixed:
+```python
+
+# Error-prone
+
 def process_file(file_path: Optional[str]) -> None:
-    path = file_path or ""
-    with open(os.path.join(path, "subfile"), "r") as f:
-        ...
-```
+
+```text
+
+with open(os.path.join(file_path, "subfile"), "r") as f:
+    ...
+
+```text
+
+# Fixed
+
+def process_file(file_path: Optional[str]) -> None:
+
+```text
+
+path = file_path or ""
+with open(os.path.join(path, "subfile"), "r") as f:
+    ...
+
+```text
+
+```text
 
 ### Package Compatibility
 
 Some packages may require updates for Python 3.10+ compatibility. Check for:
 
 1. Deprecated `collections` imports (use `collections.abc` instead)
-2. Updated typing syntax
-3. Changes in function signatures
+1. Updated typing syntax
+1. Changes in function signatures
 
 ## Future Improvements
 
@@ -141,5 +176,5 @@ Some packages may require updates for Python 3.10+ compatibility. Check for:
 
 If you encounter issues during migration, please:
 1. Check this guide for solutions
-2. Review the existing issues on GitHub
-3. Open a new issue with detailed reproduction steps 
+1. Review the existing issues on GitHub
+1. Open a new issue with detailed reproduction steps
