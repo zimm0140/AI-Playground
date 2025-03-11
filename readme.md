@@ -388,3 +388,63 @@ For information on AI Playground terms, license and disclaimers, visit the proje
 
 The software may include third party components with separate legal notices or governed by other agreements, as may be described in the Third Party Notices file accompanying the
 software.
+
+# Using Makefile (optional)
+
+We provide a Makefile for common development tasks:
+
+```bash
+# Set up development environment
+make setup
+
+# Run tests
+make test
+
+# Run linters
+make lint
+
+# Format code
+make format
+
+# Sync dependencies
+make sync
+
+# Show all available commands
+make help
+```
+
+## Advanced uv Features
+
+### Using Lockfiles
+
+```bash
+# Create a lockfile
+uv pip compile requirements.txt -o requirements.lock
+
+# Install from lockfile
+uv pip sync requirements.lock
+```
+
+### Dependency Auditing
+
+```bash
+# Check for vulnerabilities
+uv pip audit
+```
+
+### Creating Isolated Environments for Scripts
+
+```bash
+# Run a Python script in an isolated environment
+uv run script.py
+```
+
+### Installing Command-line Tools
+
+```bash
+# Install a tool globally
+uv tool install ruff
+
+# Run a tool without installing
+uv tool run ruff check .
+```

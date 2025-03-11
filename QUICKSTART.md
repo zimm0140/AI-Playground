@@ -123,4 +123,35 @@ uv pip sync requirements.txt
 uv pip install -e ".[dev]"
 ```
 
-For more detailed information, see the full [documentation](README.md) and [migration guide](MIGRATION.md). 
+For more detailed information, see the full [documentation](README.md) and [migration guide](MIGRATION.md).
+
+## Optional: Shell Completion
+
+Set up shell completion for uv to make your development experience smoother:
+
+### Bash
+
+```bash
+uv completion bash > ~/.uv-completion.bash
+echo 'source ~/.uv-completion.bash' >> ~/.bashrc
+```
+
+### Zsh
+
+```bash
+uv completion zsh > ~/.zsh/_uv
+echo 'fpath=(~/.zsh $fpath)' >> ~/.zshrc
+echo 'autoload -Uz compinit && compinit' >> ~/.zshrc
+```
+
+### Fish
+
+```bash
+uv completion fish > ~/.config/fish/completions/uv.fish
+```
+
+### PowerShell
+
+```powershell
+uv completion powershell | Out-File -Encoding utf8 -FilePath (Join-Path $PROFILE.CurrentUserAllHosts "uv.ps1")
+``` 
