@@ -12,51 +12,71 @@ A modern AI development environment with support for multiple models and backend
 ### Primary Method (Recommended)
 
 ```bash
+
 # Install uv (once)
+
 # On macOS and Linux
-curl -LsSf https://astral.sh/uv/install.sh | sh
+
+curl -LsSf <https://astral.sh/uv/install.sh> | sh
+
 # On Windows
-powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+powershell -ExecutionPolicy ByPass -c "irm <https://astral.sh/uv/install.ps1> | iex"
+
 
 # Clone the repository
-git clone https://github.com/zimm0140/AI-Playground.git
+
+git clone <https://github.com/zimm0140/AI-Playground.git>
 cd AI-Playground
 
 # Create virtual environment and install dependencies
+
 uv venv
 uv pip install -e .
 
 # For development dependencies
+
 uv pip install -e ".[dev]"
-```
+
+```text
 
 ### Alternative Method (Modern)
 
 ```bash
+
 # Install Rye (once)
-curl -sSf https://rye-up.com/get | bash
+
+curl -sSf <https://rye-up.com/get> | bash
 
 # Clone the repository
-git clone https://github.com/zimm0140/AI-Playground.git
+
+git clone <https://github.com/zimm0140/AI-Playground.git>
 cd AI-Playground
 
 # Setup development environment with Rye
+
 rye sync
-```
+
+```text
 
 ### Traditional Method (Compatible with Upstream)
 
 ```bash
+
 # Clone the repository
-git clone https://github.com/zimm0140/AI-Playground.git
+
+git clone <https://github.com/zimm0140/AI-Playground.git>
 cd AI-Playground
 
 # Install dependencies
+
 pip install -e .
 
 # For development dependencies
+
 pip install -e ".[dev]"
-```
+
+```text
 
 ## Python 3.10+ Migration
 
@@ -76,29 +96,39 @@ See [MIGRATION.md](MIGRATION.md) for detailed guidance on the migration process,
 ### Running Tests
 
 ```bash
+
 # Using uv (recommended)
+
 uv run pytest
 
 # Using Rye
+
 rye run pytest
 
 # Traditional method
+
 pytest
-```
+
+```text
 
 ### Linting and Type Checking
 
 ```bash
+
 # Install pre-commit hooks
+
 pre-commit install
 
 # Run manually
+
 pre-commit run --all-files
 
 # Using uv for on-demand checks
+
 uv run ruff check .
 uv run mypy .
-```
+
+```text
 
 ## Supported Features
 
@@ -211,7 +241,7 @@ install with these files in place can block the installation. Remove these files
 To get started, clone the repository and navigate to the project directory:
 
 ```cmd
-git clone -b dev https://github.com/intel/AI-Playground.git
+git clone -b dev <https://github.com/intel/AI-Playground.git>
 cd AI-Playground
 
 ```text
