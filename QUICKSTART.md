@@ -196,78 +196,106 @@ uv completion fish > ~/.config/fish/completions/uv.fish
 
 ```powershell
 uv completion powershell | Out-File -Encoding utf8 -FilePath (Join-Path $PROFILE.CurrentUserAllHosts "uv.ps1")
-```
+
+```text
 
 ## Using Helper Scripts
 
 We've provided convenient wrapper scripts for common uv operations:
 
-### On Unix/Linux/macOS:
+### On Unix/Linux/macOS
+
 ```bash
+
 # Make the script executable first
+
 chmod +x scripts/run_with_uv.sh
 
 # Run tests
+
 ./scripts/run_with_uv.sh test
 
 # Run linters
+
 ./scripts/run_with_uv.sh lint
 
 # Format code
+
 ./scripts/run_with_uv.sh format
 
 # Run the example script with isolated dependencies
+
 ./scripts/run_with_uv.sh run scripts/example_script.py
 
 # See all available commands
-./scripts/run_with_uv.sh help
-```
 
-### On Windows:
+./scripts/run_with_uv.sh help
+
+```text
+
+### On Windows
+
 ```powershell
+
 # Run tests
+
 .\scripts\run_with_uv.ps1 test
 
 # Run linters
+
 .\scripts\run_with_uv.ps1 lint
 
 # Format code
+
 .\scripts\run_with_uv.ps1 format
 
 # See all available commands
+
 .\scripts\run_with_uv.ps1 help
-```
+
+```text
 
 ## Using Lockfiles
 
 For reproducible environments, we maintain lockfiles for exact dependency versions:
 
 ```bash
+
 # Sync your environment with locked dependencies
+
 uv pip sync requirements.lock
 
 # For development dependencies
+
 uv pip sync requirements-dev.lock
 
 # Or both at once
+
 uv pip sync requirements.lock requirements-dev.lock
 
 # To update lockfiles after changing requirements.txt
+
 uv pip compile requirements.txt --output-file requirements.lock
 uv pip compile requirements-dev.txt --output-file requirements-dev.lock
-```
+
+```text
 
 ## Docker Integration
 
 We provide a Dockerfile that uses uv for faster builds:
 
 ```bash
+
 # Build the development image
+
 docker build --target development -t ai-playground-dev .
 
 # Build the production image
+
 docker build --target production -t ai-playground .
 
 # Run the container
+
 docker run -p 5000:5000 ai-playground
-``` 
+
+```
