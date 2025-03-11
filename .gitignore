@@ -1,34 +1,30 @@
-.vscode/
-env/
+# Virtual environments
 .venv/
 venv/
-.conda/
-package_res/
-build_resources/
-build_envs/
-release/
-WebUI/external/service/
-WebUI/external/workflows_intel/
-WebUI/external/workflows_bak/
+env/
+
+# uv specific files
+.lockfiles/
+.uvcache/
 
 # Python cache files
 __pycache__/
 *.py[cod]
 *$py.class
 .pytest_cache/
-.coverage
-htmlcov/
+.ruff_cache/
+.mypy_cache/
 
-# Environment files
-.env
-.python-version
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
 
-# IDE specific files
+# IDE files
 .idea/
+.vscode/
 *.swp
 *.swo
-*~
-.vs/
 
 # OS specific files
 .DS_Store
@@ -36,10 +32,13 @@ Thumbs.db
 desktop.ini
 
 # Python packaging
-dist/
-build/
-*.egg-info/
-*.egg
+package_res/
+build_resources/
+build_envs/
+release/
+WebUI/external/service/
+WebUI/external/workflows_intel/
+WebUI/external/workflows_bak/
 
 # Documentation builds
 docs/_build/
