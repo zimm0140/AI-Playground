@@ -1,0 +1,93 @@
+site_name: AI-Playground Documentation
+site_description: Documentation for the AI-Playground project
+site_author: AI-Playground Team
+site_url: https://intel.github.io/AI-Playground/
+
+repo_name: intel/AI-Playground
+repo_url: https://github.com/intel/AI-Playground
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  palette:
+    primary: indigo
+    accent: blue
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.instant
+    - navigation.tracking
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+    - content.code.copy
+  icon:
+    repo: fontawesome/brands/github
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Quick Start: getting-started/quickstart.md
+    - Installation: getting-started/installation.md
+    - Migration: getting-started/migration.md
+  - Hardware:
+    - Overview: hardware/overview.md
+    - Compatibility: hardware/compatibility.md
+    - Optimization: hardware/optimization.md
+    - Device-Specific:
+      - Intel Arc: hardware/device-specific/intel-arc.md
+  - Development:
+    - Contributing: development/contributing.md
+    - Code Quality: development/code-quality.md
+    - Testing: development/testing.md
+    - Linting: development/linting.md
+    - CI/CD: development/workflows.md
+  - Architecture:
+    - Overview: architecture/overview.md
+    - Components: architecture/components.md
+  - Reference:
+    - Configuration: reference/configuration.md
+    - Troubleshooting: reference/troubleshooting.md
+    - API: reference/api/index.md
+
+plugins:
+  - search
+  - minify:
+      minify_html: true
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - toc:
+      permalink: true
+  - pymdownx.arithmatex
+  - pymdownx.betterem
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.magiclink
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences
+  - pymdownx.tabbed
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/intel/AI-Playground
+  version:
+    provider: mike
+    default: latest
+
+extra_css:
+  - stylesheets/extra.css 

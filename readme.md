@@ -1,8 +1,41 @@
 # AI Playground
 
-[![CI Status](https://github.com/zimm0140/AI-Playground/actions/workflows/modern-ci.yml/badge.svg)](https://github.com/zimm0140/AI-Playground/actions/workflows/modern-ci.yml)
+AI Playground is a framework for experimenting with AI technologies, optimized for different hardware configurations including Intel Arc GPUs, Meteor Lake, and other platforms.
 
-A Python project for experimenting with AI technologies, now with modern development tools.
+## Overview
+
+AI Playground provides a unified environment for exploring various AI capabilities including image generation, LLM inference, and hardware optimization. The framework automatically detects and optimizes for your hardware configuration to provide the best possible performance.
+
+## Documentation
+
+Comprehensive documentation is available in the `/docs` directory:
+
+- [Documentation Home](docs/index.md) - Central hub for all documentation
+- [Quick Start Guide](docs/getting-started/quickstart.md) - Get up and running quickly
+- [Hardware Guides](docs/hardware/overview.md) - Hardware-specific documentation
+- [Developer Documentation](docs/development/contributing.md) - How to contribute
+
+## Quick Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/intel/AI-Playground.git
+cd AI-Playground
+
+# Set up environment with hardware detection
+python setup_hardware_env.py
+
+# Activate the environment
+# On Windows
+.venv\Scripts\activate
+# On Linux/macOS
+source .venv/bin/activate
+
+# Run the service
+python service/main.py
+```
+
+For detailed installation instructions, see the [Installation Guide](docs/getting-started/installation.md).
 
 ## Features
 
