@@ -1,7 +1,7 @@
 import WebContents = Electron.WebContents
+import { app } from 'electron'
 import fs from 'fs'
 import path from 'node:path'
-import { app } from 'electron'
 
 class Logger {
   webContents: WebContents | null = null
@@ -14,7 +14,7 @@ class Logger {
     level: 'error' | 'warn' | 'info'
   }[] = []
 
-  constructor() {}
+  constructor() { }
 
   onWebcontentReady(webContents: WebContents) {
     this.webContents = webContents
@@ -52,7 +52,7 @@ class Logger {
         console.error('Could not send debug log to renderer process')
       }
     } else {
-      this.startupMessageCache.push({ level: 'error', source, message })
+      this.startupMessageCache.push({ level: 'warn', source, message })
     }
   }
 
