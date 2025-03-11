@@ -18,22 +18,31 @@ Comprehensive documentation is available in the `/docs` directory:
 ## Quick Installation
 
 ```bash
+
 # Clone the repository
-git clone https://github.com/intel/AI-Playground.git
+
+git clone <https://github.com/intel/AI-Playground.git>
 cd AI-Playground
 
 # Set up environment with hardware detection
+
 python setup_hardware_env.py
 
 # Activate the environment
+
 # On Windows
+
 .venv\Scripts\activate
+
 # On Linux/macOS
+
 source .venv/bin/activate
 
 # Run the service
+
 python service/main.py
-```
+
+```text
 
 For detailed installation instructions, see the [Installation Guide](docs/getting-started/installation.md).
 
