@@ -23,7 +23,6 @@ On Windows:
 ```powershell
 powershell -ExecutionPolicy ByPass -c "irm <https://astral.sh/uv/install.ps1> | iex"
 
-
 ```text
 
 ### 2. Clone the Repository
@@ -35,6 +34,25 @@ cd AI-Playground
 ```text
 
 ### 3. Set Up Development Environment
+
+#### Option 1: One-click Setup (Recommended)
+
+We provide a one-click setup script that handles everything for you:
+
+```bash
+# Run the setup script
+python scripts/setup_dev_environment.py
+```
+
+This script:
+
+- Installs uv if not already installed
+- Creates a virtual environment
+- Installs all dependencies from lockfiles
+- Sets up pre-commit hooks
+- Configures VS Code settings
+
+#### Option 2: Manual Setup
 
 ```bash
 

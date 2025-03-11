@@ -3,11 +3,13 @@
 
 from setuptools import setup, find_packages
 
+# Maintain compatibility with pip install -e
 setup(
     name="ai-playground",
     version="2.2.0",
     description="AI Playground with compatibility for upstream merging",
     author="AI Playground Team",
+    author_email="contributor@example.com",
     packages=find_packages(),
     python_requires=">=3.10",
     install_requires=[
@@ -19,6 +21,9 @@ setup(
         "marshmallow-dataclass>=8.5.3",
         "langchain>=0.3.0",
         "compel>=2.0.0",
+        "pytest>=7.3.1",
+        "mypy>=1.3.0",
+        "types-requests>=2.28.0",
     ],
     extras_require={
         "dev": [

@@ -62,24 +62,38 @@ Tool to scan Python files and detect type annotations that could be updated for 
 #### Usage
 
 ```bash
-
 # Scan the entire project
-
 python scripts/fix_type_annotations.py .
 
 # Scan a specific file or directory
-
 python scripts/fix_type_annotations.py path/to/file_or_dir
 
 # Run in dry-run mode (don't make changes)
-
 python scripts/fix_type_annotations.py --dry-run .
 
 # Show detailed information about changes
-
 python scripts/fix_type_annotations.py --verbose .
+```
 
-```text
+### `setup_dev_environment.py`
+
+One-click setup script for new developers to set up the complete development environment.
+
+#### Usage
+
+```bash
+# Run the setup script
+python scripts/setup_dev_environment.py
+```
+
+This script:
+
+- Installs uv if not already installed
+- Creates a virtual environment
+- Installs all dependencies from lockfiles
+- Sets up pre-commit hooks
+- Configures VS Code settings
+- Provides guidance on next steps
 
 ## Adding New Scripts
 
