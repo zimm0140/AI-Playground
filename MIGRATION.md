@@ -68,6 +68,8 @@ python scripts/fix_type_annotations.py .
 python scripts/fix_type_annotations.py path/to/file.py
 ```
 
+For detailed guidance on type compatibility issues and solutions, see the [Type Compatibility Guide](TYPE_COMPATIBILITY.md).
+
 ### Common Type Annotation Updates
 
 1. **Union Types**:

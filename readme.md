@@ -1,6 +1,59 @@
 # AI Playground
 
-A modern AI development environment with support for multiple models and backends.
+[![CI Status](https://github.com/zimm0140/AI-Playground/actions/workflows/modern-ci.yml/badge.svg)](https://github.com/zimm0140/AI-Playground/actions/workflows/modern-ci.yml)
+
+A Python project for experimenting with AI technologies, now with modern development tools.
+
+## Features
+
+- Modern Python >=3.10 support
+- Fast dependency management with uv
+- Comprehensive test suite
+- Docker support
+- CI/CD integration
+
+## Getting Started
+
+See the [QUICKSTART.md](QUICKSTART.md) for detailed setup instructions.
+
+### Quick Setup
+
+```bash
+# Install uv
+curl -LsSf https://astral.sh/uv/install.sh | sh  # Unix/Linux/macOS
+# or
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"  # Windows
+
+# Clone and set up
+git clone https://github.com/zimm0140/AI-Playground.git
+cd AI-Playground
+
+# Create environment and install dependencies
+uv venv
+source .venv/bin/activate  # Unix/Linux/macOS
+# or
+.venv\Scripts\activate  # Windows
+
+# Install dependencies
+uv pip sync requirements.lock requirements-dev.lock
+
+# Run tests
+./scripts/run_with_uv.sh test  # Unix/Linux/macOS
+# or
+.\scripts\run_with_uv.ps1 test  # Windows
+```
+
+## Development
+
+See [CONTRIBUTING.md](.github/CONTRIBUTING.md) for development guidelines.
+
+## Migration
+
+If you're migrating from an older version, see the [MIGRATION.md](MIGRATION.md) guide.
+
+## License
+
+[MIT License](LICENSE)
 
 ## Installation
 

@@ -75,7 +75,7 @@ python_functions = "test_*"
 
 [tool.uv]
 # uv-specific features for the pyproject.toml
-no-binary = []
+no-binary = false
 exclude-newer = []
 link-mode = "copy"
 compile-bytecode = true
