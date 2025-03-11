@@ -28,6 +28,8 @@ setup(
             "pre-commit>=3.3.2",
             "markdownlint-cli>=0.35.0",
             "types-requests>=2.28.0",
+            "tomli>=2.0.1",
+            "tomli-w>=1.0.0",
         ],
     },
     classifiers=[
