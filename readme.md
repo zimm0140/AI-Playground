@@ -3,6 +3,8 @@
 <a href="https://scan.coverity.com/projects/ai-playground">
   <img alt="Coverity Scan Build Status" src="https://scan.coverity.com/projects/30694/badge.svg"/>
 </a>
+<img alt="Version" src="https://img.shields.io/badge/version-2.2.1--beta-blue"/>
+<img alt="Platform" src="https://img.shields.io/badge/platform-Windows-lightgrey"/>
 
 ![image](https://github.com/user-attachments/assets/ee1efc30-4dd1-4934-9233-53fba00c71bd)
 
@@ -11,6 +13,14 @@
 AI Playground is an open-source project and AI PC starter app optimized for Intel® Arc™ GPUs. Create AI-generated images, stylize existing photos, and interact with powerful chatbots—all locally on your PC.
 
 This project showcases the capabilities of Intel® Arc™ GPUs for AI workloads through XPU implementation, enabling high-performance generative AI experiences on consumer hardware.
+
+### ✨ Key Features
+
+- 🖼️ **Generate stunning images** using state-of-the-art AI models
+- 💬 **Chat with AI** using local large language models
+- 🎬 **Create AI videos** with advanced animation techniques
+- ⚡ **Hardware-optimized** for Intel® Arc™ GPUs and Intel Core Ultra processors
+- 🛠️ **Extensible architecture** for adding new models and capabilities
 
 AI Playground supports a wide range of generative AI capabilities:
 
@@ -48,6 +58,13 @@ For detailed hardware compatibility information, see our [Hardware Compatibility
 ## Installation - Packaged Installer
 
 Starting from v2.0, there is a single packaged installer that works for all supported hardware mentioned above. This installer simplifies the process for end users to install AI Playground and get it running on their PC. Please note that while this makes the installation process easier, this is open-source beta software, and there may be component and version conflicts. Refer to the Troubleshooting section for known issues.
+
+### Quick Installation Steps
+
+1. **Download** the latest release below
+2. **Run** the installer (completes quickly, installs Electron frontend)
+3. **Launch** the application and follow prompts to install backend components
+4. **Enjoy** creating with AI!
 
 ### Download the installer
 
@@ -212,3 +229,22 @@ For information on AI Playground terms, license, and disclaimers, visit:
 - [Notices & Disclaimers](https://github.com/intel/ai-playground/blob/main/notices-disclaimers.md)
 
 The software may include third-party components with separate legal notices or governed by other agreements, as described in the Third Party Notices file accompanying the software.
+
+## Community and Support
+
+### Getting Help
+
+If you need assistance with AI Playground, there are several ways to get help:
+
+- **[GitHub Issues](https://github.com/intel/AI-Playground/issues)**: Report bugs or request features
+- **[Intel Insiders Discord](https://discord.gg/intel-insiders)**: Discuss with community members
+- **[Intel Developer Forum](https://community.intel.com/t5/Processors/bd-p/processors)**: Ask questions about development
+
+### Contributing
+
+We welcome contributions to the AI Playground project! See our [Contributing Guide](docs/development/contributing.md) for details on:
+
+- Reporting bugs
+- Suggesting enhancements
+- Submitting pull requests
+- Development workflow
