@@ -23,6 +23,7 @@ On Windows:
 ```powershell
 powershell -ExecutionPolicy ByPass -c "irm <https://astral.sh/uv/install.ps1> | iex"
 
+
 ```text
 
 ### 2. Clone the Repository
@@ -40,9 +41,12 @@ cd AI-Playground
 We provide a one-click setup script that handles everything for you:
 
 ```bash
+
 # Run the setup script
+
 python scripts/setup_dev_environment.py
-```
+
+```text
 
 This script:
 
