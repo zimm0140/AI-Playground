@@ -339,6 +339,7 @@ def detect_hardware_type():
 """
 Custom hardware detection logic
 """
+
 # Your custom logic here
 
 ```text
@@ -404,19 +405,39 @@ You can create a `uvfast.json` file in your project root to customize behavior:
 
 "acm": {
   "extra_env_vars": {
-    "XPU_VISIBLE_DEVICES": "0",
-    "SYCL_CACHE_PERSISTENT": "1"
+
+```text
+
+"XPU_VISIBLE_DEVICES": "0",
+"SYCL_CACHE_PERSISTENT": "1"
+
+```text
   },
   "extra_packages": [
-    "intel-extension-for-pytorch"
+
+```text
+
+"intel-extension-for-pytorch"
+
+```text
   ]
 },
 "ovino": {
   "extra_env_vars": {
-    "OPENVINO_THREADING": "TBB"
+
+```text
+
+"OPENVINO_THREADING": "TBB"
+
+```text
   },
   "extra_packages": [
-    "openvino"
+
+```text
+
+"openvino"
+
+```text
   ]
 }
 
