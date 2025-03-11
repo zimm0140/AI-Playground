@@ -26,7 +26,7 @@ from typing import IO, Optional
 import torch
 from PIL import Image
 
-import service_config
+import service.service_config as service_config
 import subprocess
 import shlex
 
@@ -114,17 +114,16 @@ def check_mmodel_exist(type: int, repo_id: str, backend: str) -> bool:
     Raises:
         NameError: If an unknown backend is specified
     """
-    match(backend):
-        case "default":
-            return check_defaultbackend_mmodel_exist(type, repo_id)
-        case "openvino":
-            return check_openvino_model_exists(type, repo_id)
-        case "comfyui":
-            return check_comfyui_model_exists(type, repo_id)
-        case "llama_cpp":
-            return check_llama_cpp_model_exists(type, repo_id)
-        case _:
-            raise NameError("Unknown Backend")
+    if backend == "default":
+        return check_defaultbackend_mmodel_exist(type, repo_id)
+    elif backend == "openvino":
+        return check_openvino_model_exists(type, repo_id)
+    elif backend == "comfyui":
+        return check_comfyui_model_exists(type, repo_id)
+    elif backend == "llama_cpp":
+        return check_llama_cpp_model_exists(type, repo_id)
+    else:
+        raise NameError("Unknown Backend")
         
 def check_openvino_model_exists(type, repo_id) -> bool:
     """
@@ -252,8 +251,6 @@ def check_defaultbackend_mmodel_exist(type: int, repo_id: str) -> bool:
     Returns:
         bool: True if the model exists, False otherwise
     """
-    import service_config
-
     folder_name = repo_local_root_dir_name(repo_id)
     if type == 0:
         dir = service_config.service_model_paths.get("llm")
@@ -375,15 +372,16 @@ def get_model_path(type: int, backend: str):
     Returns:
         str: Directory path for the specified model type and backend
     """
-    match backend:
-        case "default":
-            return service_config.service_model_paths.get(convert_model_type(type))
-        case "llama_cpp":
-            return service_config.llama_cpp_model_paths.get(convert_model_type(type))
-        case "openvino":
-            return service_config.openvino_model_paths.get(convert_model_type(type))
-        case "comfyui":
-            return service_config.comfy_ui_model_paths.get(convert_model_type(type))
+    if backend == "default":
+        return service_config.service_model_paths.get(convert_model_type(type))
+    elif backend == "llama_cpp":
+        return service_config.llama_cpp_model_paths.get(convert_model_type(type))
+    elif backend == "openvino":
+        return service_config.openvino_model_paths.get(convert_model_type(type))
+    elif backend == "comfyui":
+        return service_config.comfy_ui_model_paths.get(convert_model_type(type))
+    else:
+        raise NameError("Unknown Backend")
 
 
 

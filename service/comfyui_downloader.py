@@ -21,7 +21,7 @@ from typing import Optional
 
 import requests
 
-import aipg_utils
+import service.aipg_utils as aipg_utils
 import service_config
 from web_request_bodies import ComfyUICustomNodesGithubRepoId
 

@@ -13,7 +13,12 @@ and then asking a question to test the response.
 """
 
 import requests
+import pytest, socket
 
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sock.settimeout(1)
+if sock.connect_ex(("127.0.0.1", 29000)) != 0:
+    pytest.skip("Skipping OpenVINO tests because the server is not available", allow_module_level=True)
 
 # Define the LLM chat API endpoint URL
 url = "http://127.0.0.1:29000/api/llm/chat"

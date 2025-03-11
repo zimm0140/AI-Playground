@@ -13,7 +13,12 @@ the model's response handling and understanding of time contexts.
 """
 
 import requests
+import pytest, socket
 
+sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+sock.settimeout(1)
+if sock.connect_ex(("127.0.0.1", 59003)) != 0:
+    pytest.skip("Skipping LlamaCPP tests because the server is not available", allow_module_level=True)
 
 # Define the LLM chat API endpoint URL
 url = "http://127.0.0.1:59003/api/llm/chat"
