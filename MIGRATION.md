@@ -102,6 +102,7 @@ For detailed guidance on type compatibility issues and solutions, see the [Type 
    ```python
    def func(x: int | str) -> float | None:
 
+
 ```text
 
    ...
@@ -127,6 +128,7 @@ For detailed guidance on type compatibility issues and solutions, see the [Type 
    After:
    ```python
    def func(x: int | None = None) -> str | None:
+
 
 ```text
 
