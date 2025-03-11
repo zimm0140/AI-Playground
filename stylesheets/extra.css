@@ -1,0 +1,86 @@
+/* Custom styles for AI-Playground documentation */
+
+/* Custom colors for Intel branding */
+:root {
+    --md-primary-fg-color: #0068b5;
+    --md-primary-fg-color--light: #00c7fd;
+    --md-primary-fg-color--dark: #003c71;
+    --md-accent-fg-color: #00c7fd;
+}
+
+/* Improve code block styling */
+.md-typeset code {
+    border-radius: 0.2rem;
+}
+
+/* Custom admonition for hardware-specific notes */
+.md-typeset .admonition.hardware,
+.md-typeset details.hardware {
+    border-color: #0068b5;
+}
+
+.md-typeset .hardware>.admonition-title,
+.md-typeset .hardware>summary {
+    background-color: rgba(0, 104, 181, 0.1);
+}
+
+.md-typeset .hardware>.admonition-title::before,
+.md-typeset .hardware>summary::before {
+    background-color: #0068b5;
+    -webkit-mask-image: var(--md-admonition-icon--tip);
+    mask-image: var(--md-admonition-icon--tip);
+}
+
+/* Better table styling */
+.md-typeset table:not([class]) {
+    box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.05), 0 0 0.05rem rgba(0, 0, 0, 0.1);
+    font-size: 0.75rem;
+}
+
+.md-typeset table:not([class]) th {
+    background-color: var(--md-primary-fg-color);
+    color: white;
+}
+
+/* Header styling */
+.md-typeset h1 {
+    font-weight: 600;
+    color: var(--md-primary-fg-color--dark);
+}
+
+.md-typeset h2 {
+    font-weight: 500;
+    color: var(--md-primary-fg-color);
+}
+
+/* Navigation improvement */
+.md-nav__link:focus,
+.md-nav__link:hover {
+    color: var(--md-accent-fg-color);
+}
+
+/* Footer styling */
+.md-footer-nav {
+    background-color: var(--md-primary-fg-color--dark);
+}
+
+.md-footer-meta {
+    background-color: #001a33;
+}
+
+/* Previous/Next navigation styling at bottom of pages */
+.md-typeset hr+p {
+    font-style: italic;
+    opacity: 0.8;
+    margin-top: 2em;
+}
+
+.md-typeset hr+p a {
+    font-weight: 500;
+}
+
+/* Highlight external links */
+.md-content a[href^="http"]:not([href*="intel.github.io"]):after {
+    content: " ↗";
+    opacity: 0.6;
+}
