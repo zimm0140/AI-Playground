@@ -27,8 +27,12 @@ The hardware integration consists of several layers:
 
 ```text
 
-    │                 │
-    ▼                 ▼
+```text
+
+│                 │
+▼                 ▼
+
+```text
 
 ```text
 
@@ -45,8 +49,12 @@ The hardware integration consists of several layers:
 
 ```text
 
-    │                 │
-    ▼                 ▼
+```text
+
+│                 │
+▼                 ▼
+
+```text
 
 ```text
 
@@ -162,10 +170,15 @@ if "Intel(R) Arc(TM)" in gpu:
 ```text
 
 available_devices.append({
-    "type": "arc",
-    "name": gpu,
-    "priority": 100,
-    "backend": "xpu"
+
+```text
+
+"type": "arc",
+"name": gpu,
+"priority": 100,
+"backend": "xpu"
+
+```text
 })
 
 ```text
@@ -174,10 +187,15 @@ elif "Intel(R) Battlemage(TM)" in gpu:
 ```text
 
 available_devices.append({
-    "type": "bmg",
-    "name": gpu,
-    "priority": 100,
-    "backend": "xpu"
+
+```text
+
+"type": "bmg",
+"name": gpu,
+"priority": 100,
+"backend": "xpu"
+
+```text
 })
 
 ```text
@@ -203,10 +221,15 @@ if "NVIDIA" in gpu:
 ```text
 
 available_devices.append({
-    "type": "nvidia",
-    "name": gpu,
-    "priority": 90,
-    "backend": "cuda"
+
+```text
+
+"type": "nvidia",
+"name": gpu,
+"priority": 90,
+"backend": "cuda"
+
+```text
 })
 
 ```text
@@ -1177,9 +1200,19 @@ if isinstance(inputs, dict):
 ```text
 
 inputs = {k: v.to("xpu") if hasattr(v, "to") else v
-         for k, v in inputs.items()}
+
+```text
+
+     for k, v in inputs.items()}
+
+```text
 with self.torch.no_grad():
-    outputs = model(**inputs)
+
+```text
+
+outputs = model(**inputs)
+
+```text
 
 ```text
 else:
@@ -1201,9 +1234,19 @@ else:
 ```text
 
 if hasattr(inputs, "to"):
-    inputs = inputs.to("xpu")
+
+```text
+
+inputs = inputs.to("xpu")
+
+```text
 with self.torch.no_grad():
-    outputs = model(inputs)
+
+```text
+
+outputs = model(inputs)
+
+```text
 
 ```text
 
@@ -1230,10 +1273,20 @@ if kwargs.get("return_cpu", True):
 ```text
 
 if isinstance(outputs, dict):
-    outputs = {k: v.to("cpu") if hasattr(v, "to") else v
-              for k, v in outputs.items()}
+
+```text
+
+outputs = {k: v.to("cpu") if hasattr(v, "to") else v
+          for k, v in outputs.items()}
+
+```text
 elif hasattr(outputs, "to"):
-    outputs = outputs.to("cpu")
+
+```text
+
+outputs = outputs.to("cpu")
+
+```text
 
 ```text
 

@@ -28,8 +28,12 @@ AI-Playground is designed as a modular, extensible platform for running, optimiz
 
 ```text
 
-    │                 │
-    ▼                 ▼
+```text
+
+│                 │
+▼                 ▼
+
+```text
 
 ```text
 
@@ -50,8 +54,12 @@ AI-Playground is designed as a modular, extensible platform for running, optimiz
 
 ```text
 
-    │                 │
-    ▼                 ▼
+```text
+
+│                 │
+▼                 ▼
+
+```text
 
 ```text
 
@@ -72,8 +80,12 @@ AI-Playground is designed as a modular, extensible platform for running, optimiz
 
 ```text
 
-    │                 │
-    ▼                 ▼
+```text
+
+│                 │
+▼                 ▼
+
+```text
 
 ```text
 

@@ -3,8 +3,8 @@
 <a href="https://scan.coverity.com/projects/ai-playground">
   <img alt="Coverity Scan Build Status" src="https://scan.coverity.com/projects/30694/badge.svg"/>
 </a>
-<img alt="Version" src="https://img.shields.io/badge/version-2.2.1--beta-blue"/>
-<img alt="Platform" src="https://img.shields.io/badge/platform-Windows-lightgrey"/>
+<img alt="Version" src="<https://img.shields.io/badge/version-2.2.1--beta-blue">/>
+<img alt="Platform" src="<https://img.shields.io/badge/platform-Windows-lightgrey">/>
 
 ![image](https://github.com/user-attachments/assets/ee1efc30-4dd1-4934-9233-53fba00c71bd)
 
@@ -71,9 +71,9 @@ Starting from v2.0, there is a single packaged installer that works for all supp
 ### Quick Installation Steps
 
 1. **Download** the latest release below
-2. **Run** the installer (completes quickly, installs Electron frontend)
-3. **Launch** the application and follow prompts to install backend components
-4. **Enjoy** creating with AI!
+1. **Run** the installer (completes quickly, installs Electron frontend)
+1. **Launch** the application and follow prompts to install backend components
+1. **Enjoy** creating with AI!
 
 ### Download the installer
 
