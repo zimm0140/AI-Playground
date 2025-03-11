@@ -18,22 +18,26 @@ AI-Playground supports the following hardware platforms with varying levels of o
 | NVIDIA GPUs | - | Standard | Standard PyTorch CUDA support |
 | AMD GPUs | - | Basic | Limited support via ROCm |
 
+
 ## Automatic Hardware Detection
 
 AI-Playground includes a sophisticated hardware detection system that identifies your specific hardware configuration and sets up the environment accordingly:
 
 ```bash
+
 # Automatic detection and setup
+
 python setup_hardware_env.py
-```
+
+```text
 
 The detection system:
 
 1. Identifies CPU architecture and features
-2. Detects available GPUs and their capabilities
-3. Checks for specialized hardware like Intel NPUs
-4. Verifies the presence of optimization libraries like OpenVINO
-5. Selects the most appropriate configuration based on findings
+1. Detects available GPUs and their capabilities
+1. Checks for specialized hardware like Intel NPUs
+1. Verifies the presence of optimization libraries like OpenVINO
+1. Selects the most appropriate configuration based on findings
 
 ## Hardware-specific Optimizations
 
@@ -69,9 +73,12 @@ Systems with OpenVINO benefit from:
 If you want to override the automatic detection, you can specify the hardware type:
 
 ```bash
+
 # Force a specific hardware configuration
+
 python setup_hardware_env.py --hardware acm  # For Intel Arc GPUs
-```
+
+```text
 
 ## Hardware-specific Dependencies
 

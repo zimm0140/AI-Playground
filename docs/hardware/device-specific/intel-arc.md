@@ -14,6 +14,7 @@ AI-Playground supports all Intel Arc GPU models:
 | A380 | 6GB | Small to medium models | Good |
 | A310 | 4GB | Small models only | Basic |
 
+
 ## Hardware Requirements
 
 ### Driver Requirements
@@ -22,6 +23,7 @@ AI-Playground supports all Intel Arc GPU models:
 |----|------------------------|-------------------|
 | Windows | 31.0.101.4255 | Latest available |
 | Linux | Mesa 23.1 | Mesa 23.3+ |
+
 
 ### System Requirements
 
@@ -37,14 +39,15 @@ AI-Playground supports all Intel Arc GPU models:
 #### Windows
 
 1. Download the latest driver from [Intel's download center](https://downloadcenter.intel.com/product/226793/Intel-Arc-A-series-Graphics)
-2. Install the driver package
-3. Restart your system
-4. Verify installation with:
+1. Install the driver package
+1. Restart your system
+1. Verify installation with:
 
    ```bash
    # Run hardware detection
+
    python hardware_detection.py
-   ```
+   ```text
 
 #### Linux
 
@@ -52,26 +55,29 @@ AI-Playground supports all Intel Arc GPU models:
 
    ```bash
    sudo apt update && sudo apt upgrade
-   ```
+   ```text
 
-2. Install required packages:
+1. Install required packages:
 
    ```bash
    sudo apt install mesa-utils
-   ```
+   ```text
 
-3. Verify installation:
+1. Verify installation:
 
    ```bash
    glxinfo | grep "OpenGL renderer"
-   ```
+   ```text
 
 ### Environment Setup
 
 ```bash
+
 # Setup environment optimized for Arc GPUs
+
 python setup_hardware_env.py --hardware acm
-```
+
+```text
 
 This will install the required dependencies including:
 
@@ -91,44 +97,61 @@ import torch
 import intel_extension_for_pytorch as ipex
 
 # Move model to XPU
+
 model = model.to("xpu")
 
 # Move input tensors to XPU
+
 input_tensor = input_tensor.to("xpu")
 
 # Run inference
+
 with torch.xpu.amp.autocast(dtype=torch.bfloat16):
-    output = model(input_tensor)
-```
+
+```text
+
+output = model(input_tensor)
+
+```text
+
+```text
 
 ### Environment Variables
 
 Set these environment variables for optimal performance:
 
 ```bash
+
 # Windows (PowerShell)
+
 $env:ZE_AFFINITY_MASK = "0.0"
-$env:SYCL_CACHE_PERSISTENT = "1" 
+$env:SYCL_CACHE_PERSISTENT = "1"
 $env:IPEX_XPU_MAX_STREAMS = "8"
 
 # Linux (Bash)
+
 export ZE_AFFINITY_MASK="0.0"
 export SYCL_CACHE_PERSISTENT="1"
 export IPEX_XPU_MAX_STREAMS="8"
-```
+
+```text
 
 ### Memory Management
 
 Arc GPUs benefit from careful memory management:
 
 ```python
+
 # Clear XPU cache when needed
+
 torch.xpu.empty_cache()
 
 # Monitor memory usage
+
 print(f"Memory allocated: {torch.xpu.memory_allocated() / 1e9:.2f} GB")
 print(f"Memory reserved: {torch.xpu.memory_reserved() / 1e9:.2f} GB")
-```
+
+```text
 
 ## Troubleshooting Arc-Specific Issues
 
@@ -141,15 +164,20 @@ print(f"Memory reserved: {torch.xpu.memory_reserved() / 1e9:.2f} GB")
 | Performance lower than expected | Check power limits and thermal throttling |
 | System crash during inference | Update drivers and reduce workload size |
 
+
 ### Debugging Tools
 
 ```bash
+
 # Check GPU information
+
 python -c "import torch; import intel_extension_for_pytorch as ipex; print(torch.xpu.get_device_properties(0))"
 
 # Run diagnostic tool
+
 python service/tools/intel_gpu_diagnostics.py
-```
+
+```text
 
 ## Performance Tuning
 
@@ -159,35 +187,55 @@ python service/tools/intel_gpu_diagnostics.py
 
    ```python
    from intel_extension_for_pytorch.quantization import prepare, convert
-   
+
    # Prepare model for quantization
+
    qconfig = ipex.quantization.default_static_qconfig
    prepared_model = prepare(model, qconfig, example_inputs=example_inputs)
-   
-   # Convert to quantized model
-   quantized_model = convert(prepared_model)
-   ```
 
-2. **BF16 Mixed Precision**:
+   # Convert to quantized model
+
+   quantized_model = convert(prepared_model)
+   ```text
+
+1. **BF16 Mixed Precision**:
 
    ```python
    with torch.xpu.amp.autocast(dtype=torch.bfloat16):
-       output = model(input_tensor)
-   ```
+
+```text
+
+   output = model(input_tensor)
+
+```text
+   ```text
 
 ### Batch Size Optimization
 
 Test different batch sizes to find the optimal value for your specific Arc GPU model:
 
 ```python
+
 # Example batch size benchmark
+
 batch_sizes = [1, 2, 4, 8, 16]
 results = {}
 
 for bs in batch_sizes:
-    # Test inference speed with batch size bs
-    # Record timing information
-```
+
+```text
+
+# Test inference speed with batch size bs
+
+```text
+
+```text
+
+# Record timing information
+
+```text
+
+```text
 
 Typical optimal batch sizes:
 
@@ -202,6 +250,7 @@ Typical optimal batch sizes:
 | SD XL Inference | ~5.2 it/s | ~6.8 it/s | Arc more power efficient |
 | LoRA Training | ~0.9 it/s | ~1.2 it/s | Similar memory usage |
 | LLM Inference | ~22 tok/s | ~28 tok/s | Arc benefits from BF16 |
+
 
 ## Additional Resources
 

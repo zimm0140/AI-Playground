@@ -16,6 +16,7 @@ AI-Playground supports and has been tested on the following hardware platforms:
 | Intel Lunar Lake | Any | Any | Early support |
 | Intel Core (non-Ultra) | 10th Gen | 12th Gen+ | Basic performance on older generations |
 
+
 ### NVIDIA Platforms
 
 | GPU Series | Compute Capability | CUDA Version | Notes |
@@ -26,6 +27,7 @@ AI-Playground supports and has been tested on the following hardware platforms:
 | GTX 16 Series | 7.5 | 10.0+ | Fully supported |
 | GTX 10 Series | 6.1 | 9.0+ | Supported, reduced performance |
 
+
 ### Other Platforms
 
 | Platform | Support Level | Notes |
@@ -33,6 +35,7 @@ AI-Playground supports and has been tested on the following hardware platforms:
 | AMD GPUs | Basic | Limited support via ROCm |
 | Apple Silicon | Basic | CPU-only mode, no GPU acceleration |
 | CPU-only | Full | Reduced performance for compute-intensive tasks |
+
 
 ## Driver Requirements
 
@@ -44,6 +47,7 @@ AI-Playground supports and has been tested on the following hardware platforms:
 | Meteor Lake | 31.0.101.4255+ | Mesa 23.1+ | Not supported |
 | Battlemage | 31.0.101.4521+ | Mesa 24.0+ | Not supported |
 
+
 ### NVIDIA Drivers
 
 | CUDA Version | Minimum Driver | Recommended Driver |
@@ -51,6 +55,7 @@ AI-Playground supports and has been tested on the following hardware platforms:
 | CUDA 11.8 | 450.80.02 | 520.61.05+ |
 | CUDA 11.0 | 450.36.06 | 455.23.05+ |
 | CUDA 10.0 | 410.48 | 440.33+ |
+
 
 ## Software Requirements
 
@@ -63,27 +68,36 @@ The following software requirements apply based on the hardware platform:
 | NVIDIA GPUs | 3.8+ | 1.10.0+ | CUDA 10.0+ required |
 | CPU-only | 3.8+ | 1.10.0+ | No special requirements |
 
+
 ## Hardware-Specific Setup
 
 ### Intel Arc GPUs
 
 ```bash
+
 # Install Intel GPU driver (Windows)
+
 # Download from intel.com/graphics/drivers
 
 # Setup environment with Arc optimizations
+
 python setup_hardware_env.py --hardware acm
-```
+
+```text
 
 ### NVIDIA GPUs
 
 ```bash
+
 # Install NVIDIA driver and CUDA toolkit
+
 # Download from nvidia.com/drivers
 
 # Setup environment with standard setup
+
 python setup_hardware_env.py
-```
+
+```text
 
 ## Known Issues and Limitations
 
@@ -108,12 +122,16 @@ python setup_hardware_env.py
 To verify hardware compatibility on your system:
 
 ```bash
+
 # Run hardware detection
+
 python hardware_detection.py
 
 # Run compatibility test
+
 python service/tools/hardware_compatibility_check.py
-```
+
+```text
 
 This will generate a report about your hardware configuration and any potential compatibility issues.
 
