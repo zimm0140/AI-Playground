@@ -1,6 +1,7 @@
 import os
 from functools import wraps
 from contextlib import nullcontext
+from typing import Optional, Union, Any, Callable, TypeVar, Dict, List, Tuple, cast
 try:
     import torch  # type: ignore
     import numpy as np  # type: ignore
@@ -827,8 +828,12 @@ def torch_zeros(*args, device=None, **kwargs):
 original_torch_linspace = torch.linspace
 
 
+# Define type variables for better typing of wrapped functions
+T = TypeVar('T')
+R = TypeVar('R')
+
 @wraps(torch.linspace)
-def torch_linspace(*args, device=None, **kwargs):
+def torch_linspace(*args: Any, device: Optional[Union[str, torch.device]] = None, **kwargs: Any) -> torch.Tensor:
     """
     Hijacked version of torch.linspace that converts CUDA device specifications to XPU.
     

@@ -34,6 +34,19 @@ cd AI-Playground
 rye sync
 ```
 
+## Python 3.10+ Migration
+
+As of version 2.2.0, we have migrated to Python 3.10+ to leverage modern language features and better type checking. For developers, we maintain a hybrid approach with:
+
+- Support for both traditional (pip) and modern (Rye) installation methods
+- Comprehensive CI testing across multiple Python versions
+- Updated type annotations for compatibility
+
+See [MIGRATION.md](MIGRATION.md) for detailed guidance on the migration process, including:
+- Type annotation changes
+- Dependency management
+- Common issues and solutions
+
 ## Development
 
 ### Running Tests
