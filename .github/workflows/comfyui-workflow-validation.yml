@@ -124,68 +124,62 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "## Validation Results" >> $GITHUB_STEP_SUMMARY
           
-          if [ -f ci_artifacts/workflow_validation/workflow_validation_results.json ]; then
-            # Extract results using Python
-            python -c """
-            import json
+          # Create a separate Python script to generate the summary
+          cat > generate_summary.py << EOF
+#!/usr/bin/env python3
+import json
+import os
+import sys
+
+def main():
+    # Check if validation results exist
+    if os.path.exists('ci_artifacts/workflow_validation/workflow_validation_results.json'):
+        with open('ci_artifacts/workflow_validation/workflow_validation_results.json', 'r') as f:
+            results = json.load(f)
             
-            # Load validation results
-            with open('ci_artifacts/workflow_validation/workflow_validation_results.json', 'r') as f:
-                results = json.load(f)
-                
-            # Print summary stats
-            print(f\"Total workflows: {results['summary']['total_workflows']}\\n\", file=open('$GITHUB_STEP_SUMMARY', 'a'))
-            print(f\"Valid workflows: {results['summary']['valid_workflows']}\\n\", file=open('$GITHUB_STEP_SUMMARY', 'a'))
-            print(f\"Invalid workflows: {results['summary']['invalid_workflows']}\\n\", file=open('$GITHUB_STEP_SUMMARY', 'a'))
+        with open(os.environ.get('GITHUB_STEP_SUMMARY', 'summary.md'), 'a') as summary:
+            summary.write(f"Total workflows: {results['summary']['total_workflows']}\n\n")
+            summary.write(f"Valid workflows: {results['summary']['valid_workflows']}\n\n")
+            summary.write(f"Invalid workflows: {results['summary']['invalid_workflows']}\n\n")
             
-            # List invalid workflows if any
             if results['summary']['invalid_workflows'] > 0:
-                print('### Invalid Workflows\\n', file=open('$GITHUB_STEP_SUMMARY', 'a'))
-                
+                summary.write('### Invalid Workflows\n\n')
                 for workflow in results['workflows']:
                     if not workflow['is_valid']:
-                        issue_types = set(issue['type'] for issue in workflow['issues'])
                         issue_count = len(workflow['issues'])
-                        print(f\"- **{workflow['filename']}**: {issue_count} issues\\n\", file=open('$GITHUB_STEP_SUMMARY', 'a'))
-            """
-          else
-            echo "No validation results found" >> $GITHUB_STEP_SUMMARY
-          fi
-          
-          echo "## Requirements Analysis" >> $GITHUB_STEP_SUMMARY
-          
-          if [ -f ci_artifacts/workflow_requirements/workflow_requirements_results.json ]; then
-            # Extract requirements using Python
-            python -c """
-            import json
+                        summary.write(f"- **{workflow['filename']}**: {issue_count} issues\n\n")
+    else:
+        with open(os.environ.get('GITHUB_STEP_SUMMARY', 'summary.md'), 'a') as summary:
+            summary.write("No validation results found\n\n")
+    
+    # Check if requirements results exist
+    if os.path.exists('ci_artifacts/workflow_requirements/workflow_requirements_results.json'):
+        with open('ci_artifacts/workflow_requirements/workflow_requirements_results.json', 'r') as f:
+            results = json.load(f)
             
-            # Load requirements results
-            with open('ci_artifacts/workflow_requirements/workflow_requirements_results.json', 'r') as f:
-                results = json.load(f)
-                
-            # Print summary stats
-            print(f\"Analyzed workflows: {results['summary']['analyzed_workflows']} of {results['summary']['total_workflows']}\\n\", file=open('$GITHUB_STEP_SUMMARY', 'a'))
+        with open(os.environ.get('GITHUB_STEP_SUMMARY', 'summary.md'), 'a') as summary:
+            summary.write("## Requirements Analysis\n\n")
+            summary.write(f"Analyzed workflows: {results['summary']['analyzed_workflows']} of {results['summary']['total_workflows']}\n\n")
             
-            # Show top models if any
-            if results['aggregate']['models']:
-                print('### Top Models\\n', file=open('$GITHUB_STEP_SUMMARY', 'a'))
-                
-                # Sort by usage count and get top 5
+            if 'models' in results['aggregate'] and results['aggregate']['models']:
+                summary.write('### Top Models\n\n')
                 sorted_models = sorted(results['aggregate']['models'].items(), key=lambda x: x[1], reverse=True)[:5]
-                
                 for model, count in sorted_models:
-                    print(f\"- {model}: Used in {count} workflows\\n\", file=open('$GITHUB_STEP_SUMMARY', 'a'))
-                    
-            # Show top custom nodes if any
-            if results['aggregate']['custom_nodes']:
-                print('### Top Custom Node Extensions\\n', file=open('$GITHUB_STEP_SUMMARY', 'a'))
-                
-                # Sort by usage count and get top 5
+                    summary.write(f"- {model}: Used in {count} workflows\n\n")
+            
+            if 'custom_nodes' in results['aggregate'] and results['aggregate']['custom_nodes']:
+                summary.write('### Top Custom Node Extensions\n\n')
                 sorted_nodes = sorted(results['aggregate']['custom_nodes'].items(), key=lambda x: x[1], reverse=True)[:5]
-                
                 for node, count in sorted_nodes:
-                    print(f\"- {node}: Used in {count} workflows\\n\", file=open('$GITHUB_STEP_SUMMARY', 'a'))
-            """
-          else
-            echo "No requirements analysis results found" >> $GITHUB_STEP_SUMMARY
-          fi 
+                    summary.write(f"- {node}: Used in {count} workflows\n\n")
+    else:
+        with open(os.environ.get('GITHUB_STEP_SUMMARY', 'summary.md'), 'a') as summary:
+            summary.write("## Requirements Analysis\n\n")
+            summary.write("No requirements analysis results found\n\n")
+
+if __name__ == "__main__":
+    main()
+EOF
+
+          # Execute the Python script
+          python generate_summary.py 
