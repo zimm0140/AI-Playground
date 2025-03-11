@@ -3,8 +3,8 @@
 <a href="<https://scan.coverity.com/projects/ai-playground>">
   <img alt="Coverity Scan Build Status" src="<https://scan.coverity.com/projects/30694/badge.svg">/>
 </a>
-<img alt="Version" src="https://img.shields.io/badge/version-2.2.1--beta-blue"/>
-<img alt="Platform" src="https://img.shields.io/badge/platform-Windows-lightgrey"/>
+<img alt="Version" src="<https://img.shields.io/badge/version-2.2.1--beta-blue">/>
+<img alt="Platform" src="<https://img.shields.io/badge/platform-Windows-lightgrey">/>
 
 ![image](https://github.com/user-attachments/assets/ee1efc30-4dd1-4934-9233-53fba00c71bd)
 
