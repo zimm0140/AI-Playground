@@ -5,34 +5,47 @@ A modern AI development environment with support for multiple models and backend
 ## Installation
 
 ### Requirements
+
 - Python 3.10 or newer (3.13 recommended for development)
 - pip or Rye for package management
 
 ### Traditional Method (Compatible with Upstream)
+
 ```bash
+
 # Clone the repository
-git clone https://github.com/zimm0140/AI-Playground.git
+
+git clone <https://github.com/zimm0140/AI-Playground.git>
 cd AI-Playground
 
 # Install dependencies
+
 pip install -e .
 
 # For development dependencies
+
 pip install -e ".[dev]"
-```
+
+```text
 
 ### Modern Development Method
+
 ```bash
+
 # Install Rye (once)
-curl -sSf https://rye-up.com/get | bash
+
+curl -sSf <https://rye-up.com/get> | bash
 
 # Clone the repository
-git clone https://github.com/zimm0140/AI-Playground.git
+
+git clone <https://github.com/zimm0140/AI-Playground.git>
 cd AI-Playground
 
 # Setup development environment with Rye
+
 rye sync
-```
+
+```text
 
 ## Python 3.10+ Migration
 
@@ -50,22 +63,32 @@ See [MIGRATION.md](MIGRATION.md) for detailed guidance on the migration process,
 ## Development
 
 ### Running Tests
+
 ```bash
+
 # Traditional method
+
 pytest
 
 # Using Rye
+
 rye run pytest
-```
+
+```text
 
 ### Linting and Type Checking
+
 ```bash
+
 # Install pre-commit hooks
+
 pre-commit install
 
 # Run manually
+
 pre-commit run --all-files
-```
+
+```text
 
 ## Supported Features
 
@@ -91,10 +114,10 @@ Our project uses a hybrid approach for CI/CD:
 ## Contributing
 
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+1. Create your feature branch (`git checkout -b feature/amazing-feature`)
+1. Commit your changes (`git commit -m 'Add some amazing feature'`)
+1. Push to the branch (`git push origin feature/amazing-feature`)
+1. Open a Pull Request
 
 Before submitting, please ensure:
 - Tests pass with both installation methods
