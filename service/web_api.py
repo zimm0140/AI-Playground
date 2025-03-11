@@ -135,6 +135,8 @@ def llm_chat():
     """
     paint_biz.dispose_basic_model()
     params = request.get_json()
+    if 'max_tokens' not in params:
+        params['max_tokens'] = 256
     llm_params = llm_biz.LLMParams(**params)
     sse_invoker = LLM_SSE_Adapter()
     it = sse_invoker.text_conversation(llm_params)
