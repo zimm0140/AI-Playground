@@ -32,7 +32,7 @@ class WorkflowRequirementsAnalyzer:
         self.workflows_dir = workflows_dir
         self.output_dir = output_dir
         os.makedirs(output_dir, exist_ok=True)
-
+        
         # Known model loading nodes and their associated model types
         self.model_nodes = {
             "CheckpointLoader": "checkpoint",
@@ -50,7 +50,7 @@ class WorkflowRequirementsAnalyzer:
             "FluxLoaderQ4": "flux_checkpoint",
             "FluxLoaderQ8": "flux_checkpoint",
         }
-
+        
         # Node types that indicate the need for custom node extensions
         self.custom_node_types = {
             # Flux nodes
@@ -74,7 +74,7 @@ class WorkflowRequirementsAnalyzer:
             "LineArtProcessor": "comfyui-lineart-preprocessor",
             "ColorizeImage": "comfyui-colorization",
         }
-
+        
         # Custom node package dependencies
         self.node_package_dependencies = {
             "comfyui-flux-nodes": ["torch>=2.0", "safetensors"],
@@ -84,7 +84,7 @@ class WorkflowRequirementsAnalyzer:
             "comfyui-lineart-preprocessor": ["opencv-python", "numpy"],
             "comfyui-colorization": ["pytorch-lightning", "diffusers"],
         }
-
+        
         # Approximate GPU memory requirements by node type
         self.gpu_memory_estimates = {
             "CheckpointLoader": {
@@ -104,7 +104,7 @@ class WorkflowRequirementsAnalyzer:
             "AnimateDiff": 2.0,  # GB
             "IPAdapterModelLoader": 1.0,  # GB
         }
-
+        
         # Results storage
         self.results = {
             "summary": {
@@ -166,7 +166,7 @@ class WorkflowRequirementsAnalyzer:
             "is_analyzed": False,
             "errors": [],
         }
-
+        
         # Load and parse the workflow file
         try:
             with open(workflow_file, "r", encoding="utf-8") as f:
@@ -177,7 +177,7 @@ class WorkflowRequirementsAnalyzer:
         except Exception as e:
             workflow_result["errors"].append(f"Error reading file: {str(e)}")
             return workflow_result
-
+        
         # Check if the workflow has the expected structure
         if not isinstance(workflow, dict):
             workflow_result["errors"].append("Workflow is not a valid JSON object")
@@ -191,18 +191,18 @@ class WorkflowRequirementsAnalyzer:
                 "Workflow does not have required structure"
             )
             return workflow_result
-
+        
         # Extract model requirements
         checkpoint_sd_type = "SD1.5"  # Default to SD1.5 for memory estimation
         batch_size = 1  # Default batch size
         has_upscaling = False
         control_net_count = 0
         lora_count = 0
-
+        
         for node_id, node_data in nodes.items():
             if "class_type" not in node_data:
                 continue
-
+                
             class_type = node_data["class_type"]
 
             # Check for model loading nodes
@@ -241,17 +241,17 @@ class WorkflowRequirementsAnalyzer:
 
                 # Count specific model types for memory estimation
                 if model_type == "controlnet":
-                    control_net_count += 1
+                control_net_count += 1
                 elif model_type == "lora":
-                    lora_count += 1
-
+                lora_count += 1
+                
                 # Detect model type for memory estimation
                 if model_type == "checkpoint" and model_path:
                     if "xl" in model_path.lower():
                         checkpoint_sd_type = "SDXL"
                     elif "sd3" in model_path.lower() or "sd_3" in model_path.lower():
                         checkpoint_sd_type = "SD3"
-
+            
             # Check for custom nodes
             if class_type in self.custom_node_types:
                 custom_node = self.custom_node_types[class_type]
@@ -263,7 +263,7 @@ class WorkflowRequirementsAnalyzer:
                         for package in self.node_package_dependencies[custom_node]:
                             if package not in workflow_result["python_packages"]:
                                 workflow_result["python_packages"].append(package)
-
+        
             # Check for batch size
             if "inputs" in node_data and "batch_size" in node_data["inputs"]:
                 try:
@@ -283,15 +283,15 @@ class WorkflowRequirementsAnalyzer:
             memory_required += self.gpu_memory_estimates["CheckpointLoader"][
                 checkpoint_sd_type
             ]
-
+        
         # Add ControlNet memory
         memory_required += (
             control_net_count * self.gpu_memory_estimates["ControlNetLoader"]
         )
-
+        
         # Add LoRA memory
         memory_required += lora_count * self.gpu_memory_estimates["LoraLoader"]
-
+        
         # Add KSampler memory based on batch size
         if "KSampler" in self.gpu_memory_estimates:
             memory_required += self.gpu_memory_estimates["KSampler"]["base"]
@@ -302,7 +302,7 @@ class WorkflowRequirementsAnalyzer:
         # Add upscaling memory if needed
         if has_upscaling and "UpscaleModelLoader" in self.gpu_memory_estimates:
             memory_required += self.gpu_memory_estimates["UpscaleModelLoader"]
-
+        
         # Update memory requirements
         workflow_result["memory_required"]["min"] = max(
             workflow_result["memory_required"]["min"], int(memory_required)
@@ -375,7 +375,7 @@ class WorkflowRequirementsAnalyzer:
 
             # Aggregate models
             for model_type, models in workflow["models"].items():
-                for model in models:
+                    for model in models:
                     if model_type not in results["aggregate"]["models"]:
                         results["aggregate"]["models"][model_type] = {}
 
@@ -516,12 +516,12 @@ class WorkflowRequirementsAnalyzer:
 
             if workflow["is_analyzed"]:
                 report.append("✅ **Successfully analyzed**\n")
-
+                
                 # Models
                 if any(workflow["models"].values()):
                     report.append("**Required Models:**\n")
-                    for model_type, models in workflow["models"].items():
-                        if models:
+                for model_type, models in workflow["models"].items():
+                    if models:
                             report.append(
                                 f"- {model_type.capitalize()}: {', '.join(models)}"
                             )
@@ -548,7 +548,7 @@ class WorkflowRequirementsAnalyzer:
                     f"- Recommended: {workflow['memory_required']['recommended']}GB"
                 )
                 report.append("")
-            else:
+                else:
                 report.append("❌ **Analysis failed**\n")
                 for error in workflow["errors"]:
                     report.append(f"- Error: {error}")
@@ -596,11 +596,11 @@ def main():
     )
 
     args = parser.parse_args()
-
+    
     analyzer = WorkflowRequirementsAnalyzer(args.workflows_dir, args.output_dir)
     results = analyzer.analyze_all_workflows()
     analyzer.save_results(results)
 
 
 if __name__ == "__main__":
-    main()
+    main() 
