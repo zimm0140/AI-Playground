@@ -1,5 +1,6 @@
 {
   "devDependencies": {
+    "@types/electron": "^1.6.12",
     "@types/node": "^22.13.10"
   }
 }

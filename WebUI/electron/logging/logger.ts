@@ -1,12 +1,11 @@
-import WebContents = Electron.WebContents
-import { app } from 'electron'
+import { WebContents, app } from 'electron'
 import fs from 'fs'
 import path from 'node:path'
 
 class Logger {
   webContents: WebContents | null = null
   private pathToLogFiles: string = path.resolve(
-    app.isPackaged ? process.resourcesPath : path.join(__dirname, '../../external/'),
+    app.isPackaged ? (process as any).resourcesPath : path.join(__dirname, '../../external/'),
   )
   private startupMessageCache: {
     message: string
