@@ -371,8 +371,11 @@ class WorkflowRequirementsAnalyzer:
                 
             # Add to memory tracking
             min_memory = workflow["memory_required"]["min"]
-            recommended_memory = workflow["memory_required"]["recommended"]
             
+            # Use setdefault to avoid KeyError
+            if min_memory not in results["aggregate"]["memory_requirements"]["workflows_by_memory"]:
+                results["aggregate"]["memory_requirements"]["workflows_by_memory"][min_memory] = []
+                
             results["aggregate"]["memory_requirements"]["workflows_by_memory"][min_memory].append(
                 workflow["filename"]
             )
