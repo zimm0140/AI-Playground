@@ -15,7 +15,6 @@ import subprocess
 import sys
 import textwrap
 from pathlib import Path
-from typing import Dict, List
 
 # Try to import hardware detection module, which should be in the same directory
 try:
@@ -78,15 +77,15 @@ class UVFast:
             # Simple detection as fallback
             self.hardware_type = self._simple_hardware_detection()
 
-    def _load_config(self) -> Dict:
+    def _load_config(self) -> dict[str, list[str]]:
         """Load configuration from uvfast.json or use defaults."""
         config_path = Path("uvfast.json")
         if config_path.exists():
             try:
-                with open(config_path, "r", encoding="utf-8") as f:
+                with open(config_path) as f:
                     config = json.load(f)
                 return config
-            except (json.JSONDecodeError, IOError) as e:
+            except (json.JSONDecodeError, OSError) as e:
                 print(f"Error loading configuration: {e}")
                 print("Using default configuration")
                 return DEFAULT_CONFIG.copy()
@@ -99,13 +98,12 @@ class UVFast:
         # Check for GPU presence on Windows
         if system == "Windows":
             try:
-                output = subprocess.check_output(
+                output = subprocess.run(
                     ["wmic", "path", "win32_VideoController", "get", "Name"],
-                    universal_newlines=True,
-                )
-                gpu_names = [
-                    line.strip() for line in output.strip().split("\n")[1:] if line.strip()
-                ]
+                    capture_output=True,
+                    text=True,
+                ).stdout
+                gpu_names = [line.strip() for line in output.split("\n")[1:] if line.strip()]
 
                 # Check for Intel Arc GPU
                 for gpu_name in gpu_names:
@@ -121,10 +119,10 @@ class UVFast:
 
         # Check for OpenVINO
         try:
-            subprocess.check_call(
+            subprocess.run(
                 [sys.executable, "-c", "import openvino"],
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
+                capture_output=True,
+                text=True,
             )
             return "ovino"
         except (subprocess.SubprocessError, FileNotFoundError):
@@ -144,7 +142,7 @@ class UVFast:
             return venv_path / "Scripts" / "python.exe"
         return venv_path / "bin" / "python"
 
-    def _get_requirements_files(self, hardware_type: str, dev: bool = False) -> List[str]:
+    def _get_requirements_files(self, hardware_type: str, dev: bool = False) -> list[str]:
         """Get the requirements files for the specified hardware type."""
         req_config = self.config.get("requirements", {})
         result = []
@@ -186,8 +184,8 @@ class UVFast:
         try:
             subprocess.run(
                 ["uv", "--version"],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
+                capture_output=True,
+                text=True,
                 check=True,
             )
             return True
@@ -394,13 +392,12 @@ class UVFast:
             print("\nNote: hardware_detection.py not found, showing limited information")
             if platform.system() == "Windows":
                 try:
-                    output = subprocess.check_output(
+                    output = subprocess.run(
                         ["wmic", "path", "win32_VideoController", "get", "Name"],
-                        universal_newlines=True,
-                    )
-                    gpu_names = [
-                        line.strip() for line in output.strip().split("\n")[1:] if line.strip()
-                    ]
+                        capture_output=True,
+                        text=True,
+                    ).stdout
+                    gpu_names = [line.strip() for line in output.split("\n")[1:] if line.strip()]
                     print("\nGPUs:")
                     for gpu in gpu_names:
                         print(f"  - {gpu}")
@@ -417,11 +414,12 @@ class UVFast:
             if python_executable.exists():
                 # Get installed packages
                 try:
-                    output = subprocess.check_output(
+                    output = subprocess.run(
                         [str(python_executable), "-m", "pip", "list"],
-                        universal_newlines=True,
-                    )
-                    package_count = len(output.strip().split("\n")) - 2  # Subtract header rows
+                        capture_output=True,
+                        text=True,
+                    ).stdout
+                    package_count = len(output.split("\n")) - 2  # Subtract header rows
                     print(f"Installed packages: {package_count}")
 
                     # Check for key packages
@@ -441,9 +439,8 @@ class UVFast:
                                     "-c",
                                     f"import {package.replace('-', '_')}; print({package.replace('-', '_')}.__version__)",
                                 ],
-                                stdout=subprocess.PIPE,
-                                stderr=subprocess.PIPE,
-                                universal_newlines=True,
+                                capture_output=True,
+                                text=True,
                             )
                             if result.returncode == 0:
                                 print(f"  {package}: {result.stdout.strip()}")
@@ -516,19 +513,19 @@ class UVFast:
                 Examples:
                   # Set up environment for detected hardware
                   python uvfast.py setup
-                  
+
                   # Set up environment for specific hardware with development dependencies
                   python uvfast.py setup --hardware acm --dev
-                  
+
                   # Generate lockfiles for all hardware types
                   python uvfast.py lock --all
-                  
+
                   # Run a command in the configured environment
                   python uvfast.py run pytest
-                  
+
                   # Show hardware and environment information
                   python uvfast.py info
-                  
+
                   # Install dependencies using traditional pip (but accelerated with uv)
                   python uvfast.py legacy-install
             """
