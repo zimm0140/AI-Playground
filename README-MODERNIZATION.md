@@ -33,45 +33,62 @@ This repository contains a comprehensive implementation of a modernized Python p
 ### Traditional Installation (Backward Compatible)
 
 ```bash
+
 # Install directly with pip
+
 pip install -e .
 
 # Install development dependencies
+
 pip install -r requirements-dev.txt
-```
+
+```text
 
 ### Modern Installation with uvfast
 
 ```bash
+
 # Setup environment with development dependencies
+
 python uvfast.py setup --dev
 
 # Show environment information
+
 python uvfast.py info
 
 # Run tests
+
 python uvfast.py run pytest
-```
+
+```text
 
 ### Using Wrapper Scripts
 
 ```bash
+
 # Unix/Linux/macOS
+
 ./scripts/uvfast.sh setup --dev
 
 # Windows PowerShell
+
 .\scripts\uvfast.ps1 setup --dev
-```
+
+```text
 
 ## Hardware-Specific Setup
 
 ```bash
+
 # Setup for Intel Arc GPUs
+
 python uvfast.py setup --hardware acm --dev
 
 # Setup for OpenVINO
+
 python uvfast.py setup --hardware ovino --dev
-```
+
+```text
 
 ## Documentation
 
@@ -90,10 +107,10 @@ For more detailed information, please refer to the following documents:
    - `scripts/uvfast.sh` - Unix/Linux/macOS wrapper
    - `scripts/uvfast.ps1` - Windows wrapper
 
-2. **CI/CD Configuration**:
+1. **CI/CD Configuration**:
    - `.github/workflows/ci.yml` - GitHub Actions workflow
 
-3. **Requirements Files**:
+1. **Requirements Files**:
    - `requirements-dev.txt` - Development dependencies
    - `requirements-hardware-acm.txt` - Intel Arc GPU requirements
    - `requirements-hardware-ovino.txt` - OpenVINO requirements
