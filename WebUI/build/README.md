@@ -13,7 +13,7 @@
    ## copy the path to this conda env
 
    conda env list | findstr cp311_libuv
-   ```
+   ```text
 
 1. run `npm run fetch-build-resources -- --conda_env_dir=$PATH_TO_CONDA_ENV`
 
@@ -26,7 +26,8 @@ run
 ```bash
 npm run prepare-build
 npm run build
-```
+
+```text
 
 ### offline installer
 
@@ -37,6 +38,7 @@ run
 ```bash
 npm run prepare-build:${PLATFORM}-offline
 npm run build:${PLATFORM}-offline
-```
+
+```text
 
 Fetching, installing and compressing the full python dependencies takes a considerable amount of time.
