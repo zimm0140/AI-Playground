@@ -1,0 +1,89 @@
+version: '3.8'
+
+services:
+  # Development service with all dependencies
+  dev:
+    build:
+      context: .
+      target: development
+    volumes:
+      - .:/app
+      - dev-cache:/root/.cache
+    ports:
+      - "8000:8000"
+    environment:
+      - FLASK_ENV=development
+      - FLASK_APP=service
+      - FLASK_DEBUG=1
+    command: python -m flask run --host=0.0.0.0 --port=8000
+    profiles:
+      - dev
+
+  # Production service with minimal dependencies
+  app:
+    build:
+      context: .
+      target: production
+    ports:
+      - "8000:8000"
+    environment:
+      - FLASK_ENV=production
+      - FLASK_APP=service
+    restart: unless-stopped
+    depends_on:
+      - redis
+    profiles:
+      - prod
+
+  # OpenVINO-optimized service
+  app-openvino:
+    build:
+      context: .
+      target: openvino
+    ports:
+      - "8000:8000"
+    environment:
+      - FLASK_ENV=production
+      - FLASK_APP=service
+      - USE_OPENVINO=1
+    restart: unless-stopped
+    profiles:
+      - openvino
+
+  # Intel Arc GPU-optimized service
+  app-arcgpu:
+    build:
+      context: .
+      target: arcgpu
+    ports:
+      - "8000:8000"
+    environment:
+      - FLASK_ENV=production
+      - FLASK_APP=service
+      - USE_XPU=1
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: intel
+              capabilities: [gpu]
+    profiles:
+      - arcgpu
+
+  # Redis for caching
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    restart: unless-stopped
+    profiles:
+      - prod
+      - openvino
+      - arcgpu
+
+volumes:
+  dev-cache:
+  redis-data: 

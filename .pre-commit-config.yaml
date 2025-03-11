@@ -5,31 +5,64 @@ repos:
     -   id: trailing-whitespace
     -   id: end-of-file-fixer
     -   id: check-yaml
-    -   id: check-toml
     -   id: check-added-large-files
-    -   id: debug-statements
-    -   id: check-merge-conflict
+    -   id: check-toml
+    -   id: detect-private-key
+    -   id: mixed-line-ending
+        args: ['--fix=lf']
 
 -   repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.0.292
+    rev: v0.1.6
     hooks:
     -   id: ruff
         args: [--fix, --exit-non-zero-on-fix]
     -   id: ruff-format
 
 -   repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.5.1
+    rev: v1.7.0
     hooks:
     -   id: mypy
-        additional_dependencies: [types-requests>=2.28.0]
-        exclude: ^.github|scripts/
+        exclude: ^(docs/|example-plugin/|tests/fixtures)
+        additional_dependencies:
+        - types-requests>=2.31.0.2
+        - types-setuptools>=68.2.0.0
+        - pandas-stubs>=2.0.3.230814
 
--   repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.37.0
+-   repo: local
     hooks:
-    -   id: markdownlint
-        args: ["--fix"]
+    -   id: hardware-test
+        name: hardware test
+        entry: python -m uvfast.py hardware-check
+        language: system
+        types: [python]
+        pass_filenames: false
+        verbose: true
+
+-   repo: https://github.com/codespell-project/codespell
+    rev: v2.2.6
+    hooks:
+    -   id: codespell
+        args: ["--skip=*.lock,*.png,*.jpg,*.jpeg,*.webp,*.gif,*.ico,*.svg,*.woff,*.woff2,*.ttf,*.eot"]
+
+# Run pytest on changed files
+-   repo: local
+    hooks:
+    -   id: pytest-check
+        name: pytest-check
+        entry: python -m uvfast.py run pytest --no-header
+        language: system
+        types: [python]
+        pass_filenames: false
+        stages: [push]
+
+# Docker linting
+-   repo: https://github.com/hadolint/hadolint
+    rev: v2.12.0
+    hooks:
+    -   id: hadolint
+        files: Dockerfile.*
 
 ci:
-    autofix_commit_msg: 'style: auto fixes from pre-commit hooks'
-    autoupdate_commit_msg: 'chore: update pre-commit hooks' 
+    autofix_commit_msg: '[pre-commit.ci] Auto fixes from pre-commit hooks'
+    autoupdate_schedule: weekly
+    autoupdate_commit_msg: '[pre-commit.ci] Pre-commit autoupdate' 
