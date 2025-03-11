@@ -33,4 +33,4 @@ repos:
           - types-toml
           - types-mock
           - types-python-dateutil
-        exclude: '^(service/|LlamaCPP/|OpenVINO/)' 
+        exclude: '^(service/|LlamaCPP/|OpenVINO/|\.github/workflows/scripts/)' 
