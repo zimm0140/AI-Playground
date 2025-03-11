@@ -64,3 +64,4 @@ llama-cpp-env/
 build-envs/
 portable-git/
 llm_cache/*
+.qodo
