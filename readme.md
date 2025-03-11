@@ -566,7 +566,7 @@ uv tool install ruff
 
 uv tool run ruff check .
 
-```
+```text
 
 ## Hardware-Specific Dependency Management with uvfast
 
@@ -575,53 +575,73 @@ This project uses `uvfast.py` for efficient dependency management, especially fo
 ### Quick Setup
 
 ```bash
+
 # Automatically detect your hardware and set up the environment
+
 python uvfast.py setup --dev
 
 # Or specify hardware explicitly
+
 python uvfast.py setup --hardware acm --dev  # For Intel Arc GPUs
+
 python uvfast.py setup --hardware ovino --dev  # For OpenVINO
-```
+
+```text
 
 ### Running Commands in the Environment
 
 ```bash
+
 # Run pytest
+
 python uvfast.py run pytest
 
 # Run with other commands
+
 python uvfast.py run python your_script.py
-```
+
+```text
 
 ### System Information
 
 ```bash
+
 # View information about your environment and detected hardware
+
 python uvfast.py info
-```
+
+```text
 
 ### Working with Lockfiles
 
 ```bash
+
 # Generate lockfiles for all hardware configurations
+
 python uvfast.py lockfiles --all
 
 # Generate for specific hardware
+
 python uvfast.py lockfiles --hardware mtl --dev
-```
+
+```text
 
 ### Legacy Installation
 
 If you prefer the traditional workflow, you can still use:
 
 ```bash
+
 # Traditional install (but accelerated with uv)
+
 python uvfast.py legacy-install --dev
 
 # Or the original pip method
+
 pip install -r requirements.txt
 pip install -r requirements-dev.txt
-```
+
+```text
 
 ### Supported Hardware Configurations
 
