@@ -28,6 +28,7 @@ def process_data(data: Union[dict, list]) -> Union[str, None]:
 ```python
 def process_data(data: dict | list) -> str | None:
 
+
 ```text
 
 ...
@@ -57,7 +58,6 @@ def process_data(data: Union[dict, list]) -> Union[str, None]:
 
 `Optional[T]` is equivalent to `Union[T, None]` or `T | None` in Python 3.10+.
 
-
 #### Before
 
 ```python
@@ -77,6 +77,7 @@ def get_user(user_id: Optional[int] = None) -> Optional[dict]:
 
 ```python
 def get_user(user_id: int | None = None) -> dict | None:
+
 
 ```text
 
@@ -122,6 +123,7 @@ JSONValue = Union[str, int, float, bool, None, Dict[str, 'JSONValue'], List['JSO
 from typing import TypeAlias
 
 JSONValue: TypeAlias = str | int | float | bool | None | dict[str, 'JSONValue'] | list['JSONValue']
+
 
 ```text
 
@@ -236,7 +238,12 @@ def process_path(path: Optional[str]) -> str:
 ```text
 
 if path is None:
-    path = ""
+
+```text
+
+path = ""
+
+```text
 return os.path.join(path, "subdir")
 
 ```text
@@ -256,21 +263,36 @@ def process_data(data: Union[dict, list]) -> None:
 ```text
 
 if isinstance(data, dict):
-    # dict processing
+
+```text
+
+# dict processing
+
+```text
 
 ```text
 
 ```text
 
 elif isinstance(data, list):
-    # list processing
+
+```text
+
+# list processing
+
+```text
 
 ```text
 
 ```text
 
 else:
-    raise ValueError(f"Expected dict or list, got {type(data)}")
+
+```text
+
+raise ValueError(f"Expected dict or list, got {type(data)}")
+
+```text
 
 ```text
 
@@ -281,22 +303,37 @@ def process_data(data: Union[dict, list]) -> None:
 ```text
 
 if isinstance(data, dict):
-    # dict processing
+
+```text
+
+# dict processing
+
+```text
 
 ```text
 
 ```text
 
 elif isinstance(data, list):
-    # list processing
+
+```text
+
+# list processing
+
+```text
 
 ```text
 
 ```text
 
 else:
-    acceptable_types = (dict, list)
-    raise ValueError(f"Expected one of {acceptable_types}, got {type(data)}")
+
+```text
+
+acceptable_types = (dict, list)
+raise ValueError(f"Expected one of {acceptable_types}, got {type(data)}")
+
+```text
 
 ```text
 
