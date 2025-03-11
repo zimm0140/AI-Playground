@@ -25,8 +25,12 @@ The hardware integration consists of several layers:
 
 ```text
 
-        │                 │
-        ▼                 ▼
+```text
+
+    │                 │
+    ▼                 ▼
+
+```text
 
 ```text
 
@@ -39,8 +43,12 @@ The hardware integration consists of several layers:
 
 ```text
 
-        │                 │
-        ▼                 ▼
+```text
+
+    │                 │
+    ▼                 ▼
+
+```text
 
 ```text
 
@@ -150,19 +158,29 @@ for gpu in gpu_info:
 ```text
 
 if "Intel(R) Arc(TM)" in gpu:
-    available_devices.append({
-        "type": "arc",
-        "name": gpu,
-        "priority": 100,
-        "backend": "xpu"
-    })
+
+```text
+
+available_devices.append({
+    "type": "arc",
+    "name": gpu,
+    "priority": 100,
+    "backend": "xpu"
+})
+
+```text
 elif "Intel(R) Battlemage(TM)" in gpu:
-    available_devices.append({
-        "type": "bmg",
-        "name": gpu,
-        "priority": 100,
-        "backend": "xpu"
-    })
+
+```text
+
+available_devices.append({
+    "type": "bmg",
+    "name": gpu,
+    "priority": 100,
+    "backend": "xpu"
+})
+
+```text
 
 ```text
 
@@ -181,12 +199,17 @@ for gpu in gpu_info:
 ```text
 
 if "NVIDIA" in gpu:
-    available_devices.append({
-        "type": "nvidia",
-        "name": gpu,
-        "priority": 90,
-        "backend": "cuda"
-    })
+
+```text
+
+available_devices.append({
+    "type": "nvidia",
+    "name": gpu,
+    "priority": 90,
+    "backend": "cuda"
+})
+
+```text
 
 ```text
 
@@ -205,10 +228,15 @@ if has_dptf_driver() and has_npu_capability():
 ```text
 
 available_devices.append({
-    "type": "npu",
-    "name": "Integrated Neural Processing Unit",
-    "priority": 80,
-    "backend": "npu"
+
+```text
+
+"type": "npu",
+"name": "Integrated Neural Processing Unit",
+"priority": 80,
+"backend": "npu"
+
+```text
 })
 
 ```text
@@ -349,8 +377,13 @@ try:
 
 import torch
 if torch.cuda.is_available():
-    torch.cuda.set_device(0)
-    print(f"CUDA enabled: {torch.cuda.get_device_name(0)}")
+
+```text
+
+torch.cuda.set_device(0)
+print(f"CUDA enabled: {torch.cuda.get_device_name(0)}")
+
+```text
 
 ```text
 except ImportError:
@@ -951,6 +984,7 @@ def setup(self):
 ```text
 
 """Set up the XPU environment."""
+
 # Set environment variables
 
 ```text
@@ -983,14 +1017,24 @@ os.environ["SYCL_PI_LEVEL_ZERO_USE_IMMEDIATE_COMMANDLISTS"] = "1"
 ```text
 
 try:
-    import intel_extension_for_pytorch as ipex
-    import torch
-    self.torch = torch
-    self.ipex = ipex
-    return True
+
+```text
+
+import intel_extension_for_pytorch as ipex
+import torch
+self.torch = torch
+self.ipex = ipex
+return True
+
+```text
 except ImportError:
-    print("Intel Extension for PyTorch not found")
-    return False
+
+```text
+
+print("Intel Extension for PyTorch not found")
+return False
+
+```text
 
 ```text
 
@@ -1004,11 +1048,21 @@ def is_available(self):
 
 """Check if XPU is available."""
 try:
-    import intel_extension_for_pytorch as ipex
-    import torch
-    return hasattr(torch, "xpu") and torch.xpu.is_available()
+
+```text
+
+import intel_extension_for_pytorch as ipex
+import torch
+return hasattr(torch, "xpu") and torch.xpu.is_available()
+
+```text
 except ImportError:
-    return False
+
+```text
+
+return False
+
+```text
 
 ```text
 
@@ -1022,7 +1076,12 @@ def optimize_model(self, model):
 
 """Optimize model for XPU."""
 if not self.is_available():
-    return model
+
+```text
+
+return model
+
+```text
 
 ```text
 
@@ -1064,9 +1123,19 @@ model = model.to("xpu")
 
 precision = self.config.get("precision", "mixed")
 if precision == "mixed" or precision == "fp16":
-    model = self.ipex.optimize(model, dtype=self.torch.float16)
+
+```text
+
+model = self.ipex.optimize(model, dtype=self.torch.float16)
+
+```text
 else:
-    model = self.ipex.optimize(model)
+
+```text
+
+model = self.ipex.optimize(model)
+
+```text
 
 ```text
 
@@ -1090,7 +1159,10 @@ def run_inference(self, model, inputs, **kwargs):
 
 """Run inference on XPU."""
 if isinstance(inputs, dict):
-    # Convert input dict values to XPU
+
+```text
+
+# Convert input dict values to XPU
 
 ```text
 
@@ -1100,12 +1172,21 @@ if isinstance(inputs, dict):
 
 ```text
 
-    inputs = {k: v.to("xpu") if hasattr(v, "to") else v
-             for k, v in inputs.items()}
-    with self.torch.no_grad():
-        outputs = model(**inputs)
+```text
+
+```text
+
+inputs = {k: v.to("xpu") if hasattr(v, "to") else v
+         for k, v in inputs.items()}
+with self.torch.no_grad():
+    outputs = model(**inputs)
+
+```text
 else:
-    # Convert inputs to XPU
+
+```text
+
+# Convert inputs to XPU
 
 ```text
 
@@ -1115,10 +1196,16 @@ else:
 
 ```text
 
-    if hasattr(inputs, "to"):
-        inputs = inputs.to("xpu")
-    with self.torch.no_grad():
-        outputs = model(inputs)
+```text
+
+```text
+
+if hasattr(inputs, "to"):
+    inputs = inputs.to("xpu")
+with self.torch.no_grad():
+    outputs = model(inputs)
+
+```text
 
 ```text
 
@@ -1139,11 +1226,16 @@ else:
 ```text
 
 if kwargs.get("return_cpu", True):
-    if isinstance(outputs, dict):
-        outputs = {k: v.to("cpu") if hasattr(v, "to") else v
-                  for k, v in outputs.items()}
-    elif hasattr(outputs, "to"):
-        outputs = outputs.to("cpu")
+
+```text
+
+if isinstance(outputs, dict):
+    outputs = {k: v.to("cpu") if hasattr(v, "to") else v
+              for k, v in outputs.items()}
+elif hasattr(outputs, "to"):
+    outputs = outputs.to("cpu")
+
+```text
 
 ```text
 
@@ -1167,7 +1259,12 @@ def get_memory_info(self):
 
 """Get XPU memory information."""
 if not self.is_available():
-    return {"error": "XPU not available"}
+
+```text
+
+return {"error": "XPU not available"}
+
+```text
 
 ```text
 
@@ -1192,10 +1289,15 @@ free_mem = total_mem - reserved_mem
 ```text
 
 return {
-    "total": total_mem,
-    "reserved": reserved_mem,
-    "allocated": allocated_mem,
-    "free": free_mem
+
+```text
+
+"total": total_mem,
+"reserved": reserved_mem,
+"allocated": allocated_mem,
+"free": free_mem
+
+```text
 }
 
 ```text
@@ -1210,7 +1312,12 @@ def cleanup(self):
 
 """Clean up XPU resources."""
 if self.is_available():
-    self.torch.xpu.empty_cache()
+
+```text
+
+self.torch.xpu.empty_cache()
+
+```text
 
 ```text
 
@@ -1268,6 +1375,7 @@ def setup(self):
 ```text
 
 """Set up environment for new hardware."""
+
 # Setup code
 
 ```text
@@ -1291,6 +1399,7 @@ def is_available(self):
 ```text
 
 """Check if new hardware is available."""
+
 # Detection code
 
 ```text

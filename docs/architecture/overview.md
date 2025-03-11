@@ -26,8 +26,12 @@ AI-Playground is designed as a modular, extensible platform for running, optimiz
 
 ```text
 
-        │                 │
-        ▼                 ▼
+```text
+
+    │                 │
+    ▼                 ▼
+
+```text
 
 ```text
 
@@ -44,8 +48,12 @@ AI-Playground is designed as a modular, extensible platform for running, optimiz
 
 ```text
 
-        │                 │
-        ▼                 ▼
+```text
+
+    │                 │
+    ▼                 ▼
+
+```text
 
 ```text
 
@@ -62,8 +70,12 @@ AI-Playground is designed as a modular, extensible platform for running, optimiz
 
 ```text
 
-        │                 │
-        ▼                 ▼
+```text
+
+    │                 │
+    ▼                 ▼
+
+```text
 
 ```text
 
@@ -246,11 +258,26 @@ for gpu in gpu_info:
 ```text
 
 if "Intel(R) Arc(TM)" in gpu:
-    return "acm"
+
+```text
+
+return "acm"
+
+```text
 elif "Intel(R) Battlemage(TM)" in gpu:
-    return "bmg"
+
+```text
+
+return "bmg"
+
+```text
 elif "NVIDIA" in gpu:
-    return "nvidia"
+
+```text
+
+return "nvidia"
+
+```text
 
 ```text
 

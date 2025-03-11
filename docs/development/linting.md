@@ -326,7 +326,10 @@ if hardware_type == "acm":
 ```text
 
 try:
-    import intel_extension_for_pytorch as ipex  # noqa: F401
+
+```text
+
+import intel_extension_for_pytorch as ipex  # noqa: F401
 
 ```text
 
@@ -336,9 +339,20 @@ try:
 
 ```text
 
-    model = ipex.optimize(model)
+```text
+
+```text
+
+model = ipex.optimize(model)
+
+```text
 except ImportError:
-    pass  # Fall back to unoptimized model
+
+```text
+
+pass  # Fall back to unoptimized model
+
+```text
 
 ```text
 
