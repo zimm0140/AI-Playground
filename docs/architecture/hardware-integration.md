@@ -1203,7 +1203,11 @@ inputs = {k: v.to("xpu") if hasattr(v, "to") else v
 
 ```text
 
-     for k, v in inputs.items()}
+```text
+
+ for k, v in inputs.items()}
+
+```text
 
 ```text
 with self.torch.no_grad():
@@ -1277,7 +1281,12 @@ if isinstance(outputs, dict):
 ```text
 
 outputs = {k: v.to("cpu") if hasattr(v, "to") else v
-          for k, v in outputs.items()}
+
+```text
+
+      for k, v in outputs.items()}
+
+```text
 
 ```text
 elif hasattr(outputs, "to"):
