@@ -1,0 +1,14 @@
+{
+    "hardware_types": [
+        "base",
+        "acm",
+        "bmg",
+        "mtl",
+        "lnl",
+        "ovino"
+    ],
+    "lockfiles_dir": ".lockfiles",
+    "venv_dir": ".venv",
+    "cache_dir": ".uvcache",
+    "parallel_jobs": 4
+}

@@ -1,0 +1,14 @@
+# Intel Arc GPU (ACM) Hardware-Specific Requirements
+# ----------------------------------------------
+# This file contains dependencies specific to Intel Arc GPUs.
+
+# Intel PyTorch Extensions - core package for Arc GPUs
+--extra-index-url https://pytorch-extension.intel.com/release-whl/stable/xpu/us/
+intel-extension-for-pytorch==2.3.110.post0+xpu
+
+# Specific torch version compatible with Intel Extensions
+torch==2.3.1.post0+cxx11.abi
+torchvision==0.18.1.post0+cxx11.abi
+
+# Version pin to ensure compatibility
+numpy==1.26.4 

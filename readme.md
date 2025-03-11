@@ -567,3 +567,67 @@ uv tool install ruff
 uv tool run ruff check .
 
 ```
+
+## Hardware-Specific Dependency Management with uvfast
+
+This project uses `uvfast.py` for efficient dependency management, especially for hardware-specific requirements.
+
+### Quick Setup
+
+```bash
+# Automatically detect your hardware and set up the environment
+python uvfast.py setup --dev
+
+# Or specify hardware explicitly
+python uvfast.py setup --hardware acm --dev  # For Intel Arc GPUs
+python uvfast.py setup --hardware ovino --dev  # For OpenVINO
+```
+
+### Running Commands in the Environment
+
+```bash
+# Run pytest
+python uvfast.py run pytest
+
+# Run with other commands
+python uvfast.py run python your_script.py
+```
+
+### System Information
+
+```bash
+# View information about your environment and detected hardware
+python uvfast.py info
+```
+
+### Working with Lockfiles
+
+```bash
+# Generate lockfiles for all hardware configurations
+python uvfast.py lockfiles --all
+
+# Generate for specific hardware
+python uvfast.py lockfiles --hardware mtl --dev
+```
+
+### Legacy Installation
+
+If you prefer the traditional workflow, you can still use:
+
+```bash
+# Traditional install (but accelerated with uv)
+python uvfast.py legacy-install --dev
+
+# Or the original pip method
+pip install -r requirements.txt
+pip install -r requirements-dev.txt
+```
+
+### Supported Hardware Configurations
+
+- `base` - Default configuration (no special hardware)
+- `acm` - Intel Arc GPUs (A-Series)
+- `bmg` - Intel Battlemage GPUs (B-Series)
+- `mtl` - Intel Meteor Lake processors
+- `lnl` - Intel Lunar Lake processors
+- `ovino` - OpenVINO acceleration
