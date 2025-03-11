@@ -23,6 +23,7 @@ On Windows:
 ```powershell
 powershell -ExecutionPolicy ByPass -c "irm <https://astral.sh/uv/install.ps1> | iex"
 
+
 ```text
 
 ### 2. Clone the Repository
@@ -172,7 +173,8 @@ Set up shell completion for uv to make your development experience smoother:
 ```bash
 uv completion bash > ~/.uv-completion.bash
 echo 'source ~/.uv-completion.bash' >> ~/.bashrc
-```
+
+```text
 
 ### Zsh
 
@@ -180,16 +182,19 @@ echo 'source ~/.uv-completion.bash' >> ~/.bashrc
 uv completion zsh > ~/.zsh/_uv
 echo 'fpath=(~/.zsh $fpath)' >> ~/.zshrc
 echo 'autoload -Uz compinit && compinit' >> ~/.zshrc
-```
+
+```text
 
 ### Fish
 
 ```bash
 uv completion fish > ~/.config/fish/completions/uv.fish
-```
+
+```text
 
 ### PowerShell
 
 ```powershell
 uv completion powershell | Out-File -Encoding utf8 -FilePath (Join-Path $PROFILE.CurrentUserAllHosts "uv.ps1")
-``` 
+
+```

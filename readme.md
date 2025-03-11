@@ -424,57 +424,79 @@ software.
 We provide a Makefile for common development tasks:
 
 ```bash
+
 # Set up development environment
+
 make setup
 
 # Run tests
+
 make test
 
 # Run linters
+
 make lint
 
 # Format code
+
 make format
 
 # Sync dependencies
+
 make sync
 
 # Show all available commands
+
 make help
-```
+
+```text
 
 ## Advanced uv Features
 
 ### Using Lockfiles
 
 ```bash
+
 # Create a lockfile
+
 uv pip compile requirements.txt -o requirements.lock
 
 # Install from lockfile
+
 uv pip sync requirements.lock
-```
+
+```text
 
 ### Dependency Auditing
 
 ```bash
+
 # Check for vulnerabilities
+
 uv pip audit
-```
+
+```text
 
 ### Creating Isolated Environments for Scripts
 
 ```bash
+
 # Run a Python script in an isolated environment
+
 uv run script.py
-```
+
+```text
 
 ### Installing Command-line Tools
 
 ```bash
+
 # Install a tool globally
+
 uv tool install ruff
 
 # Run a tool without installing
+
 uv tool run ruff check .
+
 ```
