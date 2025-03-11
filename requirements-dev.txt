@@ -1,22 +1,54 @@
-# Development dependencies
-# ---------------------
-# Tools and packages needed for development but not runtime
+# Development dependencies for AI Playground
+# -------------------------------------
+# This file contains all development-time dependencies for testing,
+# linting, documentation, and other development tasks.
 
 # Testing
-pytest>=7.3.1
+pytest>=7.4.0
 pytest-cov>=4.1.0
+pytest-xdist>=3.3.1
+hypothesis>=6.82.0
 
 # Linting and formatting
-ruff>=0.0.292
+ruff>=0.1.0
+black>=23.9.1
+isort>=5.12.0
 mypy>=1.5.1
-types-requests>=2.28.0
+
+# Type checking
+types-requests>=2.31.0.2
+types-setuptools>=68.2.0.0
+pandas-stubs>=2.0.3.230814
 
 # Documentation
-mkdocs>=1.5.0
-mkdocs-material>=9.5.0
+mkdocs>=1.5.3
+mkdocs-material>=9.4.2
+mkdocstrings>=0.23.0
+mkdocstrings-python>=1.7.0
 
 # Pre-commit hooks
-pre-commit>=3.3.2
+pre-commit>=3.4.0
+
+# Build tools
+build>=1.0.3
+twine>=4.0.2
+
+# Dependency management
+pip-tools>=7.3.0
+
+# Debugging
+ipython>=8.15.0
+ipdb>=0.13.13
+
+# Project-specific development dependencies
+# -----------------------------------------
+# Add any project-specific development dependencies here
+
+# For Rye compatibility
+rye>=0.15.2; python_version >= "3.11"
+
+# For uv compatibility
+uv>=0.1.0; python_version >= "3.10"
 
 # Install main dependencies as well
 -r requirements.txt 

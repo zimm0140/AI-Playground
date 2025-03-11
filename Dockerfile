@@ -1,40 +1,81 @@
-FROM python:3.13-slim AS builder
+# syntax=docker/dockerfile:1
 
-# Install uv
-RUN pip install uv --no-cache-dir
+# Base Python image with common dependencies
+FROM python:3.10-slim as base
 
-# Set working directory
 WORKDIR /app
 
-# Copy only requirements to cache them in docker layer
-COPY requirements.lock .
-COPY requirements-dev.lock .
+ENV PYTHONFAULTHANDLER=1 \
+    PYTHONHASHSEED=random \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PIP_DEFAULT_TIMEOUT=100 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    UV_INSTALL_DIR="/tmp/uv" \
+    PATH="$PATH:/tmp/uv/bin"
 
-# Create and activate virtual environment
-RUN uv venv /opt/venv
-ENV PATH="/opt/venv/bin:$PATH"
+# Install system dependencies and clean up
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    git \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install dependencies
-RUN uv pip sync requirements.lock
+# Install uv for faster dependency installation
+RUN curl -sSf https://astral.sh/uv/install.sh | sh
 
-# Development stage (comment out for production)
-FROM builder as development
-RUN uv pip sync requirements-dev.lock
+# Copy requirements files
+COPY requirements.txt requirements-dev.txt ./
+COPY requirements-hardware-*.txt ./
+
+# Development image with all dependencies
+FROM base as development
+
+# Install all dependencies including development requirements
+RUN uv pip install -r requirements.txt -r requirements-dev.txt
+
+# Copy the application code
 COPY . .
-CMD ["python", "-m", "flask", "run", "--host=0.0.0.0"]
 
-# Production stage
-FROM python:3.13-slim AS production
+# Set up pre-commit
+RUN pre-commit install
 
-# Copy virtual environment from builder
-COPY --from=builder /opt/venv /opt/venv
-ENV PATH="/opt/venv/bin:$PATH"
+# Production image with minimal dependencies
+FROM base as production
 
-# Set working directory
-WORKDIR /app
+# Install just the runtime dependencies
+RUN uv pip install -r requirements.txt
 
-# Copy application code
-COPY . .
+# Copy only the necessary files
+COPY service/ ./service/
+COPY scripts/ ./scripts/
+COPY README.md ./
 
-# Run the application
-CMD ["python", "-m", "flask", "run", "--host=0.0.0.0"] 
+# Create a non-root user to run the application
+RUN adduser --disabled-password --gecos "" appuser
+USER appuser
+
+# Entry point - can be overridden
+ENTRYPOINT ["python", "-m", "service"]
+
+# OpenVINO image with specific dependencies
+FROM production as openvino
+
+# Install OpenVINO dependencies
+COPY requirements-hardware-ovino.txt ./
+RUN uv pip install -r requirements-hardware-ovino.txt
+
+# Arc GPU image with specific dependencies
+FROM production as arcgpu
+
+# Install Intel Arc GPU dependencies
+COPY service/requirements-acm.txt ./
+RUN uv pip install -r service/requirements-acm.txt
+
+# Default configuration
+FROM production
+
+EXPOSE 8000
+
+CMD ["python", "-m", "service", "--host", "0.0.0.0", "--port", "8000"] 
