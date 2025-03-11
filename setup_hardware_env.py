@@ -6,6 +6,7 @@ environment with the necessary dependencies for optimal performance.
 """
 
 import argparse
+import logging
 import platform
 import shutil
 import subprocess
@@ -18,6 +19,8 @@ try:
 except ImportError:
     print("Error: hardware_detection.py not found in the current directory")
     sys.exit(1)
+
+logging.basicConfig(level=logging.INFO)
 
 
 def parse_args():
@@ -73,8 +76,6 @@ def is_uv_available():
 def is_venv_available():
     """Check if venv module is available."""
     try:
-        import venv
-
         return True
     except ImportError:
         return False
@@ -86,17 +87,17 @@ def create_venv(venv_dir, clean=False):
 
     # Clean existing environment if requested
     if clean and venv_path.exists():
-        print(f"Removing existing environment at {venv_path}")
+        logging.info(f"Removing existing environment at {venv_path}")
         shutil.rmtree(venv_path)
 
     # Create virtual environment
     if not venv_path.exists():
-        print(f"Creating virtual environment at {venv_path}")
+        logging.info(f"Creating virtual environment at {venv_path}")
         import venv
 
         venv.create(venv_path, with_pip=True)
     else:
-        print(f"Using existing virtual environment at {venv_path}")
+        logging.info(f"Using existing virtual environment at {venv_path}")
 
     return venv_path
 
@@ -120,26 +121,23 @@ def install_requirements(python_executable, hardware_type, dev=False, use_uv=Fal
     # Check if all requirements files exist
     for req_file in requirements_files:
         if not Path(req_file).exists():
-            print(f"Error: Requirements file {req_file} not found")
+            logging.info(f"Error: Requirements file {req_file} not found")
             sys.exit(1)
 
     # Install requirements
     for req_file in requirements_files:
-        print(f"Installing requirements from {req_file}")
+        logging.info(f"Installing requirements from {req_file}")
 
         if use_uv and is_uv_available():
             # Use uv for faster installation
             cmd = [str(python_executable), "-m", "pip", "install", "--upgrade", "uv"]
-            subprocess.run(cmd, check=True)
-
-            cmd = ["uv", "pip", "install", "-r", req_file]
+            result = subprocess.run(cmd, check=True)
         else:
             # Use pip
             cmd = [str(python_executable), "-m", "pip", "install", "-r", req_file]
+            result = subprocess.run(cmd, check=True)
 
-        subprocess.run(cmd, check=True)
-
-    print("Requirements installation completed successfully")
+    logging.info("Requirements installation completed successfully")
 
 
 def check_hardware_availability(hardware_type):
@@ -151,11 +149,11 @@ def check_hardware_availability(hardware_type):
     detected_type = hardware_detection.detect_hardware_type()
 
     if hardware_type != detected_type:
-        print(
+        logging.warning(
             f"Warning: Requested hardware type '{hardware_type}' "
             f"does not match detected type '{detected_type}'"
         )
-        print("This might cause issues with hardware-specific dependencies")
+        logging.warning("This might cause issues with hardware-specific dependencies")
         return False
 
     return True
@@ -167,19 +165,19 @@ def main():
 
     # Detect hardware type if not specified
     hardware_type = args.hardware or hardware_detection.detect_hardware_type()
-    print(f"Setting up environment for hardware type: {hardware_type}")
+    logging.info(f"Setting up environment for hardware type: {hardware_type}")
 
     # Check hardware availability
     if not args.skip_hardware_check:
         if not check_hardware_availability(hardware_type):
             user_input = input("Continue anyway? (y/n): ")
             if user_input.lower() != "y":
-                print("Aborting setup")
+                logging.info("Aborting setup")
                 sys.exit(1)
 
     # Check venv availability
     if not is_venv_available():
-        print(
+        logging.error(
             "Error: venv module not available. Please install it or use a Python version with venv support."
         )
         sys.exit(1)
@@ -192,15 +190,15 @@ def main():
     install_requirements(python_executable, hardware_type, args.dev, args.use_uv)
 
     # Print activation instructions
-    print("\nEnvironment setup complete!")
-    print("To activate the environment:")
+    logging.info("\nEnvironment setup complete!")
+    logging.info("To activate the environment:")
     if platform.system() == "Windows":
-        print(f"    {args.venv_dir}\\Scripts\\activate")
+        logging.info(f"    {args.venv_dir}\\Scripts\\activate")
     else:
-        print(f"    source {args.venv_dir}/bin/activate")
+        logging.info(f"    source {args.venv_dir}/bin/activate")
 
     # Print hardware info
-    print("\nHardware information:")
+    logging.info("\nHardware information:")
     hardware_detection.print_hardware_info()
 
 
