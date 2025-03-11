@@ -21,7 +21,7 @@ import logging
 import math
 import os
 import shutil
-from typing import IO, Optional
+from typing import IO, Optional, Union
 
 import torch
 from PIL import Image
@@ -361,7 +361,7 @@ def convert_model_type(type: int):
         raise Exception(f"unknown model type value {type}")
 
 
-def get_model_path(type: int, backend: str):
+def get_model_path(type: int, backend: str) -> Optional[str]:
     """
     Get the base directory path for a model type on a specific backend.
     
@@ -442,7 +442,7 @@ def calculate_md5_from_stream(file_stream: IO[bytes]):
     return file_hash.hexdigest()
 
 
-def cache_file(file_path: IO[bytes] | str, file_size: int):
+def cache_file(file_path: Union[IO[bytes], str], file_size: int) -> str:
     """
     Cache a file using content-based addressing.
     
@@ -464,6 +464,8 @@ def cache_file(file_path: IO[bytes] | str, file_size: int):
     if os.path.exists(file_path):
         os.remove(file_path)
     os.link(cache_path, file_path)
+
+    return cache_path
 
 
 def is_single_file(filename: str):

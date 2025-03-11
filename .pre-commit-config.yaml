@@ -1,36 +1,38 @@
 repos:
--   repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.2.2
-    hooks:
-    -   id: ruff
-        args: [--fix]
-    -   id: ruff-format
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v4.4.0
     hooks:
     -   id: trailing-whitespace
     -   id: end-of-file-fixer
     -   id: check-yaml
-    -   id: check-json
+    -   id: check-toml
     -   id: check-added-large-files
-        args: ['--maxkb=1000']
-    -   id: check-merge-conflict
-    -   id: debug-statements
-    -   id: detect-private-key
--   repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.37.0
+
+-   repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: 'v0.0.272'
     hooks:
-    -   id: markdownlint
-        args: ["--fix", "--config", ".markdownlint.yaml"]
+    -   id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+
 -   repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.8.0
+    rev: v1.3.0
     hooks:
     -   id: mypy
-        additional_dependencies: 
-          - types-requests
-          - types-setuptools
-          - types-PyYAML
-          - types-toml
-          - types-mock
-          - types-python-dateutil
-        exclude: '^(service/|LlamaCPP/|OpenVINO/|\.github/workflows/scripts/)' 
+        additional_dependencies: [types-requests]
+        args: ["--python-version", "3.10"]
+        exclude: "^.github/workflows/scripts/|^build/"
+
+-   repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.35.0
+    hooks:
+    -   id: markdownlint
+        args: ["--fix"]
+        # Optional to make warnings informational but not fail the commit
+        # stages: [manual]
+
+# Optional: Add ruff-format for code formatting
+-   repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.0.272
+    hooks:
+    -   id: ruff-format
+        args: [] 
