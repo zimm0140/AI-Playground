@@ -44,7 +44,6 @@ Authorization: Bearer <api_token>
 | `/models/upload` | POST | Upload a model |
 | `/models/{model_id}` | DELETE | Delete a model |
 
-
 #### Inference
 
 | Endpoint | Method | Description |
@@ -53,7 +52,6 @@ Authorization: Bearer <api_token>
 | `/inference/batch/{model_id}` | POST | Run batch inference |
 | `/inference/async/{model_id}` | POST | Start async inference job |
 | `/inference/jobs/{job_id}` | GET | Get async job status/results |
-
 
 #### Hardware Management
 
@@ -64,7 +62,6 @@ Authorization: Bearer <api_token>
 | `/hardware/profile` | POST | Create hardware profile |
 | `/hardware/profiles` | GET | List hardware profiles |
 
-
 #### System
 
 | Endpoint | Method | Description |
@@ -72,7 +69,6 @@ Authorization: Bearer <api_token>
 | `/system/status` | GET | Get system status |
 | `/system/metrics` | GET | Get performance metrics |
 | `/system/logs` | GET | Get system logs |
-
 
 ### Request Examples
 

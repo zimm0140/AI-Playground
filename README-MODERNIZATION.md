@@ -2,7 +2,8 @@
 
 ## Overview
 
-This repository contains a comprehensive implementation of a modernized Python project environment that maintains backward compatibility with traditional workflows. The implementation follows a pragmatic dual approach that allows both traditional and modern workflows to coexist, enabling a seamless transition for all stakeholders.
+This repository contains a comprehensive implementation of a modernized Python project environment that maintains backward compatibility with traditional workflows. The
+implementation follows a pragmatic dual approach that allows both traditional and modern workflows to coexist, enabling a seamless transition for all stakeholders.
 
 ## Key Features
 

@@ -14,7 +14,6 @@ AI-Playground supports all Intel Arc GPU models:
 | A380 | 6GB | Small to medium models | Good |
 | A310 | 4GB | Small models only | Basic |
 
-
 ## Hardware Requirements
 
 ### Driver Requirements
@@ -23,7 +22,6 @@ AI-Playground supports all Intel Arc GPU models:
 |----|------------------------|-------------------|
 | Windows | 31.0.101.4255 | Latest available |
 | Linux | Mesa 23.1 | Mesa 23.3+ |
-
 
 ### System Requirements
 
@@ -164,7 +162,6 @@ print(f"Memory reserved: {torch.xpu.memory_reserved() / 1e9:.2f} GB")
 | Performance lower than expected | Check power limits and thermal throttling |
 | System crash during inference | Update drivers and reduce workload size |
 
-
 ### Debugging Tools
 
 ```bash
@@ -250,7 +247,6 @@ Typical optimal batch sizes:
 | SD XL Inference | ~5.2 it/s | ~6.8 it/s | Arc more power efficient |
 | LoRA Training | ~0.9 it/s | ~1.2 it/s | Similar memory usage |
 | LLM Inference | ~22 tok/s | ~28 tok/s | Arc benefits from BF16 |
-
 
 ## Additional Resources
 

@@ -16,7 +16,8 @@ This guide explains how to optimize your AI applications for Intel hardware usin
 
 ## Overview
 
-Our hardware-aware environment management system automatically detects your Intel hardware and sets up the appropriate environment for optimal performance with AI frameworks. The system supports:
+Our hardware-aware environment management system automatically detects your Intel hardware and sets up the appropriate environment for optimal performance with AI frameworks. The
+system supports:
 
 - **Intel Arc GPUs** via XPU backends using Intel® Extension for PyTorch
 - **Intel CPUs** with OpenVINO optimizations
@@ -33,7 +34,6 @@ The system recognizes the following hardware types:
 | `acm` | Intel Arc GPUs | XPU backends, Intel® Extension for PyTorch |
 | `ovino` | Intel CPUs with OpenVINO | OpenVINO runtime optimizations |
 | `base` | Standard hardware | Standard PyTorch CPU operations |
-
 
 ## Environment Setup
 

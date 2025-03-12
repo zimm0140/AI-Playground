@@ -90,6 +90,8 @@ Throughout these modernization efforts, we've maintained backward compatibility:
 
 ## Conclusion
 
-This modernization effort provides significant improvements to development speed, reliability, and convenience while maintaining full backward compatibility with existing workflows. The dual approach allows for a gradual transition to modern practices without disrupting current users or upstream compatibility.
+This modernization effort provides significant improvements to development speed, reliability, and convenience while maintaining full backward compatibility with existing
+workflows. The dual approach allows for a gradual transition to modern practices without disrupting current users or upstream compatibility.
 
-By leveraging modern tools like `uv` and implementing hardware-specific configurations, we've created a foundation that can scale with the project's needs while providing immediate benefits to developers and contributors.
+By leveraging modern tools like `uv` and implementing hardware-specific configurations, we've created a foundation that can scale with the project's needs while providing
+immediate benefits to developers and contributors.

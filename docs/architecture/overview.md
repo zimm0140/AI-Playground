@@ -4,7 +4,8 @@ This document provides a high-level overview of the AI-Playground architecture, 
 
 ## System Architecture
 
-AI-Playground is designed as a modular, extensible platform for running, optimizing, and experimenting with AI models across different hardware platforms. The architecture follows these key principles:
+AI-Playground is designed as a modular, extensible platform for running, optimizing, and experimenting with AI models across different hardware platforms. The architecture follows
+these key principles:
 
 1. **Hardware abstraction**: Abstract hardware-specific optimizations behind clean interfaces
 1. **Modularity**: Components can be developed and tested independently

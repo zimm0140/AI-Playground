@@ -1,6 +1,7 @@
 # CI Scripts
 
-This directory contains scripts used by the CI workflow in GitHub Actions. These scripts have been modularized from the main workflow file to improve maintainability and readability.
+This directory contains scripts used by the CI workflow in GitHub Actions. These scripts have been modularized from the main workflow file to improve maintainability and
+readability.
 
 ## Script Overview
 
@@ -48,4 +49,4 @@ When modifying the CI workflow:
 1. Keep scripts focused on a single responsibility
 1. Include appropriate documentation and error handling in each script
 1. Ensure all scripts have proper execution permissions (`chmod +x`)
-1. Update the Windows job in main.yml if adding new functionality that should work cross-platform 
+1. Update the Windows job in main.yml if adding new functionality that should work cross-platform

@@ -93,7 +93,6 @@ curl -LsSf <https://astral.sh/uv/install.sh> | sh  # Unix/Linux/macOS
 
 powershell -c "irm <https://astral.sh/uv/install.ps1> | iex"  # Windows
 
-
 # Install dependencies with uv
 
 uv pip install -e ".[dev]"

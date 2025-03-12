@@ -10,7 +10,7 @@ assignees: ''
 
 **Error code(s):** <!-- Example: F401, E302, etc. -->
 
-**Files affected:**
+### Files affected:
 <!-- List file paths where the error occurs -->
 
 ## Error Details
@@ -41,4 +41,4 @@ Paste error message here
 
 - [ ] I've run the local fix script first: `.github/workflows/scripts/fix_ruff_issues_local.py`
 - [ ] I've checked for similar issues
-- [ ] I've included all relevant details 
+- [ ] I've included all relevant details

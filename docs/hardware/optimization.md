@@ -86,7 +86,6 @@ python setup_hardware_env.py --hardware acm
 | `IPEX_XPU_MAX_STREAMS` | "8" | Maximum number of streams |
 | `DPCT_SYSTEM_MEMORY_GRANULARITY_LEVEL` | "fine" | Memory granularity |
 
-
 ## Intel Meteor Lake Optimization
 
 Intel Meteor Lake CPUs with integrated GPUs benefit from these optimizations:
@@ -223,7 +222,6 @@ The tool will report:
 | NVIDIA GTX 1660 | FP16 precision, reduced batch size |
 | CPU-only | Thread optimization, quantized models |
 
-
 ## Advanced Configuration
 
 For advanced users, edit `/uvfast.json` to fine-tune hardware configurations:
@@ -247,4 +245,5 @@ For advanced users, edit `/uvfast.json` to fine-tune hardware configurations:
 ```text
 
 ---
-**Previous**: [Hardware Compatibility](compatibility.md) | **Next**: [Intel Arc Guide](device-specific/intel-arc.md) | **See also**: [Performance Troubleshooting](../reference/troubleshooting.md)
+**Previous**: [Hardware Compatibility](compatibility.md) | **Next**: [Intel Arc Guide](device-specific/intel-arc.md) | **See also**: [Performance
+Troubleshooting](../reference/troubleshooting.md)

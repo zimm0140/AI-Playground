@@ -4,7 +4,6 @@ This document provides an overview of the CI workflow implemented in this reposi
 
 ## Workflow Diagram
 
-
 ```text
 ┌────────────────────────────┐                  ┌────────────────────────────┐
 │                            │                  │                            │
@@ -65,7 +64,6 @@ This document provides an overview of the CI workflow implemented in this reposi
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ## Key Components
 

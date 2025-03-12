@@ -40,7 +40,6 @@ TBD
 | AI Playground Repository | Github repositories of AI Playground. Additional workflows are released by intel and pushed to this repository. The application may update their workflow definitions by the intel source |
 | Model Repositories       | The models used for inference need to be downloaded from external sources, e.g. huggingface.com                                                                                           |
 
-
 ## Building Block View
 
 ![](AI-PG_ComponentView.svg)

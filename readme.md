@@ -10,7 +10,8 @@
 
 ## Overview
 
-AI Playground is an open-source project and AI PC starter app optimized for Intel® Arc™ GPUs. Create AI-generated images, stylize existing photos, and interact with powerful chatbots—all locally on your PC.
+AI Playground is an open-source project and AI PC starter app optimized for Intel® Arc™ GPUs. Create AI-generated images, stylize existing photos, and interact with powerful
+chatbots—all locally on your PC.
 
 This project showcases the capabilities of Intel® Arc™ GPUs for AI workloads through XPU implementation, enabling high-performance generative AI experiences on consumer hardware.
 
@@ -72,7 +73,9 @@ For detailed hardware compatibility information, see our [Hardware Compatibility
 
 ## Installation - Packaged Installer
 
-Starting from v2.0, there is a single packaged installer that works for all supported hardware mentioned above. This installer simplifies the process for end users to install AI Playground and get it running on their PC. Please note that while this makes the installation process easier, this is open-source beta software, and there may be component and version conflicts. Refer to the Troubleshooting section for known issues.
+Starting from v2.0, there is a single packaged installer that works for all supported hardware mentioned above. This installer simplifies the process for end users to install AI
+Playground and get it running on their PC. Please note that while this makes the installation process easier, this is open-source beta software, and there may be component and
+version conflicts. Refer to the Troubleshooting section for known issues.
 
 ### Quick Installation Steps
 
@@ -83,21 +86,24 @@ Starting from v2.0, there is a single packaged installer that works for all supp
 
 ### Download the installer
 
-:new: **AI Playground 2.2.1 Beta (all SKUs)** - [Release Notes](https://github.com/intel/AI-Playground/releases/tag/v2.2.1-beta) | [Download](https://github.com/intel/AI-Playground/releases/download/v2.2.1-beta/AI.Playground-2.2.1-beta.exe) :new:
+:new: **AI Playground 2.2.1 Beta (all SKUs)** - [Release Notes](https://github.com/intel/AI-Playground/releases/tag/v2.2.1-beta) |
+[Download](https://github.com/intel/AI-Playground/releases/download/v2.2.1-beta/AI.Playground-2.2.1-beta.exe) :new:
 > [!IMPORTANT]
 > This release fixes video generation and image generation bugs from 2.2
 
 ### Installation Process for v2.0
 
 1. The installer only installs the Electron frontend, so it completes very quickly.
-2. On the first run, you need to install additional backend components for AI Playground to function properly. This process requires a strong and open network and may **take several minutes**.
+2. On the first run, you need to install additional backend components for AI Playground to function properly. This process requires a strong and open network and may **take
+several minutes**.
 3. Download the Users Guide for application information: [AI Playground Users Guide](https://github.com/intel/ai-playground/blob/main/AI%20Playground%20Users%20Guide.pdf)
 
 For more detailed installation instructions, see our [Installation Guide](docs/getting-started/installation.md).
 
 ### Troubleshooting Installation
 
-If your installation is blocked or interrupted, review the following troubleshooting steps. If issues persist, generate a log by pressing `CTRL+SHIFT+I`, selecting the console tab, and copying the relevant error messages. Share these details through:
+If your installation is blocked or interrupted, review the following troubleshooting steps. If issues persist, generate a log by pressing `CTRL+SHIFT+I`, selecting the console
+tab, and copying the relevant error messages. Share these details through:
 
 - GitHub Issues on this repository
 - Intel Insiders Discord
@@ -138,7 +144,7 @@ For additional troubleshooting resources, see our [Common Problems Guide](docs/t
 
 To get started, clone the repository and navigate to the project directory:
 
-```bash
+```
 git clone -b dev https://github.com/intel/AI-Playground.git
 cd AI-Playground
 ```
@@ -149,7 +155,7 @@ cd AI-Playground
 
 2. Navigate to the `WebUI` directory and install all Node.js dependencies:
 
-```bash
+```
 cd WebUI
 npm install
 ```
@@ -160,25 +166,25 @@ npm install
 
 2. Create a Conda environment with Python 3.11 and libuv:
 
-   ```bash
+   ```
    conda create -n cp311_libuv python=3.11 libuv -y
    ```
 
 3. Locate the path to your newly created Conda environment:
 
-   ```bash
+   ```
    conda env list | findstr cp311_libuv
    ```
 
 4. In the `WebUI` directory, execute the `fetch-build-resources` script, replacing `<path_to_cp311_libuv_conda_env>` with the actual path you copied in the previous step:
 
-   ```bash
+   ```
    npm run fetch-build-resources -- --conda_env_dir=<path_to_cp311_libuv_conda_env>
    ```
 
 5. Run the `prepare-build` script:
 
-   ```bash
+   ```
    npm run prepare-build
    ```
 
@@ -188,7 +194,7 @@ You should now have a basic Python environment located at `build-envs\online\pro
 
 To start the application in development mode, run:
 
-```bash
+```
 npm run dev
 ```
 
@@ -196,7 +202,7 @@ npm run dev
 
 To build the installer, run:
 
-```bash
+```
 npm run build
 ```
 

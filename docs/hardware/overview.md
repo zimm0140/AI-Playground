@@ -1,6 +1,7 @@
 # Hardware Overview
 
-AI-Playground is designed to work optimally across various hardware configurations, with special optimizations for Intel hardware platforms. This guide provides an overview of supported hardware and how the system adapts to different configurations.
+AI-Playground is designed to work optimally across various hardware configurations, with special optimizations for Intel hardware platforms. This guide provides an overview of
+supported hardware and how the system adapts to different configurations.
 
 ## Supported Hardware Platforms
 
@@ -17,7 +18,6 @@ AI-Playground supports the following hardware platforms with varying levels of o
 | Arc Limited | `arl_h` | Optimized | Systems with limited Arc features |
 | NVIDIA GPUs | - | Standard | Standard PyTorch CUDA support |
 | AMD GPUs | - | Basic | Limited support via ROCm |
-
 
 ## Automatic Hardware Detection
 

@@ -1,6 +1,7 @@
 # Migration Guide
 
-This guide helps users migrate from previous versions of AI-Playground to the current version, highlighting important changes and providing step-by-step instructions for a smooth transition.
+This guide helps users migrate from previous versions of AI-Playground to the current version, highlighting important changes and providing step-by-step instructions for a smooth
+transition.
 
 ## Migrating from v1.x to v2.x
 

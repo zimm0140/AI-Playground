@@ -19,7 +19,6 @@ Maximum memory needed: 8GB
 | 7 | 6 |
 | 8 | 2 |
 
-
 ## Model Usage
 
 | Model | Workflows |
@@ -29,13 +28,11 @@ Maximum memory needed: 8GB
 | latent-consistency---lcm-lora-sdxl\pytorch_lora_weights.safetensors (lora) | FaceSwapHD.json, Line2ImageHD-Fast.json |
 | stabilityai---control-lora\control-LoRAs-rank128\control-lora-canny-rank128.safetensors (controlnet) | Line2ImageHD-Fast.json, Line2ImageHD-Quality.json |
 
-
 ## Custom Node Extensions
 
 | Extension | Workflows |
 | --------- | --------- |
 | comfyui-face-swap | CopyFace.json, FaceSwapHD.json |
-
 
 ## Python Package Requirements
 
@@ -45,105 +42,104 @@ Maximum memory needed: 8GB
 | insightface | CopyFace.json, FaceSwapHD.json |
 | onnxruntime-gpu | CopyFace.json, FaceSwapHD.json |
 
-
 ## Individual Workflow Details
 
 ### Colorize.json
 
-**Memory Requirements:**
+### Memory Requirements:
 
 - Minimum: 7GB
 - Recommended: 12GB
 
 ### CopyFace.json
 
-**Required Custom Nodes:**
+### Required Custom Nodes:
 
 - comfyui-face-swap
 
-**Python Package Dependencies:**
+### Python Package Dependencies:
 
 - opencv-python
 - insightface
 - onnxruntime-gpu
 
-**Memory Requirements:**
+### Memory Requirements:
 
 - Minimum: 7GB
 - Recommended: 12GB
 
 ### FaceSwapHD.json
 
-**Required Models:**
+### Required Models:
 
 - Vae: RunDiffusion---Juggernaut-XL-v9\vae\diffusion_pytorch_model.fp16.safetensors
 - Lora: latent-consistency---lcm-lora-sdxl\pytorch_lora_weights.safetensors
 
-**Required Custom Nodes:**
+### Required Custom Nodes:
 
 - comfyui-face-swap
 
-**Python Package Dependencies:**
+### Python Package Dependencies:
 
 - opencv-python
 - insightface
 - onnxruntime-gpu
 
-**Memory Requirements:**
+### Memory Requirements:
 
 - Minimum: 7GB
 - Recommended: 12GB
 
 ### Line2ImageHD-Fast.json
 
-**Required Models:**
+### Required Models:
 
 - Vae: RunDiffusion---Juggernaut-XL-v9\vae\diffusion_pytorch_model.fp16.safetensors
 - Lora: latent-consistency---lcm-lora-sdxl\pytorch_lora_weights.safetensors
 - Controlnet: stabilityai---control-lora\control-LoRAs-rank128\control-lora-canny-rank128.safetensors
 
-**Memory Requirements:**
+### Memory Requirements:
 
 - Minimum: 8GB
 - Recommended: 13GB
 
 ### Line2ImageHD-Quality.json
 
-**Required Models:**
+### Required Models:
 
 - Vae: RunDiffusion---Juggernaut-XL-v9\vae\diffusion_pytorch_model.fp16.safetensors
 - Controlnet: stabilityai---control-lora\control-LoRAs-rank128\control-lora-canny-rank128.safetensors
 
-**Memory Requirements:**
+### Memory Requirements:
 
 - Minimum: 8GB
 - Recommended: 13GB
 
 ### Video.json
 
-**Memory Requirements:**
+### Memory Requirements:
 
 - Minimum: 7GB
 - Recommended: 12GB
 
 ### fluxQ4.json
 
-**Required Models:**
+### Required Models:
 
 - Vae: black-forest-labs---FLUX.1-schnell\ae.safetensors
 
-**Memory Requirements:**
+### Memory Requirements:
 
 - Minimum: 7GB
 - Recommended: 12GB
 
 ### fluxQ8.json
 
-**Required Models:**
+### Required Models:
 
 - Vae: black-forest-labs---FLUX.1-schnell\ae.safetensors
 
-**Memory Requirements:**
+### Memory Requirements:
 
 - Minimum: 7GB
 - Recommended: 12GB

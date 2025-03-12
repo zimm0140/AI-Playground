@@ -28,7 +28,6 @@ def process_data(data: Union[dict, list]) -> Union[str, None]:
 ```python
 def process_data(data: dict | list) -> str | None:
 
-
 ```text
 
 ...
@@ -78,7 +77,6 @@ def get_user(user_id: Optional[int] = None) -> Optional[dict]:
 ```python
 def get_user(user_id: int | None = None) -> dict | None:
 
-
 ```text
 
 ...
@@ -123,7 +121,6 @@ JSONValue = Union[str, int, float, bool, None, Dict[str, 'JSONValue'], List['JSO
 from typing import TypeAlias
 
 JSONValue: TypeAlias = str | int | float | bool | None | dict[str, 'JSONValue'] | list['JSONValue']
-
 
 ```text
 
@@ -341,4 +338,5 @@ raise ValueError(f"Expected one of {acceptable_types}, got {type(data)}")
 
 ## IDE Support
 
-Modern IDEs like VS Code with Pylance, PyCharm, or tools like mypy can help identify type annotation issues. Ensure your IDE is configured to check types with Python 3.10+ compatibility.
+Modern IDEs like VS Code with Pylance, PyCharm, or tools like mypy can help identify type annotation issues. Ensure your IDE is configured to check types with Python 3.10+
+compatibility.

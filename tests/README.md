@@ -71,7 +71,8 @@ This will generate an HTML coverage report in the `htmlcov` directory.
 
 ## Test Coverage Assessment
 
-The `test_coverage.py` file provides utilities to assess test coverage without requiring additional tools. It checks whether core modules have corresponding test modules and whether the functions in core modules have corresponding test functions.
+The `test_coverage.py` file provides utilities to assess test coverage without requiring additional tools. It checks whether core modules have corresponding test modules and
+whether the functions in core modules have corresponding test functions.
 
 To run the coverage assessment:
 

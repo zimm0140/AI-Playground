@@ -26,7 +26,8 @@ steps:
     run: node .github/actions/setup-npm-dir.js
 
   - name: Run Prettier
-    run: cd WebUI && npx prettier --check external/components/flux_sampler.json external/components/README.md external/components/text_encoder_t5_clip.json external/workflows/Colorize.json
+    run: cd WebUI && npx prettier --check external/components/flux_sampler.json external/components/README.md external/components/text_encoder_t5_clip.json
+external/workflows/Colorize.json
 ```
 
 ### Python Linting Issues
