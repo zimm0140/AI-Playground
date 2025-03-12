@@ -10,8 +10,11 @@ The module is included in the project and requires no additional installation st
 If using from another project, you can install directly:
 
 ```bash
+
 # From the repository root
+
 pip install -e .
+
 ```
 
 ## Usage
@@ -21,17 +24,25 @@ pip install -e .
 Import directly from the `hardware_detection` package:
 
 ```python
+
 # Import from the hardware_detection package (recommended)
+
 from hardware_detection import detect_hardware_type, get_gpu_info, get_hardware_info
 
 # Check hardware type
+
 hardware_type = detect_hardware_type()
 if hardware_type == "bmg":  # NVIDIA GPU
+
     # NVIDIA-specific code
+
     pass
 elif hardware_type == "arl_h":  # AMD GPU
+
     # AMD-specific code
+
     pass
+
 ```
 
 ### Legacy Usage (Deprecated)
@@ -39,11 +50,15 @@ elif hardware_type == "arl_h":  # AMD GPU
 The module can also be imported from the legacy location, but this approach is deprecated:
 
 ```python
+
 # Legacy import (deprecated)
+
 from tools.hardware import hardware_detection
 
 # Check hardware type
+
 hardware_type = hardware_detection.detect_hardware_type()
+
 ```
 
 ## API Reference
@@ -71,6 +86,7 @@ Detect the available hardware type.
 from hardware_detection import detect_hardware_type
 hardware = detect_hardware_type()
 print(f"Detected hardware: {hardware}")
+
 ```
 
 #### `get_gpu_info() -> List[str]`
@@ -87,6 +103,7 @@ Get information about available GPUs.
 from hardware_detection import get_gpu_info
 gpus = get_gpu_info()
 print(f"Available GPUs: {gpus}")
+
 ```
 
 #### `get_cpu_info() -> Dict[str, Any]`
@@ -107,6 +124,7 @@ Get information about the CPU.
 from hardware_detection import get_cpu_info
 cpu = get_cpu_info()
 print(f"CPU: {cpu['name']} with {cpu['cores']} cores")
+
 ```
 
 #### `get_hardware_info() -> Dict[str, Any]`
@@ -129,6 +147,7 @@ Get comprehensive information about the system hardware.
 from hardware_detection import get_hardware_info
 info = get_hardware_info()
 print(json.dumps(info, indent=2))
+
 ```
 
 #### `print_hardware_info(verbose: bool = False) -> None`
@@ -144,6 +163,7 @@ Print information about the system hardware.
 ```python
 from hardware_detection import print_hardware_info
 print_hardware_info(verbose=True)
+
 ```
 
 ## Environment Variables
@@ -174,9 +194,11 @@ The new package structure provides:
 
    ```python
    # Old
+
    from tools.hardware import hardware_detection
-   
+
    # New
+
    from hardware_detection import detect_hardware_type, get_gpu_info
    ```
 
@@ -184,8 +206,10 @@ The new package structure provides:
 
    ```python
    # Old
+
    hardware_type = hardware_detection.detect_hardware_type()
-   
+
    # New
+
    hardware_type = detect_hardware_type()
    ```
