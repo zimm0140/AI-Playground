@@ -56,7 +56,7 @@ from<span class=w> </span>tools.hardware<span class=w> </span>import<span class=
 
 Detect<span class=w> </span>the<span class=w> </span>available<span class=w> </span>hardware<span class=w> </span>type.
 
-**Returns:**
+*_Returns:__
 
 -<span class=w> </span>A<span class=w> </span>string<span class=w> </span>representing<span class=w> </span>the<span class=w> </span>hardware<span class=w> </span>type:
 <span class=w>  </span>-<span class=w> </span><span class=sb>`</span><span class=s2>&quot;base&quot;</span><span class=sb>`</span>:<span class=w> </span>CPU<span class=w> </span>only
@@ -67,7 +67,7 @@ Detect<span class=w> </span>the<span class=w> </span>available<span class=w> </s
 <span class=w>  </span>-<span class=w> </span><span class=sb>`</span><span class=s2>&quot;lnl&quot;</span><span class=sb>`</span>:<span class=w> </span>Intel<span class=w> </span>Lunar<span class=w> </span>Lake
 <span class=w>  </span>-<span class=w> </span><span class=sb>`</span><span class=s2>&quot;ovino&quot;</span><span class=sb>`</span>:<span class=w> </span>OpenVINO-compatible
 
-**Example:**
+__Example:__
 
 <span class=sb>```</span>python
 from<span class=w> </span>hardware_detection<span class=w> </span>import<span class=w> </span>detect_hardware_type
@@ -80,11 +80,11 @@ print<span class=o>(</span>f<span class=s2>&quot;Detected hardware: {hardware}&q
 
 Get<span class=w> </span>information<span class=w> </span>about<span class=w> </span>available<span class=w> </span>GPUs.
 
-**Returns:**
+__Returns:__
 
 -<span class=w> </span>A<span class=w> </span>list<span class=w> </span>of<span class=w> </span>strings<span class=w> </span>describing<span class=w> </span>the<span class=w> </span>detected<span class=w> </span>GPUs,<span class=w> </span>or<span class=w> </span>an<span class=w> </span>empty<span class=w> </span>list<span class=w> </span><span class=k>if</span><span class=w> </span>no<span class=w> </span>GPUs<span class=w> </span>are<span class=w> </span>found.
 
-**Example:**
+__Example:__
 
 <span class=sb>```</span>python
 from<span class=w> </span>hardware_detection<span class=w> </span>import<span class=w> </span>get_gpu_info
@@ -97,7 +97,7 @@ print<span class=o>(</span>f<span class=s2>&quot;Available GPUs: {gpus}&quot;</s
 
 Get<span class=w> </span>information<span class=w> </span>about<span class=w> </span>the<span class=w> </span>CPU.
 
-**Returns:**
+__Returns:__
 
 -<span class=w> </span>A<span class=w> </span>dictionary<span class=w> </span>containing<span class=w> </span>CPU<span class=w> </span>information:
 <span class=w>  </span>-<span class=w> </span><span class=sb>`</span>vendor<span class=sb>`</span>:<span class=w> </span>CPU<span class=w> </span>manufacturer
@@ -105,7 +105,7 @@ Get<span class=w> </span>information<span class=w> </span>about<span class=w> </
 <span class=w>  </span>-<span class=w> </span><span class=sb>`</span>cores<span class=sb>`</span>:<span class=w> </span>Number<span class=w> </span>of<span class=w> </span>CPU<span class=w> </span>cores
 <span class=w>  </span>-<span class=w> </span><span class=sb>`</span>features<span class=sb>`</span>:<span class=w> </span><span class=o>(</span>Optional<span class=o>)</span><span class=w> </span>List<span class=w> </span>of<span class=w> </span>CPU<span class=w> </span>features
 
-**Example:**
+__Example:__
 
 <span class=sb>```</span>python
 from<span class=w> </span>hardware_detection<span class=w> </span>import<span class=w> </span>get_cpu_info
@@ -118,7 +118,7 @@ print<span class=o>(</span>f<span class=s2>&quot;CPU: {cpu[&#39;name&#39;]} with
 
 Get<span class=w> </span>comprehensive<span class=w> </span>information<span class=w> </span>about<span class=w> </span>the<span class=w> </span>system<span class=w> </span>hardware.
 
-**Returns:**
+__Returns:__
 
 -<span class=w> </span>A<span class=w> </span>dictionary<span class=w> </span>with<span class=w> </span>hardware<span class=w> </span>information:
 <span class=w>  </span>-<span class=w> </span><span class=sb>`</span>system<span class=sb>`</span>:<span class=w> </span>Operating<span class=w> </span>system
@@ -128,7 +128,7 @@ Get<span class=w> </span>comprehensive<span class=w> </span>information<span cla
 <span class=w>  </span>-<span class=w> </span><span class=sb>`</span>detected_hardware<span class=sb>`</span>:<span class=w> </span>Detected<span class=w> </span>hardware<span class=w> </span><span class=nb>type</span>
 <span class=w>  </span>-<span class=w> </span><span class=sb>`</span>openvino_available<span class=sb>`</span>:<span class=w> </span>Whether<span class=w> </span>OpenVINO<span class=w> </span>is<span class=w> </span>available
 
-**Example:**
+__Example:__
 
 <span class=sb>```</span>python
 from<span class=w> </span>hardware_detection<span class=w> </span>import<span class=w> </span>get_hardware_info
@@ -141,11 +141,11 @@ print<span class=o>(</span>json.dumps<span class=o>(</span>info,<span class=w> <
 
 Print<span class=w> </span>information<span class=w> </span>about<span class=w> </span>the<span class=w> </span>system<span class=w> </span>hardware.
 
-**Arguments:**
+__Arguments:__
 
 -<span class=w> </span><span class=sb>`</span>verbose<span class=sb>`</span>:<span class=w> </span>Whether<span class=w> </span>to<span class=w> </span>show<span class=w> </span>additional<span class=w> </span>details
 
-**Example:**
+__Example:_*
 
 <span class=sb>```</span>python
 from<span class=w> </span>hardware_detection<span class=w> </span>import<span class=w> </span>print_hardware_info
@@ -170,10 +170,10 @@ still<span class=w> </span>supported<span class=w> </span>but<span class=w> </sp
 The<span class=w> </span>new<span class=w> </span>package<span class=w> </span>structure<span class=w> </span>provides:
 
 <span class=m>1</span>.<span class=w> </span>Better<span class=w> </span>dependency<span class=w> </span>management
-<span class=m>1</span>.<span class=w> </span>Proper<span class=w> </span>namespacing
-<span class=m>1</span>.<span class=w> </span>Type<span class=w> </span>hints<span class=w> </span>and<span class=w> </span>documentation
-<span class=m>1</span>.<span class=w> </span>Easier<span class=w> </span>testing
-<span class=m>1</span>.<span class=w> </span>Future<span class=w> </span>extensibility
+<span class=m>2</span>.<span class=w> </span>Proper<span class=w> </span>namespacing
+<span class=m>3</span>.<span class=w> </span>Type<span class=w> </span>hints<span class=w> </span>and<span class=w> </span>documentation
+<span class=m>4</span>.<span class=w> </span>Easier<span class=w> </span>testing
+<span class=m>5</span>.<span class=w> </span>Future<span class=w> </span>extensibility
 
 <span class=c1>### Steps to Migrate</span>
 
