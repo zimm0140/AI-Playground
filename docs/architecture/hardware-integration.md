@@ -6,11 +6,11 @@ This document explains how AI-Playground integrates with different hardware plat
 
 AI-Playground's hardware integration architecture is designed to:
 
-1. **Abstract hardware differences**: Shield users from hardware-specific implementation details
-1. **Maximize performance**: Leverage hardware-specific optimizations when available
-1. **Provide graceful fallbacks**: Work even when optimal hardware is unavailable
-1. **Support seamless transitions**: Allow easy switching between hardware options
-1. **Enable extensibility**: Make it easy to add support for new hardware
+1. *_Abstract hardware differences__: Shield users from hardware-specific implementation details
+2. __Maximize performance__: Leverage hardware-specific optimizations when available
+3. __Provide graceful fallbacks__: Work even when optimal hardware is unavailable
+4. __Support seamless transitions__: Allow easy switching between hardware options
+5. __Enable extensibility__: Make it easy to add support for new hardware
 
 ## Hardware Support Layers
 
@@ -132,11 +132,11 @@ Implements hardware-specific optimizations:
 
 The hardware detection process consists of the following steps:
 
-1. **System Probing**: Query the system for available hardware
-1. **Capability Assessment**: Determine the capabilities of detected hardware
-1. **Driver Validation**: Check for required drivers and their versions
-1. **Feature Verification**: Test for specific hardware features
-1. **Priority Assignment**: Assign priorities to available hardware options
+1. __System Probing__: Query the system for available hardware
+2. __Capability Assessment__: Determine the capabilities of detected hardware
+3. __Driver Validation__: Check for required drivers and their versions
+4. __Feature Verification__: Test for specific hardware features
+5. __Priority Assignment__: Assign priorities to available hardware options
 
 ### Detection Implementation
 
@@ -672,7 +672,7 @@ free_mem = total_mem - reserved_mem
 
 ```text
 
-estimated_batch_memory = model_size * 4  # Rough estimate
+estimated_batch_memory = model_size _ 4  # Rough estimate
 
 ```text
 
@@ -737,7 +737,7 @@ free_mem = total_mem - reserved_mem
 
 ```text
 
-estimated_batch_memory = model_size * 4  # Rough estimate
+estimated_batch_memory = model_size _ 4  # Rough estimate
 
 ```text
 
@@ -934,7 +934,7 @@ raise NotImplementedError
 
 ```text
 
-def run_inference(self, model, inputs, **kwargs):
+def run_inference(self, model, inputs, __kwargs):
 
 ```text
 
@@ -1176,7 +1176,7 @@ return model
 
 ```text
 
-def run_inference(self, model, inputs, **kwargs):
+def run_inference(self, model, inputs, __kwargs):
 
 ```text
 
@@ -1214,7 +1214,7 @@ with self.torch.no_grad():
 
 ```text
 
-outputs = model(**inputs)
+outputs = model(__inputs)
 
 ```text
 
@@ -1395,11 +1395,11 @@ self.torch.xpu.empty_cache()
 
 To add support for a new hardware platform:
 
-1. **Create a new backend class** inheriting from `HardwareBackend`
-1. **Implement required methods** for the new hardware
-1. **Add detection logic** to identify the new hardware
-1. **Create optimization profiles** for the new hardware
-1. **Register the backend** with the hardware abstraction layer
+1. __Create a new backend class__ inheriting from `HardwareBackend`
+2. __Implement required methods__ for the new hardware
+3. __Add detection logic__ to identify the new hardware
+4. __Create optimization profiles__ for the new hardware
+5. __Register the backend__ with the hardware abstraction layer
 
 ```python
 
@@ -1622,7 +1622,7 @@ return {
 ```text
 
 "backend": backend.device_type,
-"avg_inference_time_ms": avg_time * 1000,
+"avg_inference_time_ms": avg_time _ 1000,
 "throughput_per_second": throughput,
 "iterations": iterations,
 "memory": memory_info
@@ -1643,6 +1643,7 @@ return {
 - [NVIDIA GPU Guide](../hardware/device-specific/nvidia.md)
 
 ---
-**Previous**: [API Design](api-design.md) | **Next**: [Data Flow](data-flow.md) | **See also**: [Architecture Overview](overview.md)
+*_Previous__: [API Design](api-design.md) | __Next__: [Data Flow](data-flow.md) | __See also_*: [Architecture Overview](overview.md)
 ```text`
 ````
+

@@ -17,20 +17,20 @@ The implementation combines modern Python packaging practices with hardware dete
 
 ### Core Components
 
-1. **uvfast.py**: Main CLI tool for environment management
+1. *_uvfast.py__: Main CLI tool for environment management
 
    - Setup environments for specific hardware
    - Run commands with appropriate hardware configurations
    - Generate lockfiles for reproducible environments
    - Provide information about detected hardware
 
-1. **hardware_detection.py**: Hardware detection module
+1. __hardware_detection.py__: Hardware detection module
 
    - Detect Intel GPUs and processors
    - Identify appropriate dependencies based on hardware
    - Check for hardware-specific features
 
-1. **pyproject.toml**: Modern PEP 621 configuration
+1. __pyproject.toml__: Modern PEP 621 configuration
 
    - Core dependencies for all environments
    - Optional dependencies for specific hardware types
@@ -38,18 +38,18 @@ The implementation combines modern Python packaging practices with hardware dete
 
 ### Additional Components
 
-1. **GitHub Actions Workflow**: CI/CD pipeline for testing
+1. __GitHub Actions Workflow__: CI/CD pipeline for testing
 
    - Matrix testing across multiple Python versions
    - Simulated hardware environments
    - Lockfile validation
 
-1. **Docker Configuration**: Containerized development
+1. __Docker Configuration__: Containerized development
 
    - Hardware-specific container targets
    - Optimized for different acceleration types
 
-1. **XPU Integration Example**: Demo of hardware-aware configuration
+1. __XPU Integration Example_*: Demo of hardware-aware configuration
 
    - Shows how to use hardware detection with PyTorch
    - Configures backends based on available hardware
@@ -233,3 +233,4 @@ You can customize the hardware detection and environment configuration by modify
 - Configure environment settings
 ```text`
 ````
+

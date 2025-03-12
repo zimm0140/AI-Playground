@@ -136,6 +136,7 @@ python service/tools/hardware_compatibility_check.py
 This will generate a report about your hardware configuration and any potential compatibility issues.
 
 ---
-**Previous**: [Hardware Overview](overview.md) | **Next**: [Hardware Optimization](optimization.md) | **See also**: [Intel Arc Guide](device-specific/intel-arc.md)
+*_Previous__: [Hardware Overview](overview.md) | __Next__: [Hardware Optimization](optimization.md) | __See also_*: [Intel Arc Guide](device-specific/intel-arc.md)
 ```text`
 ````
+

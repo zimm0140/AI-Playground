@@ -4,7 +4,7 @@ This directory contains all documentation for the AI Playground project.
 
 ## Directory Structure
 
-- **development/**: Development-related documentation
+- *_development/__: Development-related documentation
 
   - Code quality guides
   - Contributing guidelines
@@ -12,18 +12,18 @@ This directory contains all documentation for the AI Playground project.
   - Modernization reports
   - Implementation guides
 
-- **hardware/**: Hardware-specific documentation
+- __hardware/__: Hardware-specific documentation
 
   - Hardware optimization guides
   - Hardware compatibility information
   - Hardware-aware features
 
-- **user-guides/**: End-user documentation
+- __user-guides/__: End-user documentation
 
   - User manuals and guides
   - PDF documentation
 
-- **workflows/**: Workflow documentation
+- __workflows/_*: Workflow documentation
 
   - CI/CD workflow documentation
   - Requirements and reports
@@ -92,9 +92,9 @@ All documentation follows these standards:
 Contributions to documentation are welcome! Please follow these guidelines:
 
 1. Fork the repository
-1. Create a branch for your changes
-1. Make your changes following our documentation standards
-1. Submit a pull request
+2. Create a branch for your changes
+3. Make your changes following our documentation standards
+4. Submit a pull request
 
 For more details, see [Contributing to Documentation](development/contributing.md).
 
@@ -116,3 +116,4 @@ Documentation linting is configured in:
 
 If you have questions about the documentation, please open an issue or contact the maintainers at <example@example.com>.
 ````
+

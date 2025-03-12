@@ -46,11 +46,11 @@ AI-Playground supports all Intel Arc GPU models:
 
 1. Verify installation with:
 
-   \`\`\`text\`bash
-
+   ```bash
    ## Run hardware detection
 
    python hardware_detection.py
+   ```
 
    ````text
 
@@ -62,21 +62,15 @@ AI-Playground supports all Intel Arc GPU models:
 
 1. Update your system:
 
-   \`\`\`text\`bash
+   ```bash
    sudo apt update && sudo apt upgrade
-
-   ````text
-
-   ```text`
-
-   ````
+   ```
 
 1. Install required packages:
 
-   \`\`\`text\`bash
+   ```bash
    sudo apt install mesa-utils
-
-   ````text
+   ```
 
    ```text`
 
@@ -84,10 +78,9 @@ AI-Playground supports all Intel Arc GPU models:
 
 1. Verify installation:
 
-   \`\`\`text\`bash
+   ```bash
    glxinfo | grep "OpenGL renderer"
-
-   ````text
+   ```
 
    ```text`
 
@@ -95,13 +88,13 @@ AI-Playground supports all Intel Arc GPU models:
 
 ### Environment Setup
 
-\`\`\`text\`bash
+```bash
 
 ## Setup environment optimized for Arc GPUs
 
 python setup_hardware_env.py --hardware acm
 
-````text
+```text
 
 This will install the required dependencies including:
 
@@ -207,7 +200,7 @@ python service/tools/intel_gpu_diagnostics.py
 
 ### Model Optimization
 
-1. **Quantization**:
+1. *_Quantization__:
 
    ```python
    from intel_extension_for_pytorch.quantization import prepare, convert
@@ -222,7 +215,7 @@ python service/tools/intel_gpu_diagnostics.py
    quantized_model = convert(prepared_model)
    ```text
 
-1. **BF16 Mixed Precision**:
+1. __BF16 Mixed Precision__:
 
    ```python
    with torch.xpu.amp.autocast(dtype=torch.bfloat16):
@@ -283,6 +276,7 @@ Typical optimal batch sizes:
 - [XPU Migration Guide](https://github.com/intel/intel-extension-for-pytorch/blob/xpu-main/docs/tutorials/xpu_migration_guide.md)
 
 ---
-**Previous**: [Hardware Optimization](../optimization.md) | **See also**: [Meteor Lake Guide](intel-meteor-lake.md)
+__Previous__: [Hardware Optimization](../optimization.md) | __See also_*: [Meteor Lake Guide](intel-meteor-lake.md)
 ```text`
-````
+```
+

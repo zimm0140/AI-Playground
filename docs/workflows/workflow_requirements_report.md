@@ -143,3 +143,4 @@ Maximum memory needed: 8GB
 
 - Minimum: 7GB
 - Recommended: 12GB
+

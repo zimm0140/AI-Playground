@@ -119,7 +119,7 @@ docker run -p 8000:8000 ai-playground
 
 ### Common Issues
 
-1. **Package installation failures**
+1. *_Package installation failures__
 
    Try updating pip and setuptools:
 
@@ -127,11 +127,11 @@ docker run -p 8000:8000 ai-playground
    pip install --upgrade pip setuptools wheel
    ```text
 
-1. **GPU not detected**
+1. __GPU not detected__
 
    Ensure you have the latest GPU drivers installed for your hardware.
 
-1. **Python version compatibility**
+1. __Python version compatibility__
 
    If you encounter compatibility issues, we strongly recommend using Python 3.10.
 
@@ -162,6 +162,7 @@ python test_venv.py
 This will check that all required dependencies are installed and that your hardware is properly detected.
 
 ---
-**Previous**: [Quick Start Guide](quickstart.md) | **Next**: [Migration Guide](migration.md) | **See also**: [Hardware Compatibility](../hardware/compatibility.md)
+__Previous__: [Quick Start Guide](quickstart.md) | __Next__: [Migration Guide](migration.md) | __See also_*: [Hardware Compatibility](../hardware/compatibility.md)
 ```text`
 ````
+

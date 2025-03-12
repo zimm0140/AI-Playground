@@ -9,7 +9,7 @@ including image generation and conversational AI.
 
 ### Requirements Overview
 
-- **Generative AI with Intel Graphics Cards**
+- *_Generative AI with Intel Graphics Cards__
 
   The AI Playground enables model inference specifically on Intel devices. Users can interact with chat models, image
   generation, and image modification models, all via configurable generation pipelines ("workflows"). Different models
@@ -21,7 +21,7 @@ including image generation and conversational AI.
   dependencies necessary for execution, ensuring a seamless experience for users. Various inference libraries are
   offered to the user, most of them fully optional and only installed on explicit approval by the user.
 
-- **Dynamic Workflow Updates**
+- __Dynamic Workflow Updates_*
 
   Users can fetch new workflows published by Intel directly from within AI Playground. These updates are provided
   without requiring new installations or releases, allowing users to stay up to date with the latest offerings.
@@ -32,19 +32,18 @@ TBD
 
 ## Context and Scope
 
-![](AI-PG_ContextView.svg)
+![AI Playground Context View](AI-PG_ContextView.svg)
 
 | Node | Description |
-|--------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| --- | --- |
 | GitHub | Github repositories hosting 3rd party extensions. Additional Extensions are cloned and set up on behalf of the user |
-| AI Playground Repository | Github repositories of AI Playground. Additional workflows are released by intel and pushed to this repository. The application may update their
-workflow definitions by the intel source |
+| AI Playground Repository | Github repositories of AI Playground. Additional workflows are released by intel and pushed to this repository. The application may update their workflow definitions by the intel source |
 | Model Repositories | The models used for inference need to be downloaded from external sources, e.g. huggingface.com |
 
 
 ## Building Block View
 
-![](AI-PG_ComponentView.svg)
+![AI Playground Component View](AI-PG_ComponentView.svg)
 
 For the Application with its GUI, an electron App is used. This decomposes into the electron main process and the
 window, displayed to the user. All user interaction is being done via this window. The window is running technically from
@@ -161,3 +160,4 @@ computational resources.
 </table>
 ```text`
 ````
+

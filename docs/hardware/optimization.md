@@ -6,12 +6,12 @@ This guide provides detailed information on optimizing AI-Playground for differe
 
 These optimization principles apply to all hardware configurations:
 
-1. **Use the right environment**: Let the automatic hardware detection choose the optimal configuration
-1. **Update drivers**: Always use the latest drivers for your hardware
-1. **Close background applications**: Minimize resource competition
-1. **Monitor resource usage**: Use monitoring tools to identify bottlenecks
-1. **Batch processing**: Use appropriate batch sizes for your hardware
-1. **Mixed precision**: Enable mixed precision where appropriate
+1. *_Use the right environment__: Let the automatic hardware detection choose the optimal configuration
+2. __Update drivers__: Always use the latest drivers for your hardware
+3. __Close background applications__: Minimize resource competition
+4. __Monitor resource usage__: Use monitoring tools to identify bottlenecks
+5. __Batch processing__: Use appropriate batch sizes for your hardware
+6. __Mixed precision__: Enable mixed precision where appropriate
 
 ## Intel Arc GPUs Optimization
 
@@ -29,7 +29,7 @@ python setup_hardware_env.py --hardware acm
 
 ### Performance Tuning
 
-1. **Enable Intel XPU backend**:
+1. __Enable Intel XPU backend__:
 
    ```python
    ## In your Python code
@@ -38,7 +38,7 @@ python setup_hardware_env.py --hardware acm
    model = model.to("xpu")
    ```text
 
-1. **Use XPU-specific thread count**:
+1. __Use XPU-specific thread count__:
 
    ```python
    import os
@@ -47,7 +47,7 @@ python setup_hardware_env.py --hardware acm
    os.environ["ZE_AFFINITY_MASK"] = "0.0"
    ```text
 
-1. **Optimize memory usage**:
+1. __Optimize memory usage__:
 
    ```python
    ## Clear cache between processing
@@ -56,7 +56,7 @@ python setup_hardware_env.py --hardware acm
    torch.xpu.empty_cache()
    ```text
 
-1. **Enable mixed precision**:
+1. __Enable mixed precision__:
 
    ```python
    ## Use BF16 for Arc GPUs
@@ -189,9 +189,9 @@ offload_config = {"offload_buffers": True}
 For systems with limited GPU memory:
 
 1. Use smaller batch sizes
-1. Use 16-bit precision where possible
-1. Consider model pruning for inference
-1. Use model splitting techniques for large models
+2. Use 16-bit precision where possible
+3. Consider model pruning for inference
+4. Use model splitting techniques for large models
 
 ## Benchmarking and Performance Measurement
 
@@ -247,7 +247,8 @@ For advanced users, edit `/uvfast.json` to fine-tune hardware configurations:
 ```text
 
 ---
-**Previous**: [Hardware Compatibility](compatibility.md) | **Next**: [Intel Arc Guide](device-specific/intel-arc.md) | **See also**: [Performance
+__Previous__: [Hardware Compatibility](compatibility.md) | __Next__: [Intel Arc Guide](device-specific/intel-arc.md) | __See also_*: [Performance
 Troubleshooting](../reference/troubleshooting.md)
 ```text`
 ````
+

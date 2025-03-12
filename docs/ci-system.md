@@ -16,11 +16,11 @@ This document provides information about the CI (Continuous Integration) system 
 
 The AI-Playground CI system is designed to:
 
-1. **Validate Code Quality**: Ensure code meets quality standards before merging.
-1. **Run Tests**: Verify that the codebase functions correctly on various platforms.
-1. **Generate Documentation**: Keep documentation up-to-date with code changes.
-1. **Create Artifacts**: Build and package artifacts for distribution.
-1. **Validate ComfyUI Workflows**: Test and validate workflows for compatibility.
+1. *_Validate Code Quality__: Ensure code meets quality standards before merging.
+2. __Run Tests__: Verify that the codebase functions correctly on various platforms.
+3. __Generate Documentation__: Keep documentation up-to-date with code changes.
+4. __Create Artifacts__: Build and package artifacts for distribution.
+5. __Validate ComfyUI Workflows__: Test and validate workflows for compatibility.
 
 The CI system uses GitHub Actions for automation and includes pre-commit hooks for catching issues early in the development process.
 
@@ -90,12 +90,12 @@ The CI system includes several utility scripts that help maintain code quality a
 
 To ensure smooth CI operation:
 
-1. **Keep workflow files organized**: Each workflow should have a single responsibility
-1. **Use unique artifact names**: Append job name or matrix variables to artifact names
-1. **Include conditionals**: Use `if: always()` for artifact uploads to ensure they run even if tests fail
-1. **Optimize cache usage**: Use dependency hashing and OS-specific cache paths
-1. **Keep workflows lean**: Combine similar steps and use job dependencies
-1. **Run pre-commit hooks locally**: Catch issues before pushing to remote
+1. __Keep workflow files organized__: Each workflow should have a single responsibility
+2. __Use unique artifact names__: Append job name or matrix variables to artifact names
+3. __Include conditionals__: Use `if: always()` for artifact uploads to ensure they run even if tests fail
+4. __Optimize cache usage__: Use dependency hashing and OS-specific cache paths
+5. __Keep workflows lean__: Combine similar steps and use job dependencies
+6. __Run pre-commit hooks locally__: Catch issues before pushing to remote
 
 ## Troubleshooting
 
@@ -103,9 +103,9 @@ To ensure smooth CI operation:
 
 #### Artifact Name Conflicts
 
-**Symptom**: CI job fails with `Error: Failed to CreateArtifact: Received non-retryable error: Failed request: (409) Conflict`
+__Symptom__: CI job fails with `Error: Failed to CreateArtifact: Received non-retryable error: Failed request: (409) Conflict`
 
-**Solution**: Run the CI cleanup workflow which will ensure unique artifact names:
+__Solution__: Run the CI cleanup workflow which will ensure unique artifact names:
 
 ```bash
 
@@ -117,9 +117,9 @@ To ensure smooth CI operation:
 
 #### Linting Errors
 
-**Symptom**: Ruff or linting check fails with errors like `F401 import xxx is unused`
+__Symptom__: Ruff or linting check fails with errors like `F401 import xxx is unused`
 
-**Solution**: Run the lint script locally to identify and fix issues:
+__Solution__: Run the lint script locally to identify and fix issues:
 
 ```bash
 python .github/workflows/scripts/lint_python_files.py path/to/file.py
@@ -128,9 +128,9 @@ python .github/workflows/scripts/lint_python_files.py path/to/file.py
 
 #### Indentation Errors in Python Files
 
-**Symptom**: CI fails with indentation errors, particularly in `try/except` blocks
+__Symptom__: CI fails with indentation errors, particularly in `try/except` blocks
 
-**Solution**: Run the fix_ci_issues script:
+__Solution__: Run the fix_ci_issues script:
 
 ```bash
 python .github/workflows/scripts/fix_ci_issues.py
@@ -139,28 +139,28 @@ python .github/workflows/scripts/fix_ci_issues.py
 
 #### Windows Path Issues
 
-**Symptom**: Backslash escaping issues in regex patterns
+__Symptom__: Backslash escaping issues in regex patterns
 
-**Solution**: Always use raw strings (`r"pattern"`) for regex patterns and double backslashes (`\\\\`) in string templates.
+__Solution_*: Always use raw strings (`r"pattern"`) for regex patterns and double backslashes (`\\\\`) in string templates.
 
 ## Contributing to CI
 
 When contributing to the CI system:
 
 1. Test changes locally before pushing
-1. Document any new workflows or scripts
-1. Update this documentation if you add/modify CI capabilities
-1. Keep backwards compatibility in mind
-1. Consider cross-platform compatibility (Windows, Linux, macOS)
+2. Document any new workflows or scripts
+3. Update this documentation if you add/modify CI capabilities
+4. Keep backwards compatibility in mind
+5. Consider cross-platform compatibility (Windows, Linux, macOS)
 
 ### Adding a New Workflow
 
 1. Use existing workflows as templates
-1. Ensure proper error handling
-1. Use conditionals to control when jobs run
-1. Provide clear job and step names
-1. Optimize for performance (use caching, fetch-depth: 1, etc.)
-1. Add status badges for visibility
+2. Ensure proper error handling
+3. Use conditionals to control when jobs run
+4. Provide clear job and step names
+5. Optimize for performance (use caching, fetch-depth: 1, etc.)
+6. Add status badges for visibility
 
 ## CI Performance Metrics
 
@@ -178,3 +178,4 @@ The CI system tracks performance metrics to help identify bottlenecks and improv
 - [Ruff Documentation](https://docs.astral.sh/ruff/)
 ```text`
 ````
+

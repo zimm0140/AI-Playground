@@ -10,14 +10,14 @@ The project uses [Ruff](https://github.com/astral-sh/ruff) for Python code linti
 
 ## Standard linting configuration
 
-ruff check --select=E,F --ignore=E501 --extend-exclude=.git,.github,.venv,venv,__pycache__,build,dist --line-length=100 ./service
+ruff check --select=E,F --ignore=E501 --extend-exclude=.git,.github,.venv,venv,*_pycache__,build,dist --line-length=100 ./service
 
 ````text
 
 ### Key Rules
 
-- **E**: Style errors (from pycodestyle)
-- **F**: Logical/syntax errors and undefined names (from Pyflakes)
+- __E__: Style errors (from pycodestyle)
+- __F__: Logical/syntax errors and undefined names (from Pyflakes)
 - Line length is set to 100 characters
 - E501 (line too long) errors are ignored, as they are often false positives with complex ML code
 
@@ -66,7 +66,7 @@ An import that's not used in the file:
 import os  # Unused import
 
 ```text
-**Fix**: Either remove the import or add a `# noqa: F401` comment if it's needed for side effects:
+__Fix__: Either remove the import or add a `# noqa: F401` comment if it's needed for side effects:
 
 ```python
 import os  # noqa: F401
@@ -83,7 +83,7 @@ x=1+2  # Missing spaces
 def func(a,b):  # Missing space after comma
 
 ```text
-**Fix**: Add appropriate spacing:
+__Fix_*: Add appropriate spacing:
 
 ```python
 x = 1 + 2  # Correct spacing
@@ -99,9 +99,9 @@ The project's CI system uses GitHub Actions to run Ruff on all Python files. The
 The CI will:
 
 1. Check for linting issues
-1. Generate a report
-1. Comment on PRs if issues are found
-1. Provide instructions for fixing the issues
+2. Generate a report
+3. Comment on PRs if issues are found
+4. Provide instructions for fixing the issues
 
 ## Adding to Pre-commit Hooks
 
@@ -121,3 +121,4 @@ To ensure code quality before committing, you can set up pre-commit hooks locall
 This will check your Python code for linting issues before each commit.
 ```text`
 ````
+

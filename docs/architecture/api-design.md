@@ -6,12 +6,12 @@ This document describes the API design for AI-Playground, covering both the REST
 
 The AI-Playground APIs are designed with the following principles:
 
-1. **Consistency**: APIs follow consistent patterns and naming conventions
-1. **Simplicity**: Common operations are simple and intuitive
-1. **Flexibility**: Advanced options are available when needed
-1. **Documentation**: All APIs are well-documented with examples
-1. **Versioning**: APIs are versioned to ensure backward compatibility
-1. **Error handling**: Clear error messages and appropriate status codes
+1. *_Consistency__: APIs follow consistent patterns and naming conventions
+2. __Simplicity__: Common operations are simple and intuitive
+3. __Flexibility__: Advanced options are available when needed
+4. __Documentation__: All APIs are well-documented with examples
+5. __Versioning__: APIs are versioned to ensure backward compatibility
+6. __Error handling__: Clear error messages and appropriate status codes
 
 ## REST API
 
@@ -581,8 +581,8 @@ console.error('Error:', data.message);
 
 AI-Playground APIs are versioned to ensure backward compatibility:
 
-1. **REST API**: Version in URL path (e.g., `/api/v1/models`)
-1. **Python API**: Version in package (e.g., `from ai_playground.v1 import AIPlayground`)
+1. __REST API__: Version in URL path (e.g., `/api/v1/models`)
+2. __Python API__: Version in package (e.g., `from ai_playground.v1 import AIPlayground`)
 
 When breaking changes are necessary, a new version is released with:
 
@@ -595,11 +595,11 @@ When breaking changes are necessary, a new version is released with:
 
 The API implements several security measures:
 
-1. **Authentication**: Token-based auth for all API calls
-1. **Authorization**: Role-based access control for sensitive operations
-1. **Rate limiting**: Prevents abuse of the API
-1. **Input validation**: Thoroughly validates all input data
-1. **TLS encryption**: All API traffic is encrypted
+1. __Authentication__: Token-based auth for all API calls
+2. __Authorization__: Role-based access control for sensitive operations
+3. __Rate limiting__: Prevents abuse of the API
+4. __Input validation__: Thoroughly validates all input data
+5. __TLS encryption__: All API traffic is encrypted
 
 ## Additional Resources
 
@@ -609,5 +609,6 @@ The API implements several security measures:
 - [WebSocket Examples](../examples/websocket.md): Examples for WebSocket API usage
 
 ---
-**Previous**: [Architecture Overview](overview.md) | **Next**: [Hardware Integration](hardware-integration.md) | **See also**: [Python API Reference](../reference/python-api.md)
+__Previous__: [Architecture Overview](overview.md) | __Next__: [Hardware Integration](hardware-integration.md) | __See also_*: [Python API Reference](../reference/python-api.md)
 ````
+

@@ -6,9 +6,9 @@ This document explains the automated validation process for ComfyUI workflows in
 
 The ComfyUI workflow validation process consists of three main stages:
 
-1. **Structural Validation**: Checks that workflow JSON files are well-formed and contain the expected structure.
-1. **Requirements Analysis**: Analyzes workflows to determine model, custom node, and hardware requirements.
-1. **Execution Simulation**: Simulates the workflow execution without requiring models or GPU resources.
+1. *_Structural Validation__: Checks that workflow JSON files are well-formed and contain the expected structure.
+2. __Requirements Analysis__: Analyzes workflows to determine model, custom node, and hardware requirements.
+3. __Execution Simulation__: Simulates the workflow execution without requiring models or GPU resources.
 
 The validation runs automatically on:
 
@@ -39,10 +39,10 @@ The validation report includes:
 
 This stage analyzes the requirements for executing each workflow:
 
-- **Model Requirements**: Identifies checkpoints, LoRAs, VAEs, and other models used
-- **Custom Node Extensions**: Determines which ComfyUI extensions are needed
-- **Python Packages**: Lists Python packages required by custom nodes
-- **Hardware Requirements**: Estimates GPU memory needed based on model size, batch size, and operations
+- __Model Requirements__: Identifies checkpoints, LoRAs, VAEs, and other models used
+- __Custom Node Extensions__: Determines which ComfyUI extensions are needed
+- __Python Packages__: Lists Python packages required by custom nodes
+- __Hardware Requirements__: Estimates GPU memory needed based on model size, batch size, and operations
 
 ### Analysis Report
 
@@ -135,10 +135,10 @@ The dashboard includes:
 When workflows are modified in a pull request, an automated system:
 
 1. Runs all validation, analysis, and simulation stages
-1. Generates a detailed comment on the PR with results
-1. Flags workflows with issues that need to be fixed
-1. Provides specific recommendations for each workflow
-1. Updates the comment when changes are made to workflows
+2. Generates a detailed comment on the PR with results
+3. Flags workflows with issues that need to be fixed
+4. Provides specific recommendations for each workflow
+5. Updates the comment when changes are made to workflows
 
 This integration helps contributors understand issues before merging and ensures that only high-quality workflows are added to the repository.
 
@@ -206,10 +206,11 @@ Each script supports additional arguments:
 
 Planned improvements to the workflow validation process:
 
-1. **Actual Execution Testing**: Implement actual execution testing with minimal example models
-1. **Regression Testing**: Compare execution results between versions to detect regressions
-1. **Performance Benchmarking**: Measure execution time and memory usage for workflows
-1. **Extended Node Support**: Add support for validating more custom node types
-1. **Workflow Generation**: Generate test workflows to validate node compatibility
+1. __Actual Execution Testing__: Implement actual execution testing with minimal example models
+2. __Regression Testing__: Compare execution results between versions to detect regressions
+3. __Performance Benchmarking__: Measure execution time and memory usage for workflows
+4. __Extended Node Support__: Add support for validating more custom node types
+5. __Workflow Generation_*: Generate test workflows to validate node compatibility
 ```text`
 ````
+

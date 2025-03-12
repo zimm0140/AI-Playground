@@ -35,10 +35,10 @@ python setup_hardware_env.py
 The detection system:
 
 1. Identifies CPU architecture and features
-1. Detects available GPUs and their capabilities
-1. Checks for specialized hardware like Intel NPUs
-1. Verifies the presence of optimization libraries like OpenVINO
-1. Selects the most appropriate configuration based on findings
+2. Detects available GPUs and their capabilities
+3. Checks for specialized hardware like Intel NPUs
+4. Verifies the presence of optimization libraries like OpenVINO
+5. Selects the most appropriate configuration based on findings
 
 ## Hardware-specific Optimizations
 
@@ -95,10 +95,10 @@ These are automatically installed based on your detected hardware.
 
 Different hardware platforms have different performance characteristics:
 
-- **Intel Arc GPUs**: Best for parallel operations and high-throughput processing
-- **Intel Meteor Lake**: Good balance of CPU and GPU capabilities, with NPU for AI acceleration
-- **NVIDIA GPUs**: Strong general-purpose GPU computing
-- **CPU-only**: Works everywhere but with reduced performance for compute-intensive tasks
+- *_Intel Arc GPUs__: Best for parallel operations and high-throughput processing
+- __Intel Meteor Lake__: Good balance of CPU and GPU capabilities, with NPU for AI acceleration
+- __NVIDIA GPUs__: Strong general-purpose GPU computing
+- __CPU-only__: Works everywhere but with reduced performance for compute-intensive tasks
 
 ## Hardware Compatibility
 
@@ -107,6 +107,7 @@ For detailed compatibility information including recommended drivers and configu
 For optimization techniques specific to your hardware, see the [Hardware Optimization](optimization.md) guide.
 
 ---
-**Previous**: [Migration Guide](../getting-started/migration.md) | **Next**: [Hardware Compatibility](compatibility.md) | **See also**: [Device-Specific Guides](device-specific/)
+__Previous__: [Migration Guide](../getting-started/migration.md) | __Next__: [Hardware Compatibility](compatibility.md) | __See also_*: [Device-Specific Guides](device-specific/)
 ```text`
 ````
+

@@ -4,22 +4,22 @@ This guide explains how to optimize your AI applications for Intel hardware usin
 
 ## Table of Contents
 
-1. [Overview](#overview)
-1. [Hardware Types](#hardware-types)
-1. [Environment Setup](#environment-setup)
-1. [Using the AI Framework Integration](#using-the-ai-framework-integration)
-1. [Working with LangChain](#working-with-langchain)
-1. [Working with Stable Diffusion](#working-with-stable-diffusion)
-1. [Performance Benchmarking](#performance-benchmarking)
-1. [Troubleshooting](#troubleshooting)
-1. [Advanced Configuration](#advanced-configuration)
+1. [Introduction](#introduction)
+2. [Hardware Detection](#hardware-detection)
+3. [Model Optimization](#model-optimization)
+4. [Performance Benchmarking](#performance-benchmarking)
+5. [Precision Settings](#precision-settings)
+6. [Memory Management](#memory-management)
+7. [Troubleshooting](#troubleshooting)
+8. [References](#references)
+9. [FAQ](#faq)
 
 ## Overview
 
 Our hardware-aware environment management system automatically detects your Intel hardware and sets up the appropriate environment for optimal performance with AI frameworks. The
 system supports:
 
-- **Intel Arc GPUs** via XPU backends using Intel® Extension for PyTorch
+- *_Intel Arc GPUs__ via XPU backends using Intel® Extension for PyTorch
 - **Intel CPUs** with OpenVINO optimizations
 - **Standard CPUs** as a fallback option
 
@@ -287,10 +287,10 @@ python benchmarks/hardware_benchmark.py --iterations 10 --output results.json
 
 The benchmark tool measures:
 
-- **Matrix multiplication**: Fundamental operation for linear algebra in ML models
-- **Convolution operations**: Key for computer vision models
-- **Model inference speed**: LLM inference performance
-- **Image generation**: Stable Diffusion image generation time
+- __Matrix multiplication__: Fundamental operation for linear algebra in ML models
+- __Convolution operations__: Key for computer vision models
+- __Model inference speed__: LLM inference performance
+- __Image generation_*: Stable Diffusion image generation time
 
 Lower times indicate better performance. Compare results across hardware types to determine the best configuration for your workload.
 
@@ -303,8 +303,8 @@ Lower times indicate better performance. Compare results across hardware types t
 If your Intel Arc GPU is not detected:
 
 1. Ensure you have the latest Intel GPU drivers installed
-1. Check that the environment variable `XPU_VISIBLE_DEVICES` is set correctly
-1. Verify that Intel® Extension for PyTorch is installed:
+2. Check that the environment variable `XPU_VISIBLE_DEVICES` is set correctly
+3. Verify that Intel® Extension for PyTorch is installed:
 
    ```bash
    pip install intel-extension-for-pytorch
@@ -315,16 +315,16 @@ If your Intel Arc GPU is not detected:
 For OpenVINO problems:
 
 1. Ensure OpenVINO is correctly installed
-1. Verify your CPU is compatible with OpenVINO
-1. Check for environment variable conflicts
+2. Verify your CPU is compatible with OpenVINO
+3. Check for environment variable conflicts
 
 #### Performance Issues
 
 If you experience slower than expected performance:
 
 1. Use the benchmarking tool to identify bottlenecks
-1. Try different batch sizes and model configurations
-1. Update to the latest versions of Intel® Extension for PyTorch and OpenVINO
+2. Try different batch sizes and model configurations
+3. Update to the latest versions of Intel® Extension for PyTorch and OpenVINO
 
 ## Advanced Configuration
 
@@ -342,8 +342,6 @@ Custom hardware detection logic
 """
 
 ## Your custom logic here
-
-```text
 
 ```text
 
@@ -450,4 +448,5 @@ You can create a `uvfast.json` file in your project root to customize behavior:
 
 This configuration allows for customized settings per hardware type, including environment variables and additional packages.
 ```text`
-````
+```
+

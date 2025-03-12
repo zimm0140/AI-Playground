@@ -69,7 +69,7 @@ hardware_type = hardware_detection.detect_hardware_type()
 
 Detect the available hardware type.
 
-**Returns:**
+*_Returns:__
 
 - A string representing the hardware type:
   - `"base"`: CPU only
@@ -80,7 +80,7 @@ Detect the available hardware type.
   - `"lnl"`: Intel Lunar Lake
   - `"ovino"`: OpenVINO-compatible
 
-**Example:**
+__Example:__
 
 ```python
 from hardware_detection import detect_hardware_type
@@ -93,11 +93,11 @@ print(f"Detected hardware: {hardware}")
 
 Get information about available GPUs.
 
-**Returns:**
+__Returns:__
 
 - A list of strings describing the detected GPUs, or an empty list if no GPUs are found.
 
-**Example:**
+__Example:__
 
 ```python
 from hardware_detection import get_gpu_info
@@ -110,7 +110,7 @@ print(f"Available GPUs: {gpus}")
 
 Get information about the CPU.
 
-**Returns:**
+__Returns:__
 
 - A dictionary containing CPU information:
   - `vendor`: CPU manufacturer
@@ -118,7 +118,7 @@ Get information about the CPU.
   - `cores`: Number of CPU cores
   - `features`: (Optional) List of CPU features
 
-**Example:**
+__Example:__
 
 ```python
 from hardware_detection import get_cpu_info
@@ -131,7 +131,7 @@ print(f"CPU: {cpu['name']} with {cpu['cores']} cores")
 
 Get comprehensive information about the system hardware.
 
-**Returns:**
+__Returns:__
 
 - A dictionary with hardware information:
   - `system`: Operating system
@@ -141,7 +141,7 @@ Get comprehensive information about the system hardware.
   - `detected_hardware`: Detected hardware type
   - `openvino_available`: Whether OpenVINO is available
 
-**Example:**
+__Example:__
 
 ```python
 from hardware_detection import get_hardware_info
@@ -154,11 +154,11 @@ print(json.dumps(info, indent=2))
 
 Print information about the system hardware.
 
-**Arguments:**
+__Arguments:__
 
 - `verbose`: Whether to show additional details
 
-**Example:**
+__Example:_*
 
 ```python
 from hardware_detection import print_hardware_info
@@ -183,10 +183,10 @@ still supported but will display deprecation warnings.
 The new package structure provides:
 
 1. Better dependency management
-1. Proper namespacing
-1. Type hints and documentation
-1. Easier testing
-1. Future extensibility
+2. Proper namespacing
+3. Type hints and documentation
+4. Easier testing
+5. Future extensibility
 
 ### Steps to Migrate
 
@@ -214,3 +214,4 @@ The new package structure provides:
    hardware_type = detect_hardware_type()
    ```text
 ````
+

@@ -16,19 +16,19 @@ This structure improves maintainability and makes the CI workflow easier to unde
 
 Added several new testing capabilities:
 
-- **Multi-platform Testing**: Added Windows job to ensure cross-platform compatibility
-- **Test Coverage Analysis**: Integrated code coverage measurement and reporting
-- **Security Scanning**: Added dependency vulnerability scanning with Safety
-- **Shell Script Linting**: Added Shellcheck integration for shell script quality
+- *_Multi-platform Testing__: Added Windows job to ensure cross-platform compatibility
+- __Test Coverage Analysis__: Integrated code coverage measurement and reporting
+- __Security Scanning__: Added dependency vulnerability scanning with Safety
+- __Shell Script Linting__: Added Shellcheck integration for shell script quality
 
 ## 3. Improved Reporting
 
 Enhanced reporting capabilities to provide better insights:
 
-- **Cross-Platform Summary**: Added a summarize job that combines results from all platforms
-- **Visual Indicators**: Added badges, emoji indicators, and progress bars
-- **Detailed Artifacts**: Generated comprehensive artifacts for each aspect of testing
-- **Workflow Diagram**: Created a visual workflow diagram explaining the CI process
+- __Cross-Platform Summary__: Added a summarize job that combines results from all platforms
+- __Visual Indicators__: Added badges, emoji indicators, and progress bars
+- __Detailed Artifacts__: Generated comprehensive artifacts for each aspect of testing
+- __Workflow Diagram__: Created a visual workflow diagram explaining the CI process
 
 ## 4. Windows Compatibility
 
@@ -42,18 +42,18 @@ Added Windows-specific testing:
 
 Added security-focused improvements:
 
-- **Dependency Scanning**: Scans for known vulnerabilities in dependencies
-- **Compatibility Reports**: Documents platform-specific compatibility issues
-- **Detailed Security Reports**: Generates artifacts with security findings
+- __Dependency Scanning__: Scans for known vulnerabilities in dependencies
+- __Compatibility Reports__: Documents platform-specific compatibility issues
+- __Detailed Security Reports__: Generates artifacts with security findings
 
 ## 6. Documentation
 
 Improved documentation across the CI system:
 
-- **Script Documentation**: Added detailed README explaining scripts
-- **Workflow Diagram**: Created visual workflow documentation
-- **API Documentation**: Added generation of API docs from code comments
-- **In-Code Documentation**: Enhanced comments in all scripts
+- __Script Documentation__: Added detailed README explaining scripts
+- __Workflow Diagram__: Created visual workflow documentation
+- __API Documentation__: Added generation of API docs from code comments
+- __In-Code Documentation__: Enhanced comments in all scripts
 
 ## CI Workflow Structure
 
@@ -95,12 +95,13 @@ The updated CI workflow now follows this structure:
 
 Potential future improvements for the CI workflow:
 
-1. **Docker Integration**: Add container-based testing to ensure more consistent environments
-1. **Performance Optimization**: Benchmark test execution times and optimize slow steps
-1. **Release Automation**: Extend CI to automate release processes
-1. **Automated Dependency Updates**: Integrate Dependabot or similar to keep dependencies up-to-date
-1. **MacOS Testing**: Add MacOS job for complete platform coverage
-1. **UI Testing**: Add browser-based testing if the project has a web interface
-1. **Deployment Testing**: Add tests to verify deployment works correctly
+1. __Docker Integration__: Add container-based testing to ensure more consistent environments
+2. __Performance Optimization__: Benchmark test execution times and optimize slow steps
+3. __Release Automation__: Extend CI to automate release processes
+4. __Automated Dependency Updates__: Integrate Dependabot or similar to keep dependencies up-to-date
+5. __MacOS Testing__: Add MacOS job for complete platform coverage
+6. __UI Testing__: Add browser-based testing if the project has a web interface
+7. __Deployment Testing_*: Add tests to verify deployment works correctly
 ```text`
 ````
+

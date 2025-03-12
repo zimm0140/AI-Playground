@@ -5,24 +5,24 @@ This guide helps you migrate to the modern Python development workflow using uv 
 ## Table of Contents
 
 1. [Migrating from pip to uv](#migrating-from-pip-to-uv)
-1. [Updating Type Annotations for Python 3.10+](#updating-type-annotations-for-python-310)
-1. [Using Lockfiles for Reproducible Environments](#using-lockfiles-for-reproducible-environments)
-1. [Working with Docker](#working-with-docker)
-1. [CI/CD Pipeline Updates](#cicd-pipeline-updates)
-1. [Migration FAQs](#migration-faqs)
+2. [Updating Type Annotations for Python 3.10+](#updating-type-annotations-for-python-310)
+3. [Using Lockfiles for Reproducible Environments](#using-lockfiles-for-reproducible-environments)
+4. [Working with Docker](#working-with-docker)
+5. [CI/CD Pipeline Updates](#cicd-pipeline-updates)
+6. [Migration FAQs](#migration-faqs)
 
 ## Migrating from pip to uv
 
 ### Why Migrate to uv?
 
-- **Speed**: uv is 10-100x faster than pip for dependency resolution
-- **Reliability**: Improved dependency resolution and conflict handling
-- **Features**: Better support for modern Python packaging standards
-- **Lockfiles**: Native support for lockfile generation and updating
+- *_Speed__: uv is 10-100x faster than pip for dependency resolution
+- __Reliability__: Improved dependency resolution and conflict handling
+- __Features__: Better support for modern Python packaging standards
+- __Lockfiles__: Native support for lockfile generation and updating
 
 ### Step-by-Step Migration
 
-1. **Install uv**:
+1. __Install uv__:
 
    \`\`\`text\`bash
 
@@ -40,7 +40,7 @@ This guide helps you migrate to the modern Python development workflow using uv 
 
    ````
 
-1. **Migrate existing environments**:
+1. __Migrate existing environments__:
 
    \`\`\`text\`bash
 
@@ -63,7 +63,7 @@ This guide helps you migrate to the modern Python development workflow using uv 
 
    ````
 
-1. **Use the helper scripts**:
+1. __Use the helper scripts__:
 
    We've provided convenient script wrappers in `scripts/run_with_uv.sh` (Unix/macOS) and `scripts/run_with_uv.ps1` (Windows).
 
@@ -103,7 +103,7 @@ For detailed guidance on type compatibility issues and solutions, see the [Type 
 
 ### Common Type Annotation Updates
 
-1. **Union Types**:
+1. __Union Types__:
 
    Before (Python 3.9 and earlier):
    ```python
@@ -130,7 +130,7 @@ For detailed guidance on type compatibility issues and solutions, see the [Type 
 ```text
    ```text
 
-1. **Optional Types**:
+1. __Optional Types__:
 
    Before:
    ```python
@@ -161,12 +161,12 @@ For detailed guidance on type compatibility issues and solutions, see the [Type 
 
 The project now uses lockfiles to ensure reproducible environments:
 
-1. **Sync your environment** using the lockfiles:
+1. __Sync your environment__ using the lockfiles:
    ```bash
    uv pip sync requirements.lock requirements-dev.lock
    ```text
 
-1. **Update lockfiles** when dependencies change:
+1. __Update lockfiles__ when dependencies change:
    ```bash
    uv pip compile requirements.txt --output-file requirements.lock
    uv pip compile requirements-dev.txt --output-file requirements-dev.lock
@@ -192,19 +192,19 @@ docker run -p 5000:5000 ai-playground
 
 ### Benefits of the uv-based Dockerfile
 
-- **Faster builds**: uv's speed dramatically reduces build times
-- **Reproducible environments**: Using lockfiles ensures consistent environments
-- **Multi-stage builds**: Separate development and production images
-- **Smaller images**: Only necessary dependencies are included
+- __Faster builds__: uv's speed dramatically reduces build times
+- __Reproducible environments__: Using lockfiles ensures consistent environments
+- __Multi-stage builds__: Separate development and production images
+- __Smaller images__: Only necessary dependencies are included
 
 ## CI/CD Pipeline Updates
 
 The CI/CD pipeline has been updated to use uv for faster and more reliable builds:
 
-1. **Testing across Python versions**: CI tests against Python 3.10, 3.11, and 3.13
-1. **Dual testing**: Tests both traditional and modern installation methods
-1. **Caching**: Optimized caching of dependencies to speed up CI runs
-1. **Markdown linting**: Automated linting of markdown files
+1. __Testing across Python versions__: CI tests against Python 3.10, 3.11, and 3.13
+2. __Dual testing__: Tests both traditional and modern installation methods
+3. __Caching__: Optimized caching of dependencies to speed up CI runs
+4. __Markdown linting_*: Automated linting of markdown files
 
 ## Migration FAQs
 
@@ -236,3 +236,4 @@ A: No. Users installing via pip will still be able to do so. These changes enhan
 A: Use the `scripts/fix_type_annotations.py` script to help identify and fix type annotation issues.
 ```text`
 ````
+

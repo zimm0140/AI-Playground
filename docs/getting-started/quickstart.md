@@ -90,6 +90,7 @@ AI-Playground automatically detects and optimizes for your hardware:
 - [Hardware Optimization](../hardware/optimization.md) - Learn how to optimize for your specific hardware
 - [Example Workflows](../reference/examples.md) - Explore example workflows and use cases
 
-______________________________________________________________________
+*___**___**___**___**___**___**___**___**___**___**___**___**___**____
 
-**Next**: [Installation Guide](installation.md) | **See also**: [Hardware Overview](../hardware/overview.md)
+__Next__: [Installation Guide](installation.md) | __See also_*: [Hardware Overview](../hardware/overview.md)
+

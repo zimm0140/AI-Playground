@@ -5,26 +5,16 @@ This document provides a comprehensive reference for the AI-Playground API, incl
 ## Table of Contents
 
 - [REST API](#rest-api)
-
-\`\`\`text\`text
-
 - [Authentication](#authentication)
 - [Model Management](#model-management)
 - [Inference](#inference)
 - [Hardware Management](#hardware-management)
 - [System](#system)
-
-````text
 - [Python API](#python-api)
-
-```text
-
 - [Client](#client)
 - [Models](#models)
 - [Hardware](#hardware)
 - [Utilities](#utilities)
-
-```text
 - [Error Handling](#error-handling)
 - [Common Data Structures](#common-data-structures)
 
@@ -1378,6 +1368,7 @@ client.set_hardware(device_type="cpu")
 ```text
 
 ---
-**Previous**: [Python API Reference](python-api.md) | **Next**: [Configuration Reference](configuration.md) | **See also**: [API Design](../architecture/api-design.md)
+*_Previous__: [Python API Reference](python-api.md) | __Next__: [Configuration Reference](configuration.md) | __See also_*: [API Design](../architecture/api-design.md)
 ```text`
 ````
+
