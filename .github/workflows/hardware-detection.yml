@@ -22,8 +22,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
+        os: [windows-latest]
         python-version: ["3.10", "3.11", "3.12"]
+        include:
+          # Include Ubuntu for future cross-platform support
+          - os: ubuntu-latest
+            python-version: "3.12"
+            experimental: true
+
+    continue-on-error: ${{ matrix.experimental || false }}
 
     steps:
       - uses: actions/checkout@v4
@@ -34,44 +41,61 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: "pip"
 
-      - name: Install dependencies
+      - name: Install dependencies (Windows)
+        if: runner.os == 'Windows'
         run: |
           python -m pip install --upgrade pip
           pip install pytest pytest-cov types-requests mypy ruff
           pip install -e .
+        shell: pwsh
 
-      - name: Run tests
+      - name: Install dependencies (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-cov types-requests mypy ruff
+          pip install -e .
+        shell: bash
+
+      - name: Run tests (Windows)
+        if: runner.os == 'Windows'
         run: |
           python -m pytest -v hardware_detection/tests/ --cov=hardware_detection --cov-report=term-missing --import-mode=append
+        shell: pwsh
+
+      - name: Run tests (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          python -m pytest -v hardware_detection/tests/ --cov=hardware_detection --cov-report=term-missing --import-mode=append
+        shell: bash
 
   docker-tests:
     name: Docker Tests
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     needs: unit-tests
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+      - name: Set up Docker Desktop
+        uses: crazy-max/ghaction-setup-docker@v2
+        with:
+          version: latest
 
       - name: Build test image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: hardware_detection/Dockerfile
-          push: false
-          load: true
-          tags: hardware-detection:test
+        run: |
+          docker build -t hardware-detection:test -f hardware_detection/Dockerfile .
+        shell: pwsh
 
       - name: Run tests in container
         run: |
           docker run --rm hardware-detection:test pytest -v /app/hardware_detection/tests/
+        shell: pwsh
 
   integration-test:
     name: Integration Test
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     needs: unit-tests
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
@@ -89,9 +113,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install pytest pytest-cov types-requests mypy ruff
           pip install -e .
+        shell: pwsh
 
       - name: Run integration tests
         env:
           SIMULATED_HARDWARE: "acm"
         run: |
           python -m pytest -v hardware_detection/tests/test_detection.py::test_detect_hardware_type_acm
+        shell: pwsh

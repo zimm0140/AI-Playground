@@ -18,8 +18,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
+        os: [windows-latest]
         python-version: ["3.10", "3.11", "3.12"]
+        include:
+          # Include Ubuntu for future cross-platform support
+          - os: ubuntu-latest
+            python-version: "3.12"
+            experimental: true
+
+    continue-on-error: ${{ matrix.experimental || false }}
 
     steps:
       - uses: actions/checkout@v4
@@ -35,13 +42,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install pytest pytest-cov types-requests mypy ruff
           pip install -e .
+        shell: pwsh
 
       - name: Run tests
         run: |
           python -m pytest -v hardware_detection/tests/ --cov=hardware_detection --cov-report=term-missing --import-mode=append
+        shell: pwsh
 
   lint:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -51,20 +60,12 @@ jobs:
           python-version: "3.12"
           cache: "pip"
 
-      - name: Install dependencies
+      - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
           pip install ruff mypy types-requests pytest
           pip install -e .
-
-      - name: Lint with Ruff
-        run: |
-          ruff check .
-          ruff format --check .
-
-      - name: Type check with mypy
-        run: |
-          mypy hardware_detection
+        shell: pwsh
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -76,19 +77,30 @@ jobs:
         run: |
           cd WebUI
           npm ci
+        shell: pwsh
+
+      - name: Lint Python
+        run: |
+          ruff check .
+          ruff format --check .
+          mypy hardware_detection
+        shell: pwsh
 
       - name: Lint TypeScript
         run: |
           cd WebUI
-          npm run lint
+          npm run lint:check
+          npm run type-check
+        shell: pwsh
 
       - name: Check markdown files
         run: |
           pip install mdformat
           mdformat --check .
+        shell: pwsh
 
   audit:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     continue-on-error: true
     steps:
       - uses: actions/checkout@v4
@@ -99,7 +111,20 @@ jobs:
           python-version: "3.12"
           cache: "pip"
 
-      - name: Audit dependencies
+      - name: Audit Python dependencies
         run: |
           pip install pip-audit
           pip-audit .
+        shell: pwsh
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Audit Node.js dependencies
+        run: |
+          cd WebUI
+          npm audit
+        shell: pwsh
