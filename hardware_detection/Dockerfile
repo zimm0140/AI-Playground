@@ -7,12 +7,11 @@ RUN apt-get update && apt-get install -y \
     git \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy only the necessary files
-COPY hardware_detection/ /app/hardware_detection/
-COPY pyproject.toml README.md /app/
+# Copy the entire project directory
+COPY . /app/
 
 # Install Python dependencies
-RUN pip install --no-cache-dir -e .
+RUN pip install --no-cache-dir pytest pytest-cov
 
 # Set environment variables
 ENV PYTHONPATH=/app
@@ -20,4 +19,4 @@ ENV CI_TESTING=true
 ENV SIMULATED_HARDWARE=base
 
 # Default command
-CMD ["pytest", "-v", "hardware_detection/tests/"] 
+CMD ["python", "-m", "pytest", "-v", "hardware_detection/tests/"] 

@@ -12,7 +12,34 @@ env:
   CI_TESTING: "true"
   SIMULATED_HARDWARE: "base"
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
+  build:
+    name: Build Package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-cov types-requests mypy ruff hatch hatchling
+          pip install -e .
+        shell: bash
+
+      - name: Verify installation
+        run: python -c "import hardware_detection; print(hardware_detection.__file__)"
+        shell: bash
+
   test:
     name: Python Tests
     runs-on: ${{ matrix.os }}
@@ -57,7 +84,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: |
           python -m pip install --upgrade pip
-          pip install pytest pytest-cov types-requests mypy ruff
+          pip install pytest pytest-cov types-requests mypy ruff hatch hatchling
           sudo apt-get update
           sudo apt-get install -y build-essential python3-dev
           pip install -e .
@@ -84,8 +111,9 @@ jobs:
         uses: docker/setup-buildx-action@v3
       - name: Build and test Docker image
         run: |
+          cd hardware_detection
           docker buildx build --load -t hardware-detection-test .
-          docker run --rm hardware-detection-test pytest -v hardware_detection/tests/ --import-mode=append
+          docker run --rm hardware-detection-test
         shell: bash
 
   integration-test:
