@@ -1,11 +1,15 @@
-import { WebContents, app } from 'electron'
-import fs from 'fs'
-import path from 'node:path'
+import { WebContents, app } from 'electron';
+import fs from 'fs';
+import path from 'node:path';
+
+interface ElectronProcess extends NodeJS.Process {
+  resourcesPath: string;
+}
 
 class Logger {
   webContents: WebContents | null = null
   private pathToLogFiles: string = path.resolve(
-    app.isPackaged ? (process as any).resourcesPath : path.join(__dirname, '../../external/'),
+    app.isPackaged ? (process as ElectronProcess).resourcesPath : path.join(__dirname, '../../external/'),
   )
   private startupMessageCache: {
     message: string

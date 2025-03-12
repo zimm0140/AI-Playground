@@ -50,12 +50,39 @@ def setup_hardware_detection():
     """Ensure hardware detection module is available for imports."""
     debug_print("Setting up hardware detection module...")
 
+    # First check for the new package structure
+    if Path("hardware_detection").exists() and Path("hardware_detection").is_dir():
+        debug_print("Found hardware_detection package, using package structure")
+
+        # Ensure we have the required __init__.py files
+        for subdir in ["", "tests"]:
+            init_file = Path("hardware_detection") / subdir / "__init__.py"
+            if init_file.exists():
+                debug_print(f"Found {init_file}")
+            else:
+                debug_print(f"Creating {init_file}")
+                init_dir = init_file.parent
+                init_dir.mkdir(parents=True, exist_ok=True)
+                with open(init_file, "w") as f:
+                    f.write('"""Auto-generated hardware_detection package."""\n')
+
+        # Also set up the compatibility layer
+        tools_hw_dir = Path("tools/hardware")
+        tools_hw_dir.mkdir(parents=True, exist_ok=True)
+
+        debug_print(
+            "Setting up compatibility layer in tools/hardware/hardware_detection.py"
+        )
+        return True
+
     # Copy from tools/hardware if it exists there
     if Path("tools/hardware/hardware_detection.py").exists():
         debug_print("Found hardware_detection.py in tools/hardware/")
         ensure_file_in_root("tools/hardware/hardware_detection.py")
     else:
-        debug_print("Warning: hardware_detection.py not found in tools/hardware/", "WARNING")
+        debug_print(
+            "Warning: hardware_detection.py not found in tools/hardware/", "WARNING"
+        )
         # Try to find the hardware_detection.py file elsewhere
         for path in [
             "hardware_detection.py",
@@ -76,6 +103,7 @@ def setup_hardware_detection():
 \"\"\"Hardware detection module for CI environment.\"\"\"
 
 import os
+import sys
 
 # Define hardware types
 HARDWARE_TYPES = ["base", "acm", "bmg", "mtl", "lnl", "ovino", "arl_h"]
@@ -134,20 +162,22 @@ def print_hardware_info(verbose=False):
                 )
 
     # Create __init__.py files to make directories importable
-    for dir_path in ["tools", "tools/hardware", "tools/scripts"]:
-        init_file = Path(dir_path) / "__init__.py"
+    for dir_path_str in ["tools", "tools/hardware", "tools/scripts"]:
+        dir_path = Path(dir_path_str)
+        init_file = dir_path / "__init__.py"
+
         if not dir_path.exists():
             try:
-                Path(dir_path).mkdir(parents=True, exist_ok=True)
-                debug_print(f"Created directory: {dir_path}")
+                dir_path.mkdir(parents=True, exist_ok=True)
+                debug_print(f"Created directory: {dir_path_str}")
             except Exception as e:
-                debug_print(f"Error creating directory {dir_path}: {e}", "ERROR")
+                debug_print(f"Error creating directory {dir_path_str}: {e}", "ERROR")
 
         if not init_file.exists():
             try:
                 debug_print(f"Creating {init_file}")
                 with open(init_file, "w") as f:
-                    f.write(f'"""Auto-generated {dir_path} package."""\n')
+                    f.write(f'"""Auto-generated {dir_path_str} package."""\n')
             except Exception as e:
                 debug_print(f"Error creating {init_file}: {e}", "ERROR")
                 traceback.print_exc()
@@ -199,7 +229,9 @@ def create_requirements_files():
         "service/requirements-ls_level_zero.txt",
     ]
 
-    base_content = "# Base requirements for testing\ntorch>=2.0.0\nnumpy>=1.24.0\npytest>=7.0.0\n"
+    base_content = (
+        "# Base requirements for testing\ntorch>=2.0.0\nnumpy>=1.24.0\npytest>=7.0.0\n"
+    )
 
     for req_file in requirements_files:
         req_path = Path(req_file)
@@ -214,7 +246,9 @@ def create_requirements_files():
                     if "ovino" in req_file:
                         f.write("\n# OpenVINO requirements\nopenvino-stub>=1.0.0\n")
                     elif "acm" in req_file or "Arc" in req_file:
-                        f.write("\n# Intel Arc requirements\nintel-extension-for-pytorch>=2.0.0\n")
+                        f.write(
+                            "\n# Intel Arc requirements\nintel-extension-for-pytorch>=2.0.0\n"
+                        )
         except Exception as e:
             debug_print(f"Error creating requirements file {req_file}: {e}", "ERROR")
             traceback.print_exc()
@@ -289,14 +323,18 @@ def setup_intel_extension_stub():
         intel_stub_path.mkdir(exist_ok=True)
 
         # Copy the stub implementation
-        stub_source = Path(".github/workflows/scripts/intel_extension_for_pytorch_stub.py")
+        stub_source = Path(
+            ".github/workflows/scripts/intel_extension_for_pytorch_stub.py"
+        )
         if stub_source.exists():
             shutil.copy2(stub_source, intel_stub_path / "__init__.py")
             debug_print("Installed Intel Extension for PyTorch stub module from file")
         else:
             # Create a simple stub if the source file doesn't exist
             with open(intel_stub_path / "__init__.py", "w") as f:
-                f.write('"""Intel Extension for PyTorch stub module for CI testing."""\n\n')
+                f.write(
+                    '"""Intel Extension for PyTorch stub module for CI testing."""\n\n'
+                )
                 f.write('__version__ = "2.0.110+mock"\n\n')
                 f.write("def xpu_device_name():\n")
                 f.write('    """Get the XPU device name."""\n')
@@ -350,7 +388,10 @@ def ensure_module_structure():
             if hasattr(e, "stderr"):
                 debug_print(f"STDERR: {e.stderr}")
     else:
-        debug_print("Module structure script not found, creating minimal structure...", "WARNING")
+        debug_print(
+            "Module structure script not found, creating minimal structure...",
+            "WARNING",
+        )
 
         # Ensure tools directory structure
         for dir_path in ["tools", "tools/hardware", "tools/scripts", "service"]:
@@ -365,7 +406,9 @@ def ensure_module_structure():
                         f.write(f'"""Auto-generated {dir_path} package."""\n')
                     debug_print(f"Created {dir_init}")
             except Exception as e:
-                debug_print(f"Error setting up module structure for {dir_path}: {e}", "ERROR")
+                debug_print(
+                    f"Error setting up module structure for {dir_path}: {e}", "ERROR"
+                )
                 traceback.print_exc()
 
     return False
@@ -397,7 +440,10 @@ def setup_mock_modules():
                 debug_print(f"STDERR: {e.stderr}")
             return False
     else:
-        debug_print("Mock modules script not found, using individual setup functions...", "WARNING")
+        debug_print(
+            "Mock modules script not found, using individual setup functions...",
+            "WARNING",
+        )
         return setup_openvino_stub() and setup_intel_extension_stub()
 
 
