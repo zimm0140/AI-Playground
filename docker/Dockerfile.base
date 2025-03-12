@@ -1,0 +1,30 @@
+FROM python:3.10-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy the hardware detection package
+COPY hardware_detection/ /app/hardware_detection/
+COPY pyproject.toml setup.py README.md uvfast.json /app/
+
+# Install the package
+RUN pip install --no-cache-dir -e .
+
+# Set environment variables
+ENV SIMULATED_HARDWARE=base
+ENV UVFAST_MOCK_DIR=/app/.uvfast/mock
+
+# Create mock files
+RUN mkdir -p "$UVFAST_MOCK_DIR" \
+    && echo "Generic GPU" > "$UVFAST_MOCK_DIR/gpu_info.txt" \
+    && echo "vendor: Generic" > "$UVFAST_MOCK_DIR/cpu_info.txt" \
+    && echo "name: Generic CPU" >> "$UVFAST_MOCK_DIR/cpu_info.txt" \
+    && echo "cores: 4" >> "$UVFAST_MOCK_DIR/cpu_info.txt"
+
+# Run the hardware detection CLI by default
+ENTRYPOINT ["python", "-m", "hardware_detection.cli"]
+CMD ["info"] 

@@ -1,0 +1,45 @@
+version: '3'
+
+services:
+  base:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.base
+    volumes:
+      - ./hardware_detection:/app/hardware_detection
+    environment:
+      - SIMULATED_HARDWARE=base
+      - PYTHONPATH=/app
+    command: info --verbose
+
+  acm:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.acm
+    volumes:
+      - ./hardware_detection:/app/hardware_detection
+    environment:
+      - SIMULATED_HARDWARE=acm
+      - PYTHONPATH=/app
+    command: info --verbose
+
+  ovino:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.ovino
+    volumes:
+      - ./hardware_detection:/app/hardware_detection
+    environment:
+      - SIMULATED_HARDWARE=ovino
+      - PYTHONPATH=/app
+    command: info --verbose
+
+  test:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.base
+    volumes:
+      - ./hardware_detection:/app/hardware_detection
+    environment:
+      - PYTHONPATH=/app
+    command: bash -c "cd /app && python -m pytest hardware_detection/tests -v" 
