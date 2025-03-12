@@ -1,0 +1,11 @@
+# Main dependencies
+torch>=2.0.0
+numpy>=1.22.0
+requests>=2.28.0
+flask>=2.2.0
+pillow>=9.3.0
+marshmallow-dataclass>=8.5.3
+langchain>=0.3.0
+compel>=2.0.0
+
+# Development dependencies are in requirements-dev.txt 
