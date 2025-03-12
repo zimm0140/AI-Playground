@@ -32,6 +32,7 @@ modifiable such as: “resolution”, “seed”, prompt” “inferenceSteps”
 “seed”, prompt” “inferenceSteps”, “batchSize, “cfg”, “negativePrompt” <br>**Syntax**: “inputField” ie "inferenceSteps", "seed" |
 | "comfyUiApiWorkflow": | **Required**: Yes <br>**Description**: This section should be a copy and paste of the API export of the workflow created in ComfyUI.
 
+
 ## Instructions
 
 ### Creating a New An AI Playground Workflow
@@ -157,4 +158,5 @@ AgIQEAAAkJAABISAAAQEICAAASEgAAkJAAAICEBAAAJCQAACAhAQAACQkAAEhIAABAQgIAABISAACQkA
 AJCQAACAhAQAACQkAAEhIAABAQgIAABISAACQkAAAgIQEAAAkJAAAICEBAAAJCQAASEgAAEBCAgAAEhIAAJCQAACAhAQAACQkAAAgIQEAAAkJAABISAAAQEICAAASEgAAkJAAAICEBAAAJCQAACAhAQAACQkAAEhIAABAQgIAABISAACQkAA
 gIQEAAAkJAAAICEBAAAJCQAASEgAAEBCAgAAEhIAAJCQAACAhAQAACQkAAAgIQEAAAkJAABISAAAQEICAAASEgAAkJAAAICEBAAAJCQAACAhAQAACQkAAEhIAABAQgIAABISAACQkAAAgIQEAAAkJAAAICEBAAAJ/T8r8gNH5WpNaAAAAABJ
 U5ErkJggg=="
+
 ````

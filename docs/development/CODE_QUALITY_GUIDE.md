@@ -78,4 +78,5 @@ Common issues and solutions:
 ## Contact
 
 For questions about code quality standards or help with resolving issues, please open an issue on GitHub or contact the project maintainers.
+
 ````

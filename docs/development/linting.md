@@ -376,4 +376,5 @@ return model
 
 ---
 **Previous**: [Testing Guide](testing.md) | **Next**: [Project Architecture](../architecture/overview.md) | **See also**: [Code Quality Standards](code-quality.md)
+
 ````

@@ -35,6 +35,7 @@ The system recognizes the following hardware types:
 | `ovino` | Intel CPUs with OpenVINO | OpenVINO runtime optimizations |
 | `base` | Standard hardware | Standard PyTorch CPU operations |
 
+
 ## Environment Setup
 
 ### Basic Setup
@@ -448,4 +449,5 @@ You can create a `uvfast.json` file in your project root to customize behavior:
 ```text
 
 This configuration allows for customized settings per hardware type, including environment variables and additional packages.
+
 ````

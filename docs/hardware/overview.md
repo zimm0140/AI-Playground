@@ -19,6 +19,7 @@ AI-Playground supports the following hardware platforms with varying levels of o
 | NVIDIA GPUs | - | Standard | Standard PyTorch CUDA support |
 | AMD GPUs | - | Basic | Limited support via ROCm |
 
+
 ## Automatic Hardware Detection
 
 AI-Playground includes a sophisticated hardware detection system that identifies your specific hardware configuration and sets up the environment accordingly:
@@ -107,4 +108,5 @@ For optimization techniques specific to your hardware, see the [Hardware Optimiz
 
 ---
 **Previous**: [Migration Guide](../getting-started/migration.md) | **Next**: [Hardware Compatibility](compatibility.md) | **See also**: [Device-Specific Guides](device-specific/)
+
 ````

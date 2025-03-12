@@ -41,6 +41,7 @@ TBD
 workflow definitions by the intel source |
 | Model Repositories | The models used for inference need to be downloaded from external sources, e.g. huggingface.com |
 
+
 ## Building Block View
 
 ![](AI-PG_ComponentView.svg)
@@ -157,4 +158,5 @@ computational resources.
 ```text
   </tr>
 </table>
+
 ````

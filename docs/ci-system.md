@@ -37,6 +37,7 @@ The main workflow files are:
 | `comfyui-pr-checks.yml` | Runs checks on PRs that modify ComfyUI workflows |
 | `ruff.yml` | Runs Python linting using Ruff |
 
+
 ## Pre-commit Hooks
 
 Pre-commit hooks are used to catch issues before they're committed to the repository. They run automatically when you commit changes.
@@ -175,4 +176,5 @@ The CI system tracks performance metrics to help identify bottlenecks and improv
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
 - [Pre-commit Hooks Guide](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks)
 - [Ruff Documentation](https://docs.astral.sh/ruff/)
+
 ````

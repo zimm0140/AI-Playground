@@ -248,4 +248,5 @@ commit automatically with `git commit -s`.
 -----
 
 Again, thanks for your interest in contributing to this project. We appreciate your efforts to make our project even better!
+
 ````
