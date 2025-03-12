@@ -1,15 +1,17 @@
 {
   "name": "webui",
   "version": "1.0.0",
+  "private": true,
+  "type": "module",
   "description": "Web UI for hardware detection",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc && vite build",
     "preview": "vite preview",
-    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
-    "lint:check": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --ignore-path .gitignore",
-    "format": "prettier --write src/",
-    "format:check": "prettier --check src/",
+    "lint:check": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format:check": "prettier --check .",
+    "format:fix": "prettier --write .",
     "type-check": "vue-tsc --noEmit"
   },
   "dependencies": {

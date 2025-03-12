@@ -38,45 +38,29 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: "pip"
 
-      - name: Install dependencies (Windows)
-        if: matrix.os == 'windows-latest'
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install pytest pytest-cov types-requests mypy ruff
           pip install -e .
-        shell: pwsh
+        shell: ${{ matrix.os == 'windows-latest' && 'pwsh' || 'bash' }}
 
-      - name: Install dependencies (Linux)
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          python -m pip install --upgrade pip
-          # Install uv using pip instead of curl
-          pip install uv
-          pip install pytest pytest-cov types-requests mypy ruff
-          pip install -e .
-        shell: bash
-
-      - name: Run tests (Windows)
-        if: matrix.os == 'windows-latest'
+      - name: Run tests
         run: |
           python -m pytest -v hardware_detection/tests/ --cov=hardware_detection --cov-report=term-missing --import-mode=append
-        shell: pwsh
-
-      - name: Run tests (Linux)
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          python -m pytest -v hardware_detection/tests/ --cov=hardware_detection --cov-report=term-missing --import-mode=append
-        shell: bash
+        shell: ${{ matrix.os == 'windows-latest' && 'pwsh' || 'bash' }}
 
   docker-test:
     name: Docker Test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
       - name: Build and test Docker image
         run: |
           cd hardware_detection
-          docker build -t hardware-detection-test .
+          docker buildx build --load -t hardware-detection-test .
           docker run --rm hardware-detection-test
         shell: bash
 
