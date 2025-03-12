@@ -14,6 +14,7 @@ AI-Playground supports all Intel Arc GPU models:
 | A380 | 6GB | Small to medium models | Good |
 | A310 | 4GB | Small models only | Basic |
 
+
 ## Hardware Requirements
 
 ### Driver Requirements
@@ -22,6 +23,7 @@ AI-Playground supports all Intel Arc GPU models:
 |----|------------------------|-------------------|
 | Windows | 31.0.101.4255 | Latest available |
 | Linux | Mesa 23.1 | Mesa 23.3+ |
+
 
 ### System Requirements
 
