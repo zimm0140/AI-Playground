@@ -1,0 +1,87 @@
+{
+    "project_name": "ai-playground",
+    "python_version": "3.10",
+    "hardware_types": [
+        "base",
+        "acm",
+        "bmg",
+        "mtl",
+        "lnl",
+        "ovino",
+        "arl_h"
+    ],
+    "default_hardware": "base",
+    "requirements": {
+        "base": "requirements.txt",
+        "dev": "requirements-dev.txt",
+        "hardware": {
+            "base": "requirements.txt",
+            "acm": "service/requirements-acm.txt",
+            "bmg": "service/requirements-bmg.txt",
+            "mtl": "service/requirements-mtl.txt",
+            "lnl": "service/requirements-lnl.txt",
+            "ovino": "requirements-hardware-ovino.txt",
+            "arl_h": "service/requirements-arl_h.txt"
+        }
+    },
+    "lockfiles": {
+        "base": "requirements.lock",
+        "dev": "requirements-dev.lock",
+        "hardware": {
+            "base": "requirements-hardware-base.lock",
+            "acm": "requirements-hardware-acm.lock",
+            "bmg": "requirements-hardware-bmg.lock",
+            "mtl": "requirements-hardware-mtl.lock",
+            "lnl": "requirements-hardware-lnl.lock",
+            "ovino": "requirements-hardware-ovino.lock",
+            "arl_h": "requirements-hardware-arl_h.lock"
+        }
+    },
+    "detection": {
+        "acm": {
+            "gpu_name_pattern": "Intel.*Arc|Intel.*A[1-9][0-9][0-9]"
+        },
+        "bmg": {
+            "gpu_name_pattern": "Intel.*Battlemage|Intel.*B[1-9][0-9][0-9]"
+        },
+        "mtl": {
+            "cpu_name_pattern": "Intel.*Meteor Lake|Core.*Ultra.*100"
+        },
+        "lnl": {
+            "cpu_name_pattern": "Intel.*Lunar Lake|Core.*Ultra.*200"
+        },
+        "arl_h": {
+            "gpu_name_pattern": "Intel.*Alchemist|Intel.*Arc.*A"
+        }
+    },
+    "scripts": {
+        "test": "pytest",
+        "lint": "ruff check .",
+        "format": "ruff format .",
+        "type-check": "mypy .",
+        "docs": "mkdocs serve",
+        "build-docs": "mkdocs build"
+    },
+    "tools": {
+        "ruff": {
+            "version": "0.1.0"
+        },
+        "mypy": {
+            "version": "1.5.1"
+        }
+    },
+    "environment": {
+        "venv_path": ".venv",
+        "cache_dir": ".cache/uv",
+        "pip_args": [
+            "--no-deps"
+        ]
+    },
+    "docker": {
+        "base_image": "python:3.10-slim",
+        "hardware_images": {
+            "acm": "intel/arc-gpu:latest",
+            "ovino": "openvino/ubuntu22_runtime:latest"
+        }
+    }
+}
