@@ -49,7 +49,7 @@ MD026:
 
 # MD029 - Ordered list item prefix
 MD029:
-  style: "one"
+  style: "ordered"
 
 # MD030 - Spaces after list markers
 MD030: true
@@ -69,13 +69,13 @@ MD033:
     - "br"
 
 # MD034 - Bare URL used
-MD034: true
+MD034: false
 
 # MD036 - Emphasis used instead of a heading
 MD036: true
 
 # MD040 - Fenced code blocks should have a language specified
-MD040: true
+MD040: false
 
 # MD041 - First line in file should be a top level heading
 MD041: true
