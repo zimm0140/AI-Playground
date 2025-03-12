@@ -1,161 +1,249 @@
-# Contributing to AI-Playground
+# Contributing to AI Playground
 
-Thank you for your interest in contributing to AI-Playground! This guide will help you get started with the development process.
+First off, thank you for considering contributing to AI Playground. It's people like you that make this project such a great tool. We welcome contributions from everyone as long
+as they follow the guidelines below.
 
-## Code of Conduct
+## Contributing Guidelines
 
-This project adheres to a Code of Conduct. By participating, you are expected to uphold this code. Please report unacceptable behavior to the project maintainers.
-
-## How to Contribute
-
-### Reporting Bugs
-
-If you find a bug, please create an issue in the [issue tracker](https://github.com/intel/AI-Playground/issues) with the following information:
-
-- A clear, descriptive title
-- A detailed description of the issue
-- Steps to reproduce the problem
-- Expected behavior
-- Actual behavior
-- Screenshots if applicable
-- Your environment (OS, Python version, hardware configuration)
-
-### Suggesting Enhancements
-
-We welcome suggestions for enhancements. Please create an issue with:
-
-- A clear, descriptive title
-- A detailed description of the proposed enhancement
-- Any relevant examples or mockups
-- How the enhancement would benefit users
-
-### Pull Requests
-
-1. Fork the repository
-1. Create a new branch for your feature (`git checkout -b feature/amazing-feature`)
-1. Make your changes
-1. Run tests to ensure your changes don't break existing functionality
-1. Commit your changes (`git commit -m 'Add some amazing feature'`)
-1. Push to your branch (`git push origin feature/amazing-feature`)
-1. Open a Pull Request
+Thank you for your interest in contributing to AI-Playground! This document outlines the environment setup process and best practices.
 
 ## Development Environment Setup
 
-### Prerequisites
+### Option 1: Using Conda (Recommended)
 
-- Python 3.10 or higher
-- Git
+1. **Install Conda**:
+   - Download and install [Miniconda](https://docs.conda.io/en/latest/miniconda.html) or [Anaconda](https://www.anaconda.com/products/distribution)
 
-### Setting Up Your Development Environment
-
-1. Clone the repository:
-
-   ```bash
-   git clone <https://github.com/intel/AI-Playground.git>
-   cd AI-Playground
-   ```text
-
-1. Set up a virtual environment:
-
-   ```bash
-   # Using venv
-
-   python -m venv .venv
-
-   # Activate on Windows
-
-   .venv\Scripts\activate
-
-   # Activate on macOS/Linux
-
-   source .venv/bin/activate
-   ```text
-
-1. Install dependencies:
-
-   ```bash
-   # For automatic hardware detection and environment setup
-
-   python setup_hardware_env.py --dev
-   ```text
-
-### Using uv for Dependency Management
-
-We recommend using `uv` for faster dependency management:
+1. **Create and activate the environment**:
 
 ```bash
 
-# Install uv
+## Create a new Conda environment
 
-curl -LsSf <https://astral.sh/uv/install.sh> | sh  # Unix/Linux/macOS
+   conda create -n ai-playground-env python=3.9 -y
 
-# or
+## Activate the environment
 
-powershell -c "irm <https://astral.sh/uv/install.ps1> | iex"  # Windows
+   conda activate ai-playground-env
 
+## Install required packages
 
-# Install dependencies with uv
+   pip install -r requirements.txt
+   ```text
+1. **Verify the environment**:
 
-uv pip install -e ".[dev]"
+```bash
+
+## Check which Python is being used (should point to your conda environment)
+
+   python -c "import sys; print(sys.executable)"
+
+## Test that jsonschema is installed
+
+   python -c "import jsonschema; print(f'jsonschema version: {jsonschema.__version__}')"
+   ```text
+
+### Option 2: Using venv
+
+1. **Create and activate the environment**:
+
+```bash
+
+## On Windows
+
+   python -m venv .venv
+   .\.venv\Scripts\activate
+
+## On macOS/Linux
+
+   python -m venv .venv
+   source .venv/bin/activate
+
+## Install required packages
+
+   pip install -r requirements.txt
+   ```text
+
+## Environment Management Best Practices
+
+1. **Always activate your environment before working on the project**:
+
+```bash
+
+## For Conda
+
+   conda activate ai-playground-env
+
+## For venv on Windows
+
+   .\.venv\Scripts\activate
+
+## For venv on macOS/Linux
+
+   source .venv/bin/activate
+   ```text
+1. **Add new dependencies to requirements.txt**:
+
+   When adding a new package, update the requirements.txt file:
+
+```bash
+
+## After installing a new package
+
+   pip freeze > requirements.txt
+
+## Or manually add it with a specific version
+
+   echo "package-name==1.2.3" >> requirements.txt
+   ```text
+1. **Never commit environment directories**:
+
+   The .gitignore file is set up to exclude environment directories (.venv/, env/, etc.).
+   Do not manually commit these directories.
+
+## Validation Workflow
+
+To validate JSON files against schemas:
+
+```bash
+
+## Ensure you're in your activated environment
+
+python validate_colorize.py
 
 ```text
 
-## Development Workflow
+## Additional Guidelines
 
-1. **Before Making Changes**:
-   - Ensure you're working with the latest code: `git pull origin main`
-   - Create a new branch for your feature or fix
-   - Install development dependencies
+## Code of Conduct
 
-1. **Making Changes**:
-   - Write clean, well-documented code
-   - Follow the existing code style
-   - Add tests for new functionality
+AI Playground has adopted a Code of Conduct that we expect project participants to adhere to. Please read [the full text](./CODE_OF_CONDUCT.md) so that you can understand what
+actions will and will not be tolerated.
 
-1. **Testing Your Changes**:
-   - Run the existing test suite: `pytest`
-   - Add tests for your new functionality
-   - Ensure all tests pass
+## How to Contribute
 
-1. **Submitting Changes**:
-   - Commit your changes with a clear message
-   - Push your branch to your fork
-   - Create a Pull Request against the main branch
+There are many ways to contibute to this project, from writing tutorials or blog posts ([Show and tell in Discussion](https://github.com/intel/AI-Playground/discussions)),
+improving the documentation, submitting bug reports and feature requests, or writing code which can be incorporated into this project itself.
 
-## Coding Standards
+### Reporting Bugs
 
-- Follow PEP 8 for Python code
-- Use type hints for function parameters and return values
-- Write meaningful docstrings for functions and classes
-- Use descriptive variable and function names
-- Keep functions focused on a single responsibility
+Before submitting bug reports, please check the [issue](https://github.com/intel/AI-Playground/issues) tracker to make sure the bug hasn't been reported before. If it is a new bug,
+please provide as much detail as possible, including:
 
-## Testing
+- A clear and descriptive title
+- The exact steps which reproduce the problem
+- Your environment (OS, GPU, CPU, etc.)
+- Any related files or screenshots
 
-- Add tests for new functionality
-- Run the full test suite before submitting a PR
-- Use test fixtures when appropriate
-- Mock external dependencies in tests
+### Suggesting Enhancements
 
-## Documentation
+Enhancement suggestions (feature requests) are also tracked as GitHub [issues](https://github.com/intel/AI-Playground/issues). When suggesting an enhancement, please:
 
-- Update documentation to reflect your changes
-- Document new features or changed behavior
-- Use clear, concise language
-- Include examples where appropriate
+- Use a clear and descriptive title
+- Provide a step-by-step description of the suggested enhancement
+- Explain why this enhancement would be useful to most AI Playground users
 
-## Review Process
+### Pull Requests
 
-After submitting a PR, maintainers will review your changes. They may suggest improvements or changes. Once approved, your changes will be merged into the main branch.
+If you are not familiar with pull requests, you could get started with GitHub tutorials: [Collaborate with pull requests](https://docs.github.
+com/en/pull-requests/collaborating-with-pull-requests/getting-started/about-collaborative-development-models).
 
-## Hardware-Specific Contributions
+The process described here has several goals:
 
-When contributing code that deals with specific hardware:
+- Maintain the quality of this project
+- Fix problems that are important to users
+- Engage the community in working toward the best possible AI Playground
+- Enable a sustainable system for AI Playground's maintainers to review contributions
 
-1. Clearly document hardware requirements
-1. Add defensive checks for hardware availability
-1. Provide fallback implementations when possible
-1. Test on multiple hardware configurations if possible
+Please follow these steps to have your contribution considered by the maintainers:
 
----
-**Next**: [Code Quality Standards](code-quality.md) | **See also**: [Testing Guide](testing.md)
+1. Always set base branch to [dev](https://github.com/intel/AI-Playground/tree/dev), do NOT make pull requests to the main branch without a strong reason.
+1. Follow all instructions in [the template](/.github/pull_request_template.md).
+1. After you submit your pull request, verify that all [status checks](https://docs.github.
+com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/about-status-checks) are passing.
+1. [Sign your work](/CONTRIBUTING.md#sign-your-work).
+
+While the prerequisites above must be satifisfied prior to have your pull request reviewed, the reviewer(s) may ask you to complete additional design work, tests, or other changes
+before your pull request can be ultimately accepted.
+
+## Community
+
+Discussions about AI Playground take place on this repository's [Issues](https://github.com/intel/AI-Playground/issues), [Pull Requests](https://github.
+com/intel/AI-Playground/pulls) and [Discussions](https://github.com/intel/AI-Playground/discussions). Anybody is welcome to join these conversations.
+
+## License
+
+AI Playground is licensed under the terms in [LICENSE](/LICENSE). By contributing to the project, you agree to the license and copyright terms therein and release your
+contribution under these terms.
+
+## Sign your work
+
+Please use the sign-off line at the end of the patch. Your signature certifies that you wrote the patch or otherwise have the right to pass it on as an open-source patch. The
+rules are pretty simple: if you can certify
+the below (from [developercertificate.org](http://developercertificate.org/)):
+
+```text
+Developer Certificate of Origin
+Version 1.1
+
+Copyright (C) 2004, 2006 The Linux Foundation and its contributors.
+660 York Street, Suite 102,
+San Francisco, CA 94110 USA
+
+Everyone is permitted to copy and distribute verbatim copies of this
+license document, but changing it is not allowed.
+
+Developer's Certificate of Origin 1.1
+
+By making a contribution to this project, I certify that:
+
+(a) The contribution was created in whole or in part by me and I
+
+```text
+have the right to submit it under the open source license
+indicated in the file; or
+
+```text
+(b) The contribution is based upon previous work that, to the best
+
+```text
+of my knowledge, is covered under an appropriate open source
+license and I have the right under that license to submit that
+work with modifications, whether created in whole or in part
+by me, under the same open source license (unless I am
+permitted to submit under a different license), as indicated
+in the file; or
+
+```text
+(c) The contribution was provided directly to me by some other
+
+```text
+person who certified (a), (b) or (c) and I have not modified
+it.
+
+```text
+(d) I understand and agree that this project and the contribution
+
+```text
+are public and that a record of the contribution (including all
+personal information I submit with it, including my sign-off) is
+maintained indefinitely and may be redistributed consistent with
+this project or the open source license(s) involved.
+
+```text
+
+```text
+Then you just add a line to every git commit message:
+
+```text
+Signed-off-by: Joe Smith <joe.smith@email.com>
+
+```text
+Use your real name (sorry, no pseudonyms or anonymous contributions.)
+
+If you set your `user.name` and `user.email` git configs, you can sign your
+commit automatically with `git commit -s`.
+
+-----
+
+Again, thanks for your interest in contributing to this project. We appreciate your efforts to make our project even better!

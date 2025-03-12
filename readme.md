@@ -15,6 +15,45 @@ chatbots—all locally on your PC.
 
 This project showcases the capabilities of Intel® Arc™ GPUs for AI workloads through XPU implementation, enabling high-performance generative AI experiences on consumer hardware.
 
+## Project Structure
+
+The project is organized into the following directories:
+
+- **docs/**: Documentation files
+  - **development/**: Development guides and reports
+  - **hardware/**: Hardware-specific documentation
+  - **user-guides/**: End-user documentation
+  - **workflows/**: Workflow documentation
+
+- **tools/**: Utility scripts and tools
+  - **linting/**: Code and documentation linting tools
+  - **formatting/**: Code and documentation formatting tools
+  - **hardware/**: Hardware detection and setup tools
+  - **scripts/**: General utility scripts
+
+- **config/**: Configuration files
+  - Environment configuration
+  - Linting and formatting configuration
+  - Application configuration
+
+- **docker/**: Docker configuration
+  - Dockerfile and docker-compose.yml
+
+- **legal/**: Legal documentation
+  - License files
+  - Notices and disclaimers
+
+- **service/**: Backend services
+- **WebUI/**: Frontend web interface
+- **langchain_community/**: LangChain integration
+- **OpenVINO/**: OpenVINO integration
+- **LlamaCPP/**: Llama.cpp integration
+- **acceleration/**: Acceleration libraries
+- **hardware_aware/**: Hardware-aware features
+- **examples/**: Example code and usage
+- **benchmarks/**: Performance benchmarks
+- **tests/**: Test suite
+
 ### ✨ Key Features
 
 - 🖼️ **Generate stunning images** using state-of-the-art AI models

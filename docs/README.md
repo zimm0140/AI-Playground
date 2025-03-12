@@ -1,6 +1,48 @@
-# AI-Playground Documentation
+# Documentation Directory
 
-This directory contains all documentation for the AI-Playground project.
+This directory contains all documentation for the AI Playground project.
+
+## Directory Structure
+
+- **development/**: Development-related documentation
+  - Code quality guides
+  - Contributing guidelines
+  - Security policies
+  - Modernization reports
+  - Implementation guides
+
+- **hardware/**: Hardware-specific documentation
+  - Hardware optimization guides
+  - Hardware compatibility information
+  - Hardware-aware features
+
+- **user-guides/**: End-user documentation
+  - User manuals and guides
+  - PDF documentation
+
+- **workflows/**: Workflow documentation
+  - CI/CD workflow documentation
+  - Requirements and reports
+
+## Documentation Format
+
+Most documentation is written in Markdown format and can be viewed directly on GitHub or through the project's documentation site generated with MkDocs.
+
+## Building Documentation
+
+The documentation site can be built using MkDocs:
+
+```
+mkdocs build
+```
+
+To serve the documentation locally:
+
+```
+mkdocs serve
+```
+
+See the `mkdocs.yml` file in the root directory for configuration details.
 
 ## Documentation Structure
 
@@ -22,30 +64,6 @@ The documentation is organized into the following sections:
 - `index.md`: Main entry point for documentation
 - `documentation-overview.md`: Comprehensive overview of all documentation
 - `mkdocs.yml`: Configuration for the MkDocs documentation generator
-
-## Building the Documentation
-
-The documentation can be built into a searchable website using MkDocs:
-
-1. Install MkDocs and required plugins:
-
-   ```bash
-   pip install mkdocs mkdocs-material pymdown-extensions
-   ```text
-
-1. Build the documentation:
-
-   ```bash
-   mkdocs build
-   ```text
-
-1. Serve the documentation locally:
-
-   ```bash
-   mkdocs serve
-   ```text
-
-1. The documentation will be available at `<http://localhost:8000`>
 
 ## Documentation Standards
 
