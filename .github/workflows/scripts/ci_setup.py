@@ -263,15 +263,82 @@ def setup_mock_hardware():
     try:
         mock_dir.mkdir(parents=True, exist_ok=True)
 
-        # Create mock GPU info file
-        with open(mock_dir / "gpu_info.txt", "w") as f:
-            f.write("Intel(R) Arc(TM) A770 Graphics")
+        # Create mock GPU info files for different hardware types
+        gpu_info = {
+            "base": "Generic GPU",
+            "acm": "Intel(R) Arc(TM) A770 Graphics",
+            "ovino": "Intel(R) UHD Graphics 770",
+            "bmg": "Intel(R) Data Center GPU Max 1100",
+            "mtl": "Intel(R) Meteor Lake Graphics",
+            "lnl": "Intel(R) Lunar Lake Graphics",
+            "arl_h": "Intel(R) Arctic Lake-H Graphics",
+        }
 
-        # Create mock CPU info file
-        with open(mock_dir / "cpu_info.txt", "w") as f:
-            f.write("vendor: Intel\n")
-            f.write("name: Intel(R) Core(TM) i9-13900K\n")
-            f.write("cores: 24\n")
+        # Create mock CPU info files for different hardware types
+        cpu_info = {
+            "base": {
+                "vendor": "Generic",
+                "name": "Generic CPU",
+                "cores": "4",
+            },
+            "acm": {
+                "vendor": "Intel",
+                "name": "Intel(R) Core(TM) i9-13900K",
+                "cores": "24",
+            },
+            "ovino": {
+                "vendor": "Intel",
+                "name": "Intel(R) Core(TM) i7-1370P",
+                "cores": "16",
+            },
+            "bmg": {
+                "vendor": "Intel",
+                "name": "Intel(R) Xeon(R) Platinum 8480+",
+                "cores": "56",
+            },
+            "mtl": {
+                "vendor": "Intel",
+                "name": "Intel(R) Core(TM) Ultra 7 155H",
+                "cores": "16",
+            },
+            "lnl": {
+                "vendor": "Intel",
+                "name": "Intel(R) Core(TM) Ultra 9 185H",
+                "cores": "24",
+            },
+            "arl_h": {
+                "vendor": "Intel",
+                "name": "Intel(R) Core(TM) Ultra 9 205H",
+                "cores": "24",
+            },
+        }
+
+        # Create GPU info files
+        for hw_type, gpu_name in gpu_info.items():
+            gpu_file = mock_dir / f"gpu_info_{hw_type}.txt"
+            with open(gpu_file, "w") as f:
+                f.write(f"{gpu_name}\n")
+            debug_print(f"Created mock GPU file for {hw_type}: {gpu_file}")
+
+        # Create CPU info files
+        for hw_type, cpu_data in cpu_info.items():
+            cpu_file = mock_dir / f"cpu_info_{hw_type}.txt"
+            with open(cpu_file, "w") as f:
+                for key, value in cpu_data.items():
+                    f.write(f"{key}: {value}\n")
+            debug_print(f"Created mock CPU file for {hw_type}: {cpu_file}")
+
+        # Create default mock files (symlinks to base)
+        for file_type in ["gpu_info.txt", "cpu_info.txt"]:
+            default_file = mock_dir / file_type
+            if not default_file.exists():
+                base_file = mock_dir / f"{file_type.replace('.txt', '_base.txt')}"
+                try:
+                    default_file.symlink_to(base_file)
+                except OSError:
+                    # If symlink fails (e.g., on Windows), copy the file
+                    shutil.copy2(base_file, default_file)
+                debug_print(f"Created default mock file: {default_file}")
 
         debug_print(f"Created mock hardware files in {mock_dir}")
     except Exception as e:
@@ -584,6 +651,18 @@ def main():
     if not setup_hardware_detection():
         debug_print("Failed to set up hardware detection", "ERROR")
         sys.exit(1)
+
+    # Set up mock hardware files
+    setup_mock_hardware()
+
+    # Set up mock modules
+    setup_mock_modules()
+
+    # Create requirements files
+    create_requirements_files()
+
+    # Set up uvfast configuration
+    setup_uvfast()
 
     debug_print("CI setup completed successfully")
 

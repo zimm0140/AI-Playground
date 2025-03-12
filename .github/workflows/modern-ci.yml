@@ -39,8 +39,8 @@ jobs:
 
       - name: Install traditional dependencies
         run: |
-          python -m pip install --upgrade pip
-          python -m pip install pytest pytest-cov types-requests
+          python -m pip install --upgrade pip setuptools wheel
+          python -m pip install pytest pytest-cov pytest-mock types-requests
           python -m pip install -e .
         shell: bash
 
@@ -51,12 +51,18 @@ jobs:
         env:
           SIMULATED_HARDWARE: "base"
           CI_TESTING: "true"
+          PYTHONPATH: ${{ github.workspace }}
 
       - name: Verify hardware detection package
         run: |
           python -c "import hardware_detection; print(f'Version: {hardware_detection.__version__}')"
           python -c "import tools.hardware.hardware_detection; print(f'Compat Version: {tools.hardware.hardware_detection.__version__}')"
+          python -c "from hardware_detection import detect_hardware_type; print(f'Hardware Type: {detect_hardware_type()}')"
         shell: bash
+        env:
+          SIMULATED_HARDWARE: "base"
+          CI_TESTING: "true"
+          PYTHONPATH: ${{ github.workspace }}
 
       - name: Run tests (traditional method)
         run: |
@@ -65,6 +71,7 @@ jobs:
         env:
           SIMULATED_HARDWARE: "base"
           CI_TESTING: "true"
+          PYTHONPATH: ${{ github.workspace }}
 
       - name: Install uv
         run: |
@@ -97,26 +104,28 @@ jobs:
         run: |
           uv venv
           source .venv/bin/activate
-          uv pip install pytest pytest-cov types-requests
+          uv pip install pytest pytest-cov pytest-mock types-requests
           uv pip install -e .
           uv run pytest -v tests/ --import-mode=append
         shell: bash
         env:
           SIMULATED_HARDWARE: "base"
           CI_TESTING: "true"
+          PYTHONPATH: ${{ github.workspace }}
 
       - name: Test with uv (Windows)
         if: runner.os == 'Windows'
         run: |
           uv venv
           .venv\Scripts\activate
-          uv pip install pytest pytest-cov types-requests
+          uv pip install pytest pytest-cov pytest-mock types-requests
           uv pip install -e .
           uv run pytest -v tests/ --import-mode=append
         shell: pwsh
         env:
           SIMULATED_HARDWARE: "base"
           CI_TESTING: "true"
+          PYTHONPATH: ${{ github.workspace }}
 
   lint:
     runs-on: ubuntu-latest
@@ -138,9 +147,11 @@ jobs:
         run: |
           uv venv
           source .venv/bin/activate
-          uv pip install ruff mypy types-requests pytest
+          uv pip install ruff mypy types-requests pytest pytest-mock
           uv pip install -e .
         shell: bash
+        env:
+          PYTHONPATH: ${{ github.workspace }}
 
       - name: Lint with Ruff
         run: |
@@ -153,6 +164,8 @@ jobs:
           source .venv/bin/activate
           uv run mypy --python-version 3.10 --exclude '.github/workflows/scripts/*' .
         shell: bash
+        env:
+          PYTHONPATH: ${{ github.workspace }}
 
       - name: Check markdown files
         run: |
