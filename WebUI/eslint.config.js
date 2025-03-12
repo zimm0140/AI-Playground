@@ -8,13 +8,12 @@ export default tseslint.config(
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   {
-    files: ['**/*.{js,ts,tsx,vue}'],
+    files: ['**/*.{js,ts,tsx}'],
     languageOptions: {
-      parser: vue.parser,
+      parser: tseslint.parser,
       parserOptions: {
         ecmaVersion: 2022,
         sourceType: 'module',
-        extraFileExtensions: ['.vue'],
       },
       globals: {
         ...globals.node,
@@ -26,7 +25,6 @@ export default tseslint.config(
       },
     },
     plugins: {
-      vue,
       '@typescript-eslint': tseslint.plugin,
     },
     rules: {
@@ -44,10 +42,28 @@ export default tseslint.config(
       '@typescript-eslint/no-inferrable-types': 'off',
       '@typescript-eslint/no-var-requires': 'off',
       '@typescript-eslint/prefer-as-const': 'error',
-      'vue/multi-word-component-names': 'off',
       'no-case-declarations': 'off',
       'no-empty': ['error', { 'allowEmptyCatch': true }],
       'no-async-promise-executor': 'off',
+    },
+  },
+  {
+    files: ['**/*.vue'],
+    languageOptions: {
+      parser: vue.parser,
+      parserOptions: {
+        parser: tseslint.parser,
+        sourceType: 'module',
+        ecmaVersion: 2022,
+        extraFileExtensions: ['.vue'],
+      },
+    },
+    plugins: {
+      vue,
+    },
+    rules: {
+      ...vue.configs.base.rules,
+      'vue/multi-word-component-names': 'off',
     },
   },
   eslintConfigPrettier,

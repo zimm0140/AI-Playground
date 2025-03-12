@@ -59,6 +59,8 @@ jobs:
           python -m pip install --upgrade pip
           pip install pytest pytest-cov types-requests mypy ruff
           pip install -e .
+          sudo apt-get update
+          sudo apt-get install -y build-essential
         shell: bash
 
       - name: Run tests (Windows)
@@ -70,7 +72,7 @@ jobs:
       - name: Run tests (Linux)
         if: matrix.os == 'ubuntu-latest'
         run: |
-          python -m pytest -v hardware_detection/tests/ --cov=hardware_detection --cov-report=term-missing --import-mode=append
+          python -m pytest -v hardware_detection/tests/ --cov=hardware_detection --cov-report=term-missing --import-mode=append -v
         shell: bash
 
   docker-test:
@@ -84,7 +86,7 @@ jobs:
         run: |
           cd hardware_detection
           docker buildx build --load -t hardware-detection-test .
-          docker run --rm hardware-detection-test
+          docker run --rm hardware-detection-test pytest -v tests/ --import-mode=append
         shell: bash
 
   integration-test:
