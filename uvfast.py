@@ -362,6 +362,42 @@ class UVFast:
 
         return 0
 
+    def lock(self, args: argparse.Namespace) -> int:
+        """Generate lockfiles for dependencies."""
+        if not self._ensure_uv_installed():
+            logging.error("uv is required for lockfile generation")
+            return 1
+
+        # Get the hardware types to process
+        if args.all:
+            hardware_types = self.config.get("hardware_types", [])
+        else:
+            hardware_types = [args.hardware or self.hardware_type]
+
+        for hw_type in hardware_types:
+            logging.info(f"Generating lockfile for hardware type: {hw_type}")
+
+            req_files = self._get_requirements_files(hw_type, args.dev)
+            if not req_files:
+                logging.error(f"No requirements files found for hardware type: {hw_type}")
+                continue
+
+            for req_file in req_files:
+                lockfile = self._get_lockfile_path(hw_type, args.dev)
+                logging.info(f"Generating lockfile: {lockfile}")
+
+                try:
+                    subprocess.run(
+                        ["uv", "pip", "compile", req_file, "--output", lockfile],
+                        check=True,
+                    )
+                except subprocess.SubprocessError as e:
+                    logging.error(f"Error generating lockfile: {e}")
+                    return 1
+
+        logging.info("Lockfile generation complete")
+        return 0
+
 
 def main() -> int:
     """Main entry point for uvfast."""
@@ -398,6 +434,18 @@ def main() -> int:
         "--dev", action="store_true", help="Include development dependencies"
     )
 
+    # Lock command
+    lock_parser = subparsers.add_parser("lock", help="Generate lockfiles for dependencies")
+    lock_parser.add_argument(
+        "--hardware",
+        choices=["base", "acm", "bmg", "mtl", "lnl", "ovino", "arl_h"],
+        help="Hardware type to generate lockfile for",
+    )
+    lock_parser.add_argument("--dev", action="store_true", help="Include development dependencies")
+    lock_parser.add_argument(
+        "--all", action="store_true", help="Generate lockfiles for all hardware types"
+    )
+
     args = parser.parse_args()
 
     if not args.command:
@@ -416,6 +464,8 @@ def main() -> int:
         return uvfast.info(args)
     elif args.command == "update-lockfiles":
         return uvfast.update_lockfiles(args)
+    elif args.command == "lock":
+        return uvfast.lock(args)
 
     parser.print_help()
     return 0

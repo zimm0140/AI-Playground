@@ -6,6 +6,7 @@ processors that require specific Python packages for optimal performance.
 """
 
 import json
+import os
 import platform
 import re
 import subprocess
@@ -30,6 +31,14 @@ def load_config() -> dict:
 
 def get_gpu_info_windows() -> list[str]:
     """Get GPU information on Windows using WMI."""
+    # Check for mock environment first
+    mock_dir = os.environ.get("UVFAST_MOCK_DIR")
+    if mock_dir:
+        mock_path = Path(mock_dir) / "gpu_info.txt"
+        if mock_path.exists():
+            with open(mock_path) as f:
+                return [line.strip() for line in f.readlines() if line.strip()]
+
     try:
         import wmi  # type: ignore
 
@@ -50,6 +59,14 @@ def get_gpu_info_windows() -> list[str]:
 
 def get_gpu_info_linux() -> list[str]:
     """Get GPU information on Linux using lspci."""
+    # Check for mock environment first
+    mock_dir = os.environ.get("UVFAST_MOCK_DIR")
+    if mock_dir:
+        mock_path = Path(mock_dir) / "gpu_info.txt"
+        if mock_path.exists():
+            with open(mock_path) as f:
+                return [line.strip() for line in f.readlines() if line.strip()]
+
     try:
         output = subprocess.check_output(["lspci", "-v"], universal_newlines=True)
         gpu_lines = [line for line in output.split("\n") if "VGA" in line or "Display" in line]
@@ -60,6 +77,14 @@ def get_gpu_info_linux() -> list[str]:
 
 def get_gpu_info_macos() -> list[str]:
     """Get GPU information on macOS using system_profiler."""
+    # Check for mock environment first
+    mock_dir = os.environ.get("UVFAST_MOCK_DIR")
+    if mock_dir:
+        mock_path = Path(mock_dir) / "gpu_info.txt"
+        if mock_path.exists():
+            with open(mock_path) as f:
+                return [line.strip() for line in f.readlines() if line.strip()]
+
     try:
         output = subprocess.check_output(
             ["system_profiler", "SPDisplaysDataType"], universal_newlines=True
@@ -72,6 +97,14 @@ def get_gpu_info_macos() -> list[str]:
 
 def get_gpu_info() -> list[str]:
     """Get GPU information for the current platform."""
+    # Allow direct override through environment variable for CI/testing
+    if "SIMULATED_HARDWARE" in os.environ:
+        sim_hw = os.environ.get("SIMULATED_HARDWARE", "").lower()
+        if sim_hw == "acm":
+            return ["Intel(R) Arc(TM) A770 Graphics"]
+        elif sim_hw == "ovino":
+            return ["Intel(R) UHD Graphics"]
+
     system = platform.system()
     if system == "Windows":
         return get_gpu_info_windows()
@@ -117,6 +150,12 @@ def get_cpu_info() -> dict[str, str]:
 
 def detect_hardware_type() -> str:
     """Detect the hardware type based on GPU and CPU information."""
+    # Allow direct override through environment variable for CI/testing
+    if "SIMULATED_HARDWARE" in os.environ:
+        sim_hw = os.environ.get("SIMULATED_HARDWARE", "").lower()
+        if sim_hw in HARDWARE_TYPES:
+            return sim_hw
+
     config = load_config()
     detection_config = config.get("detection", {})
 
@@ -149,6 +188,10 @@ def detect_hardware_type() -> str:
 
 def is_openvino_available() -> bool:
     """Check if OpenVINO is installed and available."""
+    # For simulated environments
+    if os.environ.get("SIMULATED_HARDWARE") == "ovino":
+        return True
+
     try:
         import openvino  # type: ignore
 
@@ -214,6 +257,12 @@ def print_hardware_info(verbose: bool = False) -> None:
         print("\nConfiguration:")
         print(f"  Hardware types: {config.get('hardware_types', HARDWARE_TYPES)}")
         print(f"  Default hardware: {config.get('default_hardware', 'base')}")
+
+        # Print environment variables for debugging
+        if "UVFAST_MOCK_DIR" in os.environ:
+            print(f"\nMock directory: {os.environ.get('UVFAST_MOCK_DIR')}")
+        if "SIMULATED_HARDWARE" in os.environ:
+            print(f"Simulated hardware: {os.environ.get('SIMULATED_HARDWARE')}")
 
 
 if __name__ == "__main__":
