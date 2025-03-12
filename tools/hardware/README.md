@@ -15,7 +15,9 @@ This directory contains scripts for hardware detection and configuration in the 
 To detect and report hardware capabilities:
 
 ```
+
 python tools/hardware/hardware_detection.py
+
 ```
 
 This script will:
@@ -30,7 +32,9 @@ This script will:
 To set up the hardware environment:
 
 ```
+
 python tools/hardware/setup_hardware_env.py
+
 ```
 
 This script will:

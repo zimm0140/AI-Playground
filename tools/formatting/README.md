@@ -17,13 +17,17 @@ This directory contains scripts for formatting code and documentation in the AI 
 To fix README formatting issues:
 
 ```
+
 python tools/formatting/fix_readme.py [file]
+
 ```
 
 For enhanced README formatting:
 
 ```
+
 python tools/formatting/fix_readme_final.py [file]
+
 ```
 
 ### JavaScript/TypeScript Formatting
@@ -31,7 +35,9 @@ python tools/formatting/fix_readme_final.py [file]
 To format JavaScript or TypeScript files using Prettier:
 
 ```
+
 node tools/formatting/fix_with_prettier.js [file]
+
 ```
 
 ## Configuration

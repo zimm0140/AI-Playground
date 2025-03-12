@@ -17,13 +17,17 @@ This directory contains general utility scripts for the AI Playground project.
 To manage Python environments with UVFast:
 
 ```
+
 python tools/scripts/uvfast.py [command]
+
 ```
 
 For lockfile enhancements:
 
 ```
+
 python tools/scripts/uvfast_lockfile_enhancements.py [file]
+
 ```
 
 ### CI Maintenance
@@ -31,7 +35,9 @@ python tools/scripts/uvfast_lockfile_enhancements.py [file]
 To maintain CI/CD workflows:
 
 ```
+
 python tools/scripts/ci_maintenance.py
+
 ```
 
 ### Testing
@@ -39,7 +45,9 @@ python tools/scripts/ci_maintenance.py
 To test virtual environments:
 
 ```
+
 python tools/scripts/test_venv.py
+
 ```
 
 ## Related Configuration
@@ -47,4 +55,4 @@ python tools/scripts/test_venv.py
 These scripts use configuration files from the `config` directory:
 
 - `uvfast.json`: Configuration for UVFast
-- Various requirements files: `requirements*.txt` and `requirements*.lock` 
+- Various requirements files: `requirements*.txt` and `requirements*.lock`

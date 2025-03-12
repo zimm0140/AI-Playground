@@ -17,13 +17,17 @@ This directory contains scripts for linting and fixing common code quality issue
 To fix markdown linting issues:
 
 ```
+
 python tools/linting/fix_markdown_lint.py [directory_or_file]
+
 ```
 
 For advanced markdown fixes:
 
 ```
+
 python tools/linting/fix_markdown_advanced.py [directory_or_file]
+
 ```
 
 ### Python Linting
@@ -31,19 +35,25 @@ python tools/linting/fix_markdown_advanced.py [directory_or_file]
 To check for linting issues:
 
 ```
+
 python tools/linting/check_linting.py
+
 ```
 
 To fix common linting issues:
 
 ```
+
 python tools/linting/fix_lint_issues.py [file]
+
 ```
 
 To fix unused variable warnings:
 
 ```
+
 python tools/linting/fix_unused_variables.py [file]
+
 ```
 
 ## Configuration

@@ -33,13 +33,17 @@ Most documentation is written in Markdown format and can be viewed directly on G
 The documentation site can be built using MkDocs:
 
 ```
+
 mkdocs build
+
 ```
 
 To serve the documentation locally:
 
 ```
+
 mkdocs serve
+
 ```
 
 See the `mkdocs.yml` file in the root directory for configuration details.
@@ -71,6 +75,7 @@ All documentation follows these standards:
 
 - Markdown for all documentation files
 - Consistent headers using ATX style (# for headers)
+
 - Code examples in fenced code blocks with appropriate language tags
 - Relative links between documents
 - Images stored in the `assets/` directory
