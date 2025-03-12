@@ -69,22 +69,15 @@ jobs:
         shell: bash
 
   docker-test:
-    name: Docker Tests
-    runs-on: ubuntu-latest # Changed to ubuntu-latest for better Docker support
-    needs: test
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-
+    name: Docker Test
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Build test image
+      - name: Build and test Docker image
         run: |
-          docker build -t hardware-detection:test -f hardware_detection/Dockerfile .
-        shell: bash
-
-      - name: Run tests in container
-        run: |
-          docker run --rm hardware-detection:test
+          cd hardware_detection
+          docker build -t hardware-detection-test .
+          docker run --rm hardware-detection-test
         shell: bash
 
   integration-test:
