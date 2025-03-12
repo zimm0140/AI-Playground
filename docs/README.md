@@ -5,24 +5,24 @@ This directory contains all documentation for the AI Playground project.
 ## Directory Structure
 
 - **development/**: Development-related documentation
-  - Code quality guides
-  - Contributing guidelines
-  - Security policies
-  - Modernization reports
-  - Implementation guides
+    - Code quality guides
+    - Contributing guidelines
+    - Security policies
+    - Modernization reports
+    - Implementation guides
 
 - **hardware/**: Hardware-specific documentation
-  - Hardware optimization guides
-  - Hardware compatibility information
-  - Hardware-aware features
+    - Hardware optimization guides
+    - Hardware compatibility information
+    - Hardware-aware features
 
 - **user-guides/**: End-user documentation
-  - User manuals and guides
-  - PDF documentation
+    - User manuals and guides
+    - PDF documentation
 
 - **workflows/**: Workflow documentation
-  - CI/CD workflow documentation
-  - Requirements and reports
+    - CI/CD workflow documentation
+    - Requirements and reports
 
 ## Documentation Format
 
@@ -33,17 +33,13 @@ Most documentation is written in Markdown format and can be viewed directly on G
 The documentation site can be built using MkDocs:
 
 ```
-
 mkdocs build
-
 ```
 
 To serve the documentation locally:
 
 ```
-
 mkdocs serve
-
 ```
 
 See the `mkdocs.yml` file in the root directory for configuration details.
@@ -67,7 +63,7 @@ The documentation is organized into the following sections:
 
 - `index.md`: Main entry point for documentation
 - `documentation-overview.md`: Comprehensive overview of all documentation
-- `mkdocs.yml`: Configuration for the MkDocs documentation generator
+- `mkdocs.yml`: Configuration for the MkDocs documentation generator (in project root)
 
 ## Documentation Standards
 
@@ -75,7 +71,6 @@ All documentation follows these standards:
 
 - Markdown for all documentation files
 - Consistent headers using ATX style (# for headers)
-
 - Code examples in fenced code blocks with appropriate language tags
 - Relative links between documents
 - Images stored in the `assets/` directory
@@ -85,25 +80,25 @@ All documentation follows these standards:
 Contributions to documentation are welcome! Please follow these guidelines:
 
 1. Fork the repository
-1. Create a branch for your changes
-1. Make your changes following our documentation standards
-1. Submit a pull request
+2. Create a branch for your changes
+3. Make your changes following our documentation standards
+4. Submit a pull request
 
-For more details, see [Contributing to Documentation](maintenance/contributing.md).
+For more details, see [Contributing to Documentation](development/contributing.md).
 
-## Automated Documentation Deployment
+## Related Tools
 
-Documentation is automatically built and deployed using GitHub Actions when changes are pushed to the main branch. The workflow is defined in `.github/workflows/docs.yml`.
+Documentation tools and scripts are located in:
 
-## Documentation Roadmap
+- `tools/linting/fix_markdown_lint.py`: Script to fix common markdown linting issues
+- `tools/linting/fix_markdown_advanced.py`: Advanced script for fixing markdown linting issues
+- `tools/formatting/fix_readme.py`: Script to fix README formatting issues
 
-Future documentation improvements will focus on:
+## Configuration
 
-1. Adding more code examples
-1. Creating video tutorials
-1. Expanding hardware-specific optimization guides
-1. Adding interactive API playgrounds
-1. Translations into other languages
+Documentation linting is configured in:
+
+- `config/.markdownlint.yaml`: Configuration for markdown linting
 
 ## Contact
 

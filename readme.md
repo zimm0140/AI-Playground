@@ -54,6 +54,18 @@ The project is organized into the following directories:
 - **benchmarks/**: Performance benchmarks
 - **tests/**: Test suite
 
+### Note on Configuration Files
+
+For compatibility with tools and CI/CD workflows, copies of configuration files from the `config` directory are also maintained in the project root. These include:
+
+- `.markdownlint.yaml`
+- `mypy.ini`
+- `.pre-commit-config.yaml`
+- `.prettierrc` and `.prettierrc.json`
+- `pyrightconfig.json`
+
+When modifying these configuration files, please update both the copies in the `config` directory and the project root.
+
 ### ✨ Key Features
 
 - 🖼️ **Generate stunning images** using state-of-the-art AI models
