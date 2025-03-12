@@ -108,3 +108,16 @@ models/stable_diffusion/*
 
 # Allow specific tool executables
 !tools/*.exe
+
+# Hardware detection specific
+.uvfast/mock/
+hardware_detection.egg-info/
+
+# Docker-related
+.docker/
+docker-compose.override.yml
+.dockerignore
+
+# Hardware simulation files
+gpu_info.txt
+cpu_info.txt
