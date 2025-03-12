@@ -1,6 +1,6 @@
 import { WebContents, app } from 'electron';
-import fs from 'fs';
-import path from 'node:path';
+import * as fs from 'fs';
+import * as path from 'path';
 
 interface ElectronProcess extends NodeJS.Process {
   resourcesPath: string;
@@ -97,3 +97,22 @@ class Logger {
 }
 
 export const appLoggerInstance = new Logger()
+
+export function getLogFilePath(): string {
+  const pathToLogFiles = app.isPackaged
+    ? (process as ElectronProcess).resourcesPath
+    : path.join(__dirname, '../../external/')
+
+  const logDir = path.join(pathToLogFiles, 'logs')
+  if (!fs.existsSync(logDir)) {
+    fs.mkdirSync(logDir, { recursive: true })
+  }
+
+  return path.join(logDir, 'app.log')
+}
+
+export function log(message: string): void {
+  const timestamp = new Date().toISOString()
+  const logMessage = `[${timestamp}] ${message}\n`
+  fs.appendFileSync(getLogFilePath(), logMessage)
+}

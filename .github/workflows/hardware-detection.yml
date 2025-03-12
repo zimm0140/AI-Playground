@@ -1,0 +1,97 @@
+name: Hardware Detection Testing
+
+on:
+  push:
+    paths:
+      - "hardware_detection/**"
+      - ".github/workflows/hardware-detection.yml"
+  pull_request:
+    paths:
+      - "hardware_detection/**"
+      - ".github/workflows/hardware-detection.yml"
+
+env:
+  PYTHONPATH: ${{ github.workspace }}
+  CI_TESTING: "true"
+  SIMULATED_HARDWARE: "base"
+
+jobs:
+  unit-tests:
+    name: Unit Tests
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-cov types-requests mypy ruff
+          pip install -e .
+
+      - name: Run tests
+        run: |
+          python -m pytest -v hardware_detection/tests/ --cov=hardware_detection --cov-report=term-missing --import-mode=append
+
+  docker-tests:
+    name: Docker Tests
+    runs-on: ubuntu-latest
+    needs: unit-tests
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build test image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: hardware_detection/Dockerfile
+          push: false
+          load: true
+          tags: hardware-detection:test
+
+      - name: Run tests in container
+        run: |
+          docker run --rm hardware-detection:test pytest -v /app/hardware_detection/tests/
+
+  integration-test:
+    name: Integration Test
+    runs-on: ubuntu-latest
+    needs: unit-tests
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-cov types-requests mypy ruff
+          pip install -e .
+
+      - name: Run integration tests
+        env:
+          SIMULATED_HARDWARE: "acm"
+        run: |
+          python -m pytest -v hardware_detection/tests/test_detection.py::test_detect_hardware_type_acm

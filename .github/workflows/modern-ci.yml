@@ -16,8 +16,9 @@ jobs:
   test:
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest]
         python-version: ["3.10", "3.11", "3.12"]
 
     steps:
@@ -29,30 +30,13 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: "pip"
 
-      - name: Install uv
-        run: |
-          python -m pip install --upgrade pip
-          pip install uv
-
-      - name: Cache uv packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/uv
-          key: ${{ runner.os }}-uv-${{ hashFiles('**/requirements*.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-uv-
-
       - name: Install dependencies
         run: |
-          uv venv
-          uv pip install pytest pytest-cov types-requests mypy ruff
-          uv pip install -e .
+          python -m pip install --upgrade pip
+          pip install pytest pytest-cov types-requests mypy ruff
+          pip install -e .
 
-      - name: Verify package
-        run: |
-          python -c "import hardware_detection; print(hardware_detection.__version__)"
-
-      - name: Run tests with coverage
+      - name: Run tests
         run: |
           python -m pytest -v hardware_detection/tests/ --cov=hardware_detection --cov-report=term-missing --import-mode=append
 
@@ -81,6 +65,22 @@ jobs:
       - name: Type check with mypy
         run: |
           mypy hardware_detection
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install Node.js dependencies
+        run: |
+          cd WebUI
+          npm ci
+
+      - name: Lint TypeScript
+        run: |
+          cd WebUI
+          npm run lint
 
       - name: Check markdown files
         run: |
