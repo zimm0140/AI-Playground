@@ -5,10 +5,10 @@ Script to fix common markdown linting issues automatically.
 This script addresses:
 - MD009: Trailing spaces
 - MD012: Multiple consecutive blank lines
-- MD029: Ordered list item prefix
+- MD029: Ordered list item prefix (preserves sequential numbering)
 - MD031: Blank lines around fenced code blocks
+- MD040: Code blocks without requiring language specifiers
 - MD047: Single trailing newline at end of file
-- MD040: Adding language to code blocks
 - MD004: Unordered list style (using dashes)
 - MD022: Headings surrounded by blank lines
 - MD026: Remove trailing punctuation in headings
@@ -92,6 +92,8 @@ def fix_list_style(content):
         # Fix hard tabs (MD010)
         line = line.replace("\t", "    ")
 
+        # We preserve ordered list numbering by not modifying the numbers
+
         result.append(line)
 
     return "\n".join(result)
@@ -130,23 +132,34 @@ def ensure_blank_lines_around_lists(content):
 
 
 def fix_code_blocks(content):
-    """Ensure code blocks have blank lines around them (MD031) without forcing language specifiers."""
-    # Pattern to find code blocks
-    pattern = re.compile(r"(```[^\n]*\n[\s\S]*?```)", re.MULTILINE)
+    """Ensure code blocks have blank lines around them (MD031) without requiring language specifiers."""
+    lines = content.splitlines()
+    result = []
+    in_code_block = False
+    i = 0
 
-    # Fix code blocks
-    def code_block_fix(match):
-        block = match.group(1)
+    while i < len(lines):
+        line = lines[i]
+        
+        # Detect start/end of code blocks
+        if line.startswith("```"):
+            # If starting a code block and previous line is not blank
+            if not in_code_block and i > 0 and result and result[-1].strip():
+                result.append("")  # Add blank line before code block
+            
+            # Add the code block marker
+            result.append(line)
+            in_code_block = not in_code_block
+            
+            # If ending a code block and next line exists and is not blank
+            if not in_code_block and i < len(lines) - 1 and lines[i + 1].strip():
+                result.append("")  # Add blank line after code block
+        else:
+            result.append(line)
+        
+        i += 1
 
-        # Ensure there's a blank line before and after
-        if not block.startswith("\n\n") and not block.startswith("\n"):
-            block = "\n" + block
-        if not block.endswith("\n\n") and not block.endswith("\n"):
-            block = block + "\n"
-
-        return block
-
-    return pattern.sub(code_block_fix, content)
+    return "\n".join(result)
 
 
 def ensure_trailing_newline(content):
@@ -227,7 +240,7 @@ def main():
 
     print(f"\n✅ Fixed issues in {fixed_count} files")
     print("\nNote: Some markdown issues may require manual fixing:")
-    print("1. MD013/line-length: Lines exceeding 120 characters (consider breaking these manually)")
+    print("1. MD013/line-length: Lines exceeding 180 characters (consider breaking these manually)")
     print("2. MD025/single-title: Multiple top-level headings in the same document")
     print("3. MD033/no-inline-html: Replace HTML with Markdown syntax where possible")
     print("4. Check markdown files with a markdown linter after running this script")

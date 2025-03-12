@@ -8,6 +8,8 @@ with special handling for:
 2. Line length issues (MD013)
 3. Tables not surrounded by blank lines (MD058)
 4. List marker spacing (MD030)
+5. Preserves sequential list numbering (MD029)
+6. Allows code blocks without language specifiers (MD040)
 """
 
 import glob
@@ -47,16 +49,16 @@ def fix_heading_punctuation(content: str) -> str:
 
 
 def fix_list_marker_spacing(content: str) -> str:
-    """Fix spacing after list markers (MD030)."""
+    """Fix spacing after list markers (MD030) while preserving sequential numbering."""
     # Fix unordered list spacing
     content = re.sub(r"^(\s*)([*+-])(\s{2,})", r"\1\2 ", content, flags=re.MULTILINE)
-    # Fix ordered list spacing
+    # Fix ordered list spacing while preserving the numbers
     content = re.sub(r"^(\s*)(\d+\.)(\s{2,})", r"\1\2 ", content, flags=re.MULTILINE)
     return content
 
 
 def fix_code_blocks(content: str) -> str:
-    """Ensure code blocks use consistent style and have blank lines around them (MD031)."""
+    """Ensure code blocks have blank lines around them (MD031) without requiring language specifiers."""
     # Ensure blank lines around fenced code blocks
     content = re.sub(r"([^\n])(\n```)", r"\1\n\2", content)
     content = re.sub(r"(```\n)([^\n])", r"\1\n\2", content)

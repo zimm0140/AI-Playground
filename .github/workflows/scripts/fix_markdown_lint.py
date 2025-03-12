@@ -99,34 +99,21 @@ def fix_first_line_heading(content: str) -> str:
 
 
 def fix_ordered_list_prefixes(content: str) -> str:
-    """Preserve sequential numbering for ordered lists."""
-    lines = content.splitlines()
-    fixed_lines: list[str] = []
-
-    # We're not modifying the ordered list prefixes anymore
-    # Just pass through the content
+    """
+    Pass through ordered list prefixes without modification.
+    This preserves sequential numbering set in MD029 rule.
+    """
+    # We're intentionally not modifying ordered list numbers
     return content
 
 
 def fix_code_blocks(content: str) -> str:
-    """Add language specifiers to fenced code blocks."""
-    lines = content.splitlines()
-    fixed_lines: list[str] = []
-    in_code_block = False
-
-    for line in lines:
-        # Just pass through code blocks without modification
-        fixed_lines.append(line)
-
-        # Keep track of code block state to handle nested blocks properly
-        if line.strip() == "```" and not in_code_block:
-            in_code_block = True
-        elif line.startswith("```") and not in_code_block:
-            in_code_block = True
-        elif line.strip() == "```" and in_code_block:
-            in_code_block = False
-
-    return "\n".join(fixed_lines) + "\n"
+    """
+    Pass through code blocks without requiring language specifiers.
+    This respects MD040: false in the markdownlint config.
+    """
+    # We're intentionally not adding language specifiers to code blocks
+    return content
 
 
 def fix_markdown_file(file_path: str, dry_run: bool = False) -> None:
@@ -142,10 +129,10 @@ def fix_markdown_file(file_path: str, dry_run: bool = False) -> None:
         content = fix_consecutive_blank_lines(content)
         content = fix_emphasis_as_heading(content)
         content = fix_line_length(content)
-        # Skip ordered list prefix fixing
-        # content = fix_ordered_list_prefixes(content)
-        # Skip code block language specifier addition
-        # content = fix_code_blocks(content)
+        # These functions now pass through content without modification
+        # to respect the markdownlint.yaml settings
+        content = fix_ordered_list_prefixes(content)
+        content = fix_code_blocks(content)
 
         # Only write if changes were made and not in dry-run mode
         if content != original_content:
