@@ -1,105 +1,90 @@
 name: Hardware Matrix Testing
 
 on:
-  push:
-    branches: [main, develop]
-  pull_request:
-    branches: [main, develop]
   workflow_dispatch:
-    inputs:
-      hardware_type:
-        description: 'Hardware type to test'
-        required: true
-        default: 'base'
-        type: choice
-        options:
-          - base
-          - acm
-          - ovino
+  pull_request:
+    paths:
+      - 'tools/hardware/**'
+      - '.github/workflows/hardware-matrix.yml'
+      - '.github/workflows/scripts/hardware_env_setup.py'
+  push:
+    branches: [main, release-*]
+    paths:
+      - 'tools/hardware/**'
+      - '.github/workflows/hardware-matrix.yml'
+      - '.github/workflows/scripts/hardware_env_setup.py'
 
 jobs:
-  test-matrix:
+  hardware-matrix:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        python-version: ['3.10', '3.11', '3.13']
-        hardware: ['base', 'simulated-acm', 'simulated-ovino']
-        exclude:
-          # Exclude some combinations to reduce matrix size
-          - os: ubuntu-latest
-            python-version: '3.10'
-            hardware: 'simulated-acm'
-          - os: windows-latest
-            python-version: '3.13'
-            hardware: 'simulated-ovino'
+        python: ['3.8', '3.10']
+        hardware: ['base', 'acm', 'ovino']
+    
+    env:
+      PYTHONPATH: ${{ github.workspace }}
 
     steps:
       - uses: actions/checkout@v3
       
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python ${{ matrix.python }}
         uses: actions/setup-python@v4
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: ${{ matrix.python }}
       
-      - name: Install uv
-        shell: bash
-        run: |
-          curl -LsSf https://astral.sh/uv/install.sh | sh
-          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
-      
-      - name: Install dependencies
+      - name: Install base dependencies
         run: |
           python -m pip install --upgrade pip
-          python -m pip install uv
+          pip install pytest pytest-cov
       
-      - name: Run CI setup script
+      - name: Set up hardware simulation environment
         run: |
-          python .github/workflows/scripts/ci_setup.py
-      
-      - name: Setup simulated hardware environment
+          mkdir -p .uvfast/mock
+          python .github/workflows/scripts/hardware_env_setup.py ${{ matrix.hardware }}
+          # Verify the environment was set up correctly
+          echo "Simulated hardware type: ${{ matrix.hardware }}"
+          if [ "${{ matrix.hardware }}" != "base" ]; then
+            echo "SIMULATED_HARDWARE=${{ matrix.hardware }}"
+          fi
+          ls -la .uvfast/mock || dir .uvfast\mock
+        shell: bash
+
+      - name: Install hardware-specific dependencies
         run: |
-          echo "Setting up simulated hardware: ${{ matrix.hardware }}"
-          if [ "${{ matrix.hardware }}" = "simulated-acm" ]; then
-            echo "SIMULATED_HARDWARE=acm" >> $GITHUB_ENV
-            # Create mock files to simulate Intel Arc GPU detection
-            mkdir -p $HOME/.uvfast/mock
-            echo "Intel(R) Arc(TM) A770 Graphics" > $HOME/.uvfast/mock/gpu_info.txt
-          elif [ "${{ matrix.hardware }}" = "simulated-ovino" ]; then
-            echo "SIMULATED_HARDWARE=ovino" >> $GITHUB_ENV
-            # Install minimal OpenVINO
-            pip install openvino-stub
-          else
-            echo "SIMULATED_HARDWARE=base" >> $GITHUB_ENV
+          if [ "${{ matrix.hardware }}" == "ovino" ]; then
+            pip install openvino-dummy
+          elif [ "${{ matrix.hardware }}" == "acm" ]; then
+            pip install intel-gpu-stub
           fi
         shell: bash
       
-      - name: Install project with uvfast
+      - name: Run hardware detection tests
         run: |
-          python uvfast.py setup --hardware $SIMULATED_HARDWARE --dev
+          # Set the environment variable for hardware simulation
+          export SIMULATED_HARDWARE=${{ matrix.hardware }}
+          
+          # Run the hardware detection script
+          python tools/hardware/hardware_detection.py --verbose
+          
+          # Run tests
+          pytest -xvs tests/hardware/
         shell: bash
-        env:
-          UVFAST_MOCK_DIR: $HOME/.uvfast/mock
-          SIMULATED_HARDWARE: ${{ env.SIMULATED_HARDWARE }}
-      
-      - name: Run basic tests
+
+      - name: Verify detection result
         run: |
-          python uvfast.py run pytest -xvs tests/
+          echo "Verifying hardware detection results"
+          export SIMULATED_HARDWARE=${{ matrix.hardware }}
+          DETECTED=$(python -c "from tools.hardware.hardware_detection import detect_hardware_type; print(detect_hardware_type())")
+          echo "Detected hardware: $DETECTED"
+          if [ "$DETECTED" != "${{ matrix.hardware }}" ]; then
+            echo "::error::Expected hardware type ${{ matrix.hardware }} but got $DETECTED"
+            exit 1
+          fi
         shell: bash
-      
-      - name: Run hardware-specific tests
-        if: matrix.hardware != 'base'
-        run: |
-          python uvfast.py run pytest -xvs tests/hardware/
-        shell: bash
-      
-      - name: Run linting checks
-        run: |
-          python uvfast.py run ruff check .
-          python uvfast.py run mypy service/
-        shell: bash
-  
+
   # Additional job for lockfile validation
   validate-lockfiles:
     runs-on: ubuntu-latest

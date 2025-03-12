@@ -9,6 +9,7 @@ It leverages the 'uv' package manager for fast dependency installation.
 import argparse
 import json
 import logging
+import os
 import platform
 import shutil
 import subprocess
@@ -21,22 +22,73 @@ logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 # Try to import hardware detection module, which should be in the same directory
 try:
     # Update import path to use the module from tools/hardware
+    import os
     import sys
     from pathlib import Path
 
-    # Add tools directory to path
+    # Add tools directory to path if not already there
     tools_dir = Path("tools")
     if tools_dir.exists():
-        sys.path.append(str(tools_dir.absolute()))
+        tools_path = str(tools_dir.absolute())
+        if tools_path not in sys.path:
+            sys.path.append(tools_path)
+            print(f"Added {tools_path} to Python path")
 
-    from tools.hardware import hardware_detection
-except ImportError:
-    logging.warning("hardware_detection.py not found in tools/hardware, trying local import")
+    # Try importing from tools.hardware first
     try:
-        import hardware_detection
-    except ImportError:
-        logging.warning("hardware_detection.py not found, some features will be limited")
-        HARDWARE_TYPES = ["base", "acm", "bmg", "mtl", "lnl", "ovino", "arl_h"]
+        from tools.hardware import hardware_detection
+
+        print("Imported hardware_detection from tools.hardware")
+    except (ImportError, ModuleNotFoundError):
+        # Then try importing from the root
+        try:
+            import hardware_detection
+
+            print("Imported hardware_detection from root")
+        except (ImportError, ModuleNotFoundError):
+            print("hardware_detection.py not found, using fallback")
+
+            # Define fallback hardware constants
+            HARDWARE_TYPES = ["base", "acm", "bmg", "mtl", "lnl", "ovino", "arl_h"]
+
+            # Create minimal fallback module for CI
+            class FallbackHardwareDetection:
+                def __init__(self):
+                    self.HARDWARE_TYPES = HARDWARE_TYPES
+
+                def detect_hardware_type(self):
+                    """Detect hardware type based on environment variables."""
+                    if "SIMULATED_HARDWARE" in os.environ:
+                        sim_hw = os.environ.get("SIMULATED_HARDWARE", "").lower()
+                        if sim_hw in HARDWARE_TYPES:
+                            return sim_hw
+                    return "base"
+
+                def print_hardware_info(self, verbose=False):
+                    """Print hardware info."""
+                    print("System: CI Environment")
+                    print(f"Python version: {sys.version}")
+                    print(f"Detected hardware type: {self.detect_hardware_type()}")
+                    print("GPUs: [Simulated]")
+                    print("CPU: Simulated CI CPU")
+
+                def get_hardware_info(self):
+                    """Get hardware info."""
+                    return {
+                        "system": "CI",
+                        "python_version": sys.version,
+                        "gpus": [],
+                        "cpu": {"name": "CI CPU"},
+                        "detected_hardware": self.detect_hardware_type(),
+                        "openvino_available": self.detect_hardware_type() == "ovino",
+                    }
+
+            # Create fallback module
+            hardware_detection = FallbackHardwareDetection()
+except Exception as e:
+    logging.warning(f"Error importing hardware_detection: {e}")
+    logging.warning("hardware_detection.py not found, some features will be limited")
+    HARDWARE_TYPES = ["base", "acm", "bmg", "mtl", "lnl", "ovino", "arl_h"]
 
 
 # Default config values
