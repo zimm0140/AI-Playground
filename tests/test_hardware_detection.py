@@ -9,7 +9,16 @@ from unittest.mock import MagicMock, mock_open, patch
 # Add parent directory to path so we can import from the root
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-import hardware_detection
+# Try to import from tools.hardware first, then fall back to root import
+try:
+    # Check if tools directory exists and add it to path
+    tools_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "tools")
+    if os.path.exists(tools_dir):
+        sys.path.append(tools_dir)
+    from tools.hardware import hardware_detection
+except ImportError:
+    # Fall back to root import
+    import hardware_detection
 
 
 class TestHardwareDetection(unittest.TestCase):

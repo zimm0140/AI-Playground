@@ -22,10 +22,22 @@ logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
 # Try to import hardware detection module, which should be in the same directory
 try:
-    import hardware_detection
+    # Update import path to use the module from tools/hardware
+    import sys
+    from pathlib import Path
+
+    # Add tools directory to path if needed
+    tools_dir = Path(__file__).parent.parent
+    sys.path.append(str(tools_dir.absolute()))
+
+    from tools.hardware import hardware_detection
 except ImportError:
-    logging.warning("hardware_detection.py not found, some features will be limited")
-    HARDWARE_TYPES = ["base", "acm", "bmg", "mtl", "lnl", "ovino", "arl_h"]
+    logging.warning("hardware_detection.py not found in tools/hardware, trying local import")
+    try:
+        import hardware_detection
+    except ImportError:
+        logging.warning("hardware_detection.py not found, some features will be limited")
+        HARDWARE_TYPES = ["base", "acm", "bmg", "mtl", "lnl", "ovino", "arl_h"]
 
 
 # Default config values

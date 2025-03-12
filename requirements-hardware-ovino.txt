@@ -1,37 +1,33 @@
-# OpenVINO Hardware Acceleration Requirements
-# -----------------------------------
-# This file contains dependencies specific to OpenVINO acceleration.
+# Base Hardware Requirements
+# ------------------------
+# This file contains dependencies for systems without specialized hardware acceleration.
+# It includes the standard PyTorch installation without specific optimizations.
 
-# Additional package index for OpenVINO releases
---extra-index-url https://storage.openvinotoolkit.org/simple/wheels/nightly
+# Core Dependencies
+torch>=2.0.0
+torchvision>=0.15.0
+torchaudio>=2.0.0
 
-# OpenVINO Core Components
-openvino==2025.1.0.dev20250203
-openvino-dev==2025.1.0.dev20250203
-openvino-genai==2025.1.0.0.dev20250203
-openvino-tokenizers==2025.1.0.0.dev20250203
+# System Dependencies
+numpy==1.26.4  # Pin numpy for compatibility
+pillow>=9.3.0
+requests>=2.28.0
+flask>=2.2.0
 
-# OpenVINO model optimization tools
-pot==2025.1.0.dev20250203
-openvino-telemetry==2025.1.0.dev20250203
+# Deep Learning Utilities
+transformers>=4.30.0
+diffusers>=0.27.0
+accelerate>=0.23.0
+safetensors>=0.3.1
 
-# Required dependencies with pinned versions
-numpy==1.26.4
-opencv-python==4.8.1.78
+# Requirements for OpenVINO hardware acceleration
+openvino==2023.3.0
+openvino-dev==2023.3.0
+onnx>=1.15.0
+tensorflow>=2.14.0
+torch>=2.1.0
+torchvision>=0.16.0
+numpy>=1.24.0
 
-# For OpenVINO neural network compression
-nncf==2.7.0
-
-# For model conversion and acceleration
-onnx==1.15.0
-onnxruntime==1.16.3
-
-# For visualization and debugging
-networkx==3.2.1
-matplotlib==3.8.2
-
-# Hardware detection
-py-cpuinfo==9.0.0
-
-# API Framework (if needed)
-apiflask==2.3.0 
+# These are base requirements that will work on all hardware
+# For hardware-specific optimizations, see the corresponding hardware-specific requirements files 
