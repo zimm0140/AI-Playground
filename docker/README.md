@@ -63,4 +63,5 @@ You can customize the Docker environment by:
 1. Modifying the `Dockerfile` to add additional dependencies
 1. Updating the `docker-compose.yml` file to change volume mounts or network settings
 1. Creating a `.env` file in the same directory as `docker-compose.yml` to override environment variables
+
 ````

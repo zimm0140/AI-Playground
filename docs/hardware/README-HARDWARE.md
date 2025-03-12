@@ -231,6 +231,8 @@ You can customize the hardware detection and environment configuration by modify
 - Customize detection patterns
 - Change dependency paths
 - Configure environment settings
+
 ```text`
+
 ````
 

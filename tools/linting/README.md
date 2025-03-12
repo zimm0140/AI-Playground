@@ -67,4 +67,5 @@ These tools use configuration files from the `config` directory:
 - `.pre-commit-config.yaml`: Configuration for pre-commit hooks
 
 Note: Copies of these configuration files are also available in the project root directory for compatibility with tools that expect them there.
+
 ````

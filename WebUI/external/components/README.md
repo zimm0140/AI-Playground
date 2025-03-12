@@ -137,4 +137,5 @@ To create a new component:
 - Consider resource requirements when designing components
 
 ```text`
+
 ````

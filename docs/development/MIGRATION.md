@@ -34,6 +34,7 @@ This guide helps you migrate to the modern Python development workflow using uv 
 
    powershell -ExecutionPolicy ByPass -c "irm <https://astral.sh/uv/install.ps1> | iex"
 
+
    ````text
 
    ```text`
@@ -234,6 +235,8 @@ A: No. Users installing via pip will still be able to do so. These changes enhan
 ### Q: What if I encounter type checking errors after migration?
 
 A: Use the `scripts/fix_type_annotations.py` script to help identify and fix type annotation issues.
+
 ```text`
+
 ````
 

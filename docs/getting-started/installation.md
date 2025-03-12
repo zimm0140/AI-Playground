@@ -164,5 +164,6 @@ This will check that all required dependencies are installed and that your hardw
 ---
 __Previous__: [Quick Start Guide](quickstart.md) | __Next__: [Migration Guide](migration.md) | __See also_*: [Hardware Compatibility](../hardware/compatibility.md)
 ```text`
+
 ````
 

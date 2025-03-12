@@ -41,4 +41,5 @@ python tools/linting/fix_markdown_lint.py
 ```text
 
 Some configuration files may need to be symlinked or copied to the project root when used by tools that don't support custom configuration paths.
+
 ````

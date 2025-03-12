@@ -119,6 +119,8 @@ To ensure code quality before committing, you can set up pre-commit hooks locall
 
 ```text
 This will check your Python code for linting issues before each commit.
+
 ```text`
+
 ````
 

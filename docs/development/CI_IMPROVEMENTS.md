@@ -103,5 +103,6 @@ Potential future improvements for the CI workflow:
 6. __UI Testing__: Add browser-based testing if the project has a web interface
 7. __Deployment Testing_*: Add tests to verify deployment works correctly
 ```text`
+
 ````
 

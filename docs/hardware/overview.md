@@ -109,5 +109,6 @@ For optimization techniques specific to your hardware, see the [Hardware Optimiz
 ---
 __Previous__: [Migration Guide](../getting-started/migration.md) | __Next__: [Hardware Compatibility](compatibility.md) | __See also_*: [Device-Specific Guides](device-specific/)
 ```text`
+
 ````
 

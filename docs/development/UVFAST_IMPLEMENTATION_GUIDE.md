@@ -198,6 +198,8 @@ python uvfast.py setup --hardware ovino --dev
 1. __Missing dependencies_*:
    - Check hardware-specific requirements
    - Verify lockfiles are up to date
+
 ```text`
+
 ````
 

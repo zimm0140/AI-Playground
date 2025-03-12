@@ -16,6 +16,8 @@ with special handling for:
 import os
 import re
 import sys
+import glob
+from typing import List
 
 # Maximum line length (from .markdownlint.yaml)
 MAX_LINE_LENGTH = 180
@@ -94,7 +96,7 @@ def fix_bare_urls(content: str) -> str:
 def fix_markdown_file(file_path: str) -> bool:
     """Apply all fixes to a markdown file."""
     try:
-        with open(file_path, encoding="utf-8") as f:
+        with open(file_path, 'r', encoding='utf-8') as f:
             content = f.read()
         
         original_content = content
@@ -124,8 +126,7 @@ def fix_markdown_file(file_path: str) -> bool:
         print(f"❌ Error processing {file_path}: {str(e)}")
         return False
 
-
-def find_markdown_files(path: str) -> list[str]:
+def find_markdown_files(path: str) -> List[str]:
     """Find all markdown files in the given path."""
     if os.path.isfile(path) and path.lower().endswith('.md'):
         return [path]
