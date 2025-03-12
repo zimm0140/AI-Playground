@@ -63,7 +63,7 @@ jobs:
 
       - name: Run tests (traditional method)
         run: |
-          python -m pytest -v tests/ --import-mode=append
+          python -m pytest -v hardware_detection/tests/ --import-mode=append
         shell: bash
 
       - name: Install uv
@@ -100,7 +100,7 @@ jobs:
           source .venv/bin/activate
           uv pip install pytest pytest-cov pytest-mock types-requests
           uv pip install -e .[test]
-          uv run pytest -v tests/ --import-mode=append
+          uv run pytest -v hardware_detection/tests/ --import-mode=append
         shell: bash
 
       - name: Test with uv (Windows)
@@ -110,7 +110,7 @@ jobs:
           .venv\Scripts\Activate.ps1
           uv pip install pytest pytest-cov pytest-mock types-requests
           uv pip install -e .[test]
-          uv run pytest -v tests/ --import-mode=append
+          uv run pytest -v hardware_detection/tests/ --import-mode=append
         shell: pwsh
 
   lint:
