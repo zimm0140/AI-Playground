@@ -117,4 +117,3 @@ Documentation linting is configured in:
 If you have questions about the documentation, please open an issue or contact the maintainers at <example@example.com>.
 
 ````
-

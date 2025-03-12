@@ -99,4 +99,3 @@ workflows. The dual approach allows for a gradual transition to modern practices
 
 By leveraging modern tools like `uv` and implementing hardware-specific configurations, we've created a foundation that can scale with the project's needs while providing
 immediate benefits to developers and contributors.
-

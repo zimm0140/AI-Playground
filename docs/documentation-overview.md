@@ -122,4 +122,3 @@ If you want to contribute to AI-Playground, check out:
 *___**___**___**___**___**___**___**___**___**___**___**___**___**____
 
 __See also_*: [Index](index.md) | [GitHub Repository](https://github.com/example/ai-playground)
-

@@ -86,4 +86,3 @@ For a complete overview of all documentation resources, see the [Documentation O
 
 This documentation is continuously updated. If you find any issues or have suggestions for improvements, please [open an issue](https://github.com/example/ai-playground/issues) or
 contribute directly by submitting a pull request.
-

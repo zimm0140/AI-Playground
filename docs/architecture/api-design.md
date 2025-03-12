@@ -610,5 +610,5 @@ The API implements several security measures:
 
 ---
 __Previous__: [Architecture Overview](overview.md) | __Next__: [Hardware Integration](hardware-integration.md) | __See also_*: [Python API Reference](../reference/python-api.md)
-````
 
+````

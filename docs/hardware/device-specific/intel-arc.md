@@ -277,6 +277,7 @@ Typical optimal batch sizes:
 
 ---
 __Previous__: [Hardware Optimization](../optimization.md) | __See also_*: [Meteor Lake Guide](intel-meteor-lake.md)
-```text`
-```
 
+```text`
+
+```

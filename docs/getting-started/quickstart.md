@@ -93,4 +93,3 @@ AI-Playground automatically detects and optimizes for your hardware:
 *___**___**___**___**___**___**___**___**___**___**___**___**___**____
 
 __Next__: [Installation Guide](installation.md) | __See also_*: [Hardware Overview](../hardware/overview.md)
-
