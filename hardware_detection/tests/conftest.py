@@ -136,3 +136,27 @@ def mock_config_file(tmp_path):
         json.dump(config_content, f, indent=2)
 
     return config_path
+
+
+@pytest.fixture
+def mock_base_env(monkeypatch):
+    """Mock environment for base hardware setup."""
+    monkeypatch.setenv("SIMULATED_HARDWARE", "base")
+
+
+@pytest.fixture
+def mock_acm_env(monkeypatch):
+    """Mock environment for Intel Arc hardware setup."""
+    monkeypatch.setenv("SIMULATED_HARDWARE", "acm")
+
+
+@pytest.fixture
+def mock_ovino_env(monkeypatch):
+    """Mock environment for OpenVINO hardware setup."""
+    monkeypatch.setenv("SIMULATED_HARDWARE", "ovino")
+
+
+@pytest.fixture(autouse=True)
+def clean_env(monkeypatch):
+    """Clean environment before each test."""
+    monkeypatch.delenv("SIMULATED_HARDWARE", raising=False)

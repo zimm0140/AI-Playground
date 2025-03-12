@@ -1,9 +1,10 @@
 name: Modern CI Pipeline
 
 on:
-  push:
-    branches: [main, develop]
+  workflow_dispatch:
   pull_request:
+    branches: [main, develop]
+  push:
     branches: [main, develop]
 
 env:
@@ -15,172 +16,97 @@ jobs:
   test:
     runs-on: ${{ matrix.os }}
     strategy:
-      fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        python-version: ["3.8", "3.9", "3.10", "3.11"]
-        include:
-          - python-version: "3.10"
-            name: "Compatibility Testing"
-          - python-version: "3.11"
-            name: "Latest Features Testing"
+        python-version: ["3.10", "3.11", "3.12"]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-
-      - name: Cache pip packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-${{ matrix.python-version }}-
-            ${{ runner.os }}-pip-
-
-      - name: Install traditional dependencies
-        run: |
-          python -m pip install --upgrade pip setuptools wheel
-          python -m pip install pytest pytest-cov pytest-mock types-requests
-          python -m pip install -e .[test]
-        shell: bash
-
-      - name: Run CI setup script
-        run: |
-          python .github/workflows/scripts/ci_setup.py
-        shell: bash
-
-      - name: Verify hardware detection package
-        run: |
-          python -c "import hardware_detection; print(f'Version: {hardware_detection.__version__}')"
-          python -c "import tools.hardware.hardware_detection; print(f'Compat Version: {tools.hardware.hardware_detection.__version__}')"
-          python -c "from hardware_detection import detect_hardware_type; print(f'Hardware Type: {detect_hardware_type()}')"
-        shell: bash
-
-      - name: Run tests (traditional method)
-        run: |
-          python -m pytest -v hardware_detection/tests/ --import-mode=append
-        shell: bash
+          cache: "pip"
 
       - name: Install uv
         run: |
-          curl -LsSf https://astral.sh/uv/install.sh | sh
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
-        shell: bash
-        if: runner.os != 'Windows'
-
-      - name: Install uv (Windows)
-        run: |
-          iwr https://astral.sh/uv/install.ps1 -useb | iex
-          echo "$env:LOCALAPPDATA\uv\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-        shell: pwsh
-        if: runner.os == 'Windows'
+          python -m pip install --upgrade pip
+          pip install uv
 
       - name: Cache uv packages
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
-          path: |
-            ~/.cache/uv
-            ~/.cache/uv/network
-            ~/.cache/uv/source-archive
-            ~/.cache/uv/resolution-db
-          key: ${{ runner.os }}-uv-${{ matrix.python-version }}-${{ hashFiles('**/pyproject.toml', '**/requirements*.txt', '**/setup.py') }}
+          path: ~/.cache/uv
+          key: ${{ runner.os }}-uv-${{ hashFiles('**/requirements*.txt') }}
           restore-keys: |
-            ${{ runner.os }}-uv-${{ matrix.python-version }}-
             ${{ runner.os }}-uv-
 
-      - name: Test with uv (Unix)
-        if: runner.os != 'Windows'
+      - name: Install dependencies
         run: |
           uv venv
-          source .venv/bin/activate
-          uv pip install pytest pytest-cov pytest-mock types-requests
-          uv pip install -e .[test]
-          uv run pytest -v hardware_detection/tests/ --import-mode=append
-        shell: bash
+          uv pip install pytest pytest-cov types-requests mypy ruff
+          uv pip install -e .
 
-      - name: Test with uv (Windows)
-        if: runner.os == 'Windows'
+      - name: Verify package
         run: |
-          uv venv
-          .venv\Scripts\Activate.ps1
-          uv pip install pytest pytest-cov pytest-mock types-requests
-          uv pip install -e .[test]
-          uv run pytest -v hardware_detection/tests/ --import-mode=append
-        shell: pwsh
+          python -c "import hardware_detection; print(hardware_detection.__version__)"
+
+      - name: Run tests with coverage
+        run: |
+          python -m pytest -v hardware_detection/tests/ --cov=hardware_detection --cov-report=xml --cov-report=term-missing --import-mode=append
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./coverage.xml
+          fail_ci_if_error: false
+          token: ${{ secrets.CODECOV_TOKEN }}
 
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.12"
+          cache: "pip"
 
-      - name: Install uv
+      - name: Install dependencies
         run: |
-          curl -LsSf https://astral.sh/uv/install.sh | sh
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
-        shell: bash
-
-      - name: Install dependencies and run linting
-        run: |
-          uv venv
-          source .venv/bin/activate
-          uv pip install -e .[dev]
-        shell: bash
+          python -m pip install --upgrade pip
+          pip install ruff mypy types-requests pytest
+          pip install -e .
 
       - name: Lint with Ruff
         run: |
-          source .venv/bin/activate
-          uv run ruff check .
-        shell: bash
+          ruff check .
+          ruff format --check .
 
       - name: Type check with mypy
         run: |
-          source .venv/bin/activate
-          uv run mypy --python-version 3.10 --exclude '.github/workflows/scripts/*' .
-        shell: bash
+          mypy hardware_detection
 
       - name: Check markdown files
         run: |
-          npm install -g markdownlint-cli
-          markdownlint '**/*.md' --ignore node_modules || true
-        shell: bash
-
-      - name: Fix markdown issues
-        run: |
-          python .github/workflows/scripts/fix_markdown_lint.py
-          git diff --name-only
-        shell: bash
+          pip install mdformat
+          mdformat --check .
 
   audit:
     runs-on: ubuntu-latest
+    continue-on-error: true
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
-
-      - name: Install uv
-        run: |
-          curl -LsSf https://astral.sh/uv/install.sh | sh
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
-        shell: bash
+          python-version: "3.12"
+          cache: "pip"
 
       - name: Audit dependencies
         run: |
-          uv venv
-          source .venv/bin/activate
-          uv pip install -e .
-          uv pip audit
-        shell: bash
-        continue-on-error: true # Don't fail the build if vulnerabilities are found
+          pip install pip-audit
+          pip-audit .
