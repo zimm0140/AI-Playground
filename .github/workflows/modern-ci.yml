@@ -49,6 +49,15 @@ jobs:
           python -m pytest -v hardware_detection/tests/ --cov=hardware_detection --cov-report=term-missing --import-mode=append
         shell: pwsh
 
+    # Run integration test for hardware detection on main branch
+    - name: Run hardware integration test
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      env:
+        SIMULATED_HARDWARE: "acm"
+      run: |
+        python -m pytest -v hardware_detection/tests/test_detection.py::test_detect_hardware_type_acm
+      shell: pwsh
+
   lint:
     runs-on: windows-latest
     steps:
