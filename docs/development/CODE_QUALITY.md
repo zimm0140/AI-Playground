@@ -91,5 +91,7 @@ If you encounter CI failures:
 1. Run `python check_linting.py` locally to see if you can reproduce the issues.
 1. Fix the issues manually or use the helper scripts.
 1. Run pre-commit to verify your fixes before pushing again.
+
 ```text`
+
 ````

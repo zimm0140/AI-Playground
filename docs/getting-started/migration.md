@@ -131,5 +131,7 @@ For further assistance, please [open an issue](https://github.com/intel/AI-Playg
 
 ---
 **Previous**: [Installation Guide](installation.md) | **Next**: [Hardware Overview](../hardware/overview.md) | **See also**: [Troubleshooting](../reference/troubleshooting.md)
+
 ```text`
+
 ````

@@ -213,4 +213,5 @@ The new package structure provides:
 
    hardware_type = detect_hardware_type()
    ```text
+
 ````

@@ -1379,5 +1379,7 @@ client.set_hardware(device_type="cpu")
 
 ---
 **Previous**: [Python API Reference](python-api.md) | **Next**: [Configuration Reference](configuration.md) | **See also**: [API Design](../architecture/api-design.md)
+
 ```text`
+
 ````

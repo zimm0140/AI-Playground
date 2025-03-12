@@ -343,5 +343,7 @@ raise ValueError(f"Expected one of {acceptable_types}, got {type(data)}")
 
 Modern IDEs like VS Code with Pylance, PyCharm, or tools like mypy can help identify type annotation issues. Ensure your IDE is configured to check types with Python 3.10+
 compatibility.
+
 ```text`
+
 ````

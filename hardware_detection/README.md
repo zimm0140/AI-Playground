@@ -45,4 +45,5 @@ python -m pytest hardware_detection/tests/
 ## License
 
 MIT License. See LICENSE file for details.
+
 ````

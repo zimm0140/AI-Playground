@@ -249,5 +249,7 @@ For advanced users, edit `/uvfast.json` to fine-tune hardware configurations:
 ---
 **Previous**: [Hardware Compatibility](compatibility.md) | **Next**: [Intel Arc Guide](device-specific/intel-arc.md) | **See also**: [Performance
 Troubleshooting](../reference/troubleshooting.md)
+
 ```text`
+
 ````

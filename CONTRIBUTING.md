@@ -138,4 +138,5 @@ If you have questions about the development process or need help with your contr
 1. Ask for help in pull request comments
 
 Thank you for contributing to AI Playground!
+
 ````

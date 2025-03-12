@@ -137,5 +137,7 @@ This will generate a report about your hardware configuration and any potential 
 
 ---
 **Previous**: [Hardware Overview](overview.md) | **Next**: [Hardware Optimization](optimization.md) | **See also**: [Intel Arc Guide](device-specific/intel-arc.md)
+
 ```text`
+
 ````

@@ -43,6 +43,7 @@ python -c "import sys; print(sys.executable)"
 ## Test that jsonschema is installed
 
 python -c "import jsonschema; print(f'jsonschema version: {jsonschema.__version__}')"
+
 ```text
 
 ### Option 2: Using venv
@@ -64,6 +65,7 @@ source .venv/bin/activate
 ## Install required packages
 
 pip install -r requirements.txt
+
 ```text
 
 ## Environment Management Best Practices
@@ -83,6 +85,7 @@ conda activate ai-playground-env
 ## For venv on macOS/Linux
 
 source .venv/bin/activate
+
 ```text
 1. **Add new dependencies to requirements.txt**:
 
@@ -97,6 +100,7 @@ pip freeze > requirements.txt
 ## Or manually add it with a specific version
 
 echo "package-name==1.2.3" >> requirements.txt
+
 ```text
 1. **Never commit environment directories**:
 
@@ -249,5 +253,7 @@ commit automatically with `git commit -s`.
 -----
 
 Again, thanks for your interest in contributing to this project. We appreciate your efforts to make our project even better!
+
 ```text`
+
 ````
