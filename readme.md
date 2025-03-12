@@ -346,12 +346,14 @@ Tests can be run using pytest:
 
 ```bash
 python -m pytest
+
 ```
 
 For hardware-specific tests, you can use:
 
 ```bash
 python uvfast.py run pytest tests/hardware/
+
 ```
 
 ### CI Environment
@@ -366,6 +368,7 @@ To set up a CI environment for testing:
 
 ```bash
 python .github/workflows/scripts/ci_setup.py
+
 ```
 
 This script:
@@ -384,6 +387,7 @@ In CI environments, you can simulate specific hardware by setting the `SIMULATED
 
 ```bash
 SIMULATED_HARDWARE=acm python uvfast.py info
+
 ```
 
 Valid values: base, acm, bmg, mtl, lnl, ovino, arl_h
