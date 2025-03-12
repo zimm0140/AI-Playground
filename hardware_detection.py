@@ -6,118 +6,222 @@ processors that require specific Python packages for optimal performance.
 """
 
 import json
+import os
 import platform
 import re
 import subprocess
-import sys
 from pathlib import Path
-from typing import Dict, List
 
 # Define hardware types
 HARDWARE_TYPES = ["base", "acm", "bmg", "mtl", "lnl", "ovino", "arl_h"]
 
+# Add version for easier debugging
+__version__ = "1.0.1"
 
-def load_config() -> Dict:
+
+def load_config() -> dict:
     """Load uvfast configuration from uvfast.json."""
-    config_path = Path("uvfast.json")
-    if not config_path.exists():
-        return {"hardware_types": HARDWARE_TYPES, "default_hardware": "base"}
+    # Try multiple locations for uvfast.json
+    possible_paths = [
+        Path("uvfast.json"),  # Current directory
+        Path(__file__).parent / "uvfast.json",  # Same directory as this module
+        Path(__file__).parent.parent / "uvfast.json",  # Parent directory
+    ]
 
-    with open(config_path, "r", encoding="utf-8") as f:
-        config = json.load(f)
+    for config_path in possible_paths:
+        if config_path.exists():
+            try:
+                with open(config_path, encoding="utf-8") as f:
+                    config = json.load(f)
+                return config
+            except (json.JSONDecodeError, OSError) as e:
+                print(f"Warning: Error loading config from {config_path}: {e}")
 
-    return config
+    # Default config if no config file is found
+    return {"hardware_types": HARDWARE_TYPES, "default_hardware": "base"}
 
 
-def get_gpu_info_windows() -> List[str]:
-    """Get GPU information on Windows using WMI."""
-    try:
-        import wmi  # type: ignore
+def get_gpu_info() -> list:
+    """Get GPU information."""
+    # Check for simulated environment in CI
+    if "SIMULATED_HARDWARE" in os.environ:
+        sim_hw = os.environ.get("SIMULATED_HARDWARE", "").lower()
+        if sim_hw == "acm":
+            return ["Intel(R) Arc(TM) A770 Graphics"]
+        elif sim_hw == "ovino":
+            return ["Intel(R) UHD Graphics"]
 
-        w = wmi.WMI()
-        return [gpu.Name for gpu in w.Win32_VideoController()]
-    except ImportError:
-        # If wmi is not available, try using subprocess
+    # Check for mock files
+    mock_dir = Path(os.environ.get("UVFAST_MOCK_DIR", ".uvfast/mock"))
+    mock_gpu_file = mock_dir / "gpu_info.txt"
+    if mock_gpu_file.exists():
         try:
-            output = subprocess.check_output(
+            with open(mock_gpu_file) as f:
+                return [line.strip() for line in f.readlines() if line.strip()]
+        except OSError:
+            pass
+
+    # Platform-specific GPU detection
+    system = platform.system()
+    gpus = []
+
+    try:
+        if system == "Windows":
+            # Use wmic on Windows
+            output = subprocess.run(
                 ["wmic", "path", "win32_VideoController", "get", "Name"],
-                universal_newlines=True,
-            )
-            lines = output.strip().split("\n")[1:]
-            return [line.strip() for line in lines if line.strip()]
-        except (subprocess.SubprocessError, FileNotFoundError):
-            return []
+                capture_output=True,
+                text=True,
+                timeout=5,
+            ).stdout
+            gpus = [line.strip() for line in output.split("\n")[1:] if line.strip()]
+        elif system == "Linux":
+            # Try lspci on Linux
+            output = subprocess.run(
+                ["lspci", "-v"],
+                capture_output=True,
+                text=True,
+                timeout=5,
+            ).stdout
+
+            # Extract GPU names from lspci output
+            gpu_lines = []
+            for line in output.split("\n"):
+                if "VGA" in line or "3D" in line or "Display" in line:
+                    gpu_lines.append(line)
+
+            gpus = [
+                line.split(":")[2].strip() if len(line.split(":")) > 2 else line
+                for line in gpu_lines
+            ]
+        elif system == "Darwin":
+            # Use system_profiler on macOS
+            output = subprocess.run(
+                ["system_profiler", "SPDisplaysDataType"],
+                capture_output=True,
+                text=True,
+                timeout=5,
+            ).stdout
+
+            # Extract GPU names from system_profiler output
+            gpu_lines = []
+            for line in output.split("\n"):
+                if "Chipset Model:" in line:
+                    gpu_lines.append(line.split(":")[1].strip())
+
+            gpus = gpu_lines
+    except (subprocess.SubprocessError, FileNotFoundError, TimeoutError):
+        pass
+
+    return gpus
 
 
-def get_gpu_info_linux() -> List[str]:
-    """Get GPU information on Linux using lspci."""
-    try:
-        output = subprocess.check_output(["lspci", "-v"], universal_newlines=True)
-        gpu_lines = [line for line in output.split("\n") if "VGA" in line or "Display" in line]
-        return gpu_lines
-    except (subprocess.SubprocessError, FileNotFoundError):
-        return []
-
-
-def get_gpu_info_macos() -> List[str]:
-    """Get GPU information on macOS using system_profiler."""
-    try:
-        output = subprocess.check_output(
-            ["system_profiler", "SPDisplaysDataType"], universal_newlines=True
-        )
-        chip_lines = [line for line in output.split("\n") if "Chipset Model" in line]
-        return [line.split(":")[1].strip() for line in chip_lines]
-    except (subprocess.SubprocessError, FileNotFoundError):
-        return []
-
-
-def get_gpu_info() -> List[str]:
-    """Get GPU information for the current platform."""
-    system = platform.system()
-    if system == "Windows":
-        return get_gpu_info_windows()
-    elif system == "Linux":
-        return get_gpu_info_linux()
-    elif system == "Darwin":
-        return get_gpu_info_macos()
-    else:
-        return []
-
-
-def get_cpu_info() -> Dict[str, str]:
+def get_cpu_info() -> dict:
     """Get CPU information."""
-    info = {}
+    info = {
+        "vendor": "",
+        "name": "",
+        "cores": 0,
+    }
 
-    system = platform.system()
-    if system == "Windows":
+    # Check for mock files
+    mock_dir = Path(os.environ.get("UVFAST_MOCK_DIR", ".uvfast/mock"))
+    mock_cpu_file = mock_dir / "cpu_info.txt"
+    if mock_cpu_file.exists():
         try:
-            import wmi  # type: ignore
-
-            w = wmi.WMI()
-            for processor in w.Win32_Processor():
-                info["name"] = processor.Name
-                info["manufacturer"] = processor.Manufacturer
-                break
-        except ImportError:
-            # Fall back to platform module
-            info["name"] = platform.processor()
-    elif system == "Linux":
-        try:
-            with open("/proc/cpuinfo", "r") as f:
+            with open(mock_cpu_file) as f:
                 for line in f:
-                    if "model name" in line:
-                        info["name"] = line.split(":")[1].strip()
-                        break
-        except (FileNotFoundError, IOError):
-            info["name"] = platform.processor()
-    else:
-        info["name"] = platform.processor()
+                    if ":" in line:
+                        key, value = line.split(":", 1)
+                        key = key.strip().lower()
+                        value = value.strip()
+                        if key in info:
+                            info[key] = value
+            return info
+        except OSError:
+            pass
+
+    # Platform-specific CPU detection
+    system = platform.system()
+
+    try:
+        if system == "Windows":
+            # Use wmic on Windows
+            for key, wmic_key in [
+                ("vendor", "Manufacturer"),
+                ("name", "Name"),
+                ("cores", "NumberOfCores"),
+            ]:
+                output = subprocess.run(
+                    ["wmic", "cpu", "get", wmic_key],
+                    capture_output=True,
+                    text=True,
+                    timeout=5,
+                ).stdout
+                value = output.split("\n")[1].strip()
+                info[key] = value
+        elif system == "Linux":
+            # Parse /proc/cpuinfo on Linux
+            if os.path.exists("/proc/cpuinfo"):
+                with open("/proc/cpuinfo") as f:
+                    content = f.read()
+
+                    # Extract vendor
+                    vendor_match = re.search(r"vendor_id\s*:\s*([^\n]+)", content)
+                    if vendor_match:
+                        info["vendor"] = vendor_match.group(1).strip()
+
+                    # Extract model name
+                    name_match = re.search(r"model name\s*:\s*([^\n]+)", content)
+                    if name_match:
+                        info["name"] = name_match.group(1).strip()
+
+                    # Count cores
+                    cores = content.count("processor")
+                    if cores > 0:
+                        info["cores"] = cores
+        elif system == "Darwin":
+            # Use sysctl on macOS
+            vendor_output = subprocess.run(
+                ["sysctl", "-n", "machdep.cpu.vendor"],
+                capture_output=True,
+                text=True,
+                timeout=5,
+            ).stdout
+            info["vendor"] = vendor_output.strip()
+
+            name_output = subprocess.run(
+                ["sysctl", "-n", "machdep.cpu.brand_string"],
+                capture_output=True,
+                text=True,
+                timeout=5,
+            ).stdout
+            info["name"] = name_output.strip()
+
+            cores_output = subprocess.run(
+                ["sysctl", "-n", "hw.physicalcpu"],
+                capture_output=True,
+                text=True,
+                timeout=5,
+            ).stdout
+            try:
+                info["cores"] = int(cores_output.strip())
+            except ValueError:
+                pass
+    except (subprocess.SubprocessError, FileNotFoundError, TimeoutError):
+        pass
 
     return info
 
 
 def detect_hardware_type() -> str:
     """Detect the hardware type based on GPU and CPU information."""
+    # Allow direct override through environment variable for CI/testing
+    if "SIMULATED_HARDWARE" in os.environ:
+        sim_hw = os.environ.get("SIMULATED_HARDWARE", "").lower()
+        if sim_hw in HARDWARE_TYPES:
+            return sim_hw
+
     config = load_config()
     detection_config = config.get("detection", {})
 
@@ -150,6 +254,10 @@ def detect_hardware_type() -> str:
 
 def is_openvino_available() -> bool:
     """Check if OpenVINO is installed and available."""
+    # For simulated environments
+    if os.environ.get("SIMULATED_HARDWARE") == "ovino":
+        return True
+
     try:
         import openvino  # type: ignore
 
@@ -158,7 +266,7 @@ def is_openvino_available() -> bool:
         return False
 
 
-def get_hardware_info() -> Dict:
+def get_hardware_info() -> dict:
     """Get detailed hardware information for reporting."""
     info = {
         "system": platform.system(),
@@ -171,52 +279,36 @@ def get_hardware_info() -> Dict:
     return info
 
 
-def get_requirements_file(hardware_type: str, dev: bool = False) -> str:
-    """Get the appropriate requirements file path for the hardware type."""
-    config = load_config()
-
-    requirements_config = config.get("requirements", {})
-
-    # Check for hardware-specific requirements
-    if hardware_type != "base" and "hardware" in requirements_config:
-        hw_req = requirements_config.get("hardware", {}).get(hardware_type)
-        if hw_req:
-            if dev and requirements_config.get("dev"):
-                return [hw_req, requirements_config.get("dev")]
-            return hw_req
-
-    # Fall back to base requirements
-    base_req = requirements_config.get("base", "requirements.txt")
-    if dev and requirements_config.get("dev"):
-        return [base_req, requirements_config.get("dev")]
-    return base_req
-
-
-def print_hardware_info(verbose: bool = False) -> None:
-    """Print hardware information to the console."""
+def print_hardware_info(verbose=False):
+    """Print hardware information."""
     info = get_hardware_info()
 
     print(f"System: {info['system']}")
     print(f"Python version: {info['python_version']}")
     print(f"Detected hardware type: {info['detected_hardware']}")
 
-    print("GPUs:")
+    print("\nGPUs:")
     if info["gpus"]:
         for gpu in info["gpus"]:
             print(f"  - {gpu}")
     else:
         print("  No GPUs detected")
 
-    print(f"CPU: {info['cpu'].get('name', 'Unknown')}")
-    print(f"OpenVINO available: {info['openvino_available']}")
+    print("\nCPU:")
+    cpu = info["cpu"]
+    print(f"  Vendor: {cpu.get('vendor', 'Unknown')}")
+    print(f"  Model: {cpu.get('name', 'Unknown')}")
+    print(f"  Cores: {cpu.get('cores', 'Unknown')}")
+
+    print(f"\nOpenVINO available: {info['openvino_available']}")
 
     if verbose:
-        config = load_config()
-        print("\nConfiguration:")
-        print(f"  Hardware types: {config.get('hardware_types', HARDWARE_TYPES)}")
-        print(f"  Default hardware: {config.get('default_hardware', 'base')}")
+        print("\nEnvironment Variables:")
+        for var in sorted(os.environ):
+            if var.startswith(("PYTHON", "PATH", "SIMULATED", "UVFAST", "HARDWARE")):
+                print(f"  {var}={os.environ[var]}")
 
 
+# If run directly, print hardware information
 if __name__ == "__main__":
-    verbose_flag = "--verbose" in sys.argv or "-v" in sys.argv
-    print_hardware_info(verbose=verbose_flag)
+    print_hardware_info(verbose=True)

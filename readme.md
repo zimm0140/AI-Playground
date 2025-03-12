@@ -20,28 +20,28 @@ This project showcases the capabilities of Intel® Arc™ GPUs for AI workloads 
 The project is organized into the following directories:
 
 - **docs/**: Documentation files
-  - **development/**: Development guides and reports
-  - **hardware/**: Hardware-specific documentation
-  - **user-guides/**: End-user documentation
-  - **workflows/**: Workflow documentation
+    - **development/**: Development guides and reports
+    - **hardware/**: Hardware-specific documentation
+    - **user-guides/**: End-user documentation
+    - **workflows/**: Workflow documentation
 
 - **tools/**: Utility scripts and tools
-  - **linting/**: Code and documentation linting tools
-  - **formatting/**: Code and documentation formatting tools
-  - **hardware/**: Hardware detection and setup tools
-  - **scripts/**: General utility scripts
+    - **linting/**: Code and documentation linting tools
+    - **formatting/**: Code and documentation formatting tools
+    - **hardware/**: Hardware detection and setup tools
+    - **scripts/**: General utility scripts
 
 - **config/**: Configuration files
-  - Environment configuration
-  - Linting and formatting configuration
-  - Application configuration
+    - Environment configuration
+    - Linting and formatting configuration
+    - Application configuration
 
 - **docker/**: Docker configuration
-  - Dockerfile and docker-compose.yml
+    - Dockerfile and docker-compose.yml
 
 - **legal/**: Legal documentation
-  - License files
-  - Notices and disclaimers
+    - License files
+    - Notices and disclaimers
 
 - **service/**: Backend services
 - **WebUI/**: Frontend web interface
@@ -337,3 +337,53 @@ For information on AI Playground terms, license, and disclaimers, visit:
 - [Notices & Disclaimers](https://github.com/intel/ai-playground/blob/main/notices-disclaimers.md)
 
 The software may include third-party components with separate legal notices or governed by other agreements, as described in the Third Party Notices file accompanying the software.
+
+## Testing and CI
+
+### Running Tests
+
+Tests can be run using pytest:
+
+```bash
+python -m pytest
+```
+
+For hardware-specific tests, you can use:
+
+```bash
+python uvfast.py run pytest tests/hardware/
+```
+
+### CI Environment
+
+For CI environments, we use mock hardware detection to simulate different hardware configurations:
+
+- **Base**: Default configuration, no specialized hardware
+- **ACM**: Simulates Intel Arc GPUs
+- **OpenVINO**: Simulates OpenVINO-compatible hardware
+
+To set up a CI environment for testing:
+
+```bash
+python .github/workflows/scripts/ci_setup.py
+```
+
+This script:
+
+1. Ensures proper Python module structure
+2. Sets up hardware detection
+3. Creates mock hardware environments
+4. Sets up stub implementations of hardware-dependent packages
+5. Creates necessary requirements files
+
+### Hardware Detection Module
+
+The `hardware_detection.py` module provides functions to detect Intel hardware and is used by `uvfast.py` for hardware-specific dependency management. It has been designed to work both as a standalone module and as part of the reorganized `tools/hardware` package.
+
+In CI environments, you can simulate specific hardware by setting the `SIMULATED_HARDWARE` environment variable:
+
+```bash
+SIMULATED_HARDWARE=acm python uvfast.py info
+```
+
+Valid values: base, acm, bmg, mtl, lnl, ovino, arl_h

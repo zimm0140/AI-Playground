@@ -54,6 +54,10 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install uv
       
+      - name: Run CI setup script
+        run: |
+          python .github/workflows/scripts/ci_setup.py
+      
       - name: Setup simulated hardware environment
         run: |
           echo "Setting up simulated hardware: ${{ matrix.hardware }}"

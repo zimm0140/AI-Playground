@@ -103,6 +103,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-uv-
       
+      - name: Run CI setup script
+        run: |
+          python .github/workflows/scripts/ci_setup.py
+      
       - name: Set up environment with uvfast
         run: python uvfast.py setup --hardware base --dev
       
