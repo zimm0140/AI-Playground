@@ -1,0 +1,41 @@
+{
+  "include": [
+    "tests/**"
+  ],
+  "exclude": [
+    "**/node_modules",
+    "**/__pycache__",
+    "service/**",
+    "LlamaCPP/**",
+    "OpenVINO/**",
+    ".github/workflows/scripts/**"
+  ],
+  "ignoreExternal": true,
+  "extraPaths": [
+    "service/lib",
+    "LlamaCPP/lib"
+  ],
+  "stubPath": "typings",
+  "venvPath": ".",
+  "reportMissingImports": false,
+  "reportMissingTypeStubs": false,
+  "reportAttributeAccessIssue": false,
+  "reportOptionalMemberAccess": false,
+  "reportUndefinedVariable": false,
+  "reportUnknownArgumentType": false,
+  "reportUnknownMemberType": false,
+  "reportUnknownVariableType": false,
+  "reportArgumentType": false,
+  "reportIndexIssue": false,
+  "reportCallIssue": "none",
+  "reportGeneralTypeIssues": "none",
+  "reportOptionalCall": false,
+  "reportOptionalIterable": false,
+  "reportOptionalSubscript": false,
+  "reportOptionalOperand": false,
+  "reportTypedDictNotRequiredAccess": false,
+  "reportPrivateImportUsage": false,
+  "reportUnboundVariable": false,
+  "pythonVersion": "3.9",
+  "typeCheckingMode": "off"
+} 

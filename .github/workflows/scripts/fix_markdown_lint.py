@@ -1,122 +1,173 @@
 #!/usr/bin/env python3
 """
-Script to automatically fix common markdown linting issues.
+Script to fix common markdown linting issues automatically.
+
+This script addresses:
+- MD009: Trailing spaces
+- MD012: Multiple consecutive blank lines
+- MD029: Ordered list item prefix (preserves sequential numbering)
+- MD031: Blank lines around fenced code blocks
+- MD040: Code blocks without requiring language specifiers
+- MD047: Single trailing newline at end of file
+- MD004: Unordered list style (using dashes)
+- MD022: Headings surrounded by blank lines
+- MD026: Remove trailing punctuation in headings
+- MD010: Convert hard tabs to spaces
 """
+
+import glob
 import os
 import re
-import sys
-from re import Pattern
 
 
-def fix_trailing_spaces(content: str) -> str:
-    """Remove trailing spaces at the end of lines."""
+def fix_trailing_spaces(content):
+    """Fix trailing whitespace (MD009)."""
+    # Replace trailing spaces but preserve intentional line breaks (two spaces)
+    lines = []
+    for line in content.splitlines():
+        if line.rstrip() == "":
+            lines.append("")  # Empty lines should have no trailing space
+        elif line.endswith("  "):
+            lines.append(line)  # Keep lines with exactly two trailing spaces (markdown line break)
+        else:
+            lines.append(line.rstrip())  # Remove trailing spaces
+    return "\n".join(lines)
+
+
+def fix_consecutive_blank_lines(content):
+    """Fix multiple consecutive blank lines (MD012)."""
+    # Replace 2+ consecutive blank lines with a single blank line
+    return re.sub(r"\n{3,}", "\n\n", content)
+
+
+def fix_heading_spacing(content):
+    """Fix spacing around headings (MD022)."""
+    # Ensure headings have blank lines before and after them
     lines = content.splitlines()
-    fixed_lines: list[str] = [line.rstrip() for line in lines]
-    return "\n".join(fixed_lines) + "\n"
+    result = []
+    i = 0
+
+    while i < len(lines):
+        line = lines[i]
+        # Check if this is a heading
+        if re.match(r"^#{1,6}\s+", line):
+            # Add blank line before heading if not at start of document
+            # and previous line is not blank
+            if i > 0 and result and result[-1].strip():
+                result.append("")
+
+            # Add the heading
+            result.append(line)
+
+            # Add blank line after heading if next line is not blank
+            # and not at end of document
+            if i < len(lines) - 1 and lines[i + 1].strip():
+                result.append("")
+                # Skip adding the blank line again if we just added one
+                if i < len(lines) - 1 and not lines[i + 1].strip():
+                    i += 1
+        else:
+            result.append(line)
+        i += 1
+
+    return "\n".join(result)
 
 
-def fix_consecutive_blank_lines(content: str) -> str:
-    """Ensure no more than one consecutive blank line."""
-    pattern: Pattern[str] = re.compile(r"\n{3,}")
-    return pattern.sub("\n\n", content)
+def fix_heading_punctuation(content):
+    """Remove trailing punctuation from headings (MD026)."""
+    # Replace trailing punctuation in headings
+    return re.sub(r"^(#{1,6}\s+.*?)[.,;:!。，；：！](\s*)$", r"\1\2", content, flags=re.MULTILINE)
 
 
-def fix_emphasis_as_heading(content: str) -> str:
-    """Convert emphasis used as heading to proper headings."""
+def fix_list_style(content):
+    """Fix unordered list style (MD004) and preserve ordered list numbering (MD029)."""
     lines = content.splitlines()
-    fixed_lines: list[str] = []
+    result = []
 
     for line in lines:
-        # Match emphasis patterns used at the start of a line (**text** or __text__)
-        if re.match(r"^\s*(\*\*|__).+(\*\*|__)\s*$", line):
-            # Extract text from emphasis
-            emphasis_text = re.sub(r"^\s*(\*\*|__)(.*?)(\*\*|__)\s*$", r"\2", line)
-            # Replace with heading (level 3)
-            fixed_lines.append(f"### {emphasis_text}")
-        else:
-            fixed_lines.append(line)
+        # Fix unordered lists (asterisks/plus to dashes)
+        if re.match(r"^\s*[*+]\s", line):
+            line = re.sub(r"^(\s*)[*+](\s)", r"\1-\2", line)
 
-    return "\n".join(fixed_lines) + "\n"
+        # Fix hard tabs (MD010)
+        line = line.replace("\t", "    ")
+
+        # We preserve ordered list numbering by not modifying the numbers
+
+        result.append(line)
+
+    return "\n".join(result)
 
 
-def fix_line_length(content: str, max_length: int = 180) -> str:
-    """Break long lines at appropriate boundaries."""
+def ensure_blank_lines_around_lists(content):
+    """Ensure lists have blank lines before and after them (MD032)."""
     lines = content.splitlines()
-    fixed_lines: list[str] = []
+    result = []
+    in_list = False
+    i = 0
 
-    for line in lines:
-        # Skip headings, code blocks, and tables
-        if (
-            line.startswith("#")
-            or line.startswith("```")
-            or line.startswith("|")
-            or len(line) <= max_length
-        ):
-            fixed_lines.append(line)
-        else:
-            # Try to break at punctuation or spaces
-            current_pos = 0
-            while current_pos < len(line):
-                if current_pos + max_length >= len(line):
-                    fixed_lines.append(line[current_pos:])
-                    break
+    while i < len(lines):
+        line = lines[i]
+        # Check if this line starts a list item
+        is_list_item = re.match(r"^\s*([*+-]|\d+\.)\s", line)
 
-                # Find a good breaking point
-                break_pos = line.rfind(" ", current_pos, current_pos + max_length)
-                if break_pos == -1 or break_pos <= current_pos:
-                    # No space found, just break at max_length
-                    break_pos = current_pos + max_length
+        if is_list_item and not in_list:
+            # Starting a new list - add blank line before if needed
+            if i > 0 and result and result[-1].strip():
+                result.append("")
+            in_list = True
 
-                fixed_lines.append(line[current_pos:break_pos])
-                current_pos = break_pos + 1  # Skip the space
+        # Check if we're exiting a list
+        if in_list and not is_list_item and line.strip():
+            # Exiting list to non-empty line - add blank line if needed
+            if result and result[-1].strip():
+                result.append("")
+            in_list = False
 
-    return "\n".join(fixed_lines) + "\n"
+        # Add the current line
+        result.append(line)
+        i += 1
+
+    return "\n".join(result)
 
 
-def fix_first_line_heading(content: str) -> str:
-    """Ensure first line is a top-level heading if it's not."""
+def fix_code_blocks(content):
+    """Ensure code blocks have blank lines around them (MD031) without requiring language specifiers."""
     lines = content.splitlines()
-    if not lines:
-        return content
+    result = []
+    in_code_block = False
+    i = 0
 
-    first_line = lines[0]
-    if not first_line.startswith("# "):
-        # Check if there's any heading in the first 3 lines
-        has_heading = any(line.startswith("#") for line in lines[:3])
+    while i < len(lines):
+        line = lines[i]
+        
+        # Detect start/end of code blocks
+        if line.startswith("```"):
+            # If starting a code block and previous line is not blank
+            if not in_code_block and i > 0 and result and result[-1].strip():
+                result.append("")  # Add blank line before code block
+            
+            # Add the code block marker
+            result.append(line)
+            in_code_block = not in_code_block
+            
+            # If ending a code block and next line exists and is not blank
+            if not in_code_block and i < len(lines) - 1 and lines[i + 1].strip():
+                result.append("")  # Add blank line after code block
+        else:
+            result.append(line)
+        
+        i += 1
 
-        if not has_heading:
-            # Extract a title from the filename or first line
-            title = (
-                os.path.basename(sys.argv[1])
-                .replace(".md", "")
-                .replace("-", " ")
-                .replace("_", " ")
-                .title()
-            )
-            lines.insert(0, f"# {title}")
-
-    return "\n".join(lines) + "\n"
-
-
-def fix_ordered_list_prefixes(content: str) -> str:
-    """
-    Pass through ordered list prefixes without modification.
-    This preserves sequential numbering set in MD029 rule.
-    """
-    # We're intentionally not modifying ordered list numbers
-    return content
+    return "\n".join(result)
 
 
-def fix_code_blocks(content: str) -> str:
-    """
-    Pass through code blocks without requiring language specifiers.
-    This respects MD040: false in the markdownlint config.
-    """
-    # We're intentionally not adding language specifiers to code blocks
-    return content
+def ensure_trailing_newline(content):
+    """Ensure file ends with exactly one newline (MD047)."""
+    return content.rstrip("\n") + "\n"
 
 
-def fix_markdown_file(file_path: str, dry_run: bool = False) -> None:
+def fix_markdown_file(file_path):
     """Apply all fixes to a markdown file."""
     try:
         with open(file_path, encoding="utf-8") as f:
@@ -124,48 +175,76 @@ def fix_markdown_file(file_path: str, dry_run: bool = False) -> None:
 
         original_content = content
 
-        # Apply all fixes
+        # Apply fixes in a specific order
         content = fix_trailing_spaces(content)
         content = fix_consecutive_blank_lines(content)
-        content = fix_emphasis_as_heading(content)
-        content = fix_line_length(content)
-        # These functions now pass through content without modification
-        # to respect the markdownlint.yaml settings
-        content = fix_ordered_list_prefixes(content)
+        content = fix_heading_spacing(content)
+        content = fix_heading_punctuation(content)
+        content = fix_list_style(content)
+        content = ensure_blank_lines_around_lists(content)
         content = fix_code_blocks(content)
+        content = ensure_trailing_newline(content)
 
-        # Only write if changes were made and not in dry-run mode
+        # Write changes if needed
         if content != original_content:
-            if dry_run:
-                print(f"Would fix issues in {file_path}")
-            else:
-                with open(file_path, "w", encoding="utf-8") as f:
-                    f.write(content)
-                print(f"Fixed issues in {file_path}")
+            with open(file_path, "w", encoding="utf-8") as f:
+                f.write(content)
+            print(f"✅ Fixed linting issues in {file_path}")
+            return True
+        else:
+            print(f"✓ No fixable issues found in {file_path}")
+            return False
     except Exception as e:
-        print(f"Error processing {file_path}: {e}", file=sys.stderr)
+        print(f"❌ Error processing {file_path}: {str(e)}")
+        return False
 
 
-def find_markdown_files(directory: str) -> list[str]:
-    """Recursively find all markdown files in the given directory."""
-    result: list[str] = []
-    for root, _, files in os.walk(directory):
-        for file in files:
-            if file.lower().endswith(".md"):
-                result.append(os.path.join(root, file))
-    return result
+def main():
+    """Find and fix markdown files."""
+    # Find all markdown files
+    markdown_files = []
+    for extension in ["*.md", "*.markdown"]:
+        markdown_files.extend(glob.glob(f"**/{extension}", recursive=True))
+
+    # Add specific files that need attention based on the linting output
+    priority_files = [
+        "readme.md",
+        "CONTRIBUTING.md",
+        "CODE_QUALITY.md",
+        ".github/workflows/README.md",
+        ".github/workflows/WORKFLOW.md",
+        "docs/comfyui_workflow_validation.md",
+        "WebUI/external/components/README.md",
+        "PR-CHANGES.md",
+        "workflows-document.md",
+    ]
+
+    # Process priority files first
+    processed = set()
+    fixed_count = 0
+
+    print(f"🔍 Found {len(markdown_files)} markdown files")
+
+    # Process priority files first
+    for file in priority_files:
+        if os.path.exists(file):
+            if fix_markdown_file(file):
+                fixed_count += 1
+            processed.add(file)
+
+    # Process remaining files
+    for file in markdown_files:
+        if file not in processed:
+            if fix_markdown_file(file):
+                fixed_count += 1
+
+    print(f"\n✅ Fixed issues in {fixed_count} files")
+    print("\nNote: Some markdown issues may require manual fixing:")
+    print("1. MD013/line-length: Lines exceeding 180 characters (consider breaking these manually)")
+    print("2. MD025/single-title: Multiple top-level headings in the same document")
+    print("3. MD033/no-inline-html: Replace HTML with Markdown syntax where possible")
+    print("4. Check markdown files with a markdown linter after running this script")
 
 
 if __name__ == "__main__":
-    dry_run = "--dry-run" in sys.argv
-
-    if len(sys.argv) > 1 and sys.argv[1] != "--dry-run":
-        directory = sys.argv[1]
-    else:
-        directory = "."
-
-    markdown_files = find_markdown_files(directory)
-    for file_path in markdown_files:
-        fix_markdown_file(file_path, dry_run)
-
-    print(f"Processed {len(markdown_files)} markdown files")
+    main()
