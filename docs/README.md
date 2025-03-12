@@ -96,7 +96,7 @@ For more details, see [Contributing to Documentation](development/contributing.m
 Documentation tools and scripts are located in:
 
 - `tools/linting/fix_markdown_lint.py`: Script to fix common markdown linting issues
-- `tools/linting/fix_markdown_advanced.py`: Advanced script for fixing markdown linting issues
+- `tools/fix_markdown_advanced.py`: Advanced script for fixing markdown linting issues
 - `tools/formatting/fix_readme.py`: Script to fix README formatting issues
 
 ## Configuration

@@ -26,7 +26,7 @@ For advanced markdown fixes:
 
 ```
 
-python tools/linting/fix_markdown_advanced.py [directory_or_file]
+python tools/fix_markdown_advanced.py [directory_or_file]
 
 ```
 
