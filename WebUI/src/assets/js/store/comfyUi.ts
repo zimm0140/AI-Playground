@@ -1,11 +1,11 @@
-import { defineStore, acceptHMRUpdate } from 'pinia'
-import { WebSocket } from 'partysocket'
-import { ComfyUIApiWorkflow, MediaItem, Setting, useImageGeneration } from './imageGeneration'
-import { useI18N } from './i18n'
-import * as toast from '../toast'
-import { useGlobalSetup } from '@/assets/js/store/globalSetup.ts'
 import { useBackendServices } from '@/assets/js/store/backendServices.ts'
+import { useGlobalSetup } from '@/assets/js/store/globalSetup.ts'
+import { WebSocket } from 'partysocket'
+import { acceptHMRUpdate, defineStore } from 'pinia'
 import { z } from 'zod'
+import * as toast from '../toast'
+import { useI18N } from './i18n'
+import { ComfyUIApiWorkflow, MediaItem, Setting, useImageGeneration } from './imageGeneration'
 
 const WEBSOCKET_OPEN = 1
 
@@ -96,24 +96,34 @@ const ComfyMessageSchema = z.discriminatedUnion('type', [
   }),
 ])
 
+interface ComfyUINode {
+  class_type: string;
+  inputs: Record<string, unknown>;
+  _meta?: {
+    title?: string;
+    [key: string]: unknown;
+  };
+}
+
+interface ComfyUIApiWorkflow {
+  [key: string]: ComfyUINode;
+}
+
 const findKeysByTitle = (workflow: ComfyUIApiWorkflow, title: ComfySetting | 'loader' | string) =>
   Object.entries(workflow)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    .filter(([_key, value]) => (value as any)?.['_meta']?.title === title)
+    .filter(([_key, value]) => value?._meta?.title === title)
     .map(([key, _value]) => key)
 
 const findKeysByClassType = (workflow: ComfyUIApiWorkflow, classType: string) =>
   Object.entries(workflow)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    .filter(([_key, value]) => (value as any)?.['class_type'] === classType)
+    .filter(([_key, value]) => value?.class_type === classType)
     .map(([key, _value]) => key)
 
 const findKeysByInputsName = (workflow: ComfyUIApiWorkflow, setting: ComfySetting) => {
   for (const inputName of settingToComfyInputsName[setting]) {
     if (inputName === 'text') continue
     const keys = Object.entries(workflow)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .filter(([_key, value]) => (value as any)?.['inputs']?.[inputName ?? ''] !== undefined)
+      .filter(([_key, value]) => value?.inputs?.[inputName ?? ''] !== undefined)
       .map(([key, _value]) => key)
     if (keys.length > 0) return keys
   }
@@ -445,8 +455,7 @@ export const useComfyUi = defineStore(
           if (mutableWorkflow[keys[0]].inputs !== undefined) {
             if (input.type === 'string' || input.type === 'stringList')
               console.log('actually modifying string', input.label, input.current.value)
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            ;(mutableWorkflow[keys[0]].inputs as any)[input.nodeInput] = input.current.value
+            mutableWorkflow[keys[0]].inputs[input.nodeInput] = input.current.value
           }
         }
         if (input.type === 'image') {
@@ -467,8 +476,7 @@ export const useComfyUi = defineStore(
           const uploadImageName = `${uploadImageHash}.${uploadImageExtension}`
           console.log('uploadImageName', uploadImageName)
           if (mutableWorkflow[keys[0]].inputs !== undefined) {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            ;(mutableWorkflow[keys[0]].inputs as any)[input.nodeInput] = uploadImageName
+            mutableWorkflow[keys[0]].inputs[input.nodeInput] = uploadImageName
           }
           const data = new FormData()
           data.append('image', dataURItoBlob(input.current.value), uploadImageName)

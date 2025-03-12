@@ -27,7 +27,12 @@ HARDWARE_TYPES = ["base", "acm", "bmg", "mtl", "lnl", "ovino", "arl_h"]
 
 
 def debug_print(message: str, level: str = "INFO") -> None:
-    """Print debug information with a prefix."""
+    """Print debug information with a prefix.
+
+    Args:
+        message: The message to print
+        level: Log level (INFO, WARNING, ERROR)
+    """
     level_map = {
         "DEBUG": logging.DEBUG,
         "INFO": logging.INFO,
@@ -78,7 +83,18 @@ def load_config() -> Dict[str, Any]:
 
 
 def get_gpu_info() -> List[str]:
-    """Get GPU information."""
+    """Get information about available GPUs.
+
+    Detects NVIDIA, AMD, and Intel GPUs using various methods including
+    subprocess calls to system utilities and Python package presence.
+
+    Returns:
+        List[str]: A list of GPU descriptions or empty list if no GPUs found
+
+    Example:
+        >>> get_gpu_info()
+        ['NVIDIA GeForce RTX 3090', 'NVIDIA GeForce RTX 3080']
+    """
     # Check for simulation in CI environments
     if "SIMULATED_HARDWARE" in os.environ:
         sim_hw = os.environ.get("SIMULATED_HARDWARE", "").lower()
@@ -143,7 +159,22 @@ def get_gpu_info() -> List[str]:
 
 
 def get_cpu_info() -> Dict[str, Any]:
-    """Get CPU information."""
+    """Get information about the CPU.
+
+    Retrieves vendor, model name, core count, and additional information
+    about the CPU using platform-specific methods.
+
+    Returns:
+        Dict[str, Any]: Dictionary containing CPU information with these keys:
+            - vendor: CPU manufacturer (str)
+            - name: CPU model name (str)
+            - cores: Number of CPU cores (int)
+            - features: CPU features (list, optional)
+
+    Example:
+        >>> get_cpu_info()
+        {'vendor': 'Intel', 'name': 'Intel(R) Core(TM) i7-10700K', 'cores': 8}
+    """
     info = {
         "vendor": "",
         "name": "",
@@ -260,7 +291,20 @@ def get_cpu_info() -> Dict[str, Any]:
 
 
 def detect_hardware_type() -> str:
-    """Detect the hardware type based on GPU and CPU information."""
+    """Detect the available hardware type.
+
+    Analyzes the system to determine the primary hardware acceleration type
+    available. Checks for NVIDIA GPUs, AMD GPUs, Intel accelerators,
+    and OpenVINO compatibility.
+
+    Returns:
+        str: One of the hardware types defined in HARDWARE_TYPES
+            ("base", "acm", "bmg", "mtl", "lnl", "ovino", "arl_h")
+
+    Example:
+        >>> detect_hardware_type()
+        'bmg'  # For NVIDIA GPUs
+    """
     # Allow direct override through environment variable for CI/testing
     if "SIMULATED_HARDWARE" in os.environ:
         sim_hw = os.environ.get("SIMULATED_HARDWARE", "").lower()
@@ -315,7 +359,18 @@ def detect_hardware_type() -> str:
 
 
 def is_openvino_available() -> bool:
-    """Check if OpenVINO is installed and available."""
+    """Check if OpenVINO runtime is available.
+
+    Attempts to import the OpenVINO runtime package and checks for
+    required components.
+
+    Returns:
+        bool: True if OpenVINO is available and usable, False otherwise
+
+    Example:
+        >>> is_openvino_available()
+        True
+    """
     # For simulated environments
     if os.environ.get("SIMULATED_HARDWARE") == "ovino":
         debug_print("Simulated OpenVINO environment")
@@ -334,7 +389,31 @@ def is_openvino_available() -> bool:
 
 
 def get_hardware_info() -> Dict[str, Any]:
-    """Get detailed hardware information for reporting."""
+    """Get comprehensive information about the system hardware.
+
+    Collects information about the system, GPU, CPU, detected hardware type,
+    and availability of specific acceleration libraries.
+
+    Returns:
+        Dict[str, Any]: Dictionary with hardware information including:
+            - system: Operating system (str)
+            - python_version: Python version (str)
+            - gpus: List of available GPUs (List[str])
+            - cpu: CPU information (Dict[str, Any])
+            - detected_hardware: Detected hardware type (str)
+            - openvino_available: Whether OpenVINO is available (bool)
+
+    Example:
+        >>> get_hardware_info()
+        {
+            'system': 'Linux-5.15.0-x86_64-with-glibc2.31',
+            'python_version': '3.10.0',
+            'gpus': ['NVIDIA GeForce RTX 3090'],
+            'cpu': {'vendor': 'Intel', 'name': 'Intel(R) Core(TM) i7-10700K', 'cores': 8},
+            'detected_hardware': 'bmg',
+            'openvino_available': False
+        }
+    """
     info = {
         "system": platform.system(),
         "python_version": platform.python_version(),
@@ -347,7 +426,22 @@ def get_hardware_info() -> Dict[str, Any]:
 
 
 def print_hardware_info(verbose: bool = False) -> None:
-    """Print hardware information."""
+    """Print information about the system hardware.
+
+    Displays system information, Python version, hardware type,
+    GPU and CPU details in a human-readable format.
+
+    Args:
+        verbose: Whether to show additional details
+
+    Example:
+        >>> print_hardware_info(verbose=True)
+        System: Linux-5.15.0-x86_64-with-glibc2.31
+        Python version: 3.10.0
+        Detected hardware type: bmg
+        GPUs: ['NVIDIA GeForce RTX 3090']
+        CPU: {'vendor': 'Intel', 'name': 'Intel(R) Core(TM) i7-10700K', 'cores': 8}
+    """
     info = get_hardware_info()
 
     print(f"System: {info['system']}")

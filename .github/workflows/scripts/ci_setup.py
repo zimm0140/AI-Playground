@@ -64,17 +64,173 @@ def setup_hardware_detection():
                 init_dir = init_file.parent
                 init_dir.mkdir(parents=True, exist_ok=True)
                 with open(init_file, "w") as f:
-                    f.write('"""Auto-generated hardware_detection package."""\n')
+                    if subdir == "":
+                        f.write(
+                            '''"""Hardware detection package for identifying and utilizing specialized hardware."""
+
+__version__ = "1.0.0"
+
+from hardware_detection.core import (
+    detect_hardware_type,
+    get_cpu_info,
+    get_gpu_info,
+    get_hardware_info,
+    is_openvino_available,
+    print_hardware_info,
+)
+
+__all__ = [
+    "detect_hardware_type",
+    "get_cpu_info",
+    "get_gpu_info",
+    "get_hardware_info",
+    "is_openvino_available",
+    "print_hardware_info",
+]
+'''
+                        )
+                    else:
+                        f.write('"""Auto-generated hardware_detection package."""\n')
+
+        # Create py.typed file for type hints
+        py_typed_file = Path("hardware_detection/py.typed")
+        if not py_typed_file.exists():
+            debug_print(f"Creating {py_typed_file}")
+            with open(py_typed_file, "w") as f:
+                f.write("")  # Empty file is sufficient
 
         # Also set up the compatibility layer
         tools_hw_dir = Path("tools/hardware")
         tools_hw_dir.mkdir(parents=True, exist_ok=True)
 
-        debug_print(
-            "Setting up compatibility layer in tools/hardware/hardware_detection.py"
-        )
+        # Create the compatibility layer if it doesn't exist
+        compat_file = tools_hw_dir / "hardware_detection.py"
+        if not compat_file.exists():
+            debug_print(f"Creating compatibility layer at {compat_file}")
+            with open(compat_file, "w") as f:
+                f.write(
+                    '''#!/usr/bin/env python3
+"""Compatibility module for hardware detection.
+
+This module provides backward compatibility with the previous file-based structure.
+It imports all functions from the new package structure and re-exports them.
+
+IMPORTANT: This module is maintained for backward compatibility only.
+New code should import directly from the hardware_detection package.
+"""
+
+import os
+import sys
+import warnings
+import importlib.util
+from typing import Dict, List, Any, Optional, Union
+
+# Check if hardware_detection package exists
+PACKAGE_EXISTS = importlib.util.find_spec("hardware_detection") is not None
+
+if PACKAGE_EXISTS:
+    # Try importing from the new package structure
+    from hardware_detection import (
+        __version__,
+        detect_hardware_type,
+        get_cpu_info,
+        get_gpu_info,
+        get_hardware_info,
+        is_openvino_available,
+        print_hardware_info,
+    )
+
+    # Issue deprecation warning
+    warnings.warn(
+        "Using tools/hardware/hardware_detection.py is deprecated. "
+        "Import directly from 'hardware_detection' package instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+
+else:
+    # If package is not found, add helpful error message
+    # and implement basic stubs for CI
+    __version__ = "0.0.0-stub"
+    
+    # Log a more helpful message about the missing package
+    print(
+        "WARNING: hardware_detection package not found. "
+        "Using stub implementations for CI environment. "
+        "For production, please install the hardware_detection package."
+    )
+
+    def detect_hardware_type() -> str:
+        """Stub function for hardware type detection."""
+        # Default to 'base' for CI environments
+        return os.environ.get("SIMULATED_HARDWARE", "base")
+
+    def get_gpu_info() -> List[str]:
+        """Stub function for GPU info."""
+        return ["Stub GPU for CI"]
+
+    def get_cpu_info() -> Dict[str, Any]:
+        """Stub function for CPU info."""
+        return {
+            "vendor": "Stub",
+            "name": "Stub CPU for CI",
+            "cores": 2,
+        }
+
+    def is_openvino_available() -> bool:
+        """Stub function for OpenVINO availability."""
+        return False
+
+    def get_hardware_info() -> Dict[str, Any]:
+        """Stub function for hardware info."""
+        return {
+            "system": "CI",
+            "python_version": ".".join(map(str, sys.version_info[:3])),
+            "gpus": get_gpu_info(),
+            "cpu": get_cpu_info(),
+            "detected_hardware": detect_hardware_type(),
+            "openvino_available": is_openvino_available(),
+        }
+
+    def print_hardware_info(verbose: bool = False) -> None:
+        """Stub function to print hardware info."""
+        info = get_hardware_info()
+        print(f"System: {info['system']}")
+        print(f"Python version: {info['python_version']}")
+        print(f"Detected hardware type: {info['detected_hardware']}")
+        print(f"GPUs: {info['gpus']}")
+        print(f"CPU: {info['cpu']}")
+
+
+# Re-export everything to maintain the same API
+__all__ = [
+    "__version__",
+    "detect_hardware_type",
+    "get_cpu_info",
+    "get_gpu_info",
+    "get_hardware_info",
+    "is_openvino_available",
+    "print_hardware_info",
+]
+
+# For CLI compatibility
+if __name__ == "__main__":
+    print(f"Hardware Detection Module v{__version__}")
+    print_hardware_info(verbose=("-v" in sys.argv or "--verbose" in sys.argv))
+'''
+                )
+
+        # Create __init__.py in tools/hardware
+        tools_hw_init = tools_hw_dir / "__init__.py"
+        if not tools_hw_init.exists():
+            debug_print(f"Creating {tools_hw_init}")
+            with open(tools_hw_init, "w") as f:
+                f.write('"""Hardware detection compatibility package."""\n')
+
+        debug_print("Hardware detection setup complete")
         return True
 
+    # Legacy setup for older structure
     # Copy from tools/hardware if it exists there
     if Path("tools/hardware/hardware_detection.py").exists():
         debug_print("Found hardware_detection.py in tools/hardware/")

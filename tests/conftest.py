@@ -19,6 +19,38 @@ sys.path.append(os.path.join(script_dir, ".github", "workflows", "scripts"))
 if script_dir not in sys.path:
     sys.path.append(script_dir)
 
+# Add the root directory to the Python path
+root_dir = Path(__file__).parent.parent
+if str(root_dir) not in sys.path:
+    sys.path.insert(0, str(root_dir))
+
+# Set environment variable for CI testing
+if "CI" in os.environ and "SIMULATED_HARDWARE" not in os.environ:
+    os.environ["SIMULATED_HARDWARE"] = "base"
+
+# Make sure pytest can find the package in CI
+try:
+    import hardware_detection
+except ImportError:
+    print("WARNING: Failed to import hardware_detection package")
+    print(f"Python path: {sys.path}")
+    print(f"Current directory: {os.getcwd()}")
+
+    # Try installing the package in CI
+    if "CI" in os.environ:
+        import subprocess
+
+        print("Installing package in development mode...")
+        subprocess.run([sys.executable, "-m", "pip", "install", "-e", "."])
+
+        # Second import attempt
+        try:
+            import hardware_detection
+
+            print("Successfully imported hardware_detection after installation")
+        except ImportError:
+            print("Failed to import hardware_detection even after installation")
+
 
 @pytest.fixture
 def sample_workflow_traditional():
@@ -166,10 +198,22 @@ def mock_gpu_info():
 def mock_cpu_info():
     """Fixture providing common mock CPU information for different hardware."""
     return {
-        "mtl": {"name": "Intel(R) Core(TM) Ultra 7 155H", "manufacturer": "Intel Corporation"},
-        "lnl": {"name": "Intel(R) Core(TM) Ultra Lunar Lake", "manufacturer": "Intel Corporation"},
-        "standard": {"name": "Intel(R) Core(TM) i9-9900K", "manufacturer": "Intel Corporation"},
-        "amd": {"name": "AMD Ryzen 9 5950X", "manufacturer": "Advanced Micro Devices, Inc."},
+        "mtl": {
+            "name": "Intel(R) Core(TM) Ultra 7 155H",
+            "manufacturer": "Intel Corporation",
+        },
+        "lnl": {
+            "name": "Intel(R) Core(TM) Ultra Lunar Lake",
+            "manufacturer": "Intel Corporation",
+        },
+        "standard": {
+            "name": "Intel(R) Core(TM) i9-9900K",
+            "manufacturer": "Intel Corporation",
+        },
+        "amd": {
+            "name": "AMD Ryzen 9 5950X",
+            "manufacturer": "Advanced Micro Devices, Inc.",
+        },
         "apple": {"name": "Apple M1 Pro"},
     }
 

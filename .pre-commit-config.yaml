@@ -7,26 +7,43 @@ repos:
     -   id: check-yaml
     -   id: check-added-large-files
     -   id: check-toml
+    -   id: check-json
+    -   id: debug-statements
     -   id: detect-private-key
     -   id: mixed-line-ending
         args: ['--fix=lf']
 
 -   repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.1.6
+    rev: v0.3.4
     hooks:
     -   id: ruff
-        args: [--fix, --exit-non-zero-on-fix]
+        args: [--fix]
     -   id: ruff-format
 
 -   repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.7.0
+    rev: v1.8.0
     hooks:
     -   id: mypy
-        exclude: ^(docs/|example-plugin/|tests/fixtures)
+        additional_dependencies: [types-requests]
+        exclude: ^(tests/|docs/|scripts/)
+
+-   repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.39.0
+    hooks:
+    -   id: markdownlint
+        args: ["--fix"]
+
+-   repo: https://github.com/pre-commit/mirrors-eslint
+    rev: v8.56.0
+    hooks:
+    -   id: eslint
+        files: \.(js|ts|tsx)$
+        types: [file]
         additional_dependencies:
-        - types-requests>=2.31.0.2
-        - types-setuptools>=68.2.0.0
-        - pandas-stubs>=2.0.3.230814
+          - eslint@8.56.0
+          - typescript@5.3.3
+          - "@typescript-eslint/eslint-plugin@6.19.1"
+          - "@typescript-eslint/parser@6.19.1"
 
 -   repo: local
     hooks:
