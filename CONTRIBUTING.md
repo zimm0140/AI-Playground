@@ -11,9 +11,11 @@ We use `uv`, an extremely fast Python package manager, for dependency management
 1. **Install uv**:
    ```bash
    # Unix/Linux/macOS
+
    curl -LsSf https://astral.sh/uv/install.sh | sh
 
    # Windows
+
    powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
    ```
 
@@ -23,14 +25,18 @@ We use `uv`, an extremely fast Python package manager, for dependency management
    cd AI-Playground
 
    # Create and activate a virtual environment
+
    uv venv
    source .venv/bin/activate  # Unix/Linux/macOS
+
    .venv\Scripts\activate     # Windows
 
    # Install dependencies
+
    uv pip sync requirements.lock requirements-dev.lock
 
    # Install pre-commit hooks
+
    pre-commit install
    ```
 
@@ -41,15 +47,21 @@ We use `uv`, an extremely fast Python package manager, for dependency management
 We provide convenient scripts for common development tasks:
 
 ```bash
+
 # Unix/Linux/macOS
+
 ./scripts/run_with_uv.sh test    # Run tests
+
 ./scripts/run_with_uv.sh lint    # Run linters
+
 ./scripts/run_with_uv.sh format  # Format code
 
 # Windows
+
 .\scripts\run_with_uv.ps1 test
 .\scripts\run_with_uv.ps1 lint
 .\scripts\run_with_uv.ps1 format
+
 ```
 
 ### Before Submitting a Pull Request
@@ -88,18 +100,23 @@ We use Python type annotations and verify them with mypy. For Python 3.10+ compa
 Please use clear, descriptive commit messages that explain what changes you've made and why. Follow this format:
 
 ```
+
 Area: Brief description of what changed
 
 More detailed explanation if needed
+
 ```
 
 For example:
+
 ```
+
 CI: Add uv support to GitHub Actions
 
 - Add workflow file for uv-based testing
 - Update lockfiles for dependency tracking
 - Add helper scripts for common tasks
+
 ```
 
 ## Need Help?
