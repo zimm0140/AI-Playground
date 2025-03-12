@@ -26,9 +26,12 @@ AI Playground supports a wide range of generative AI capabilities:
 
 - **Image Generation**: Stable Diffusion 1.5, SDXL, Flux.1-Schnell, LTX-Video
 - **Language Models**:
-    - Safetensor PyTorch LLMs: DeepSeek R1, Phi3, Qwen2, Mistral
-    - GGUF LLMs: Llama 3.1, Llama 3.2
-    - OpenVINO: TinyLlama, Mistral 7B, Phi3 mini, Phi3.5 mini
+
+```
+- Safetensor PyTorch LLMs: DeepSeek R1, Phi3, Qwen2, Mistral
+- GGUF LLMs: Llama 3.1, Llama 3.2
+- OpenVINO: TinyLlama, Mistral 7B, Phi3 mini, Phi3.5 mini
+```
 
 ### 🚀 What's New in v2.2.1
 
@@ -58,9 +61,12 @@ AI Playground requires the following hardware and software:
 
 - **Operating System**: Windows OS
 - **Processor/GPU**: One of the following:
-    - Intel Core Ultra-H Processor
-    - Intel Core Ultra 200V series processor
-    - Intel Arc GPU Series A or Series B (discrete) with 8GB of vRAM
+
+```
+- Intel Core Ultra-H Processor
+- Intel Core Ultra 200V series processor
+- Intel Arc GPU Series A or Series B (discrete) with 8GB of vRAM
+```
 
 For detailed hardware compatibility information, see our [Hardware Compatibility Guide](docs/hardware/compatibility.md).
 
@@ -132,7 +138,7 @@ For additional troubleshooting resources, see our [Common Problems Guide](docs/t
 
 To get started, clone the repository and navigate to the project directory:
 
-```
+```bash
 git clone -b dev https://github.com/intel/AI-Playground.git
 cd AI-Playground
 ```
@@ -143,7 +149,7 @@ cd AI-Playground
 
 2. Navigate to the `WebUI` directory and install all Node.js dependencies:
 
-```
+```bash
 cd WebUI
 npm install
 ```
@@ -154,27 +160,27 @@ npm install
 
 2. Create a Conda environment with Python 3.11 and libuv:
 
-```
-conda create -n cp311_libuv python=3.11 libuv -y
-```
+   ```bash
+   conda create -n cp311_libuv python=3.11 libuv -y
+   ```
 
 3. Locate the path to your newly created Conda environment:
 
-```
-conda env list | findstr cp311_libuv
-```
+   ```bash
+   conda env list | findstr cp311_libuv
+   ```
 
 4. In the `WebUI` directory, execute the `fetch-build-resources` script, replacing `<path_to_cp311_libuv_conda_env>` with the actual path you copied in the previous step:
 
-```
-npm run fetch-build-resources -- --conda_env_dir=<path_to_cp311_libuv_conda_env>
-```
+   ```bash
+   npm run fetch-build-resources -- --conda_env_dir=<path_to_cp311_libuv_conda_env>
+   ```
 
 5. Run the `prepare-build` script:
 
-```
-npm run prepare-build
-```
+   ```bash
+   npm run prepare-build
+   ```
 
 You should now have a basic Python environment located at `build-envs\online\prototype-python-env`.
 
@@ -182,7 +188,7 @@ You should now have a basic Python environment located at `build-envs\online\pro
 
 To start the application in development mode, run:
 
-```
+```bash
 npm run dev
 ```
 
@@ -190,7 +196,7 @@ npm run dev
 
 To build the installer, run:
 
-```
+```bash
 npm run build
 ```
 
@@ -218,6 +224,7 @@ The following models are linked directly from the application:
 | bge-large-en-v1.5 | [License](https://huggingface.co/datasets/choosealicense/licenses/blob/main/markdown/mit.md) | [Model Card](https://huggingface.co/BAAI/bge-large-en-v1.5) |
 | Latent Consistency Model (LCM) LoRA: SD1.5 | [License](https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/blob/main/LICENSE.md) | [Model Card](https://huggingface.co/latent-consistency/lcm-lora-sdv1-5) |
 | Latent Consistency Model (LCM) LoRA:SDXL | [License](https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/blob/main/LICENSE.md) | [Model Card](https://huggingface.co/latent-consistency/lcm-lora-sdxl) |
+
 
 ⚠️ **Important**: Always check license terms for any model used in AI Playground, particularly noting any restrictions on usage.
 
