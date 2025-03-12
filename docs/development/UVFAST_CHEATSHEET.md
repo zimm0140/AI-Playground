@@ -6,23 +6,23 @@ This document provides a quick reference for common `uvfast.py` commands.
 
 ### Setup Environment
 
-```bash
+````bash
 
-# Auto-detect hardware and set up environment
+## Auto-detect hardware and set up environment
 
 python uvfast.py setup
 
-# With development dependencies
+## With development dependencies
 
 python uvfast.py setup --dev
 
-# For specific hardware
+## For specific hardware
 
 python uvfast.py setup --hardware acm
 python uvfast.py setup --hardware ovino
 python uvfast.py setup --hardware mtl
 
-# Skip lockfile generation/usage
+## Skip lockfile generation/usage
 
 python uvfast.py setup --no-lockfile
 
@@ -32,7 +32,7 @@ python uvfast.py setup --no-lockfile
 
 ```bash
 
-# Display hardware detection and environment info
+## Display hardware detection and environment info
 
 python uvfast.py info
 
@@ -42,11 +42,11 @@ python uvfast.py info
 
 ```bash
 
-# Generate lockfiles for all hardware types
+## Generate lockfiles for all hardware types
 
 python uvfast.py lockfiles --all
 
-# Generate for specific hardware
+## Generate for specific hardware
 
 python uvfast.py lockfiles --hardware acm
 python uvfast.py lockfiles --hardware acm --dev
@@ -57,24 +57,24 @@ python uvfast.py lockfiles --hardware acm --dev
 
 ```bash
 
-# Run pytest
+## Run pytest
 
 python uvfast.py run pytest
 
-# Run with specific test path
+## Run with specific test path
 
 python uvfast.py run pytest tests/test_api.py
 
-# Run linting
+## Run linting
 
 python uvfast.py run ruff check .
 python uvfast.py run ruff format .
 
-# Run type checking
+## Run type checking
 
 python uvfast.py run mypy
 
-# Run any command
+## Run any command
 
 python uvfast.py run python -m your_module
 
@@ -84,7 +84,7 @@ python uvfast.py run python -m your_module
 
 ```bash
 
-# Install using traditional approach but with uv speed
+## Install using traditional approach but with uv speed
 
 python uvfast.py legacy-install --dev
 
@@ -96,11 +96,11 @@ python uvfast.py legacy-install --dev
 
 ```bash
 
-# Make script executable
+## Make script executable
 
 chmod +x scripts/uvfast.sh
 
-# Run commands through the wrapper
+## Run commands through the wrapper
 
 ./scripts/uvfast.sh setup --dev
 ./scripts/uvfast.sh run pytest
@@ -111,7 +111,7 @@ chmod +x scripts/uvfast.sh
 
 ```powershell
 
-# Run commands through the PowerShell wrapper
+## Run commands through the PowerShell wrapper
 
 .\scripts\uvfast.ps1 setup --dev
 .\scripts\uvfast.ps1 run pytest
@@ -124,11 +124,11 @@ chmod +x scripts/uvfast.sh
 
 ```bash
 
-# Set up for Arc GPUs
+## Set up for Arc GPUs
 
 python uvfast.py setup --hardware acm --dev
 
-# Run GPU-specific tests
+## Run GPU-specific tests
 
 python uvfast.py run pytest tests/hardware/test_gpu.py
 
@@ -138,11 +138,11 @@ python uvfast.py run pytest tests/hardware/test_gpu.py
 
 ```bash
 
-# Set up for OpenVINO
+## Set up for OpenVINO
 
 python uvfast.py setup --hardware ovino --dev
 
-# Run OpenVINO-specific tests
+## Run OpenVINO-specific tests
 
 python uvfast.py run pytest tests/openvino/
 
@@ -166,4 +166,4 @@ Edit `uvfast.json` to customize settings:
 ```text
 }
 
-```
+````

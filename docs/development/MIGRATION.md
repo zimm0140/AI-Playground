@@ -23,57 +23,65 @@ This guide helps you migrate to the modern Python development workflow using uv 
 ### Step-by-Step Migration
 
 1. **Install uv**:
-   ```bash
-   # Unix/Linux/macOS
+
+   ````bash
+   ## Unix/Linux/macOS
 
    curl -LsSf <https://astral.sh/uv/install.sh> | sh
 
-   # Windows
+   ## Windows
 
    powershell -ExecutionPolicy ByPass -c "irm <https://astral.sh/uv/install.ps1> | iex"
    ```text
 
+   ````
+
 1. **Migrate existing environments**:
-   ```bash
-   # Generate lockfiles from your existing requirements
+
+   ````bash
+   ## Generate lockfiles from your existing requirements
 
    uv pip compile requirements.txt --output-file requirements.lock
    uv pip compile requirements-dev.txt --output-file requirements-dev.lock
 
-   # Create a new environment using uv
+   ## Create a new environment using uv
 
    uv venv
 
-   # Install using lockfiles
+   ## Install using lockfiles
 
    uv pip sync requirements.lock requirements-dev.lock
    ```text
+
+   ````
 
 1. **Use the helper scripts**:
 
    We've provided convenient script wrappers in `scripts/run_with_uv.sh` (Unix/macOS) and `scripts/run_with_uv.ps1` (Windows).
 
-   ```bash
-   # Run tests
+   ````bash
+   ## Run tests
 
    ./scripts/run_with_uv.sh test
 
-   # Run linters
+   ## Run linters
 
    ./scripts/run_with_uv.sh lint
    ```text
+
+   ````
 
 ## Updating Type Annotations for Python 3.10+
 
 Python 3.10 introduced new type annotation syntax. We've provided a helper script to identify type annotations that can be updated:
 
-```bash
+````bash
 
-# Scan the entire project
+## Scan the entire project
 
 python scripts/fix_type_annotations.py .
 
-# Scan a specific file
+## Scan a specific file
 
 python scripts/fix_type_annotations.py path/to/file.py
 
@@ -158,12 +166,12 @@ The project includes a Dockerfile optimized for uv:
 
 ```bash
 
-# Build and run the development image
+## Build and run the development image
 
 docker build --target development -t ai-playground-dev .
 docker run -p 5000:5000 -v $(pwd):/app ai-playground-dev
 
-# Build and run the production image
+## Build and run the production image
 
 docker build --target production -t ai-playground .
 docker run -p 5000:5000 ai-playground
@@ -214,3 +222,4 @@ A: No. Users installing via pip will still be able to do so. These changes enhan
 ### Q: What if I encounter type checking errors after migration?
 
 A: Use the `scripts/fix_type_annotations.py` script to help identify and fix type annotation issues.
+````

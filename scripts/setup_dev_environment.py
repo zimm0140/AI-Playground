@@ -28,9 +28,7 @@ def print_step(message: str) -> None:
     print("=" * 80)
 
 
-def run_command(
-    cmd: List[str], cwd: Optional[str] = None, check: bool = True
-) -> Tuple[int, str]:
+def run_command(cmd: List[str], cwd: Optional[str] = None, check: bool = True) -> Tuple[int, str]:
     """Run a command and return the exit code and output."""
     print(f"Running: {' '.join(cmd)}")
     try:
@@ -54,9 +52,7 @@ def run_command(
 def is_uv_installed() -> bool:
     """Check if uv is installed."""
     try:
-        subprocess.run(
-            ["uv", "--version"], check=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE
-        )
+        subprocess.run(["uv", "--version"], check=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         return True
     except FileNotFoundError:
         return False
@@ -65,9 +61,9 @@ def is_uv_installed() -> bool:
 def install_uv() -> None:
     """Install uv based on the platform."""
     print_step("Installing uv")
-    
+
     system = platform.system().lower()
-    
+
     if system == "windows":
         # Use PowerShell to install uv on Windows
         cmd = [
@@ -84,9 +80,9 @@ def install_uv() -> None:
         print(f"Unsupported platform: {system}")
         print("Please install uv manually: https://github.com/astral-sh/uv")
         sys.exit(1)
-    
+
     run_command(cmd)
-    
+
     # Verify installation
     if not is_uv_installed():
         print("Failed to install uv. Please install it manually.")
@@ -97,16 +93,16 @@ def install_uv() -> None:
 def setup_virtual_environment() -> None:
     """Set up a virtual environment using uv."""
     print_step("Setting up virtual environment")
-    
+
     # Create virtual environment
     run_command(["uv", "venv"])
-    
+
     # Determine the Python executable in the virtual environment
     if platform.system().lower() == "windows":
         venv_python = os.path.join(".venv", "Scripts", "python.exe")
     else:
         venv_python = os.path.join(".venv", "bin", "python")
-    
+
     # Verify the virtual environment
     if not os.path.exists(venv_python):
         print(f"Virtual environment Python not found at: {venv_python}")
@@ -116,7 +112,7 @@ def setup_virtual_environment() -> None:
 def install_dependencies() -> None:
     """Install dependencies using uv."""
     print_step("Installing dependencies")
-    
+
     # Sync dependencies from lockfiles
     run_command(["uv", "pip", "sync", "requirements.lock", "requirements-dev.lock"])
 
@@ -124,7 +120,7 @@ def install_dependencies() -> None:
 def setup_pre_commit() -> None:
     """Set up pre-commit hooks."""
     print_step("Setting up pre-commit hooks")
-    
+
     # Install pre-commit hooks
     run_command(["pre-commit", "install"])
 
@@ -132,17 +128,17 @@ def setup_pre_commit() -> None:
 def setup_vscode() -> None:
     """Set up VS Code configuration."""
     print_step("Setting up VS Code configuration")
-    
+
     vscode_dir = Path(".vscode")
     vscode_dir.mkdir(exist_ok=True)
-    
+
     # Check if VS Code settings already exist
     if not (vscode_dir / "settings.json").exists() or not (vscode_dir / "extensions.json").exists():
         print("VS Code configuration files already exist in the repository.")
         print("No changes needed.")
     else:
         print("VS Code configuration is ready.")
-    
+
     # Recommend VS Code extensions
     print("\nRecommended VS Code extensions:")
     print("  - ms-python.python")
@@ -157,45 +153,45 @@ def setup_vscode() -> None:
 def main() -> None:
     """Main function to set up the development environment."""
     print_step("Setting up AI Playground development environment")
-    
+
     # Check Python version
     python_version = sys.version_info
     if python_version.major < 3 or (python_version.major == 3 and python_version.minor < 10):
         print(f"Python 3.10+ is required. You have Python {python_version.major}.{python_version.minor}")
         sys.exit(1)
-    
+
     # Install uv if not already installed
     if not is_uv_installed():
         install_uv()
     else:
         print("uv is already installed.")
-    
+
     # Set up virtual environment
     setup_virtual_environment()
-    
+
     # Install dependencies
     install_dependencies()
-    
+
     # Set up pre-commit hooks
     setup_pre_commit()
-    
+
     # Set up VS Code configuration
     setup_vscode()
-    
+
     print_step("Setup complete!")
     print("\nTo activate the virtual environment:")
-    
+
     if platform.system().lower() == "windows":
         print("  .venv\\Scripts\\activate")
     else:
         print("  source .venv/bin/activate")
-    
+
     print("\nTo run tests:")
     if platform.system().lower() == "windows":
         print("  .\\scripts\\run_with_uv.ps1 test")
     else:
         print("  ./scripts/run_with_uv.sh test")
-    
+
     print("\nFor more information, see:")
     print("  - QUICKSTART.md")
     print("  - MIGRATION.md")
@@ -203,4 +199,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main() 
+    main()

@@ -97,11 +97,11 @@ For more detailed information about the workflow validation system, see [docs/co
 """
 
 # Path to the README file
-readme_path = os.path.join('WebUI', 'external', 'workflows', 'README.md')
+readme_path = os.path.join("WebUI", "external", "workflows", "README.md")
 
 # Write the content with proper formatting
-with open(readme_path, 'wb') as f:
+with open(readme_path, "wb") as f:
     # Using wb mode to control line endings precisely
-    f.write(readme_content.encode('utf-8').replace(b'\r\n', b'\n'))
+    f.write(readme_content.encode("utf-8").replace(b"\r\n", b"\n"))
 
-print(f"Fixed formatting in {readme_path}") 
+print(f"Fixed formatting in {readme_path}")

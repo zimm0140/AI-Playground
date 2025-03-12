@@ -14,10 +14,10 @@ repos:
         args: ['--fix=lf']
 
 -   repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.3.3
+    rev: v0.3.0
     hooks:
     -   id: ruff
-        args: [--fix]
+        args: [--fix, --exit-non-zero-on-fix]
     -   id: ruff-format
 
 -   repo: https://github.com/pre-commit/mirrors-mypy
@@ -42,23 +42,13 @@ repos:
     rev: v0.39.0
     hooks:
     -   id: markdownlint
-        args: ["--fix"]
+        args: ["--config", ".markdownlint.yaml"]
 
--   repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v8.56.0
+-   repo: https://github.com/pycqa/isort
+    rev: 5.13.2
     hooks:
-    -   id: eslint
-        files: \.(js|ts|tsx|vue)$
-        types: [file]
-        additional_dependencies:
-          - eslint@8.56.0
-          - typescript@5.3.3
-          - "@typescript-eslint/eslint-plugin@6.19.1"
-          - "@typescript-eslint/parser@6.19.1"
-          - "@vue/eslint-config-typescript@12.0.0"
-          - "@vue/eslint-config-prettier@8.0.0"
-          - "eslint-plugin-vue@9.0.0"
-          - "vue-eslint-parser@9.0.0"
+    -   id: isort
+        args: ["--profile", "black"]
 
 -   repo: local
     hooks:

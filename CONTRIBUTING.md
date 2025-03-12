@@ -9,33 +9,35 @@ We use `uv`, an extremely fast Python package manager, for dependency management
 ### Setting Up Your Environment
 
 1. **Install uv**:
+
    ```bash
-   # Unix/Linux/macOS
+   ## Unix/Linux/macOS
 
    curl -LsSf https://astral.sh/uv/install.sh | sh
 
-   # Windows
+   ## Windows
 
    powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
    ```
 
-2. **Clone and Setup**:
+1. **Clone and Setup**:
+
    ```bash
    git clone https://github.com/zimm0140/AI-Playground.git
    cd AI-Playground
 
-   # Create and activate a virtual environment
+   ## Create and activate a virtual environment
 
    uv venv
    source .venv/bin/activate  # Unix/Linux/macOS
 
    .venv\Scripts\activate     # Windows
 
-   # Install dependencies
+   ## Install dependencies
 
    uv pip sync requirements.lock requirements-dev.lock
 
-   # Install pre-commit hooks
+   ## Install pre-commit hooks
 
    pre-commit install
    ```
@@ -48,7 +50,7 @@ We provide convenient scripts for common development tasks:
 
 ```bash
 
-# Unix/Linux/macOS
+## Unix/Linux/macOS
 
 ./scripts/run_with_uv.sh test    # Run tests
 
@@ -56,7 +58,7 @@ We provide convenient scripts for common development tasks:
 
 ./scripts/run_with_uv.sh format  # Format code
 
-# Windows
+## Windows
 
 .\scripts\run_with_uv.ps1 test
 .\scripts\run_with_uv.ps1 lint
@@ -67,21 +69,25 @@ We provide convenient scripts for common development tasks:
 ### Before Submitting a Pull Request
 
 1. **Ensure all tests pass**:
+
    ```bash
    ./scripts/run_with_uv.sh test
    ```
 
-2. **Check code quality**:
+1. **Check code quality**:
+
    ```bash
    ./scripts/run_with_uv.sh lint
    ```
 
-3. **Format your code**:
+1. **Format your code**:
+
    ```bash
    ./scripts/run_with_uv.sh format
    ```
 
-4. **Update lockfiles if you've changed dependencies**:
+1. **Update lockfiles if you've changed dependencies**:
+
    ```bash
    uv pip compile requirements.txt --output-file requirements.lock
    uv pip compile requirements-dev.txt --output-file requirements-dev.lock
@@ -92,8 +98,8 @@ We provide convenient scripts for common development tasks:
 We use Python type annotations and verify them with mypy. For Python 3.10+ compatibility:
 
 1. Use `Union` and `Optional` from the `typing` module
-2. For Python 3.10+, you can use the `|` operator for union types, but be consistent
-3. Use `TypeVar` for generic type annotations
+1. For Python 3.10+, you can use the `|` operator for union types, but be consistent
+1. Use `TypeVar` for generic type annotations
 
 ## Commit Messages
 
@@ -124,7 +130,7 @@ CI: Add uv support to GitHub Actions
 If you have questions about the development process or need help with your contribution, please:
 
 1. Check the documentation in QUICKSTART.md and MIGRATION.md
-2. Open an issue with the "question" label
-3. Ask for help in pull request comments
+1. Open an issue with the "question" label
+1. Ask for help in pull request comments
 
 Thank you for contributing to AI Playground!

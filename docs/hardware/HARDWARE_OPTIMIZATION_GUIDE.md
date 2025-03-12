@@ -35,25 +35,24 @@ The system recognizes the following hardware types:
 | `ovino` | Intel CPUs with OpenVINO | OpenVINO runtime optimizations |
 | `base` | Standard hardware | Standard PyTorch CPU operations |
 
-
 ## Environment Setup
 
 ### Basic Setup
 
 To set up your environment for the detected hardware:
 
-```bash
+````bash
 
-# Set up for automatically detected hardware
+## Set up for automatically detected hardware
 
 python uvfast.py setup
 
-# Set up for specific hardware
+## Set up for specific hardware
 
 python uvfast.py setup --hardware acm
 python uvfast.py setup --hardware ovino
 
-# Include development dependencies
+## Include development dependencies
 
 python uvfast.py setup --dev
 
@@ -65,19 +64,19 @@ To ensure reproducible environments, use lockfiles:
 
 ```bash
 
-# Generate lockfile for the current hardware
+## Generate lockfile for the current hardware
 
 python uvfast.py lock
 
-# Generate lockfile for a specific hardware type
+## Generate lockfile for a specific hardware type
 
 python uvfast.py lock --hardware acm
 
-# Generate lockfiles for all hardware types
+## Generate lockfiles for all hardware types
 
 python uvfast.py lock --all
 
-# Sync environment from lockfile
+## Sync environment from lockfile
 
 python uvfast.py sync
 
@@ -89,19 +88,19 @@ Our framework integrates with popular AI libraries to provide optimized performa
 
 ```python
 
-# Example of hardware-aware AI framework usage
+## Example of hardware-aware AI framework usage
 
 from examples.ai_frameworks_integration import configure_hardware, setup_langchain_model
 
-# Configure hardware and get device
+## Configure hardware and get device
 
 device, hardware_type = configure_hardware()
 
-# Set up LangChain model with hardware-specific optimizations
+## Set up LangChain model with hardware-specific optimizations
 
 llm = setup_langchain_model(device, hardware_type)
 
-# Use the model
+## Use the model
 
 response = llm("Explain quantum computing in simple terms.")
 print(response)
@@ -117,11 +116,11 @@ To optimize LangChain performance on Intel hardware:
 ```python
 from examples.ai_frameworks_integration import configure_hardware, setup_langchain_model
 
-# Auto-configure hardware
+## Auto-configure hardware
 
 device, hw_type = configure_hardware()
 
-# Set up LangChain with hardware optimizations
+## Set up LangChain with hardware optimizations
 
 llm = setup_langchain_model(
 
@@ -135,7 +134,7 @@ model_id="microsoft/Phi-3-mini-4k-instruct"  # Change to your preferred model
 
 )
 
-# Use the optimized model
+## Use the optimized model
 
 response = llm("Explain the theory of relativity in simple terms.")
 print(response)
@@ -151,12 +150,12 @@ from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from examples.ai_frameworks_integration import configure_hardware, setup_langchain_model
 
-# Auto-configure hardware
+## Auto-configure hardware
 
 device, hw_type = configure_hardware()
 llm = setup_langchain_model(device, hw_type)
 
-# Create a prompt template
+## Create a prompt template
 
 template = """
 Answer the following question about {topic}.
@@ -165,11 +164,11 @@ Question: {question}
 """
 prompt = PromptTemplate(template=template, input_variables=["topic", "question"])
 
-# Create a chain
+## Create a chain
 
 chain = LLMChain(llm=llm, prompt=prompt)
 
-# Run the chain
+## Run the chain
 
 response = chain.run(topic="quantum computing", question="What is quantum entanglement?")
 
@@ -184,15 +183,15 @@ To optimize Stable Diffusion on Intel hardware:
 ```python
 from examples.ai_frameworks_integration import configure_hardware, setup_stable_diffusion
 
-# Auto-configure hardware
+## Auto-configure hardware
 
 device, hw_type = configure_hardware()
 
-# Set up Stable Diffusion with hardware optimizations
+## Set up Stable Diffusion with hardware optimizations
 
 pipeline, compel = setup_stable_diffusion(device, hw_type)
 
-# Generate an image
+## Generate an image
 
 prompt = "a photo of an astronaut riding a horse on mars, highly detailed"
 conditioned_prompt = compel(prompt)
@@ -207,9 +206,9 @@ For faster inference with reduced quality:
 
 ```python
 
-# For Intel Arc GPUs using Intel® Extension for PyTorch
+## For Intel Arc GPUs using Intel® Extension for PyTorch
 
-# Lower precision and fewer steps for faster generation
+## Lower precision and fewer steps for faster generation
 
 pipeline.set_progress_bar_config(disable=True)
 image = pipeline(
@@ -242,7 +241,7 @@ For higher quality images with longer generation time:
 
 ```python
 
-# Higher quality settings
+## Higher quality settings
 
 image = pipeline(
 
@@ -265,11 +264,11 @@ To benchmark your hardware and identify optimal settings:
 
 ```bash
 
-# Run all benchmarks
+## Run all benchmarks
 
 python benchmarks/hardware_benchmark.py
 
-# Run specific benchmarks
+## Run specific benchmarks
 
 python benchmarks/hardware_benchmark.py --matrix  # Matrix multiplication only
 
@@ -277,7 +276,7 @@ python benchmarks/hardware_benchmark.py --model   # Model inference only
 
 python benchmarks/hardware_benchmark.py --sd      # Stable Diffusion only
 
-# Specify iterations and output file
+## Specify iterations and output file
 
 python benchmarks/hardware_benchmark.py --iterations 10 --output results.json
 
@@ -341,7 +340,7 @@ def detect_hardware_type():
 Custom hardware detection logic
 """
 
-# Your custom logic here
+## Your custom logic here
 
 ```text
 
@@ -359,7 +358,7 @@ return "acm"  # or "ovino", "base"
 
 ```bash
 
-# Important environment variables for Intel Arc GPUs
+## Important environment variables for Intel Arc GPUs
 
 export XPU_VISIBLE_DEVICES=0  # Specify which GPU to use
 
@@ -375,7 +374,7 @@ export SYCL_PI_LEVEL_ZERO_USE_IMMEDIATE_COMMANDLISTS=1  # Improve performance
 
 ```bash
 
-# Important environment variables for OpenVINO
+## Important environment variables for OpenVINO
 
 export OPENVINO_THREADING=TBB  # Use TBB threading
 
@@ -449,3 +448,4 @@ You can create a `uvfast.json` file in your project root to customize behavior:
 ```text
 
 This configuration allows for customized settings per hardware type, including environment variables and additional packages.
+````

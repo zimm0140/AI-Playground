@@ -1,7 +1,7 @@
 """
 Hardware-Aware AI Framework Integration Example
 
-This example demonstrates how to use the hardware detection system with LangChain 
+This example demonstrates how to use the hardware detection system with LangChain
 and Stable Diffusion to optimize performance on different Intel hardware.
 """
 
@@ -24,6 +24,7 @@ def configure_hardware():
     if hardware_type == "acm":  # Intel Arc GPUs
         try:
             import intel_extension_for_pytorch as ipex
+
             from service.xpu_hijacks import ipex_hijacks
 
             # Apply XPU hijacks to redirect CUDA calls to XPU
@@ -61,9 +62,9 @@ def setup_langchain_model(device, hardware_type, model_id="microsoft/Phi-3-mini-
     # Hardware-specific model loading
     if hardware_type == "acm":
         # Intel Arc GPU optimization
-        model = AutoModelForCausalLM.from_pretrained(
-            model_id, torch_dtype=torch.float16, trust_remote_code=True
-        ).to(device)
+        model = AutoModelForCausalLM.from_pretrained(model_id, torch_dtype=torch.float16, trust_remote_code=True).to(
+            device
+        )
 
     elif hardware_type == "ovino":
         # OpenVINO optimization
@@ -74,9 +75,7 @@ def setup_langchain_model(device, hardware_type, model_id="microsoft/Phi-3-mini-
 
     else:
         # Standard CPU loading
-        model = AutoModelForCausalLM.from_pretrained(
-            model_id, low_cpu_mem_usage=True, trust_remote_code=True
-        )
+        model = AutoModelForCausalLM.from_pretrained(model_id, low_cpu_mem_usage=True, trust_remote_code=True)
 
     # Set up tokenizer and pipeline
     tokenizer = AutoTokenizer.from_pretrained(model_id)
@@ -108,14 +107,11 @@ def setup_stable_diffusion(device, hardware_type):
     if hardware_type == "acm":
         # Intel Arc GPU specific settings for Stable Diffusion
         try:
+            import intel_extension_for_pytorch as ipex
             from diffusers import StableDiffusionPipeline
 
-            import intel_extension_for_pytorch as ipex
-
             # Example of loading model for Intel Arc
-            pipeline = StableDiffusionPipeline.from_pretrained("runwayml/stable-diffusion-v1-5").to(
-                device
-            )
+            pipeline = StableDiffusionPipeline.from_pretrained("runwayml/stable-diffusion-v1-5").to(device)
 
             # Optional: Optimize the pipeline
             pipeline = ipex.optimize(pipeline)
@@ -157,9 +153,7 @@ def setup_stable_diffusion(device, hardware_type):
     try:
         from diffusers import StableDiffusionPipeline
 
-        pipeline = StableDiffusionPipeline.from_pretrained(
-            "runwayml/stable-diffusion-v1-5", torch_dtype=torch.float32
-        )
+        pipeline = StableDiffusionPipeline.from_pretrained("runwayml/stable-diffusion-v1-5", torch_dtype=torch.float32)
 
         # Set up Compel for prompt conditioning
         compel = Compel(

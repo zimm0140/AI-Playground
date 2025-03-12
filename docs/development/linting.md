@@ -16,9 +16,9 @@ AI-Playground primarily uses the following linting tools:
 
 The project uses Ruff with the following settings:
 
-```toml
+````toml
 
-# in pyproject.toml
+## in pyproject.toml
 
 [tool.ruff]
 target-version = "py310"
@@ -47,7 +47,7 @@ For static type checking, we use mypy with these settings:
 
 ```toml
 
-# in pyproject.toml
+## in pyproject.toml
 
 [tool.mypy]
 python_version = "3.10"
@@ -84,15 +84,15 @@ To run Ruff manually:
 
 ```bash
 
-# Install Ruff
+## Install Ruff
 
 pip install ruff
 
-# Check for issues
+## Check for issues
 
 ruff check .
 
-# Fix issues automatically
+## Fix issues automatically
 
 ruff check --fix .
 
@@ -102,11 +102,11 @@ To run mypy:
 
 ```bash
 
-# Install mypy
+## Install mypy
 
 pip install mypy
 
-# Run type checking
+## Run type checking
 
 mypy .
 
@@ -116,11 +116,11 @@ To run markdownlint on Markdown files:
 
 ```bash
 
-# Install markdownlint (requires Node.js)
+## Install markdownlint (requires Node.js)
 
 npm install -g markdownlint-cli
 
-# Check Markdown files
+## Check Markdown files
 
 markdownlint "**/*.md"
 
@@ -243,11 +243,11 @@ To ensure code quality before committing, you can set up pre-commit hooks locall
 
 ```bash
 
-# On Linux/macOS/Git Bash
+## On Linux/macOS/Git Bash
 
 ./.github/setup-hooks.sh
 
-# On Windows PowerShell
+## On Windows PowerShell
 
 .\.github\setup-hooks.ps1
 
@@ -261,11 +261,11 @@ There are cases where linter rules need to be temporarily disabled:
 
 ```python
 
-# In situations where a line is necessarily long
+## In situations where a line is necessarily long
 
 long_url = "<https://very-long-url-that-cannot-be-split.com/path/to/resource">  # noqa: E501
 
-# When using a variable name that doesn't match conventions
+## When using a variable name that doesn't match conventions
 
 def connect_to_API():  # noqa: N802
 
@@ -376,3 +376,4 @@ return model
 
 ---
 **Previous**: [Testing Guide](testing.md) | **Next**: [Project Architecture](../architecture/overview.md) | **See also**: [Code Quality Standards](code-quality.md)
+````

@@ -21,34 +21,35 @@ import queue
 import shutil
 import time
 import traceback
-from os import path, makedirs, rename
-from threading import Thread, Lock
+from os import makedirs, path, rename
+from threading import Lock, Thread
 from time import sleep
 from typing import Any, Callable, Dict, List
 
+import aipg_utils as utils
 import psutil
 import requests
+from exceptions import DownloadException
 from huggingface_hub import HfFileSystem, hf_hub_url, model_info
 from psutil._common import bytes2human
-
-import aipg_utils as utils
-from exceptions import DownloadException
 
 # Cache for storing model file lists to avoid redundant API calls
 model_list_cache = dict()
 model_lock = Lock()
 
+
 class HFFileItem:
     """
     Represents a file in a Hugging Face repository.
-    
+
     Stores information about a single file's relative path, size, and download URL.
-    
+
     Attributes:
         relpath: Relative path of the file within the repository
         size: Size of the file in bytes
         url: URL for downloading the file
     """
+
     relpath: str
     size: int
     url: str
@@ -56,7 +57,7 @@ class HFFileItem:
     def __init__(self, relpath: str, size: int, url: str) -> None:
         """
         Initialize a new HFFileItem.
-        
+
         Args:
             relpath: Relative path of the file within the repository
             size: Size of the file in bytes
@@ -70,10 +71,10 @@ class HFFileItem:
 class HFDonloadItem:
     """
     Represents a file to be downloaded from Hugging Face.
-    
+
     Contains all the information needed to download and save a file,
     including partial download state for resume capability.
-    
+
     Attributes:
         name: Name of the file
         size: Total size of the file in bytes
@@ -81,18 +82,17 @@ class HFDonloadItem:
         disk_file_size: Current size of the file on disk (for resume)
         save_filename: Local path where the file will be saved
     """
+
     name: str
     size: int
     url: str
     disk_file_size: int
     save_filename: str
 
-    def __init__(
-        self, name: str, size: int, url: str, disk_file_size: int, save_filename: str
-    ) -> None:
+    def __init__(self, name: str, size: int, url: str, disk_file_size: int, save_filename: str) -> None:
         """
         Initialize a new HFDonloadItem.
-        
+
         Args:
             name: Name of the file
             size: Total size of the file in bytes
@@ -110,21 +110,22 @@ class HFDonloadItem:
 class NotEnoughDiskSpaceException(Exception):
     """
     Exception raised when there is not enough disk space for downloading.
-    
+
     Includes information about required space and available space to
     provide meaningful error messages to users.
-    
+
     Attributes:
         requires_space: Required space in bytes
         free_space: Available free space in bytes
     """
+
     requires_space: int
     free_space: int
 
     def __init__(self, requires_space: int, free_space: int):
         """
         Initialize a NotEnoughDiskSpaceException with space details.
-        
+
         Args:
             requires_space: Required space in bytes
             free_space: Available free space in bytes
@@ -137,14 +138,13 @@ class NotEnoughDiskSpaceException(Exception):
         super().__init__(message)
 
 
-
 class HFPlaygroundDownloader:
     """
     Main class for downloading models from Hugging Face Hub.
-    
+
     Handles the complexities of downloading models with multiple files,
     including progress tracking, authentication, and error handling.
-    
+
     Attributes:
         fs: Hugging Face file system interface
         file_queue: Queue of files to be downloaded
@@ -162,6 +162,7 @@ class HFPlaygroundDownloader:
         error: Exception if download failed
         hf_token: Authentication token for accessing gated models
     """
+
     fs: HfFileSystem
     file_queue: queue.Queue[HFDonloadItem]
     total_size: int
@@ -183,7 +184,7 @@ class HFPlaygroundDownloader:
     def __init__(self, hf_token=None) -> None:
         """
         Initialize a new HFPlaygroundDownloader.
-        
+
         Args:
             hf_token: Optional authentication token for accessing gated models
         """
@@ -196,22 +197,22 @@ class HFPlaygroundDownloader:
     def hf_url_exists(self, repo_id: str):
         """
         Check if a repository exists on Hugging Face Hub.
-        
+
         Args:
             repo_id: Repository ID to check
-            
+
         Returns:
             bool: True if repository exists, False otherwise
         """
         return self.fs.exists(repo_id)
 
-    def probe_type(self, repo_id : str):
+    def probe_type(self, repo_id: str):
         """
         Detect the pipeline type of a Hugging Face model.
-        
+
         Args:
             repo_id: Repository ID to check
-            
+
         Returns:
             str: Pipeline tag of the model (e.g., "text-generation", "diffusers")
         """
@@ -220,10 +221,10 @@ class HFPlaygroundDownloader:
     def is_gated(self, repo_id: str):
         """
         Check if a model is gated (requires authentication).
-        
+
         Args:
             repo_id: Repository ID to check
-            
+
         Returns:
             bool: True if model is gated, False otherwise
         """
@@ -237,19 +238,19 @@ class HFPlaygroundDownloader:
     def download(self, repo_id: str, model_type: int, backend: str, thread_count: int = 4):
         """
         Download a model from Hugging Face Hub.
-        
+
         Sets up the download environment, checks disk space, and spawns
         multiple threads to download files in parallel.
-        
+
         Args:
             repo_id: Repository ID to download
             model_type: Type of model (affects file filtering and structure)
             backend: Backend framework to use
             thread_count: Number of parallel download threads
-            
+
         Returns:
             int: Total size of the model in bytes
-            
+
         Raises:
             NotEnoughDiskSpaceException: If there's not enough disk space for the download
         """
@@ -262,9 +263,7 @@ class HFPlaygroundDownloader:
         self.completed = False
         self.error = None
         self.save_path = path.join(utils.get_model_path(model_type, backend))
-        self.save_path_tmp = path.abspath(
-            path.join(self.save_path, repo_id.replace("/", "---") + "_tmp")
-        )
+        self.save_path_tmp = path.abspath(path.join(self.save_path, repo_id.replace("/", "---") + "_tmp"))
         if not path.exists(self.save_path_tmp):
             makedirs(self.save_path_tmp)
         key = f"{repo_id}_{model_type}"
@@ -281,18 +280,16 @@ class HFPlaygroundDownloader:
 
         usage = psutil.disk_usage(self.save_path)
         if self.total_size - self.download_size > usage.free:
-            raise NotEnoughDiskSpaceException(
-                self.total_size - self.download_size, usage.free
-            )
+            raise NotEnoughDiskSpaceException(self.total_size - self.download_size, usage.free)
         self.multiple_thread_downlod(thread_count)
 
     def build_queue(self, file_list: list[HFFileItem]):
         """
         Build the download queue from a list of files.
-        
+
         Checks for existing partial downloads and adds files to the queue,
         calculating the remaining download size.
-        
+
         Args:
             file_list: List of files to download
         """
@@ -313,20 +310,18 @@ class HFPlaygroundDownloader:
                         )
                     )
             else:
-                self.file_queue.put(
-                    HFDonloadItem(file.relpath, file.size, file.url, 0, save_filename)
-                )
+                self.file_queue.put(HFDonloadItem(file.relpath, file.size, file.url, 0, save_filename))
 
     def get_model_total_size(self, repo_id: str, model_type: int):
         """
         Get the total size of a model without downloading it.
-        
+
         Uses caching to avoid redundant API calls for repeated size queries.
-        
+
         Args:
             repo_id: Repository ID to check
             model_type: Type of model (affects file filtering)
-            
+
         Returns:
             int: Total size of the model in bytes
         """
@@ -339,22 +334,18 @@ class HFPlaygroundDownloader:
             file_list = list()
             self.enum_file_list(file_list, repo_id, model_type)
             with model_lock:
-                model_list_cache.__setitem__(
-                    key, {"size": self.total_size, "queue": file_list}
-                )
+                model_list_cache.__setitem__(key, {"size": self.total_size, "queue": file_list})
             return self.total_size
         else:
             return item["size"]
 
-    def enum_file_list(
-        self, file_list: List, enum_path: str, model_type: int, is_root=True
-    ):
+    def enum_file_list(self, file_list: List, enum_path: str, model_type: int, is_root=True):
         """
         Recursively enumerate files in a Hugging Face repository.
-        
+
         Traverses the repository structure, filtering out unnecessary files
         based on model type and adding relevant files to the list.
-        
+
         Args:
             file_list: List to populate with file information
             enum_path: Path to enumerate
@@ -376,16 +367,10 @@ class HFPlaygroundDownloader:
                 if (
                     model_type == 1
                     and is_root
-                    and (
-                        name.endswith(".safetensors")
-                        or name.endswith(".pt")
-                        or name.endswith(".ckpt")
-                    )
+                    and (name.endswith(".safetensors") or name.endswith(".pt") or name.endswith(".ckpt"))
                 ):
                     continue
-                elif model_type == 5 and (
-                    name.endswith(".safetensors") or name.endswith(".onnx")
-                ):
+                elif model_type == 5 and (name.endswith(".safetensors") or name.endswith(".onnx")):
                     continue
                 # ignore no used files
                 elif (
@@ -402,22 +387,19 @@ class HFPlaygroundDownloader:
                 relative_path = path.relpath(name, utils.trim_repo(self.repo_id))
                 subfolder = path.dirname(relative_path).replace("\\", "/")
                 filename = path.basename(relative_path)
-                url = hf_hub_url(
-                    repo_id=utils.trim_repo(self.repo_id), subfolder=subfolder, filename=filename
-                )
+                url = hf_hub_url(repo_id=utils.trim_repo(self.repo_id), subfolder=subfolder, filename=filename)
                 file_list.append(HFFileItem(relative_path, size, url))
-
 
     def enum_sd_unet(self, file_list: List[str | Dict[str, Any]]):
         """
         Filter Stable Diffusion UNet model files to select the appropriate precision.
-        
+
         For SD models with multiple precision options, selects the highest
         precision version available (fp32 > fp16 > default).
-        
+
         Args:
             file_list: List of files in the UNet directory
-            
+
         Returns:
             List: Filtered list with only the selected precision model
         """
@@ -442,10 +424,10 @@ class HFPlaygroundDownloader:
     def multiple_thread_downlod(self, thread_count: int):
         """
         Download files using multiple threads.
-        
+
         Creates a thread pool to download files in parallel, with progress
         reporting and handling for completion or cancellation.
-        
+
         Args:
             thread_count: Number of parallel download threads
         """
@@ -453,12 +435,9 @@ class HFPlaygroundDownloader:
         if self.on_download_progress is not None:
             self.prev_sec_download_size = 0
             report_thread = self.start_report_download_progress()
-        with concurrent.futures.ThreadPoolExecutor(
-            max_workers=thread_count
-        ) as executor:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=thread_count) as executor:
             futures = [
-                executor.submit(self.download_model_file)
-                for _ in range(min(thread_count, self.file_queue.qsize()))
+                executor.submit(self.download_model_file) for _ in range(min(thread_count, self.file_queue.qsize()))
             ]
             concurrent.futures.wait(futures)
             executor.shutdown()
@@ -476,13 +455,13 @@ class HFPlaygroundDownloader:
     def move_to_desired_position(self, retriable: bool = True):
         """
         Move downloaded files to their final location.
-        
+
         After successful download, moves files from the temporary directory
         to the final destination, handling special cases for certain model types.
-        
+
         Args:
             retriable: Whether the operation can be retried if it fails
-            
+
         Raises:
             Exception: If file movement fails after retry
         """
@@ -494,7 +473,7 @@ class HFPlaygroundDownloader:
             desired_repo_root_dir_name = path.abspath(path.join(self.save_path, self.repo_id.replace("/", "---")))
         elif "nsfw_detector" in self.save_path:
             move_to_flat_structure = True
-            desired_repo_root_dir_name = path.abspath(path.join(self.save_path, 'vit-base-nsfw-detector'))
+            desired_repo_root_dir_name = path.abspath(path.join(self.save_path, "vit-base-nsfw-detector"))
             if not os.path.exists(desired_repo_root_dir_name):
                 os.makedirs(desired_repo_root_dir_name)
         try:
@@ -503,12 +482,9 @@ class HFPlaygroundDownloader:
                     shutil.move(os.path.join(self.save_path_tmp, item), desired_repo_root_dir_name)
                 shutil.rmtree(self.save_path_tmp)
             else:
-                rename(
-                    self.save_path_tmp,
-                    path.abspath(desired_repo_root_dir_name)
-                )
+                rename(self.save_path_tmp, path.abspath(desired_repo_root_dir_name))
         except Exception as e:
-            if (retriable):
+            if retriable:
                 sleep(5)
                 self.move_to_desired_position(retriable=False)
             else:
@@ -517,7 +493,7 @@ class HFPlaygroundDownloader:
     def start_report_download_progress(self):
         """
         Start a background thread for reporting download progress.
-        
+
         Returns:
             Thread: The progress reporting thread
         """
@@ -528,7 +504,7 @@ class HFPlaygroundDownloader:
     def report_download_progress(self):
         """
         Periodically report download progress.
-        
+
         Runs in a separate thread and calls the progress callback
         once per second until the download completes or is stopped.
         """
@@ -546,13 +522,13 @@ class HFPlaygroundDownloader:
     def init_download(self, file: HFDonloadItem):
         """
         Initialize a file download.
-        
+
         Sets up the necessary directories and HTTP request,
         handling authentication and resume capabilities.
-        
+
         Args:
             file: The file to download
-            
+
         Returns:
             tuple: (HTTP response, file write handle)
         """
@@ -573,39 +549,35 @@ class HFPlaygroundDownloader:
             )
             fw = open(file.save_filename, "ab")
         else:
-            response = requests.get(
-                file.url, stream=True, verify=False, headers=headers
-            )
+            response = requests.get(file.url, stream=True, verify=False, headers=headers)
             fw = open(file.save_filename, "wb")
 
         return response, fw
 
-    def is_access_granted(self, repo_id: str, model_type, backend : str):
+    def is_access_granted(self, repo_id: str, model_type, backend: str):
         """
         Check if the user has access to a model repository.
-        
+
         Tests whether the current token (if any) has access to the repository
         by attempting to access a file.
-        
+
         Args:
             repo_id: Repository ID to check
             model_type: Type of model
             backend: Backend framework
-            
+
         Returns:
             bool: True if access is granted, False otherwise
         """
         repo_id = utils.trim_repo(repo_id)
-        headers={}
-        if (self.hf_token is not None):
+        headers = {}
+        if self.hf_token is not None:
             headers["Authorization"] = f"Bearer {self.hf_token}"
 
         self.file_queue = queue.Queue()
         self.repo_id = repo_id
-        self.save_path = path.join(utils.get_model_path(model_type,backend))
-        self.save_path_tmp = path.abspath(
-            path.join(self.save_path, repo_id.replace("/", "---") + "_tmp")
-        )
+        self.save_path = path.join(utils.get_model_path(model_type, backend))
+        self.save_path_tmp = path.abspath(path.join(self.save_path, repo_id.replace("/", "---") + "_tmp"))
 
         file_list = list()
         self.enum_file_list(file_list, repo_id, model_type)
@@ -616,14 +588,13 @@ class HFPlaygroundDownloader:
 
         return response.status_code == 200
 
-
     def download_model_file(self):
         """
         Worker function for downloading model files.
-        
+
         Runs in a separate thread to download files from the queue,
         with retry capability for transient errors.
-        
+
         Raises:
             DownloadException: If download fails after retries
         """
@@ -646,18 +617,14 @@ class HFPlaygroundDownloader:
                                         self.download_size += download_len
                                     file.disk_file_size += fw.write(bytes)
                                     if self.download_stop:
-                                        print(
-                                            f"thread {Thread.native_id} exit by user stop"
-                                        )
+                                        print(f"thread {Thread.native_id} exit by user stop")
                                         break
                         break
                     except Exception:
                         traceback.print_exc()
                         download_retry += 1
                         if download_retry < 4:
-                            print(
-                                f"download file {file.url} failed. retry {download_retry} time"
-                            )
+                            print(f"download file {file.url} failed. retry {download_retry} time")
                             time.sleep(download_retry)
                         else:
                             raise DownloadException(file.url)
@@ -669,7 +636,7 @@ class HFPlaygroundDownloader:
     def stop_download(self):
         """
         Stop any ongoing downloads.
-        
+
         Sets a flag that causes download threads to exit gracefully.
         """
         self.download_stop = True
@@ -678,19 +645,19 @@ class HFPlaygroundDownloader:
 def test_download_progress(dowanlod_size: int, total_size: int, speed: int):
     """
     Test callback for download progress reporting.
-    
+
     Args:
         dowanlod_size: Current download size in bytes
         total_size: Total size to download in bytes
         speed: Current download speed in bytes per second
     """
-    print(f"download {dowanlod_size/1024}/{total_size /1024}KB  speed {speed}/s")
+    print(f"download {dowanlod_size / 1024}/{total_size / 1024}KB  speed {speed}/s")
 
 
 def test_download_complete(ex: Exception):
     """
     Test callback for download completion.
-    
+
     Args:
         ex: Exception if download failed, None if successful
     """
@@ -703,7 +670,7 @@ def test_download_complete(ex: Exception):
 def init():
     """
     Test function to initialize and run a download.
-    
+
     Creates a downloader instance, sets up callbacks, and starts a download.
     """
     downloader = HFPlaygroundDownloader()

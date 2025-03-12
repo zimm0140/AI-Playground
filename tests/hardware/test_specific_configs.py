@@ -58,9 +58,7 @@ def test_specific_hardware_detection(hardware_type):
     elif hardware_type == "ovino":
         # Check for Intel GPU in the info
         assert info["gpus"], "No GPUs found in ovino hardware type"
-        assert any(
-            "Intel" in gpu for gpu in info["gpus"]
-        ), "Intel GPU not found in ovino hardware type"
+        assert any("Intel" in gpu for gpu in info["gpus"]), "Intel GPU not found in ovino hardware type"
 
         # Check CPU info
         assert "i7" in info["cpu"]["name"], "Expected i7 CPU in ovino hardware type"
@@ -91,9 +89,7 @@ def test_environment_variables():
         gpus = get_gpu_info()
 
         # Verify our custom GPU is detected
-        assert any(
-            "Custom Test GPU" in gpu for gpu in gpus
-        ), "Custom GPU not detected from mock dir"
+        assert any("Custom Test GPU" in gpu for gpu in gpus), "Custom GPU not detected from mock dir"
 
     finally:
         # Restore original environment
@@ -133,9 +129,7 @@ def test_config_loading():
         # Verify the config is loaded correctly
         assert config["default_hardware"] == "test_hw1", "Config not loaded correctly"
         assert "test_hw1" in config["hardware_types"], "Hardware types not loaded correctly"
-        assert (
-            "gpu_name_pattern" in config["detection"]["test_hw1"]
-        ), "Detection config not loaded correctly"
+        assert "gpu_name_pattern" in config["detection"]["test_hw1"], "Detection config not loaded correctly"
 
     finally:
         # Clean up

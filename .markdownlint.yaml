@@ -18,10 +18,7 @@ MD007:
   indent: 4
 
 # MD009 - Trailing spaces
-MD009:
-  br_spaces: 2
-  list_item_empty_lines: false
-  strict: false
+MD009: true
 
 # MD010 - Hard tabs
 MD010: true
@@ -32,8 +29,8 @@ MD012: false
 # MD013 - Line length
 MD013:
   line_length: 180
-  code_blocks: true
-  tables: true
+  code_blocks: false
+  tables: false
   headings: false
 
 # MD024 - Multiple headings with the same content
@@ -44,8 +41,10 @@ MD024:
 MD025: true
 
 # MD026 - Trailing punctuation in heading
-MD026:
-  punctuation: ".,;:!。，；：！"
+MD026: true
+
+# MD027 - Multiple spaces after blockquote symbol
+MD027: true
 
 # MD029 - Ordered list item prefix
 MD029:
@@ -61,12 +60,7 @@ MD031: true
 MD032: true
 
 # MD033 - Inline HTML
-MD033:
-  # Allow specific HTML tags in workflows-document.md
-  allowed_elements:
-    - "a"
-    - "img"
-    - "br"
+MD033: false
 
 # MD034 - Bare URL used
 MD034: false
@@ -75,10 +69,10 @@ MD034: false
 MD036: true
 
 # MD040 - Fenced code blocks should have a language specified
-MD040: false
+MD040: true
 
 # MD041 - First line in file should be a top level heading
-MD041: true
+MD041: false
 
 # MD046 - Code block style
 MD046:
@@ -93,4 +87,15 @@ MD048:
 
 # MD055 - Table pipe style
 MD055:
-  style: "consistent" 
+  style: "consistent"
+
+# MD049 - Emphasis style should be consistent
+MD049:
+  style: "underscore"
+
+# MD050 - Strong style should be consistent
+MD050:
+  style: "asterisk"
+
+# MD022 - Required spacing for headings
+MD022: true 

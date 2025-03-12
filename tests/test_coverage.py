@@ -49,9 +49,7 @@ class TestCoverage(unittest.TestCase):
             except ImportError:
                 missing_tests.append(core_module)
 
-        self.assertEqual(
-            missing_tests, [], f"These core modules are missing tests: {missing_tests}"
-        )
+        self.assertEqual(missing_tests, [], f"These core modules are missing tests: {missing_tests}")
 
     def test_core_functions_have_tests(self):
         """Test that core functions in modules have corresponding test functions."""
@@ -121,9 +119,7 @@ class TestCoverage(unittest.TestCase):
         for name, obj in inspect.getmembers(test_module):
             if inspect.isclass(obj) and issubclass(obj, unittest.TestCase):
                 class_test_methods = [
-                    method_name
-                    for method_name, _ in inspect.getmembers(obj)
-                    if method_name.startswith("test_")
+                    method_name for method_name, _ in inspect.getmembers(obj) if method_name.startswith("test_")
                 ]
                 test_functions.extend(class_test_methods)
 

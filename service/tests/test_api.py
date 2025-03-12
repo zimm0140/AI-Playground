@@ -12,36 +12,34 @@ The tests use unittest framework and Flask's test client to directly
 interact with the application without running a full server.
 """
 
-import sys
-import os
-import unittest
-import logging
 import json
+import logging
+import os
+import sys
+import unittest
 
 
 class TestAPI(unittest.TestCase):
     """
     Test suite for the AI Playground web API.
-    
+
     This class tests several API endpoints to verify the core functionality
     of the service. It sets up the test environment, defines test cases, and
     provides helper methods for common operations like payload creation and
     response parsing.
     """
-    
+
     def setUp(self):
         """
         Set up the test environment before each test.
-        
+
         This method:
         - Adds the service directory to the Python path
         - Configures model paths for different model types
         - Initializes the Flask test client
         - Sets up test data like device info and model IDs
         """
-        self.service_dir = os.path.abspath(
-            os.path.join(os.path.dirname(__file__), "..")
-        )
+        self.service_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
         sys.path.insert(0, self.service_dir)
 
         self.model_dir = os.path.abspath(os.path.join(self.service_dir, "models"))
@@ -50,9 +48,7 @@ class TestAPI(unittest.TestCase):
             "embedding": os.path.join(self.model_dir, "llm", "embedding"),
             "inpaint": os.path.join(self.model_dir, "stable_diffusion", "inpaint"),
             "lora": os.path.join(self.model_dir, "stable_diffusion", "lora"),
-            "stableDiffusion": os.path.join(
-                self.model_dir, "stable_diffusion", "checkpoints"
-            ),
+            "stableDiffusion": os.path.join(self.model_dir, "stable_diffusion", "checkpoints"),
             "vae": os.path.join(self.model_dir, "stable_diffusion", "vae"),
         }
 
@@ -69,7 +65,7 @@ class TestAPI(unittest.TestCase):
     def test_get_graphics(self):
         """
         Test the /api/getGraphics endpoint.
-        
+
         This test:
         - Makes a POST request to the graphics endpoint
         - Verifies the response contains supported graphics devices
@@ -89,7 +85,7 @@ class TestAPI(unittest.TestCase):
     def test_init(self):
         """
         Test the /api/init endpoint for service initialization.
-        
+
         This test:
         - Makes a POST request with model paths to initialize the service
         - Verifies the response contains the expected set of schedulers
@@ -128,13 +124,13 @@ class TestAPI(unittest.TestCase):
     def get_llm_chat_payload(self, prompt):
         """
         Create a payload for an LLM chat request.
-        
+
         This helper method generates a standard payload with the given prompt
         and consistent settings for device, RAG, and model ID.
-        
+
         Args:
             prompt (str): The prompt text to send to the language model
-            
+
         Returns:
             dict: A formatted payload dictionary ready for the chat API
         """
@@ -148,19 +144,19 @@ class TestAPI(unittest.TestCase):
     def decode_stream(self, stream_data):
         """
         Decode a stream of Server-Sent Events (SSE) data.
-        
+
         This helper method:
         - Splits the binary stream by null bytes
         - Extracts data sections from the SSE format
         - Parses JSON from each data section
         - Collects parsed data into a list
-        
+
         Args:
             stream_data (bytes): Raw binary SSE data from API response
-            
+
         Returns:
             list: List of parsed JSON objects from the stream
-            
+
         Raises:
             AssertionError: If JSON parsing fails for any event
         """
@@ -178,12 +174,12 @@ class TestAPI(unittest.TestCase):
     def llm_warmup(self):
         """
         Perform a warm-up request to the LLM chat API.
-        
+
         This helper method:
         - Sends a simple greeting to prepare the model
         - Verifies the response status code
         - Checks that the response contains valid data
-        
+
         This warm-up helps ensure the model is loaded and ready
         before running more complex test cases.
         """
@@ -197,7 +193,7 @@ class TestAPI(unittest.TestCase):
     def test_llm_chat(self):
         """
         Test the /api/llm/chat endpoint for language model interaction.
-        
+
         This test:
         - Warms up the model with a simple request
         - Sends a more complex prompt asking about why the sky is blue
@@ -209,9 +205,7 @@ class TestAPI(unittest.TestCase):
         logging.info("Testing LLM chat...")
         response = self.app.post(
             "/api/llm/chat",
-            json=self.get_llm_chat_payload(
-                "Please explain in detail: why is sky blue?"
-            ),
+            json=self.get_llm_chat_payload("Please explain in detail: why is sky blue?"),
         )
         self.assertEqual(response.status_code, 200)
 

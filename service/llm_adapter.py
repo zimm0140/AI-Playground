@@ -8,29 +8,31 @@ metrics reporting, and error handling. The adapter wraps the functionalities pro
 and also handles errors from model downloads using model_downloader exceptions.
 """
 
-import threading
-from queue import Empty, Queue
 import json
+import threading
 import traceback
+from queue import Empty, Queue
+
 import llm_biz
-from model_downloader import NotEnoughDiskSpaceException, DownloadException
+from model_downloader import DownloadException, NotEnoughDiskSpaceException
 from psutil._common import bytes2human
 
 
 class LLM_SSE_Adapter:
     """
     Adapter class for managing SSE messages for LLM interactions.
-    
+
     This class maintains an internal message queue and provides callbacks for various events such as model
     loading, text input and output, latency measurements, and error handling. It also manages the generation
     of SSE-formatted messages from the internal queue.
-    
+
     Attributes:
         msg_queue (Queue): Queue to store outgoing messages.
         finish (bool): Flag indicating whether the processing is finished.
         singal (threading.Event): Event used to signal waiting threads when new messages are available.
         metrics_data: Container for storing metrics data.
     """
+
     msg_queue: Queue
     finish: bool
     singal: threading.Event
@@ -47,7 +49,7 @@ class LLM_SSE_Adapter:
     def put_msg(self, data):
         """
         Add a message to the internal queue and signal waiting threads.
-        
+
         Args:
             data: The message data to be enqueued.
         """
@@ -57,7 +59,7 @@ class LLM_SSE_Adapter:
     def load_model_callback(self, event: str):
         """
         Callback for model loading events.
-        
+
         Args:
             event (str): A string representing the event status (e.g., 'start', 'finish').
         """
@@ -67,7 +69,7 @@ class LLM_SSE_Adapter:
     def text_in_callback(self, msg: str):
         """
         Callback for incoming text messages.
-        
+
         Args:
             msg (str): The incoming text message.
         """
@@ -77,7 +79,7 @@ class LLM_SSE_Adapter:
     def text_out_callback(self, msg: str, type=1):
         """
         Callback for outgoing text messages.
-        
+
         Args:
             msg (str): The text message to be sent.
             type: An identifier for the message type (default is 1).
@@ -88,7 +90,7 @@ class LLM_SSE_Adapter:
     def first_latency_callback(self, first_latency: str):
         """
         Callback for reporting the first token latency.
-        
+
         Args:
             first_latency (str): The latency value for the first token.
         """
@@ -98,7 +100,7 @@ class LLM_SSE_Adapter:
     def after_latency_callback(self, after_latency: str):
         """
         Callback for reporting the latency after the first token.
-        
+
         Args:
             after_latency (str): The latency value after the first token.
         """
@@ -108,7 +110,7 @@ class LLM_SSE_Adapter:
     def sr_latency_callback(self, sr_latency: str):
         """
         Callback for reporting super-resolution latency.
-        
+
         Args:
             sr_latency (str): The super-resolution latency value.
         """
@@ -118,16 +120,13 @@ class LLM_SSE_Adapter:
     def error_callback(self, ex: Exception):
         """
         Callback for handling errors during LLM operations.
-        
+
         Depending on the exception type, an appropriate error message is enqueued.
-        
+
         Args:
             ex (Exception): The exception that was raised.
         """
-        if (
-            isinstance(ex, NotImplementedError)
-            and ex.__str__() == "Access to repositories lists is not implemented."
-        ):
+        if isinstance(ex, NotImplementedError) and ex.__str__() == "Access to repositories lists is not implemented.":
             self.put_msg(
                 {
                     "type": "error",
@@ -156,7 +155,7 @@ class LLM_SSE_Adapter:
     def metrics_callback(self, msg: dict):
         """
         Callback for capturing performance metrics.
-        
+
         Args:
             msg (dict): Metrics data as a dictionary.
         """
@@ -165,13 +164,13 @@ class LLM_SSE_Adapter:
     def text_conversation(self, params: llm_biz.LLMParams):
         """
         Initiate a text conversation session using LLM parameters.
-        
+
         This function starts a separate thread that runs the conversation
         and returns a generator for streaming SSE messages.
-        
+
         Args:
             params (llm_biz.LLMParams): Configuration parameters for the chat session.
-        
+
         Returns:
             Generator yielding SSE-formatted messages.
         """
@@ -188,10 +187,10 @@ class LLM_SSE_Adapter:
     ):
         """
         Execute the text conversation by invoking the llm_biz.chat function.
-        
+
         This method calls the llm_biz.chat function with the appropriate callbacks and
         enqueues the resulting metrics and finish messages upon completion.
-        
+
         Args:
             params (llm_biz.LLMParams): Configuration parameters for the chat session.
         """
@@ -204,7 +203,7 @@ class LLM_SSE_Adapter:
                 metrics_callback=self.metrics_callback,
             )
             self.put_msg(self.metrics_data)
-            self.put_msg({"type": "finish"})          
+            self.put_msg({"type": "finish"})
 
         except Exception as ex:
             traceback.print_exc()
@@ -216,10 +215,10 @@ class LLM_SSE_Adapter:
     def generator(self):
         """
         Generator yielding SSE-formatted messages from the internal queue.
-        
+
         Continuously checks the message queue for new messages and yields them until
         the finish flag is set.
-        
+
         Yields:
             str: SSE-formatted string messages containing JSON data.
         """

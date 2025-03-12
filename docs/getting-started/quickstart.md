@@ -13,15 +13,17 @@ This guide will help you quickly set up and start using AI-Playground.
 
 1. Clone the repository:
 
-   ```bash
+   ````bash
    git clone <https://github.com/intel/AI-Playground.git>
    cd AI-Playground
    ```text
 
+   ````
+
 1. Set up the environment:
 
-   ```bash
-   # For automatic hardware detection and environment setup
+   ````bash
+   ## For automatic hardware detection and environment setup
 
    python setup_hardware_env.py
    ```text
@@ -31,25 +33,31 @@ This guide will help you quickly set up and start using AI-Playground.
    - Create a Python virtual environment
    - Install the appropriate dependencies for your hardware
 
+   ````
+
 ## Basic Usage
 
 1. Activate the virtual environment:
 
-   ```bash
-   # On Windows
+   ````bash
+   ## On Windows
 
    .venv\Scripts\activate
 
-   # On Linux/macOS
+   ## On Linux/macOS
 
    source .venv/bin/activate
    ```text
 
+   ````
+
 1. Run the service:
 
-   ```bash
+   ````bash
    python service/main.py
    ```text
+
+   ````
 
 1. Access the web interface by opening `<http://localhost:8000`> in your browser.
 
@@ -68,5 +76,6 @@ AI-Playground automatically detects and optimizes for your hardware:
 - [Hardware Optimization](../hardware/optimization.md) - Learn how to optimize for your specific hardware
 - [Example Workflows](../reference/examples.md) - Explore example workflows and use cases
 
----
+______________________________________________________________________
+
 **Next**: [Installation Guide](installation.md) | **See also**: [Hardware Overview](../hardware/overview.md)

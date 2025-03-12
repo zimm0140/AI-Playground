@@ -15,7 +15,7 @@ these key principles:
 
 ### Architecture Diagram
 
-```text
+````text
 ┌────────────────────────────────────────────────────────────────┐
 │                         API Layer                              │
 │  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌──────────┐  │
@@ -298,7 +298,7 @@ return "nvidia"
 
 ```text
 
-# Check for NPU
+## Check for NPU
 
 ```text
 
@@ -316,7 +316,7 @@ return "npu"
 
 ```text
 
-# Default to base CPU implementation
+## Default to base CPU implementation
 
 ```text
 
@@ -402,3 +402,4 @@ Planned architectural improvements include:
 
 ---
 **Previous**: [Linting Guide](../development/linting.md) | **Next**: [API Design](api-design.md) | **See also**: [Hardware Overview](../hardware/overview.md)
+````

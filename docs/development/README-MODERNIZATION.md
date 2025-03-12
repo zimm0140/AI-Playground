@@ -33,13 +33,13 @@ implementation follows a pragmatic dual approach that allows both traditional an
 
 ### Traditional Installation (Backward Compatible)
 
-```bash
+````bash
 
-# Install directly with pip
+## Install directly with pip
 
 pip install -e .
 
-# Install development dependencies
+## Install development dependencies
 
 pip install -r requirements-dev.txt
 
@@ -49,15 +49,15 @@ pip install -r requirements-dev.txt
 
 ```bash
 
-# Setup environment with development dependencies
+## Setup environment with development dependencies
 
 python uvfast.py setup --dev
 
-# Show environment information
+## Show environment information
 
 python uvfast.py info
 
-# Run tests
+## Run tests
 
 python uvfast.py run pytest
 
@@ -67,11 +67,11 @@ python uvfast.py run pytest
 
 ```bash
 
-# Unix/Linux/macOS
+## Unix/Linux/macOS
 
 ./scripts/uvfast.sh setup --dev
 
-# Windows PowerShell
+## Windows PowerShell
 
 .\scripts\uvfast.ps1 setup --dev
 
@@ -81,11 +81,11 @@ python uvfast.py run pytest
 
 ```bash
 
-# Setup for Intel Arc GPUs
+## Setup for Intel Arc GPUs
 
 python uvfast.py setup --hardware acm --dev
 
-# Setup for OpenVINO
+## Setup for OpenVINO
 
 python uvfast.py setup --hardware ovino --dev
 
@@ -149,3 +149,4 @@ We welcome contributions to further improve this modernization effort. Please se
 ## License
 
 This project is licensed under the same license as the original project. See the LICENSE file for details.
+````

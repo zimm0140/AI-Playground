@@ -29,7 +29,7 @@ The tests are organized as follows:
 
 To run all tests:
 
-```bash
+````bash
 pytest
 
 ```text
@@ -102,7 +102,7 @@ def test_detect_arc_gpu():
 
 ```text
 
-# Arrange
+## Arrange
 
 ```text
 
@@ -114,7 +114,7 @@ mock_gpu_info = ["Intel(R) Arc(TM) A770 Graphics"]
 
 ```text
 
-# Act
+## Act
 
 ```text
 
@@ -132,7 +132,7 @@ result = hardware_detection.detect_hardware_type()
 
 ```text
 
-# Assert
+## Assert
 
 ```text
 
@@ -171,7 +171,7 @@ def test_hardware_detection(sample_config):
 
 ```text
 
-# Use the sample_config fixture
+## Use the sample_config fixture
 
 ```text
 
@@ -181,7 +181,7 @@ with patch("hardware_detection.load_config", return_value=sample_config):
 
 ```text
 
-# Test code here
+## Test code here
 
 ```text
 
@@ -209,7 +209,7 @@ def test_gpu_detection(mock_get_gpu_info):
 
 ```text
 
-# Configure the mock
+## Configure the mock
 
 ```text
 
@@ -221,7 +221,7 @@ mock_get_gpu_info.return_value = ["Intel(R) Arc(TM) A770 Graphics"]
 
 ```text
 
-# Test code that uses get_gpu_info
+## Test code that uses get_gpu_info
 
 ```text
 
@@ -233,7 +233,7 @@ result = hardware_detection.detect_hardware_type()
 
 ```text
 
-# Verify results
+## Verify results
 
 ```text
 
@@ -333,3 +333,4 @@ This will show which core modules have tests and which functions might lack cove
 
 ---
 **Previous**: [Code Quality Standards](code-quality.md) | **Next**: [Linting](linting.md) | **See also**: [Contributing Guide](contributing.md)
+````

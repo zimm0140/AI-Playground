@@ -86,6 +86,7 @@ class HardwareBenchmark:
         if self.hardware_type == "acm":
             try:
                 import intel_extension_for_pytorch as ipex
+
                 from service.xpu_hijacks import ipex_hijacks
 
                 # Apply XPU hijacks
@@ -214,9 +215,7 @@ class HardwareBenchmark:
         self.results["benchmarks"]["convolution"] = results
         return results
 
-    def benchmark_model_inference(
-        self, model_name: str = "microsoft/Phi-3-mini-4k-instruct"
-    ) -> dict[str, Any]:
+    def benchmark_model_inference(self, model_name: str = "microsoft/Phi-3-mini-4k-instruct") -> dict[str, Any]:
         """
         Benchmark model inference
 
@@ -301,17 +300,13 @@ class HardwareBenchmark:
                 try:
                     import intel_extension_for_pytorch as ipex
 
-                    pipeline = StableDiffusionPipeline.from_pretrained(
-                        "runwayml/stable-diffusion-v1-5"
-                    ).to(self.device)
+                    pipeline = StableDiffusionPipeline.from_pretrained("runwayml/stable-diffusion-v1-5").to(self.device)
 
                     # Optional: Optimize with IPEX
                     pipeline = ipex.optimize(pipeline)
                 except ImportError:
                     print("Intel XPU extensions not available, loading standard pipeline")
-                    pipeline = StableDiffusionPipeline.from_pretrained(
-                        "runwayml/stable-diffusion-v1-5"
-                    ).to(self.device)
+                    pipeline = StableDiffusionPipeline.from_pretrained("runwayml/stable-diffusion-v1-5").to(self.device)
             else:
                 pipeline = StableDiffusionPipeline.from_pretrained(
                     "runwayml/stable-diffusion-v1-5", torch_dtype=torch.float32
@@ -406,15 +401,9 @@ class HardwareBenchmark:
 def main():
     """Main function"""
     parser = argparse.ArgumentParser(description="Benchmark AI operations across hardware")
-    parser.add_argument(
-        "--output", default="benchmark_results.json", help="Output file for results"
-    )
-    parser.add_argument(
-        "--iterations", type=int, default=5, help="Number of iterations for each benchmark"
-    )
-    parser.add_argument(
-        "--matrix", action="store_true", help="Run only matrix multiplication benchmark"
-    )
+    parser.add_argument("--output", default="benchmark_results.json", help="Output file for results")
+    parser.add_argument("--iterations", type=int, default=5, help="Number of iterations for each benchmark")
+    parser.add_argument("--matrix", action="store_true", help="Run only matrix multiplication benchmark")
     parser.add_argument("--conv", action="store_true", help="Run only convolution benchmark")
     parser.add_argument("--model", action="store_true", help="Run only model inference benchmark")
     parser.add_argument("--sd", action="store_true", help="Run only Stable Diffusion benchmark")

@@ -6,7 +6,7 @@ This document provides a comprehensive reference for the AI-Playground API, incl
 
 - [REST API](#rest-api)
 
-```text
+````text
 
 - [Authentication](#authentication)
 - [Model Management](#model-management)
@@ -872,11 +872,11 @@ Response:
 ```python
 from ai_playground import AIPlayground
 
-# Initialize with default settings
+## Initialize with default settings
 
 client = AIPlayground()
 
-# Or with custom settings
+## Or with custom settings
 
 client = AIPlayground(
 
@@ -895,16 +895,16 @@ hardware_profile="arc-optimized"
 
 ```python
 
-# Authenticate with username and password
+## Authenticate with username and password
 
 client = AIPlayground()
 client.authenticate(username="user", password="password")
 
-# Authenticate with API key
+## Authenticate with API key
 
 client = AIPlayground(api_key="your-api-key")
 
-# Refresh token
+## Refresh token
 
 client.refresh_token()
 
@@ -916,7 +916,7 @@ client.refresh_token()
 
 ```python
 
-# List available models
+## List available models
 
 models = client.list_models()
 for model in models:
@@ -927,12 +927,12 @@ print(f"{model.id}: {model.name} ({model.type})")
 
 ```text
 
-# Get model details
+## Get model details
 
 model_info = client.get_model_info("text-generation-large")
 print(f"Parameters: {model_info.metadata['parameters']}")
 
-# Load a model
+## Load a model
 
 model = client.load_model("text-generation-large")
 
@@ -942,12 +942,12 @@ model = client.load_model("text-generation-large")
 
 ```python
 
-# Basic text generation
+## Basic text generation
 
 result = model.generate(prompt="Tell me a story about a dragon")
 print(result)
 
-# With parameters
+## With parameters
 
 result = model.generate(
 
@@ -961,7 +961,7 @@ top_p=0.9
 ```text
 )
 
-# Batch inference
+## Batch inference
 
 results = model.generate_batch(
 
@@ -980,12 +980,12 @@ print(f"Result {i}: {result}")
 
 ```text
 
-# Async inference
+## Async inference
 
 job = model.generate_async(prompt="Write a long essay about AI")
 print(f"Job ID: {job.id}, Status: {job.status}")
 
-# Check job status
+## Check job status
 
 job.refresh()
 if job.is_complete():
@@ -1003,7 +1003,7 @@ print(result)
 
 ```python
 
-# Upload a model
+## Upload a model
 
 client.upload_model(
 
@@ -1017,7 +1017,7 @@ metadata={"author": "Example User", "parameters": 1000000}
 ```text
 )
 
-# Delete a model
+## Delete a model
 
 client.delete_model("my-custom-model")
 
@@ -1029,12 +1029,12 @@ client.delete_model("my-custom-model")
 
 ```python
 
-# Get hardware information
+## Get hardware information
 
 hardware_info = client.get_hardware_info()
 print(f"Active device: {hardware_info['active_device']['name']}")
 
-# List detected hardware
+## List detected hardware
 
 for device in hardware_info["detected_hardware"]:
 
@@ -1050,11 +1050,11 @@ print(f"{device['name']} ({device['type']}) - {device['memory_mb']}MB")
 
 ```python
 
-# Set active hardware
+## Set active hardware
 
 client.set_hardware(device_type="arc")
 
-# Set hardware optimization settings
+## Set hardware optimization settings
 
 client.optimize_hardware(
 
@@ -1075,7 +1075,7 @@ settings={
 ```text
 )
 
-# Create hardware profile
+## Create hardware profile
 
 client.create_hardware_profile(
 
@@ -1098,11 +1098,11 @@ settings={
 ```text
 )
 
-# Use hardware profile with a model
+## Use hardware profile with a model
 
 model.set_hardware_profile("custom-arc-profile")
 
-# List hardware profiles
+## List hardware profiles
 
 profiles = client.list_hardware_profiles()
 for profile in profiles:
@@ -1121,7 +1121,7 @@ print(f"{profile['name']} ({profile['device_type']})")
 
 ```python
 
-# Benchmark model performance
+## Benchmark model performance
 
 benchmark = client.benchmark_model(
 
@@ -1137,7 +1137,7 @@ iterations=5
 print(f"Average time: {benchmark['avg_inference_time_ms']}ms")
 print(f"Tokens per second: {benchmark['tokens_per_second']}")
 
-# Compare performance across hardware
+## Compare performance across hardware
 
 comparisons = client.compare_hardware_performance(
 
@@ -1164,7 +1164,7 @@ print(f"{hw_type}: {perf['tokens_per_second']} tokens/sec")
 
 ```python
 
-# Optimize a model for specific hardware
+## Optimize a model for specific hardware
 
 optimized_model = client.optimize_model(
 
@@ -1177,7 +1177,7 @@ precision="mixed"
 ```text
 )
 
-# Quantize a model to reduce memory footprint
+## Quantize a model to reduce memory footprint
 
 quantized_model = client.quantize_model(
 
@@ -1259,7 +1259,7 @@ except HardwareNotSupportedError as e:
 
 print(f"Hardware not supported: {e}")
 
-# Fall back to CPU
+## Fall back to CPU
 
 ```text
 
@@ -1379,3 +1379,4 @@ client.set_hardware(device_type="cpu")
 
 ---
 **Previous**: [Python API Reference](python-api.md) | **Next**: [Configuration Reference](configuration.md) | **See also**: [API Design](../architecture/api-design.md)
+````

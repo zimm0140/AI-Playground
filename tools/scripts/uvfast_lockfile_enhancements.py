@@ -115,9 +115,7 @@ class LockfileManager:
             print(f"Error generating lockfile: {e}")
             raise
 
-    def sync_from_lockfile(
-        self, hardware_type: str, include_dev: bool = False, venv_dir: Path | None = None
-    ) -> bool:
+    def sync_from_lockfile(self, hardware_type: str, include_dev: bool = False, venv_dir: Path | None = None) -> bool:
         """
         Synchronize environment from lockfile
 

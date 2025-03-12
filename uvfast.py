@@ -360,7 +360,7 @@ class UVFast:
         """Show information about the environment."""
         print(f"Project: {self.config.get('project_name', 'ai-playground')}")
         print(f"Detected hardware type: {self.hardware_type}")
-        print(f"Available hardware types: {', '.join(self.config.get('hardware_types', []))}")
+        print(f"Available hardware types: {', '.join(self.config.get('hardware_types', [])}")
 
         # Show requirements files
         print("\nRequirements files:")
@@ -393,7 +393,7 @@ class UVFast:
 
     def update_lockfiles(self, args: argparse.Namespace) -> int:
         """Update lockfiles for the specified hardware types."""
-        hardware_types = [args.hardware] if args.hardware else self.config.get("hardware_types", [])
+        hardware_types = [args.hardware] if args.hardware else self.config.get("hardware_types", []
         logging.info(f"Updating lockfiles for hardware types: {', '.join(hardware_types)}")
 
         if not self._ensure_uv_installed():
@@ -435,7 +435,7 @@ class UVFast:
 
         # Get the hardware types to process
         if args.all:
-            hardware_types = self.config.get("hardware_types", [])
+            hardware_types = self.config.get("hardware_types", []
         else:
             hardware_types = [args.hardware or self.hardware_type]
 

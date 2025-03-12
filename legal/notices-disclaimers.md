@@ -5,7 +5,7 @@ or governed by other agreements, as may be described in the Third Party Notices 
 ## Important AI Playground Notices and Disclaimers
 
 Intel technologies may require enabled hardware, software or service activation. No product or component can be absolutely secure. Your costs and results may vary. Intel does not
-control or audit third-party data.  You should consult other sources to evaluate accuracy. Intel is committed to respecting human rights and avoiding causing or contributing to
+control or audit third-party data. You should consult other sources to evaluate accuracy. Intel is committed to respecting human rights and avoiding causing or contributing to
 adverse impacts on human rights. See Intel’s Global Human Rights Principles (<https://www.intel.com/content/www/us/en/policy/policy-human-rights.html).> Intel’s products and
 software are intended only to be used in applications that do not cause or contribute to adverse impacts on human rights. The software may include third party components with
 separate legal notices or governed by other agreements, as may be described in the Third-Party Notices file accompanying the software.
@@ -48,7 +48,7 @@ Using the model to generate content that is cruel to individuals is a misuse of 
 - Representations of egregious violence and gore
 - Sharing of copyrighted or licensed material in violation of its terms of use.
 
-•    Sharing content that is an alteration of copyrighted or licensed material in violation of its terms of use.
+• Sharing content that is an alteration of copyrighted or licensed material in violation of its terms of use.
 
 #### Limitations
 
@@ -60,7 +60,7 @@ Using the model to generate content that is cruel to individuals is a misuse of 
 - The autoencoding part of the model is lossy
 - The model was trained on a large-scale dataset LAION-5B which contains adult material and is not fit for product use without additional safety mechanisms and considerations.
 - No additional measures were used to deduplicate the dataset. As a result, we observe some degree of memorization for images that are duplicated in the training data. The
-training data can be searched at <https://rom1504.github.io/clip-retrieval/> to possibly assist in the detection of memorized images.
+  training data can be searched at <https://rom1504.github.io/clip-retrieval/> to possibly assist in the detection of memorized images.
 
 #### Bias
 
@@ -74,7 +74,7 @@ generate content with non-English prompts is significantly worse than with Engli
 In the course of using AI Playground, users may choose to download models created and distributed by third parties after reviewing background information about the models and
 agreeing to the license governing those models.
 
-Notice:  Intel does not create the content and does not warrant its accuracy or quality. By accessing the third-party content, or using materials trained on or with such content,
+Notice: Intel does not create the content and does not warrant its accuracy or quality. By accessing the third-party content, or using materials trained on or with such content,
 you are indicating your acceptance of the terms associated with that content and warranting that your use complies with the applicable license.
 
 Intel expressly disclaims the accuracy, adequacy, or completeness of any such third-party content, and is not liable for any errors, omissions, or defects in the content, or for
@@ -86,12 +86,24 @@ corrections, enhancements, improvements, and other changes to its materials.
 
 The table below contains links to the licenses for certain third-party models and detailed information about the capabilities, limitations, and best practices for those models.
 
-| Model                                      | License                                                                                                                                                                      | Background Information/Model Card                                                                                      |
-| ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| Dreamshaper 8 Model                        | [<https://huggingface.co/spaces/CompVis/stable-diffusion-license](https://huggingface.co/spaces/CompVis/stable-diffusion-license)>                                             | [<https://huggingface.co/Lykon/dreamshaper-8](https://huggingface.co/Lykon/dreamshaper-8)>                               |
-| Dreamshaper 8 Inpainting Model             | [<https://huggingface.co/spaces/CompVis/stable-diffusion-license](https://huggingface.co/spaces/CompVis/stable-diffusion-license)>                                             | [<https://huggingface.co/Lykon/dreamshaper-8-inpainting](https://huggingface.co/Lykon/dreamshaper-8-inpainting)>         |
-| JuggernautXL v9 Model                      | [<https://huggingface.co/spaces/CompVis/stable-diffusion-license](https://huggingface.co/spaces/CompVis/stable-diffusion-license)>                                             | [<https://huggingface.co/RunDiffusion/Juggernaut-XL-v9](https://huggingface.co/RunDiffusion/Juggernaut-XL-v9)>           |
-| Phi3-mini-4k-instruct                      | [<https://huggingface.co/microsoft/Phi-3-mini-4k-instruct/resolve/main/LICENSE](https://huggingface.co/microsoft/Phi-3-mini-4k-instruct/resolve/main/LICENSE)>                 | [<https://huggingface.co/microsoft/Phi-3-mini-4k-instruct](https://huggingface.co/microsoft/Phi-3-mini-4k-instruct)>     |
-| bge-large-en-v1.5                          | [<https://github.com/FlagOpen/FlagEmbedding/blob/master/LICENSE](https://github.com/FlagOpen/FlagEmbedding/blob/master/LICENSE)>                 | [<https://huggingface.co/BAAI/bge-large-en-v1.5](https://huggingface.co/BAAI/bge-large-en-v1.5)>                         |
-| Latent Consistency Model (LCM) LoRA: SD1.5 | [<https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/blob/main/LICENSE.md](https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/blob/main/LICENSE.md)> | [<https://huggingface.co/latent-consistency/lcm-lora-sdv1-5](https://huggingface.co/latent-consistency/lcm-lora-sdv1-5)> |
-| Latent Consistency Model (LCM) LoRA:SDXL   | [<https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/blob/main/LICENSE.md](https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/blob/main/LICENSE.md)> | [<https://huggingface.co/latent-consistency/lcm-lora-sdxl](https://huggingface.co/latent-consistency/lcm-lora-sdxl)>     |
+| Model | License | Background Information/Model Card |
+| ------------------------------------------ |
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+---------------------------------------------------------------------------------------------------------------------- |
+| Dreamshaper 8 Model | \[<https://huggingface.co/spaces/CompVis/stable-diffusion-license%5D(https://huggingface.co/spaces/CompVis/stable-diffusion-license)> |
+\[<https://huggingface.co/Lykon/dreamshaper-8%5D(https://huggingface.co/Lykon/dreamshaper-8)> |
+| Dreamshaper 8 Inpainting Model | \[<https://huggingface.co/spaces/CompVis/stable-diffusion-license%5D(https://huggingface.co/spaces/CompVis/stable-diffusion-license)> |
+\[<https://huggingface.co/Lykon/dreamshaper-8-inpainting%5D(https://huggingface.co/Lykon/dreamshaper-8-inpainting)> |
+| JuggernautXL v9 Model | \[<https://huggingface.co/spaces/CompVis/stable-diffusion-license%5D(https://huggingface.co/spaces/CompVis/stable-diffusion-license)> |
+\[<https://huggingface.co/RunDiffusion/Juggernaut-XL-v9%5D(https://huggingface.co/RunDiffusion/Juggernaut-XL-v9)> |
+| Phi3-mini-4k-instruct |
+\[<https://huggingface.co/microsoft/Phi-3-mini-4k-instruct/resolve/main/LICENSE%5D(https://huggingface.co/microsoft/Phi-3-mini-4k-instruct/resolve/main/LICENSE)> |
+\[<https://huggingface.co/microsoft/Phi-3-mini-4k-instruct%5D(https://huggingface.co/microsoft/Phi-3-mini-4k-instruct)> |
+| bge-large-en-v1.5 | \[<https://github.com/FlagOpen/FlagEmbedding/blob/master/LICENSE%5D(https://github.com/FlagOpen/FlagEmbedding/blob/master/LICENSE)> |
+\[<https://huggingface.co/BAAI/bge-large-en-v1.5%5D(https://huggingface.co/BAAI/bge-large-en-v1.5)> |
+| Latent Consistency Model (LCM) LoRA: SD1.5 |
+\[<https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/blob/main/LICENSE.md%5D(https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/blob/main/LICENSE.md)> |
+\[<https://huggingface.co/latent-consistency/lcm-lora-sdv1-5%5D(https://huggingface.co/latent-consistency/lcm-lora-sdv1-5)> |
+| Latent Consistency Model (LCM) LoRA:SDXL |
+\[<https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/blob/main/LICENSE.md%5D(https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/blob/main/LICENSE.md)> |
+\[<https://huggingface.co/latent-consistency/lcm-lora-sdxl%5D(https://huggingface.co/latent-consistency/lcm-lora-sdxl)> |

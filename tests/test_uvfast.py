@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """Unit tests for uvfast.py module."""
 
+import json
 import os
 import sys
-import json
 import unittest
 from pathlib import Path
-from unittest.mock import patch, mock_open, MagicMock
+from unittest.mock import MagicMock, mock_open, patch
 
 # Add parent directory to path so we can import from the root
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -20,7 +20,7 @@ class TestUVFast(unittest.TestCase):
     def setUp(self):
         """Set up test environment."""
         self.uv_fast = uvfast.UVFast()
-        
+
         # Sample config for testing
         self.sample_config = {
             "project_name": "test-project",
@@ -33,7 +33,7 @@ class TestUVFast(unittest.TestCase):
                 "hardware": {
                     "base": "requirements-hardware-base.txt",
                     "acm": "requirements-hardware-acm.txt",
-                }
+                },
             },
             "lockfiles": {
                 "base": "requirements.lock",
@@ -41,8 +41,8 @@ class TestUVFast(unittest.TestCase):
                 "hardware": {
                     "base": "requirements-hardware-base.lock",
                     "acm": "requirements-hardware-acm.lock",
-                }
-            }
+                },
+            },
         }
 
     @patch("builtins.open", new_callable=mock_open, read_data='{"project_name": "test-project"}')
@@ -54,7 +54,7 @@ class TestUVFast(unittest.TestCase):
 
         # Call _load_config through a dummy private method accessor
         config = self.uv_fast._load_config()
-        
+
         # Verify the config contains expected values
         self.assertEqual(config["project_name"], "test-project")
         self.assertIn("hardware_types", config)
@@ -67,7 +67,7 @@ class TestUVFast(unittest.TestCase):
 
         # Call _load_config
         config = self.uv_fast._load_config()
-        
+
         # Verify it falls back to default values
         self.assertEqual(config["project_name"], "ai-playground")
         self.assertEqual(config["python_version"], "3.10")
@@ -79,10 +79,10 @@ class TestUVFast(unittest.TestCase):
         """Test simple hardware detection with hardware_detection module."""
         # Mock hardware detection
         mock_detect_hardware.return_value = "acm"
-        
+
         # Mock config
         mock_load_config.return_value = self.sample_config
-        
+
         # Test hardware detection
         hardware_type = self.uv_fast._simple_hardware_detection()
         self.assertEqual(hardware_type, "acm")
@@ -93,7 +93,7 @@ class TestUVFast(unittest.TestCase):
         """Test simple hardware detection falling back without hardware_detection module."""
         # Mock config
         mock_load_config.return_value = self.sample_config
-        
+
         # Test hardware detection fallback
         hardware_type = self.uv_fast._simple_hardware_detection()
         self.assertEqual(hardware_type, "base")  # Should use default hardware
@@ -103,7 +103,7 @@ class TestUVFast(unittest.TestCase):
         """Test getting virtual environment path."""
         # Mock config
         mock_load_config.return_value = self.sample_config
-        
+
         # Test venv path
         venv_path = self.uv_fast._get_venv_path()
         self.assertIsInstance(venv_path, Path)
@@ -117,11 +117,11 @@ class TestUVFast(unittest.TestCase):
         mock_load_config.return_value = self.sample_config
         test_venv_path = Path(".venv")
         mock_venv_path.return_value = test_venv_path
-        
+
         # Test Python executable path
         python_path = self.uv_fast._get_python_executable()
         self.assertIsInstance(python_path, Path)
-        
+
         # Check that it's formed correctly based on the platform
         if sys.platform == "win32":
             self.assertTrue(str(python_path).endswith(os.path.join("Scripts", "python.exe")))
@@ -133,15 +133,15 @@ class TestUVFast(unittest.TestCase):
         """Test getting requirements files for different hardware types."""
         # Mock config
         mock_load_config.return_value = self.sample_config
-        
+
         # Test base hardware requirements
         req_files = self.uv_fast._get_requirements_files("base")
         self.assertIn("requirements-hardware-base.txt", req_files)
-        
+
         # Test specialized hardware requirements
         req_files = self.uv_fast._get_requirements_files("acm")
         self.assertIn("requirements-hardware-acm.txt", req_files)
-        
+
         # Test with dev flag
         req_files = self.uv_fast._get_requirements_files("base", dev=True)
         self.assertIn("requirements-hardware-base.txt", req_files)
@@ -149,4 +149,4 @@ class TestUVFast(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main() 
+    unittest.main()

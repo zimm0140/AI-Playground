@@ -150,8 +150,7 @@ def check_hardware_availability(hardware_type):
 
     if hardware_type != detected_type:
         logging.warning(
-            f"Warning: Requested hardware type '{hardware_type}' "
-            f"does not match detected type '{detected_type}'"
+            f"Warning: Requested hardware type '{hardware_type}' does not match detected type '{detected_type}'"
         )
         logging.warning("This might cause issues with hardware-specific dependencies")
         return False
@@ -177,9 +176,7 @@ def main():
 
     # Check venv availability
     if not is_venv_available():
-        logging.error(
-            "Error: venv module not available. Please install it or use a Python version with venv support."
-        )
+        logging.error("Error: venv module not available. Please install it or use a Python version with venv support.")
         sys.exit(1)
 
     # Create virtual environment

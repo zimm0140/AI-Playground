@@ -4,4 +4,4 @@ class UnstructuredMarkdownLoader:
 
     def load(self):
         # Dummy implementation that returns an empty string
-        return "" 
+        return ""

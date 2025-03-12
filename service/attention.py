@@ -20,8 +20,9 @@ switches to sliced processing to prevent out-of-memory errors.
 """
 
 import os
-import torch
 from functools import cache
+
+import torch
 
 # pylint: disable=protected-access, missing-function-docstring, line-too-long
 
@@ -36,14 +37,14 @@ attention_slice_rate = float(os.environ.get("IPEX_ATTENTION_SLICE_RATE", 4))
 def find_slice_size(slice_size, slice_block_size):
     """
     Find the largest slice size that keeps memory usage below the threshold.
-    
+
     Progressively halves the slice_size until the resulting memory block size
     is below the attention_slice_rate threshold.
-    
+
     Args:
         slice_size: Initial size of the slice
         slice_block_size: Memory consumption factor for each slice
-        
+
     Returns:
         int: The optimized slice size
     """
@@ -60,14 +61,14 @@ def find_slice_size(slice_size, slice_block_size):
 def find_sdpa_slice_sizes(query_shape, query_element_size):
     """
     Determine optimal slicing configuration for scaled dot product attention.
-    
+
     Calculates appropriate slice sizes for each dimension of the query tensor
     to keep memory usage below thresholds.
-    
+
     Args:
         query_shape: Shape of the query tensor
         query_element_size: Size in bytes of each element in the query tensor
-        
+
     Returns:
         tuple: Six values including:
             - Three boolean flags indicating which dimensions need slicing
@@ -79,9 +80,7 @@ def find_sdpa_slice_sizes(query_shape, query_element_size):
     else:
         batch_size_attention, query_tokens, shape_three, shape_four = query_shape
 
-    slice_block_size = (
-        query_tokens * shape_three * shape_four / 1024 / 1024 * query_element_size
-    )
+    slice_block_size = query_tokens * shape_three * shape_four / 1024 / 1024 * query_element_size
     block_size = batch_size_attention * slice_block_size
 
     split_slice_size = batch_size_attention
@@ -96,29 +95,15 @@ def find_sdpa_slice_sizes(query_shape, query_element_size):
         do_split = True
         split_slice_size = find_slice_size(split_slice_size, slice_block_size)
         if split_slice_size * slice_block_size > attention_slice_rate:
-            slice_2_block_size = (
-                split_slice_size
-                * shape_three
-                * shape_four
-                / 1024
-                / 1024
-                * query_element_size
-            )
+            slice_2_block_size = split_slice_size * shape_three * shape_four / 1024 / 1024 * query_element_size
             do_split_2 = True
             split_2_slice_size = find_slice_size(split_2_slice_size, slice_2_block_size)
             if split_2_slice_size * slice_2_block_size > attention_slice_rate:
                 slice_3_block_size = (
-                    split_slice_size
-                    * split_2_slice_size
-                    * shape_four
-                    / 1024
-                    / 1024
-                    * query_element_size
+                    split_slice_size * split_2_slice_size * shape_four / 1024 / 1024 * query_element_size
                 )
                 do_split_3 = True
-                split_3_slice_size = find_slice_size(
-                    split_3_slice_size, slice_3_block_size
-                )
+                split_3_slice_size = find_slice_size(split_3_slice_size, slice_3_block_size)
 
     return (
         do_split,
@@ -135,15 +120,15 @@ def find_sdpa_slice_sizes(query_shape, query_element_size):
 def find_bmm_slice_sizes(input_shape, input_element_size, mat2_shape):
     """
     Determine optimal slicing configuration for batch matrix multiplication.
-    
+
     Calculates appropriate slice sizes for each dimension of the input tensors
     to keep memory usage below thresholds.
-    
+
     Args:
         input_shape: Shape of the first input tensor
         input_element_size: Size in bytes of each element in the input tensor
         mat2_shape: Shape of the second input tensor
-        
+
     Returns:
         tuple: Six values including:
             - Three boolean flags indicating which dimensions need slicing
@@ -154,9 +139,7 @@ def find_bmm_slice_sizes(input_shape, input_element_size, mat2_shape):
         input_shape[1],
         mat2_shape[2],
     )
-    slice_block_size = (
-        input_tokens * mat2_atten_shape / 1024 / 1024 * input_element_size
-    )
+    slice_block_size = input_tokens * mat2_atten_shape / 1024 / 1024 * input_element_size
     block_size = batch_size_attention * slice_block_size
 
     split_slice_size = batch_size_attention
@@ -171,23 +154,13 @@ def find_bmm_slice_sizes(input_shape, input_element_size, mat2_shape):
         do_split = True
         split_slice_size = find_slice_size(split_slice_size, slice_block_size)
         if split_slice_size * slice_block_size > attention_slice_rate:
-            slice_2_block_size = (
-                split_slice_size * mat2_atten_shape / 1024 / 1024 * input_element_size
-            )
+            slice_2_block_size = split_slice_size * mat2_atten_shape / 1024 / 1024 * input_element_size
             do_split_2 = True
             split_2_slice_size = find_slice_size(split_2_slice_size, slice_2_block_size)
             if split_2_slice_size * slice_2_block_size > attention_slice_rate:
-                slice_3_block_size = (
-                    split_slice_size
-                    * split_2_slice_size
-                    / 1024
-                    / 1024
-                    * input_element_size
-                )
+                slice_3_block_size = split_slice_size * split_2_slice_size / 1024 / 1024 * input_element_size
                 do_split_3 = True
-                split_3_slice_size = find_slice_size(
-                    split_3_slice_size, slice_3_block_size
-                )
+                split_3_slice_size = find_slice_size(split_3_slice_size, slice_3_block_size)
 
     return (
         do_split,
@@ -205,16 +178,16 @@ original_torch_bmm = torch.bmm
 def torch_bmm_32_bit(input, mat2, *, out=None):
     """
     Memory-optimized implementation of batch matrix multiplication for XPU devices.
-    
+
     If input tensors are on XPU device and exceed memory thresholds,
     this function splits the operation into smaller chunks and processes them sequentially.
     Otherwise, it falls back to the original torch.bmm implementation.
-    
+
     Args:
         input: First input tensor
         mat2: Second input tensor
         out: Optional output tensor
-        
+
     Returns:
         Tensor: Result of batch matrix multiplication
     """
@@ -272,12 +245,10 @@ def torch_bmm_32_bit(input, mat2, *, out=None):
                                 out=out,
                             )
                     else:
-                        hidden_states[start_idx:end_idx, start_idx_2:end_idx_2] = (
-                            original_torch_bmm(
-                                input[start_idx:end_idx, start_idx_2:end_idx_2],
-                                mat2[start_idx:end_idx, start_idx_2:end_idx_2],
-                                out=out,
-                            )
+                        hidden_states[start_idx:end_idx, start_idx_2:end_idx_2] = original_torch_bmm(
+                            input[start_idx:end_idx, start_idx_2:end_idx_2],
+                            mat2[start_idx:end_idx, start_idx_2:end_idx_2],
+                            out=out,
                         )
             else:
                 hidden_states[start_idx:end_idx] = original_torch_bmm(
@@ -292,16 +263,14 @@ def torch_bmm_32_bit(input, mat2, *, out=None):
 original_scaled_dot_product_attention = torch.nn.functional.scaled_dot_product_attention
 
 
-def scaled_dot_product_attention_32_bit(
-    query, key, value, attn_mask=None, dropout_p=0.0, is_causal=False, **kwargs
-):
+def scaled_dot_product_attention_32_bit(query, key, value, attn_mask=None, dropout_p=0.0, is_causal=False, **kwargs):
     """
     Memory-optimized implementation of scaled dot product attention for XPU devices.
-    
+
     If input tensors are on XPU device and exceed memory thresholds,
     this function splits the operation into smaller chunks and processes them sequentially.
     Otherwise, it falls back to the original implementation.
-    
+
     Args:
         query: Query tensor
         key: Key tensor
@@ -310,7 +279,7 @@ def scaled_dot_product_attention_32_bit(
         dropout_p: Dropout probability
         is_causal: Whether to apply causal masking
         **kwargs: Additional arguments to pass to the original function
-        
+
     Returns:
         Tensor: Result of scaled dot product attention
     """
@@ -384,34 +353,26 @@ def scaled_dot_product_attention_32_bit(
                                 **kwargs,
                             )
                     else:
-                        hidden_states[start_idx:end_idx, start_idx_2:end_idx_2] = (
-                            original_scaled_dot_product_attention(
-                                query[start_idx:end_idx, start_idx_2:end_idx_2],
-                                key[start_idx:end_idx, start_idx_2:end_idx_2],
-                                value[start_idx:end_idx, start_idx_2:end_idx_2],
-                                attn_mask=attn_mask[
-                                    start_idx:end_idx, start_idx_2:end_idx_2
-                                ]
-                                if attn_mask is not None
-                                else attn_mask,
-                                dropout_p=dropout_p,
-                                is_causal=is_causal,
-                                **kwargs,
-                            )
+                        hidden_states[start_idx:end_idx, start_idx_2:end_idx_2] = original_scaled_dot_product_attention(
+                            query[start_idx:end_idx, start_idx_2:end_idx_2],
+                            key[start_idx:end_idx, start_idx_2:end_idx_2],
+                            value[start_idx:end_idx, start_idx_2:end_idx_2],
+                            attn_mask=attn_mask[start_idx:end_idx, start_idx_2:end_idx_2]
+                            if attn_mask is not None
+                            else attn_mask,
+                            dropout_p=dropout_p,
+                            is_causal=is_causal,
+                            **kwargs,
                         )
             else:
-                hidden_states[start_idx:end_idx] = (
-                    original_scaled_dot_product_attention(
-                        query[start_idx:end_idx],
-                        key[start_idx:end_idx],
-                        value[start_idx:end_idx],
-                        attn_mask=attn_mask[start_idx:end_idx]
-                        if attn_mask is not None
-                        else attn_mask,
-                        dropout_p=dropout_p,
-                        is_causal=is_causal,
-                        **kwargs,
-                    )
+                hidden_states[start_idx:end_idx] = original_scaled_dot_product_attention(
+                    query[start_idx:end_idx],
+                    key[start_idx:end_idx],
+                    value[start_idx:end_idx],
+                    attn_mask=attn_mask[start_idx:end_idx] if attn_mask is not None else attn_mask,
+                    dropout_p=dropout_p,
+                    is_causal=is_causal,
+                    **kwargs,
                 )
         torch.xpu.synchronize(query.device)
     else:

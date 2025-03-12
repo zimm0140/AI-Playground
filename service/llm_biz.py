@@ -17,44 +17,40 @@ model inference, memory management, and performance metrics collection.
 
 # Load model directly
 import gc
+import logging
+import sys
 import threading
 import time
 import traceback
-import torch
-import logging
-import sys
-
-from typing import Any, List, Dict
 from os import path
-from transformers import (
-    TextIteratorStreamer,
-    StoppingCriteriaList,
-    AutoTokenizer,
-    PreTrainedModel,
-    PreTrainedTokenizer,
-)
+from typing import Any, Dict, List
+
+import torch
+from transformers import AutoTokenizer, PreTrainedModel, PreTrainedTokenizer, StoppingCriteriaList, TextIteratorStreamer
 
 try:
     from ipex_llm.transformers import AutoModelForCausalLM
 except ModuleNotFoundError:
     from transformers import AutoModelForCausalLM
+
 from typing import Callable
+
+import service_config
 from transformers.generation.stopping_criteria import (
-    StoppingCriteria,
     STOPPING_CRITERIA_INPUTS_DOCSTRING,
+    StoppingCriteria,
     add_start_docstrings,
 )
-import service_config
 
 
 class LLMParams:
     """
     Configuration parameters for LLM generation.
-    
+
     This class encapsulates all the necessary parameters for controlling
     the behavior of the LLM generation process, including model selection,
     device placement, and generation settings.
-    
+
     Attributes:
         prompt: List of message dictionaries in the chat format
         device: Device ID for model placement (XPU device index)
@@ -64,6 +60,7 @@ class LLMParams:
         print_metrics: Whether to print performance metrics after generation
         generation_parameters: Additional parameters for the generation process
     """
+
     prompt: List[Dict[str, str]]
     device: int
     enable_rag: bool
@@ -72,20 +69,19 @@ class LLMParams:
     print_metrics: bool
     generation_parameters: Dict[str, Any]
 
-
     def __init__(
-            self,
-            prompt: list,
-            device: int,
-            enable_rag: bool,
-            model_repo_id: str,
-            max_tokens: int,
-            print_metrics: bool = True,
-            **kwargs
+        self,
+        prompt: list,
+        device: int,
+        enable_rag: bool,
+        model_repo_id: str,
+        max_tokens: int,
+        print_metrics: bool = True,
+        **kwargs,
     ) -> None:
         """
         Initialize LLMParams with the provided configuration.
-        
+
         Args:
             prompt: List of message dictionaries for the conversation
             device: XPU device index to use for inference
@@ -122,15 +118,15 @@ _default_prompt = {
 def user_stop(input_ids: torch.LongTensor, scores: torch.FloatTensor, **kwargs):
     """
     Callback function to check if generation should stop.
-    
+
     Used as a stopping criterion during generation to check if the
     user has requested to stop the generation process.
-    
+
     Args:
         input_ids: Token IDs generated so far
         scores: Token scores
         **kwargs: Additional arguments (unused)
-        
+
     Returns:
         bool: True if generation should stop, False otherwise
     """
@@ -139,16 +135,16 @@ def user_stop(input_ids: torch.LongTensor, scores: torch.FloatTensor, **kwargs):
 
 
 def stream_chat_generate(
-        model: PreTrainedModel,
-        args: dict,
-        error_callback: Callable[[Exception], None] = None,
+    model: PreTrainedModel,
+    args: dict,
+    error_callback: Callable[[Exception], None] = None,
 ):
     """
     Generate text using a model with streaming output.
-    
+
     This function is designed to be run in a separate thread, allowing
     generated text to be streamed via the TextIteratorStreamer in args.
-    
+
     Args:
         model: The pre-trained language model to use for generation
         args: Dictionary of arguments to pass to the model's generate method
@@ -164,28 +160,28 @@ def stream_chat_generate(
 
 
 def generate(
-        prompt: List[Dict[str, str]],
-        model: PreTrainedModel,
-        tokenizer: PreTrainedTokenizer,
-        max_new_tokens: int,
-        error_callback: Callable[[Exception], None] = None,
+    prompt: List[Dict[str, str]],
+    model: PreTrainedModel,
+    tokenizer: PreTrainedTokenizer,
+    max_new_tokens: int,
+    error_callback: Callable[[Exception], None] = None,
 ):
     """
     Prepare and start text generation from the given prompt.
-    
+
     This function handles:
     1. Formatting the chat history with templates
     2. Truncating long prompts to fit model context
     3. Setting up stopping criteria and streaming
     4. Starting the generation in a background thread
-    
+
     Args:
         prompt: List of message dictionaries to generate from
         model: The model to use for generation
         tokenizer: Tokenizer matching the model
         max_new_tokens: Maximum number of new tokens to generate
         error_callback: Optional callback for error handling
-        
+
     Returns:
         TextIteratorStreamer: Streamer object to iterate over generated tokens
     """
@@ -200,22 +196,16 @@ def generate(
     while i < prompt_len:
         chat_history.append({"role": "user", "content": prompt[i].get("question")})
         if i < prompt_len - 1:
-            chat_history.append(
-                {"role": "assistant", "content": prompt[i].get("answer")}
-            )
+            chat_history.append({"role": "assistant", "content": prompt[i].get("answer")})
         i = i + 1
 
     # Apply chat template to format the conversation
-    new_prompt = tokenizer.apply_chat_template(
-        chat_history, tokenize=False, add_generation_prompt=True
-    )
+    new_prompt = tokenizer.apply_chat_template(chat_history, tokenize=False, add_generation_prompt=True)
 
     # Truncate prompt if it's too long for the model's context window
     while len(tokenizer.tokenize(new_prompt)) > 2000:
         chat_history.remove(chat_history[1])
-        new_prompt = tokenizer.apply_chat_template(
-            chat_history, tokenize=False, add_generation_prompt=True
-        )
+        new_prompt = tokenizer.apply_chat_template(chat_history, tokenize=False, add_generation_prompt=True)
 
     # Tokenize the prompt and prepare model inputs
     model_inputs = tokenizer(new_prompt, return_tensors="pt").to(service_config.device)
@@ -254,19 +244,19 @@ def generate(
 
 
 def process_rag(
-        prompt: str,
-        text_out_callback: Callable[[str, int], None] = None,
+    prompt: str,
+    text_out_callback: Callable[[str, int], None] = None,
 ):
     """
     Process a prompt with Retrieval-Augmented Generation.
-    
+
     Queries a retrieval system to find relevant context for the prompt,
     then formats the prompt with retrieved context for improved generation.
-    
+
     Args:
         prompt: The user's input prompt
         text_out_callback: Optional callback for sending retrieved information
-        
+
     Returns:
         str: RAG-enhanced prompt with relevant context
     """
@@ -274,7 +264,7 @@ def process_rag(
 
     # Initialize RAG and move to correct device
     rag.to(service_config.device)
-    
+
     # Query RAG system for relevant context
     query_success, context, rag_source = rag.query(prompt)
     if query_success:
@@ -287,21 +277,21 @@ def process_rag(
 
 
 def chat(
-        params: LLMParams,
-        load_model_callback: Callable[[str], None] = None,
-        text_out_callback: Callable[[str, int], None] = None,
-        metrics_callback: Callable[[dict], None] = None,
-        error_callback: Callable[[Exception], None] = None,
+    params: LLMParams,
+    load_model_callback: Callable[[str], None] = None,
+    text_out_callback: Callable[[str, int], None] = None,
+    metrics_callback: Callable[[dict], None] = None,
+    error_callback: Callable[[Exception], None] = None,
 ):
     """
     Main entry point for LLM chat functionality.
-    
+
     This function:
     1. Handles model loading if needed
     2. Processes RAG queries if enabled
     3. Performs generation with streaming output
     4. Collects and reports performance metrics
-    
+
     Args:
         params: Configuration parameters for the chat session
         load_model_callback: Optional callback for model loading events
@@ -360,11 +350,7 @@ def chat(
 
             _last_repo_id = model_repo_id
 
-            print(
-                "load llm model {} finish. cost {}s".format(
-                    model_repo_id, round(time.time() - start, 3)
-                )
-            )
+            print("load llm model {} finish. cost {}s".format(model_repo_id, round(time.time() - start, 3)))
             if load_model_callback is not None:
                 load_model_callback("finish")
 
@@ -374,9 +360,7 @@ def chat(
         # Process prompt with RAG if enabled
         if enable_rag:
             last_prompt = prompt[prompt.__len__() - 1]
-            last_prompt.__setitem__(
-                "question", process_rag(last_prompt.get("question"), text_out_callback)
-            )
+            last_prompt.__setitem__("question", process_rag(last_prompt.get("question"), text_out_callback))
 
         # Move model to specified device
         _model = _model.to(service_config.device)
@@ -387,13 +371,11 @@ def chat(
         is_first = True
         first_token_time = 0
         last_token_time = 0
-        
+
         # Start generation with metrics collection
         with torch.inference_mode():
             all_stream_output = ""
-            for stream_output in generate(
-                    prompt, _model, _tokenizer, max_tokens, error_callback
-            ):
+            for stream_output in generate(prompt, _model, _tokenizer, max_tokens, error_callback):
                 assert_stop_generate()
 
                 # Track token timing for metrics
@@ -420,7 +402,7 @@ def chat(
             "overall_tokens_per_second": num_tokens / (last_token_time - start_time),
             "second_plus_tokens_per_second": (num_tokens - 1) / (last_token_time - first_token_time),
             "first_token_latency": first_token_time - start_time,
-            "after_token_latency": (last_token_time - first_token_time) / (num_tokens - 1) if num_tokens > 1 else None
+            "after_token_latency": (last_token_time - first_token_time) / (num_tokens - 1) if num_tokens > 1 else None,
         }
 
         metrics_callback(metrics_data)
@@ -429,12 +411,12 @@ def chat(
         if params.print_metrics:
             logging.info(f"""
                     ----------inference finish----------
-                    num_tokens : {metrics_data['num_tokens']}
-                    total_time : {metrics_data['total_time']:.4f} s
-                    overall tokens/s : {metrics_data['overall_tokens_per_second']:.4f}
-                    2nd+ token/s : {metrics_data['second_plus_tokens_per_second']:.4f}
-                    first_token_latency : {metrics_data['first_token_latency']:.4f} s
-                    after_token_latency : {metrics_data['after_token_latency']:.4f} s
+                    num_tokens : {metrics_data["num_tokens"]}
+                    total_time : {metrics_data["total_time"]:.4f} s
+                    overall tokens/s : {metrics_data["overall_tokens_per_second"]:.4f}
+                    2nd+ token/s : {metrics_data["second_plus_tokens_per_second"]:.4f}
+                    first_token_latency : {metrics_data["first_token_latency"]:.4f} s
+                    after_token_latency : {metrics_data["after_token_latency"]:.4f} s
                     """)
 
     finally:
@@ -444,7 +426,7 @@ def chat(
 def stop_generate():
     """
     Stop any ongoing generation process.
-    
+
     Sets flags to stop generation and waits for the process to acknowledge
     the stop request via the stop event.
     """
@@ -460,11 +442,11 @@ def stop_generate():
 def assert_stop_generate():
     """
     Check if generation should stop and raise an exception if so.
-    
+
     This function is called during generation to check if the process
     should stop, and raises a StopGenerateException if requested.
     This allows for graceful interruption of the generation process.
-    
+
     Raises:
         StopGenerateException: If generation should stop
     """
@@ -477,7 +459,7 @@ def assert_stop_generate():
 def dispose():
     """
     Clean up resources used by the LLM module.
-    
+
     Stops any ongoing generation, deletes the model,
     and clears GPU memory caches to prevent memory leaks.
     """
@@ -493,10 +475,11 @@ def dispose():
 class StopGenerateException(Exception):
     """
     Exception raised when generation is stopped by user request.
-    
+
     This exception is used for flow control to gracefully exit
     from the generation process when requested by the user.
     """
+
     def __str__(self):
         return "user stop llm generate"
 
@@ -504,34 +487,33 @@ class StopGenerateException(Exception):
 class CustomStopCriteria(StoppingCriteria):
     """
     Custom stopping criteria for text generation.
-    
+
     This class implements the HuggingFace StoppingCriteria interface
     to allow for custom stopping logic during generation.
     """
+
     def __init__(self, stop_callback):
         """
         Initialize with a callback function that determines when to stop.
-        
+
         Args:
             stop_callback: Function that returns True when generation should stop
         """
         self.stop_callback = stop_callback
 
     @add_start_docstrings(STOPPING_CRITERIA_INPUTS_DOCSTRING)
-    def __call__(
-            self, input_ids: torch.LongTensor, scores: torch.FloatTensor, **kwargs
-    ) -> bool:
+    def __call__(self, input_ids: torch.LongTensor, scores: torch.FloatTensor, **kwargs) -> bool:
         """
         Determine if generation should stop.
-        
+
         Delegates to the stop_callback function to decide if
         generation should stop based on current state.
-        
+
         Args:
             input_ids: Token IDs generated so far
             scores: Token scores from the model
             **kwargs: Additional arguments passed to the callback
-            
+
         Returns:
             bool: True if generation should stop, False otherwise
         """

@@ -13,18 +13,16 @@ Generated on: 2025-03-10 05:02:58
 
 | Model | Workflows |
 |-------|----------|
-| RunDiffusion---Juggernaut-XL-v9\vae\diffusion_pytorch_model.fp16.safetensors (vae) | FaceSwapHD.json, Line2ImageHD-Fast.json, Line2ImageHD-Quality.json |
-| black-forest-labs---FLUX.1-schnell\ae.safetensors (vae) | fluxQ4.json, fluxQ8.json |
-| latent-consistency---lcm-lora-sdxl\pytorch_lora_weights.safetensors (lora) | FaceSwapHD.json, Line2ImageHD-Fast.json |
-| stabilityai---control-lora\control-LoRAs-rank128\control-lora-canny-rank128.safetensors (controlnet) | Line2ImageHD-Fast.json, Line2ImageHD-Quality.json |
-
+| RunDiffusion---Juggernaut-XL-v9\\vae\\diffusion_pytorch_model.fp16.safetensors (vae) | FaceSwapHD.json, Line2ImageHD-Fast.json, Line2ImageHD-Quality.json |
+| black-forest-labs---FLUX.1-schnell\\ae.safetensors (vae) | fluxQ4.json, fluxQ8.json |
+| latent-consistency---lcm-lora-sdxl\\pytorch_lora_weights.safetensors (lora) | FaceSwapHD.json, Line2ImageHD-Fast.json |
+| stabilityai---control-lora\\control-LoRAs-rank128\\control-lora-canny-rank128.safetensors (controlnet) | Line2ImageHD-Fast.json, Line2ImageHD-Quality.json |
 
 ### Custom Nodes
 
 | Custom Node Extension | Workflows |
 |----------------------|----------|
 | comfyui-face-swap | CopyFace.json, FaceSwapHD.json |
-
 
 ### Python Packages
 
@@ -33,7 +31,6 @@ Generated on: 2025-03-10 05:02:58
 | opencv-python | CopyFace.json, FaceSwapHD.json |
 | insightface | CopyFace.json, FaceSwapHD.json |
 | onnxruntime-gpu | CopyFace.json, FaceSwapHD.json |
-
 
 ### Memory Requirements
 
@@ -44,7 +41,6 @@ Generated on: 2025-03-10 05:02:58
 |-------------------|----------|
 | 7GB | Colorize.json, CopyFace.json, FaceSwapHD.json, Video.json, fluxQ4.json, fluxQ8.json |
 | 8GB | Line2ImageHD-Fast.json, Line2ImageHD-Quality.json |
-
 
 ## Individual Workflow Requirements
 
@@ -82,8 +78,8 @@ Generated on: 2025-03-10 05:02:58
 
 ### Required Models
 
-- Vae: RunDiffusion---Juggernaut-XL-v9\vae\diffusion_pytorch_model.fp16.safetensors
-- Lora: latent-consistency---lcm-lora-sdxl\pytorch_lora_weights.safetensors
+- Vae: RunDiffusion---Juggernaut-XL-v9\\vae\\diffusion_pytorch_model.fp16.safetensors
+- Lora: latent-consistency---lcm-lora-sdxl\\pytorch_lora_weights.safetensors
 
 ### Required Custom Nodes
 
@@ -106,9 +102,9 @@ Generated on: 2025-03-10 05:02:58
 
 ### Required Models
 
-- Vae: RunDiffusion---Juggernaut-XL-v9\vae\diffusion_pytorch_model.fp16.safetensors
-- Lora: latent-consistency---lcm-lora-sdxl\pytorch_lora_weights.safetensors
-- Controlnet: stabilityai---control-lora\control-LoRAs-rank128\control-lora-canny-rank128.safetensors
+- Vae: RunDiffusion---Juggernaut-XL-v9\\vae\\diffusion_pytorch_model.fp16.safetensors
+- Lora: latent-consistency---lcm-lora-sdxl\\pytorch_lora_weights.safetensors
+- Controlnet: stabilityai---control-lora\\control-LoRAs-rank128\\control-lora-canny-rank128.safetensors
 
 ### Memory Requirements
 
@@ -121,8 +117,8 @@ Generated on: 2025-03-10 05:02:58
 
 ### Required Models
 
-- Vae: RunDiffusion---Juggernaut-XL-v9\vae\diffusion_pytorch_model.fp16.safetensors
-- Controlnet: stabilityai---control-lora\control-LoRAs-rank128\control-lora-canny-rank128.safetensors
+- Vae: RunDiffusion---Juggernaut-XL-v9\\vae\\diffusion_pytorch_model.fp16.safetensors
+- Controlnet: stabilityai---control-lora\\control-LoRAs-rank128\\control-lora-canny-rank128.safetensors
 
 ### Memory Requirements
 
@@ -144,7 +140,7 @@ Generated on: 2025-03-10 05:02:58
 
 ### Required Models
 
-- Vae: black-forest-labs---FLUX.1-schnell\ae.safetensors
+- Vae: black-forest-labs---FLUX.1-schnell\\ae.safetensors
 
 ### Memory Requirements
 
@@ -157,7 +153,7 @@ Generated on: 2025-03-10 05:02:58
 
 ### Required Models
 
-- Vae: black-forest-labs---FLUX.1-schnell\ae.safetensors
+- Vae: black-forest-labs---FLUX.1-schnell\\ae.safetensors
 
 ### Memory Requirements
 

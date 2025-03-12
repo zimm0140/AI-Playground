@@ -62,19 +62,23 @@ Throughout these modernization efforts, we've maintained backward compatibility:
 ## Files Added or Modified
 
 1. **Core Files**:
+
    - `uvfast.py` - Main environment management script
    - `uvfast.json` - Configuration file
    - `scripts/uvfast.sh` - Unix/Linux/macOS wrapper
    - `scripts/uvfast.ps1` - Windows wrapper
 
 1. **CI/CD**:
+
    - `.github/workflows/ci.yml` - Updated CI workflow
 
 1. **Requirements**:
+
    - `requirements-dev.txt` - Development dependencies
    - `requirements-hardware-*.txt` - Hardware-specific requirements
 
 1. **Documentation**:
+
    - `UVFAST_IMPLEMENTATION_GUIDE.md` - Implementation guide
    - `UVFAST_CHEATSHEET.md` - Command reference
    - `QUICKSTART.md` - Updated quickstart guide

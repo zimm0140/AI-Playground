@@ -90,10 +90,7 @@ def get_gpu_info() -> list:
                 if "VGA" in line or "3D" in line or "Display" in line:
                     gpu_lines.append(line)
 
-            gpus = [
-                line.split(":")[2].strip() if len(line.split(":")) > 2 else line
-                for line in gpu_lines
-            ]
+            gpus = [line.split(":")[2].strip() if len(line.split(":")) > 2 else line for line in gpu_lines]
         elif system == "Darwin":
             # Use system_profiler on macOS
             output = subprocess.run(

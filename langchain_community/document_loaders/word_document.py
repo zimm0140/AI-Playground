@@ -13,4 +13,4 @@ class Docx2txtLoader:
 
     def load(self):
         # Dummy implementation
-        return "" 
+        return ""

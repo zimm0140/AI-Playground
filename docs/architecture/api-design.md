@@ -19,7 +19,7 @@ The REST API provides HTTP endpoints for interacting with AI-Playground services
 
 ### Base URL
 
-```text
+````text
 https://<server>:<port>/api/v1
 
 ```text
@@ -271,11 +271,11 @@ pip install ai-playground
 ```python
 from ai_playground import AIPlayground
 
-# Initialize with default settings
+## Initialize with default settings
 
 client = AIPlayground()
 
-# Or with custom settings
+## Or with custom settings
 
 client = AIPlayground(
 
@@ -294,19 +294,19 @@ hardware_profile="arc-optimized"
 
 ```python
 
-# List available models
+## List available models
 
 models = client.list_models()
 
-# Load a model
+## Load a model
 
 model = client.load_model("text-generation-large")
 
-# Get model details
+## Get model details
 
 model_info = model.get_info()
 
-# Upload a model
+## Upload a model
 
 client.upload_model(
 
@@ -326,11 +326,11 @@ metadata={"author": "Example User"}
 
 ```python
 
-# Basic inference
+## Basic inference
 
 result = model.generate(prompt="Tell me a story about a dragon")
 
-# With parameters
+## With parameters
 
 result = model.generate(
 
@@ -344,7 +344,7 @@ top_p=0.9
 ```text
 )
 
-# Batch inference
+## Batch inference
 
 results = model.generate_batch(
 
@@ -356,11 +356,11 @@ max_tokens=100
 ```text
 )
 
-# Async inference
+## Async inference
 
 job = model.generate_async(prompt="Write a long essay about AI")
 
-# Check status later
+## Check status later
 
 if job.is_complete():
 
@@ -376,15 +376,15 @@ result = job.get_result()
 
 ```python
 
-# Get hardware information
+## Get hardware information
 
 hardware_info = client.get_hardware_info()
 
-# Set active hardware
+## Set active hardware
 
 client.set_hardware(device_type="arc")
 
-# Create hardware profile
+## Create hardware profile
 
 client.create_hardware_profile(
 
@@ -405,7 +405,7 @@ settings={
 ```text
 )
 
-# Use hardware profile
+## Use hardware profile
 
 model.set_hardware_profile("low-memory")
 
@@ -444,7 +444,7 @@ except HardwareNotSupportedError as e:
 
 print(f"Hardware not supported: {e}")
 
-# Fall back to CPU
+## Fall back to CPU
 
 ```text
 
@@ -464,19 +464,19 @@ The command-line interface provides a way to interact with AI-Playground from th
 
 ```bash
 
-# Get help
+## Get help
 
 ai-playground --help
 
-# List models
+## List models
 
 ai-playground models list
 
-# Run inference
+## Run inference
 
 ai-playground infer --model text-generation --prompt "Hello, world" --output output.txt
 
-# Get hardware info
+## Get hardware info
 
 ai-playground hardware info
 
@@ -486,15 +486,15 @@ ai-playground hardware info
 
 ```bash
 
-# Run with specific hardware
+## Run with specific hardware
 
 ai-playground infer --model image-gen --prompt "A red apple" --hardware arc
 
-# Batch processing
+## Batch processing
 
 ai-playground infer-batch --model classifier --input-file images.txt --output results.json
 
-# Create hardware profile
+## Create hardware profile
 
 ai-playground hardware create-profile --name arc-optimized --precision fp16 --batch-size 4
 
@@ -610,3 +610,4 @@ The API implements several security measures:
 
 ---
 **Previous**: [Architecture Overview](overview.md) | **Next**: [Hardware Integration](hardware-integration.md) | **See also**: [Python API Reference](../reference/python-api.md)
+````

@@ -18,17 +18,20 @@ The implementation combines modern Python packaging practices with hardware dete
 ### Core Components
 
 1. **uvfast.py**: Main CLI tool for environment management
+
    - Setup environments for specific hardware
    - Run commands with appropriate hardware configurations
    - Generate lockfiles for reproducible environments
    - Provide information about detected hardware
 
 1. **hardware_detection.py**: Hardware detection module
+
    - Detect Intel GPUs and processors
    - Identify appropriate dependencies based on hardware
    - Check for hardware-specific features
 
 1. **pyproject.toml**: Modern PEP 621 configuration
+
    - Core dependencies for all environments
    - Optional dependencies for specific hardware types
    - Tool configuration for linting, testing, etc.
@@ -36,15 +39,18 @@ The implementation combines modern Python packaging practices with hardware dete
 ### Additional Components
 
 1. **GitHub Actions Workflow**: CI/CD pipeline for testing
+
    - Matrix testing across multiple Python versions
    - Simulated hardware environments
    - Lockfile validation
 
 1. **Docker Configuration**: Containerized development
+
    - Hardware-specific container targets
    - Optimized for different acceleration types
 
 1. **XPU Integration Example**: Demo of hardware-aware configuration
+
    - Shows how to use hardware detection with PyTorch
    - Configures backends based on available hardware
 
@@ -54,7 +60,7 @@ The implementation combines modern Python packaging practices with hardware dete
 
 1. Clone the repository and navigate to the project directory:
 
-```bash
+````bash
 git clone <repository-url>
 cd <project-directory>
 
@@ -71,11 +77,11 @@ python uvfast.py setup --dev
 
 ```bash
 
-# On Windows
+## On Windows
 
 .venv\Scripts\activate
 
-# On Linux/macOS
+## On Linux/macOS
 
 source .venv/bin/activate
 
@@ -139,11 +145,11 @@ Generate lockfiles for reproducible environments:
 
 ```bash
 
-# Generate lockfile for current hardware
+## Generate lockfile for current hardware
 
 python uvfast.py lock
 
-# Generate lockfiles for all hardware types
+## Generate lockfiles for all hardware types
 
 python uvfast.py lock --all
 
@@ -197,13 +203,13 @@ For containerized development:
 
 ```bash
 
-# Build the container for your hardware
+## Build the container for your hardware
 
 docker build --target acm -t my-project:acm .  # For Intel Arc GPUs
 
 docker build --target openvino -t my-project:openvino .  # For OpenVINO
 
-# Run the container
+## Run the container
 
 docker run -it my-project:acm
 
@@ -225,3 +231,4 @@ You can customize the hardware detection and environment configuration by modify
 - Customize detection patterns
 - Change dependency paths
 - Configure environment settings
+````

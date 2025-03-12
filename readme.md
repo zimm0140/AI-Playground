@@ -22,11 +22,11 @@ pip install -e .
 ```python
 from hardware_detection import detect_hardware_type, get_gpu_info
 
-# Detect hardware type
+## Detect hardware type
 
 hardware_type = detect_hardware_type()
 
-# Get GPU information
+## Get GPU information
 
 gpu_info = get_gpu_info()
 
@@ -35,8 +35,8 @@ gpu_info = get_gpu_info()
 ## Development
 
 1. Clone the repository
-2. Install dependencies: `pip install -e ".[dev]"`
-3. Run tests: `pytest`
+1. Install dependencies: `pip install -e ".[dev]"`
+1. Run tests: `pytest`
 
 ## License
 

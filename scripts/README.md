@@ -13,13 +13,13 @@ Cross-platform wrapper scripts for running commands with `uv`:
 
 #### Usage
 
-```bash
+````bash
 
-# Unix/Linux/macOS
+## Unix/Linux/macOS
 
 ./scripts/run_with_uv.sh [command]
 
-# Windows
+## Windows
 
 .\scripts\run_with_uv.ps1 [command]
 
@@ -45,11 +45,11 @@ Demonstrates using `uv` with inline dependencies to fetch and display GitHub rep
 
 ```bash
 
-# Run directly with uv (automatically installs dependencies)
+## Run directly with uv (automatically installs dependencies)
 
 uv run scripts/example_script.py [organization_name] [num_repos]
 
-# Or run through the wrapper script
+## Or run through the wrapper script
 
 ./scripts/run_with_uv.sh run scripts/example_script.py [organization_name] [num_repos]
 
@@ -63,19 +63,19 @@ Tool to scan Python files and detect type annotations that could be updated for 
 
 ```bash
 
-# Scan the entire project
+## Scan the entire project
 
 python scripts/fix_type_annotations.py .
 
-# Scan a specific file or directory
+## Scan a specific file or directory
 
 python scripts/fix_type_annotations.py path/to/file_or_dir
 
-# Run in dry-run mode (don't make changes)
+## Run in dry-run mode (don't make changes)
 
 python scripts/fix_type_annotations.py --dry-run .
 
-# Show detailed information about changes
+## Show detailed information about changes
 
 python scripts/fix_type_annotations.py --verbose .
 
@@ -89,7 +89,7 @@ One-click setup script for new developers to set up the complete development env
 
 ```bash
 
-# Run the setup script
+## Run the setup script
 
 python scripts/setup_dev_environment.py
 
@@ -121,3 +121,4 @@ When adding new helper scripts to this directory:
 - Make scripts robust to different environments
 - Test scripts on multiple platforms when possible
 - Follow consistent coding style within scripts
+````

@@ -1,7 +1,7 @@
 """
 Stable Diffusion Schedulers Utility Module
 -----------------------------------------
-This module provides utilities for managing different scheduler algorithms used in 
+This module provides utilities for managing different scheduler algorithms used in
 Stable Diffusion image generation.
 
 The module defines:
@@ -9,7 +9,7 @@ The module defines:
 - Functions to set schedulers on diffusion pipelines
 - Support for various scheduler algorithms including DPM++, Euler, LMS, and more
 
-Schedulers control the noise schedule during the diffusion process and significantly 
+Schedulers control the noise schedule during the diffusion process and significantly
 impact the quality and characteristics of generated images.
 """
 
@@ -81,14 +81,14 @@ schedulers = list(scheduler_map.keys())
 def set_scheduler(pipe: diffusers.DiffusionPipeline, name: str):
     """
     Set the scheduler for a diffusion pipeline based on the specified name.
-    
+
     This function either sets a new scheduler from the scheduler_map or reverts
     to the default scheduler if 'None' is specified.
-    
+
     Args:
         pipe: The diffusion pipeline to modify
         name: Name of the scheduler to use (must be in scheduler_map or 'None')
-        
+
     Raises:
         Exception: If an unknown scheduler name is provided
     """
@@ -112,9 +112,7 @@ def set_scheduler(pipe: diffusers.DiffusionPipeline, name: str):
         scheduler_class = getattr(diffusers, scheduler_cfg["class_name"])
     print(f"load scheduler {name}")
     # Initialize the new scheduler with the appropriate config and kwargs
-    pipe.scheduler = scheduler_class.from_config(
-        pipe.scheduler.config, **scheduler_cfg["kwargs"]
-    )
+    pipe.scheduler = scheduler_class.from_config(pipe.scheduler.config, **scheduler_cfg["kwargs"])
 
 
 # Commented out interactive scheduler selection code (preserved from original)

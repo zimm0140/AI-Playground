@@ -60,10 +60,7 @@ def test_api_consistency():
         import tools.hardware.hardware_detection
 
         # Verify version consistency
-        assert (
-            hardware_detection.__version__
-            == tools.hardware.hardware_detection.__version__
-        )
+        assert hardware_detection.__version__ == tools.hardware.hardware_detection.__version__
 
         # Test a few key functions produce the same results
         hw_type1 = hardware_detection.detect_hardware_type()

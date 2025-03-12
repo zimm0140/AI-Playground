@@ -182,7 +182,7 @@ class TestHardwareDetection(unittest.TestCase):
         # Test unsupported platform
         mock_system.return_value = "Unknown"
         result = hardware_detection.get_gpu_info()
-        self.assertEqual(result, [])
+        self.assertEqual(result, []
 
     @patch("platform.system")
     @patch("platform.processor")

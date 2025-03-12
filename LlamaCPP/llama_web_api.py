@@ -18,13 +18,11 @@ on various hardware including CPUs and GPUs.
 import os
 
 # Ensure Llama.cpp libraries are in the PATH
-os.environ["PATH"] = (
-    os.path.abspath("../llama-cpp-env/Library/bin") + os.pathsep + os.environ["PATH"]
-)
+os.environ["PATH"] = os.path.abspath("../llama-cpp-env/Library/bin") + os.pathsep + os.environ["PATH"]
 
 # Import after setting PATH environment variable
 from apiflask import APIFlask  # noqa: E402
-from flask import jsonify, request, Response, stream_with_context  # noqa: E402
+from flask import Response, jsonify, request, stream_with_context  # noqa: E402
 from llama_adapter import LLM_SSE_Adapter  # noqa: E402
 from llama_cpp_backend import LlamaCpp  # noqa: E402
 from llama_params import LLMParams  # noqa: E402
@@ -100,7 +98,7 @@ def stop_llm_generate():
 
 if __name__ == "__main__":
     """Main entry point when script is run directly.
-    
+
     This block:
     1. Parses command-line arguments for configuration
     2. Starts the Flask web server on the specified port

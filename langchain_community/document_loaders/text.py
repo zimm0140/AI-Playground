@@ -4,4 +4,4 @@ class TextLoader:
 
     def load(self):
         # Dummy implementation returning an empty string
-        return "" 
+        return ""

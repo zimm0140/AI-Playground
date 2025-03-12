@@ -21,9 +21,10 @@ Note: All non-English comments and commented-out code are preserved.
 """'''
 
 from typing import Tuple
+
+import cv2
 import numpy as np
 from PIL import Image
-import cv2
 
 
 def get_image_ndarray(image: Image.Image | np.ndarray) -> np.ndarray:
@@ -156,7 +157,7 @@ def make_multiple_of_8(value: int):
 
     Args:
         value: The input integer value.
-    
+
     Returns:
         The largest multiple of 8 that is less than or equal to the input value.
     """
@@ -254,31 +255,31 @@ def slice_image(image: np.ndarray | Image.Image):
 class UnsupportedFormat(Exception):
     """
     Exception raised for unsupported image format conversions.
-    
+
     The error message is provided in non-English language.
     """
+
     def __init__(self, input_type):
         self.t = input_type
 
     def __str__(self):
-        return "不支持'{}'模式的转换，请使用为图片地址(path)、PIL.Image(pil)或OpenCV(cv2)模式".format(
-            self.t
-        )
+        return "不支持'{}'模式的转换，请使用为图片地址(path)、PIL.Image(pil)或OpenCV(cv2)模式".format(self.t)
 
 
 class MatteMatting:
     """
     Class for performing matte matting on images.
-    
+
     This class converts images to OpenCV format, processes them to replace white areas with transparency,
     and exports a final image with the matte applied.
     """
+
     def __init__(self, image: Image.Image, mask_image: Image.Image):
         """
         Initialize with an image and its corresponding mask.
-        
+
         The images are converted into OpenCV format for further processing.
-        
+
         Args:
             image: The input image as a PIL Image.
             mask_image: The mask image as a PIL Image.
@@ -290,13 +291,13 @@ class MatteMatting:
     def __transparent_back(img: Image.Image):
         """
         Replace white pixels in an image with transparency.
-        
+
         Args:
             img: The input image (as a PIL Image) to process.
-        
+
         Returns:
             A PIL Image with white areas replaced with transparent pixels.
-        
+
         Note: The docstring below preserves non-English explanation.
         :param img: 传入图片地址
         :return: 返回替换白色后的透明图
@@ -316,32 +317,30 @@ class MatteMatting:
     def export_image(self, mask_flip=False):
         """
         Export the final image after applying matte matting.
-        
+
         Optionally flips the mask before compositing with the image. The image and mask are
         combined, converted to PIL format, and white pixels are replaced with transparency.
-        
+
         Args:
             mask_flip: If True, the mask is flipped (inverted) before processing.
-        
+
         Returns:
             A PIL Image of the final matte-matted result.
         """
         if mask_flip:
             self.mask_image = cv2.bitwise_not(self.mask_image)  # 黑白翻转
         image = cv2.add(self.image, self.mask_image)
-        image = Image.fromarray(
-            cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        )  # OpenCV转换成PIL.Image格式
+        image = Image.fromarray(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))  # OpenCV转换成PIL.Image格式
         return self.__transparent_back(image)
 
     @staticmethod
     def __image_to_opencv(image: Image.Image):
         """
         Convert a PIL Image to an OpenCV image (BGR format).
-        
+
         Args:
             image: A PIL Image.
-        
+
         Returns:
             An OpenCV image in BGR format as a NumPy array.
         """

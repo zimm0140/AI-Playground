@@ -17,14 +17,12 @@ The service uses OpenVINO's optimized runtime for efficient inference on Intel h
 import os
 
 # Ensure OpenVINO libraries are in the PATH
-os.environ["PATH"] = (
-    os.path.abspath("../openvino-env/Library/bin") + os.pathsep + os.environ["PATH"]
-)
+os.environ["PATH"] = os.path.abspath("../openvino-env/Library/bin") + os.pathsep + os.environ["PATH"]
 # Import after setting PATH environment variable
 from apiflask import APIFlask  # noqa: E402
-from flask import jsonify, request, Response, stream_with_context  # noqa: E402
-from openvino_backend import OpenVino  # noqa: E402
+from flask import Response, jsonify, request, stream_with_context  # noqa: E402
 from openvino_adapter import LLM_SSE_Adapter  # noqa: E402
+from openvino_backend import OpenVino  # noqa: E402
 from openvino_params import LLMParams  # noqa: E402
 
 # Initialize Flask application and OpenVINO backend
@@ -86,7 +84,7 @@ def stop_llm_generate():
 
 if __name__ == "__main__":
     """Run the web service when the script is executed directly.
-    
+
     Parses command line arguments for port configuration and starts the Flask server.
     """
     import argparse

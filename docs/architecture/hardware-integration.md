@@ -16,7 +16,7 @@ AI-Playground's hardware integration architecture is designed to:
 
 The hardware integration consists of several layers:
 
-```text
+````text
 ┌────────────────────────────────────────────────────────────────┐
 │                     Application Layer                          │
 └────────────────────────────────────────────────────────────────┘
@@ -154,7 +154,7 @@ available_devices = []
 
 ```text
 
-# Check for Intel Arc GPUs
+## Check for Intel Arc GPUs
 
 ```text
 
@@ -206,7 +206,7 @@ available_devices.append({
 
 ```text
 
-# Check for NVIDIA GPUs
+## Check for NVIDIA GPUs
 
 ```text
 
@@ -240,7 +240,7 @@ available_devices.append({
 
 ```text
 
-# Check for NPU
+## Check for NPU
 
 ```text
 
@@ -268,7 +268,7 @@ available_devices.append({
 
 ```text
 
-# Always add CPU as fallback
+## Always add CPU as fallback
 
 ```text
 
@@ -290,7 +290,7 @@ available_devices.append({
 
 ```text
 
-# Sort by priority (highest first)
+## Sort by priority (highest first)
 
 ```text
 
@@ -440,7 +440,7 @@ import torch
 
 ```text
 
-# Convert to XPU
+## Convert to XPU
 
 ```text
 
@@ -452,7 +452,7 @@ model = model.to("xpu")
 
 ```text
 
-# Apply IPEX optimizations
+## Apply IPEX optimizations
 
 ```text
 
@@ -464,7 +464,7 @@ model = ipex.optimize(model, dtype=torch.float16)
 
 ```text
 
-# Trace the model if possible
+## Trace the model if possible
 
 ```text
 
@@ -511,7 +511,7 @@ from neural_compressor.experimental import Quantization, common
 
 ```text
 
-# Initialize quantization
+## Initialize quantization
 
 ```text
 
@@ -524,7 +524,7 @@ quantizer.model = model
 
 ```text
 
-# Define calibration dataloader
+## Define calibration dataloader
 
 ```text
 
@@ -537,7 +537,7 @@ quantizer.calib_dataloader = calibration_data
 
 ```text
 
-# Quantize the model
+## Quantize the model
 
 ```text
 
@@ -569,7 +569,7 @@ import torch
 
 ```text
 
-# Move to CUDA
+## Move to CUDA
 
 ```text
 
@@ -581,7 +581,7 @@ model = model.to("cuda")
 
 ```text
 
-# Enable CUDA optimization
+## Enable CUDA optimization
 
 ```text
 
@@ -599,7 +599,7 @@ model = model.half()  # Use FP16 if available
 
 ```text
 
-# Trace and compile the model if possible
+## Trace and compile the model if possible
 
 ```text
 
@@ -651,7 +651,7 @@ import intel_extension_for_pytorch as ipex
 
 ```text
 
-# Get available memory
+## Get available memory
 
 ```text
 
@@ -666,7 +666,7 @@ free_mem = total_mem - reserved_mem
 
 ```text
 
-# Calculate optimal batch size based on available memory
+## Calculate optimal batch size based on available memory
 
 ```text
 
@@ -684,7 +684,7 @@ optimal_batch_size = min(batch_size, max(1, free_mem // estimated_batch_memory))
 
 ```text
 
-# Set up memory pool
+## Set up memory pool
 
 ```text
 
@@ -716,7 +716,7 @@ import torch
 
 ```text
 
-# Get available memory
+## Get available memory
 
 ```text
 
@@ -731,7 +731,7 @@ free_mem = total_mem - reserved_mem
 
 ```text
 
-# Calculate optimal batch size based on available memory
+## Calculate optimal batch size based on available memory
 
 ```text
 
@@ -749,7 +749,7 @@ optimal_batch_size = min(batch_size, max(1, free_mem // estimated_batch_memory))
 
 ```text
 
-# Set up memory pool
+## Set up memory pool
 
 ```text
 
@@ -1008,7 +1008,7 @@ def setup(self):
 
 """Set up the XPU environment."""
 
-# Set environment variables
+## Set environment variables
 
 ```text
 
@@ -1029,7 +1029,7 @@ os.environ["SYCL_PI_LEVEL_ZERO_USE_IMMEDIATE_COMMANDLISTS"] = "1"
 
 ```text
 
-# Import required libraries
+## Import required libraries
 
 ```text
 
@@ -1114,7 +1114,7 @@ return model
 
 ```text
 
-# Move model to XPU
+## Move model to XPU
 
 ```text
 
@@ -1134,7 +1134,7 @@ model = model.to("xpu")
 
 ```text
 
-# Apply IPEX optimizations
+## Apply IPEX optimizations
 
 ```text
 
@@ -1185,7 +1185,7 @@ if isinstance(inputs, dict):
 
 ```text
 
-# Convert input dict values to XPU
+## Convert input dict values to XPU
 
 ```text
 
@@ -1223,7 +1223,7 @@ else:
 
 ```text
 
-# Convert inputs to XPU
+## Convert inputs to XPU
 
 ```text
 
@@ -1262,7 +1262,7 @@ outputs = model(inputs)
 
 ```text
 
-# Convert outputs back to CPU if needed
+## Convert outputs back to CPU if needed
 
 ```text
 
@@ -1403,9 +1403,9 @@ To add support for a new hardware platform:
 
 ```python
 
-# Example: Adding support for a new hardware type
+## Example: Adding support for a new hardware type
 
-# 1. Create backend class
+## 1. Create backend class
 
 class NewHardwareBackend(HardwareBackend):
 
@@ -1430,7 +1430,7 @@ self.device_type = "new_hardware"
 
 ```text
 
-# Implement required methods
+## Implement required methods
 
 ```text
 
@@ -1442,7 +1442,7 @@ def setup(self):
 
 """Set up environment for new hardware."""
 
-# Setup code
+## Setup code
 
 ```text
 
@@ -1466,7 +1466,7 @@ def is_available(self):
 
 """Check if new hardware is available."""
 
-# Detection code
+## Detection code
 
 ```text
 
@@ -1484,11 +1484,11 @@ return has_new_hardware()
 
 ```text
 
-# ... implement other methods
+## ... implement other methods
 
 ```text
 
-# 2. Add detection logic
+## 2. Add detection logic
 
 def detect_new_hardware():
 
@@ -1496,7 +1496,7 @@ def detect_new_hardware():
 
 """Detect if new hardware is available."""
 
-# Detection code
+## Detection code
 
 ```text
 
@@ -1506,7 +1506,7 @@ return True if new_hardware_found() else False
 
 ```text
 
-# 3. Register backend
+## 3. Register backend
 
 def register_new_hardware():
 
@@ -1559,7 +1559,7 @@ Performance metrics
 ```text
 """
 
-# Warm-up run
+## Warm-up run
 
 ```text
 
@@ -1571,7 +1571,7 @@ backend.run_inference(model, inputs)
 
 ```text
 
-# Measure inference time
+## Measure inference time
 
 ```text
 
@@ -1591,7 +1591,7 @@ end_time = time.time()
 
 ```text
 
-# Get memory usage
+## Get memory usage
 
 ```text
 
@@ -1603,7 +1603,7 @@ memory_info = backend.get_memory_info()
 
 ```text
 
-# Calculate metrics
+## Calculate metrics
 
 ```text
 
@@ -1644,3 +1644,4 @@ return {
 
 ---
 **Previous**: [API Design](api-design.md) | **Next**: [Data Flow](data-flow.md) | **See also**: [Architecture Overview](overview.md)
+````

@@ -119,6 +119,6 @@ If you want to contribute to AI-Playground, check out:
 1. [Code Quality Standards](development/code-quality.md)
 1. [Testing Guide](development/testing.md)
 
----
+______________________________________________________________________
 
 **See also**: [Index](index.md) | [GitHub Repository](https://github.com/example/ai-playground)

@@ -14,11 +14,11 @@ import sys
 def patch_import(file_path):
     """
     Patch the torchvision import statements in the specified file.
-    
+
     This function replaces imports from 'torchvision.transforms.functional_tensor'
     with equivalent imports from 'torchvision.transforms.functional' to maintain
     compatibility with newer versions of torchvision.
-    
+
     Args:
         file_path: Path to the Python file that needs to be patched
     """
@@ -30,10 +30,7 @@ def patch_import(file_path):
     with open(file_path, "w") as file:
         for line in lines:
             # Replace the old import line with the new one
-            if (
-                "from torchvision.transforms.functional_tensor import rgb_to_grayscale"
-                in line
-            ):
+            if "from torchvision.transforms.functional_tensor import rgb_to_grayscale" in line:
                 line = line.replace(
                     "from torchvision.transforms.functional_tensor import rgb_to_grayscale",
                     "from torchvision.transforms.functional import rgb_to_grayscale",

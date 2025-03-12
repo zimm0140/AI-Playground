@@ -24,9 +24,7 @@ from llama_params import LLMParams
 # Setup logging
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
-RAG_PROMPT_FORMAT = (
-    "Answer the questions based on the information below. \n{context}\n\n" "Question: {prompt}"
-)
+RAG_PROMPT_FORMAT = "Answer the questions based on the information below. \n{context}\n\nQuestion: {prompt}"
 
 
 class LlmSseAdapter:
@@ -150,10 +148,7 @@ class LlmSseAdapter:
         Args:
             ex: The exception that occurred
         """
-        if (
-            isinstance(ex, NotImplementedError)
-            and ex.__str__() == "Access to repositories lists is not implemented."
-        ):
+        if isinstance(ex, NotImplementedError) and ex.__str__() == "Access to repositories lists is not implemented.":
             self.put_msg(
                 {
                     "type": "error",

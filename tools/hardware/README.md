@@ -50,18 +50,19 @@ For more information on hardware support, refer to:
 - [Hardware Compatibility Guide](docs/hardware/compatibility.md)
 - [Hardware Optimization Guide](docs/hardware/optimization.md)
 
-# Hardware Detection Module
+## Hardware Detection Module
 
-This module provides functionality to detect and identify hardware, particularly Intel GPUs and specialized processors that require specific Python packages for optimal performance.
+This module provides functionality to detect and identify hardware, particularly Intel GPUs and specialized processors that require specific Python packages for optimal
+performance.
 
 ## Overview
 
 The hardware detection module is designed to:
 
 1. Detect available hardware (GPUs, CPUs)
-2. Identify specific hardware types (Intel Arc GPUs, OpenVINO-compatible devices, etc.)
-3. Provide information about hardware capabilities
-4. Support CI/CD testing with simulated hardware environments
+1. Identify specific hardware types (Intel Arc GPUs, OpenVINO-compatible devices, etc.)
+1. Provide information about hardware capabilities
+1. Support CI/CD testing with simulated hardware environments
 
 ## Usage
 
@@ -70,12 +71,12 @@ The hardware detection module is designed to:
 ```python
 from tools.hardware.hardware_detection import detect_hardware_type, get_hardware_info
 
-# Get the detected hardware type
+## Get the detected hardware type
 
 hw_type = detect_hardware_type()
 print(f"Detected hardware type: {hw_type}")
 
-# Get detailed hardware information
+## Get detailed hardware information
 
 info = get_hardware_info()
 print(f"System: {info['system']}")

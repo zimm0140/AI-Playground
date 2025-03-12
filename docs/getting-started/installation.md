@@ -29,14 +29,14 @@ This guide provides detailed instructions for installing and configuring AI-Play
 
 The `setup_hardware_env.py` script automatically detects your hardware and sets up the appropriate environment:
 
-```bash
+````bash
 
-# Clone the repository
+## Clone the repository
 
 git clone <https://github.com/intel/AI-Playground.git>
 cd AI-Playground
 
-# Run the automatic setup
+## Run the automatic setup
 
 python setup_hardware_env.py
 
@@ -46,17 +46,17 @@ python setup_hardware_env.py
 
 ```bash
 
-# Include development dependencies
+## Include development dependencies
 
 python setup_hardware_env.py --dev
 
-# Force a specific hardware configuration
+## Force a specific hardware configuration
 
 python setup_hardware_env.py --hardware acm  # For Intel Arc GPUs
 
 python setup_hardware_env.py --hardware mtl  # For Intel Meteor Lake CPUs
 
-# Clean existing environment before setup
+## Clean existing environment before setup
 
 python setup_hardware_env.py --clean
 
@@ -69,16 +69,16 @@ If you prefer to set up the environment manually:
 1. Create a virtual environment:
 
    ```bash
-   # Using venv
+   ## Using venv
 
    python -m venv .venv
 
-   # Activate the environment
+   ## Activate the environment
 
-   # On Windows
+   ## On Windows
 
    .venv\Scripts\activate
-   # On Linux/macOS
+   ## On Linux/macOS
 
    source .venv/bin/activate
    ```text
@@ -86,15 +86,15 @@ If you prefer to set up the environment manually:
 1. Install dependencies based on your hardware:
 
    ```bash
-   # For basic CPU setup
+   ## For basic CPU setup
 
    pip install -r requirements.txt
 
-   # For Intel Arc GPUs
+   ## For Intel Arc GPUs
 
    pip install -r requirements-hardware-acm.txt
 
-   # For development
+   ## For development
 
    pip install -r requirements-dev.txt
    ```text
@@ -105,11 +105,11 @@ For containerized deployment:
 
 ```bash
 
-# Build the Docker image
+## Build the Docker image
 
 docker build -t ai-playground .
 
-# Run the container
+## Run the container
 
 docker run -p 8000:8000 ai-playground
 
@@ -143,17 +143,17 @@ To verify that your installation is working correctly:
 
 ```bash
 
-# Activate the virtual environment if not already activated
+## Activate the virtual environment if not already activated
 
-# Windows
+## Windows
 
 .venv\Scripts\activate
 
-# Linux/macOS
+## Linux/macOS
 
 source .venv/bin/activate
 
-# Run the verification script
+## Run the verification script
 
 python test_venv.py
 
@@ -163,3 +163,4 @@ This will check that all required dependencies are installed and that your hardw
 
 ---
 **Previous**: [Quick Start Guide](quickstart.md) | **Next**: [Migration Guide](migration.md) | **See also**: [Hardware Compatibility](../hardware/compatibility.md)
+````

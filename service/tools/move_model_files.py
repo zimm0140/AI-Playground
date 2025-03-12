@@ -25,7 +25,6 @@ Where:
 import os
 import sys
 
-
 # Validate command line arguments
 if len(sys.argv) != 3:
     print("Usage: python move_model_files.py <src_dir> <target_dir>")
@@ -51,7 +50,7 @@ if os.path.exists(log_file):
 def log(msg):
     """
     Log a message both to stdout and the log file.
-    
+
     Args:
         msg: The message to log
     """
@@ -63,17 +62,17 @@ def log(msg):
 def move_model_files(src_dir, target_dir):
     """
     Move all model files from source directory to target directory.
-    
+
     For each file in the source directory tree, this function:
     1. Calculates the corresponding target path
     2. Removes any existing file at the target path
     3. Creates target subdirectories if they don't exist
     4. Moves the file from source to target, preserving the directory structure
-    
+
     Args:
         src_dir: Source directory containing model files
         target_dir: Target directory where model files should be placed
-        
+
     Raises:
         SystemExit: If any error occurs during the move operation
     """

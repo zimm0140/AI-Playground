@@ -1,7 +1,7 @@
 """
 Outpainting Utilities Module
 ---------------------------
-This module provides utility functions for image outpainting, which extends 
+This module provides utility functions for image outpainting, which extends
 images beyond their original boundaries by generating new content.
 
 The utilities handle:
@@ -11,26 +11,27 @@ The utilities handle:
 - Cropping and slicing images based on direction parameters
 """
 
+from typing import Any
+
+import cv2
 import numpy as np
 from PIL import Image
-import cv2
-from typing import Any
 
 
 def preprocess_outpaint(direction: str, image: Image.Image):
     """
     Prepare an image for outpainting by extending it in the specified direction.
-    
+
     Creates a padded version of the input image with an extended region in the
     specified direction, and generates a corresponding mask where the extended
     area is marked for inpainting (white).
-    
+
     Args:
         direction: Direction to extend the image ("top", "right", "bottom", or "left")
         image: Original PIL image to extend
-        
+
     Returns:
-        tuple: (Padded image as PIL Image, mask image as PIL Image) 
+        tuple: (Padded image as PIL Image, mask image as PIL Image)
     """
     top_pad = 0
     right_pad = 0
@@ -77,9 +78,7 @@ def preprocess_outpaint(direction: str, image: Image.Image):
 
     image_ndarray = Image.fromarray(image_ndarray)
 
-    inpaint_mask = outpaint_canny_gradient(
-        inpaint_mask, top_pad, bottom_pad, left_pad, right_pad
-    )
+    inpaint_mask = outpaint_canny_gradient(inpaint_mask, top_pad, bottom_pad, left_pad, right_pad)
     # if not os.path.exists("./static/test"):
     #     os.makedirs("./static/test", exist_ok=True)
     # inpaint_image.save("./static/test/outpaint_input.png")
@@ -91,15 +90,15 @@ def preprocess_outpaint(direction: str, image: Image.Image):
 def gradient_dir(region: np.ndarray[Any, Any], dir):
     """
     Create a gradient in a specific direction within an image region.
-    
+
     Modifies the input region in-place to contain a linear gradient that
     transitions from black to white or white to black in the specified direction.
     Used to create smooth transitions between original and generated content.
-    
+
     Args:
         region: NumPy array representing the image region to modify
         dir: Direction of the gradient ("left", "right", "top", or "bottom")
-        
+
     Returns:
         The modified region with the gradient applied
     """
@@ -128,18 +127,18 @@ def outpaint_canny_gradient(
 ):
     """
     Apply gradient transitions to the edges of a mask image.
-    
+
     Creates smooth gradient transitions at the boundaries between
     the original image area and the areas to be outpainted, which
     helps create seamless blends in the final output.
-    
+
     Args:
         image: Mask image (PIL Image or NumPy array)
         top_pad: Amount of padding at the top
         bottom_pad: Amount of padding at the bottom
         left_pad: Amount of padding on the left
         right_pad: Amount of padding on the right
-        
+
     Returns:
         PIL Image containing the modified mask with gradients
     """
@@ -154,17 +153,13 @@ def outpaint_canny_gradient(
         img_ndata[top_pad - dist : top_pad + dist, :] = gradient_dir(region, "top")
     if bottom_pad > 0:
         region = img_ndata[h - bottom_pad - dist : h - bottom_pad + dist, :]
-        img_ndata[h - bottom_pad - dist : h - bottom_pad + dist, :] = gradient_dir(
-            region, "bottom"
-        )
+        img_ndata[h - bottom_pad - dist : h - bottom_pad + dist, :] = gradient_dir(region, "bottom")
     if left_pad > 0:
         region = img_ndata[:, left_pad - dist : left_pad + dist]
         img_ndata[:, left_pad - dist : left_pad + dist] = gradient_dir(region, "left")
     if right_pad > 0:
         region = img_ndata[:, w - right_pad - dist : w - right_pad + dist]
-        img_ndata[:, w - right_pad - dist : w - right_pad + dist] = gradient_dir(
-            region, "right"
-        )
+        img_ndata[:, w - right_pad - dist : w - right_pad + dist] = gradient_dir(region, "right")
     # top, bottom, left, right = inpaint_utils.detect_mask_valid_edge(img_ndata)
     # img_ndata = cv2.GaussianBlur(img_ndata[top:bottom, left:right], (5, 5), 0)
     return Image.fromarray(img_ndata)
@@ -179,18 +174,18 @@ def outpaint_canny_blur(
 ):
     """
     Apply Gaussian blur to the edges of a mask image.
-    
+
     Blurs the transition boundaries between the original image and
     the outpainted areas to create smoother blends. This is an alternative
     to gradient transitions.
-    
+
     Args:
         image: Mask image (PIL Image or NumPy array)
         top_pad: Amount of padding at the top
         bottom_pad: Amount of padding at the bottom
         left_pad: Amount of padding on the left
         right_pad: Amount of padding on the right
-        
+
     Returns:
         PIL Image containing the modified mask with blurred edges
     """
@@ -204,29 +199,21 @@ def outpaint_canny_blur(
         img_ndata[top_pad - 10 : top_pad + 10, :] = cv2.GaussianBlur(region, (5, 5), 0)
     if bottom_pad > 0:
         region = img_ndata[h - bottom_pad - 10 : h - bottom_pad + 10, :]
-        img_ndata[h - bottom_pad - 10 : h - bottom_pad + 10, :] = cv2.GaussianBlur(
-            region, (5, 5), 0
-        )
+        img_ndata[h - bottom_pad - 10 : h - bottom_pad + 10, :] = cv2.GaussianBlur(region, (5, 5), 0)
     if left_pad > 0:
         region = img_ndata[:, left_pad - 10 : left_pad + 10]
-        img_ndata[:, left_pad - 10 : left_pad + 10] = cv2.GaussianBlur(
-            region, (5, 5), 0
-        )
+        img_ndata[:, left_pad - 10 : left_pad + 10] = cv2.GaussianBlur(region, (5, 5), 0)
     if right_pad > 0:
         region = img_ndata[:, w - right_pad - 10 : w - right_pad + 10]
-        img_ndata[:, w - right_pad - 10 : w - right_pad + 10] = cv2.GaussianBlur(
-            region, (5, 5), 0
-        )
+        img_ndata[:, w - right_pad - 10 : w - right_pad + 10] = cv2.GaussianBlur(region, (5, 5), 0)
 
     return Image.fromarray(img_ndata)
 
 
-def slice_by_direction(
-    inpaint_image: Image.Image, mask_image: Image.Image, direction: int, max_size: int
-):
+def slice_by_direction(inpaint_image: Image.Image, mask_image: Image.Image, direction: int, max_size: int):
     """
     Crop input and mask images based on a direction bit flag.
-    
+
     Used to focus processing on specific portions of large images by
     cropping them based on direction flags. The direction is specified
     using bit flags where:
@@ -234,13 +221,13 @@ def slice_by_direction(
     - 2: Right
     - 4: Bottom
     - 8: Left
-    
+
     Args:
         inpaint_image: Input image to crop
         mask_image: Mask image to crop
         direction: Bit flag indicating direction(s)
         max_size: Maximum size constraint for the crop
-        
+
     Returns:
         tuple: (Cropped input image, cropped mask image, crop box coordinates)
     """

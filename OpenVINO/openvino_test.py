@@ -1,7 +1,7 @@
 """
 OpenVINO LLM Chat API Test Client
 ---------------------------------
-This script demonstrates how to interact with the OpenVINO Web API service 
+This script demonstrates how to interact with the OpenVINO Web API service
 for language model chat functionality. It shows how to:
 
 1. Create a properly formatted request to the LLM chat endpoint
@@ -12,8 +12,10 @@ The example initializes a conversation with the LLM, setting a persona
 and then asking a question to test the response.
 """
 
+import socket
+
+import pytest
 import requests
-import pytest, socket
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.settimeout(1)

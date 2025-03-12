@@ -4,4 +4,4 @@ class PyPDFLoader:
 
     def load(self):
         # Dummy implementation that returns empty string
-        return "" 
+        return ""

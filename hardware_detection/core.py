@@ -13,7 +13,7 @@ import re
 import subprocess
 import sys
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -124,9 +124,7 @@ def get_gpu_info() -> List[str]:
 
     if system == "Windows":
         # Windows: Use WMIC to get GPU information
-        output = safe_run_command(
-            ["wmic", "path", "win32_VideoController", "get", "Name"]
-        )
+        output = safe_run_command(["wmic", "path", "win32_VideoController", "get", "Name"])
         gpus = [line.strip() for line in output.split("\n")[1:] if line.strip()]
 
     elif system == "Linux":
@@ -138,10 +136,7 @@ def get_gpu_info() -> List[str]:
             if any(term in line for term in ["VGA", "3D", "Display"]):
                 gpu_lines.append(line)
 
-        gpus = [
-            line.split(":", 2)[2].strip() if len(line.split(":", 2)) > 2 else line
-            for line in gpu_lines
-        ]
+        gpus = [line.split(":", 2)[2].strip() if len(line.split(":", 2)) > 2 else line for line in gpu_lines]
 
     elif system == "Darwin":
         # macOS: Use system_profiler
@@ -219,11 +214,7 @@ def get_cpu_info() -> Dict[str, Any]:
                         value = value.strip()
                         if key in info:
                             info[key] = value
-                        if (
-                            key == "cores"
-                            and isinstance(info["cores"], str)
-                            and info["cores"].isdigit()
-                        ):
+                        if key == "cores" and isinstance(info["cores"], str) and info["cores"].isdigit():
                             info["cores"] = int(info["cores"])
 
             debug_print(f"Using mock CPU info: {info}")
@@ -305,19 +296,55 @@ def detect_hardware_type() -> str:
         >>> detect_hardware_type()
         'bmg'  # For NVIDIA GPUs
     """
-    # Allow direct override through environment variable for CI/testing
+    # Check for simulated hardware type first
+    simulated_hw = _get_simulated_hardware()
+    if simulated_hw:
+        return simulated_hw
+
+    # Get hardware information
+    config = load_config()
+    detection_config = config.get("detection", {})
+    gpus = get_gpu_info()
+    cpu_info = get_cpu_info()
+
+    # Check hardware types based on gathered information
+    detected_hw = _detect_specific_hardware(detection_config, gpus, cpu_info)
+    if detected_hw:
+        return detected_hw
+
+    # Default to base if no specific hardware is detected
+    default_hw = config.get("default_hardware", "base")
+    debug_print(f"No specific hardware detected, using default: {default_hw}")
+    return default_hw
+
+
+def _get_simulated_hardware() -> Optional[str]:
+    """Check if simulated hardware is specified in environment variables.
+
+    Returns:
+        Optional[str]: The simulated hardware type or None
+    """
     if "SIMULATED_HARDWARE" in os.environ:
         sim_hw = os.environ.get("SIMULATED_HARDWARE", "").lower()
         if sim_hw in HARDWARE_TYPES:
             debug_print(f"Using simulated hardware type: {sim_hw}")
             return sim_hw
+    return None
 
-    config = load_config()
-    detection_config = config.get("detection", {})
 
-    gpus = get_gpu_info()
-    cpu_info = get_cpu_info()
+def _detect_specific_hardware(
+    detection_config: Dict[str, Any], gpus: List[str], cpu_info: Dict[str, Any]
+) -> Optional[str]:
+    """Check for specific hardware types based on detection configuration.
 
+    Args:
+        detection_config: The detection configuration dictionary
+        gpus: List of detected GPUs
+        cpu_info: Dictionary of CPU information
+
+    Returns:
+        Optional[str]: Detected hardware type or None if not detected
+    """
     # Check for specific hardware types in order of priority
     for hw_type in HARDWARE_TYPES:
         if hw_type == "base":
@@ -326,36 +353,78 @@ def detect_hardware_type() -> str:
         hw_config = detection_config.get(hw_type, {})
 
         # Check GPU name pattern
-        gpu_pattern = hw_config.get("gpu_name_pattern")
-        if gpu_pattern and gpus:
-            for gpu in gpus:
-                if re.search(gpu_pattern, gpu, re.IGNORECASE):
-                    debug_print(f"Detected hardware type from GPU: {hw_type}")
-                    return hw_type
+        if _check_gpu_match(hw_type, hw_config, gpus):
+            return hw_type
 
         # Check CPU name pattern
-        cpu_pattern = hw_config.get("cpu_name_pattern")
-        if cpu_pattern and "name" in cpu_info:
-            if re.search(cpu_pattern, cpu_info["name"], re.IGNORECASE):
-                debug_print(f"Detected hardware type from CPU: {hw_type}")
-                return hw_type
+        if _check_cpu_match(hw_type, hw_config, cpu_info):
+            return hw_type
 
         # Check for packages
-        package_check = hw_config.get("package_check")
-        if package_check:
-            try:
-                __import__(package_check)
-                debug_print(
-                    f"Detected hardware type from package {package_check}: {hw_type}"
-                )
-                return hw_type
-            except ImportError:
-                pass
+        if _check_package_available(hw_type, hw_config):
+            return hw_type
 
-    # Default to base if no specific hardware is detected
-    default_hw = config.get("default_hardware", "base")
-    debug_print(f"No specific hardware detected, using default: {default_hw}")
-    return default_hw
+    return None
+
+
+def _check_gpu_match(hw_type: str, hw_config: Dict[str, Any], gpus: List[str]) -> bool:
+    """Check if any GPU matches the pattern for this hardware type.
+
+    Args:
+        hw_type: The hardware type being checked
+        hw_config: Configuration for this hardware type
+        gpus: List of detected GPUs
+
+    Returns:
+        bool: True if a match is found, False otherwise
+    """
+    gpu_pattern = hw_config.get("gpu_name_pattern")
+    if gpu_pattern and gpus:
+        for gpu in gpus:
+            if re.search(gpu_pattern, gpu, re.IGNORECASE):
+                debug_print(f"Detected hardware type from GPU: {hw_type}")
+                return True
+    return False
+
+
+def _check_cpu_match(hw_type: str, hw_config: Dict[str, Any], cpu_info: Dict[str, Any]) -> bool:
+    """Check if CPU matches the pattern for this hardware type.
+
+    Args:
+        hw_type: The hardware type being checked
+        hw_config: Configuration for this hardware type
+        cpu_info: Dictionary of CPU information
+
+    Returns:
+        bool: True if a match is found, False otherwise
+    """
+    cpu_pattern = hw_config.get("cpu_name_pattern")
+    if cpu_pattern and "name" in cpu_info:
+        if re.search(cpu_pattern, cpu_info["name"], re.IGNORECASE):
+            debug_print(f"Detected hardware type from CPU: {hw_type}")
+            return True
+    return False
+
+
+def _check_package_available(hw_type: str, hw_config: Dict[str, Any]) -> bool:
+    """Check if a specific package is available for this hardware type.
+
+    Args:
+        hw_type: The hardware type being checked
+        hw_config: Configuration for this hardware type
+
+    Returns:
+        bool: True if the package is available, False otherwise
+    """
+    package_check = hw_config.get("package_check")
+    if package_check:
+        try:
+            __import__(package_check)
+            debug_print(f"Detected hardware type from package {package_check}: {hw_type}")
+            return True
+        except ImportError:
+            pass
+    return False
 
 
 def is_openvino_available() -> bool:

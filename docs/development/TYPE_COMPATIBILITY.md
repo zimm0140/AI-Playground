@@ -10,7 +10,7 @@ Python 3.10 introduced the pipe (`|`) operator as a more concise way to define u
 
 #### Before (Python 3.9 and earlier)
 
-```python
+````python
 from typing import Union
 
 def process_data(data: Union[dict, list]) -> Union[str, None]:
@@ -134,7 +134,7 @@ For backward compatibility:
 ```python
 from typing import Dict, List, Union
 
-# For Python 3.9 and earlier
+## For Python 3.9 and earlier
 
 JSONValue = Union[str, int, float, bool, None, Dict[str, 'JSONValue'], List['JSONValue']]
 
@@ -195,19 +195,19 @@ We've provided a tool to help identify type annotation issues:
 
 ```bash
 
-# Scan the entire project
+## Scan the entire project
 
 python scripts/fix_type_annotations.py .
 
-# Scan a specific file
+## Scan a specific file
 
 python scripts/fix_type_annotations.py path/to/file.py
 
-# Run in dry-run mode (don't make changes)
+## Run in dry-run mode (don't make changes)
 
 python scripts/fix_type_annotations.py --dry-run .
 
-# Show detailed information about changes
+## Show detailed information about changes
 
 python scripts/fix_type_annotations.py --verbose .
 
@@ -221,7 +221,7 @@ When dealing with potentially `None` values, always add explicit checks:
 
 ```python
 
-# Problematic
+## Problematic
 
 def process_path(path: Optional[str]) -> str:
 
@@ -231,7 +231,7 @@ return os.path.join(path, "subdir")  # TypeError if path is None
 
 ```text
 
-# Fixed
+## Fixed
 
 def process_path(path: Optional[str]) -> str:
 
@@ -256,7 +256,7 @@ When checking collection types:
 
 ```python
 
-# Problematic
+## Problematic
 
 def process_data(data: Union[dict, list]) -> None:
 
@@ -266,7 +266,7 @@ if isinstance(data, dict):
 
 ```text
 
-# dict processing
+## dict processing
 
 ```text
 
@@ -278,7 +278,7 @@ elif isinstance(data, list):
 
 ```text
 
-# list processing
+## list processing
 
 ```text
 
@@ -296,7 +296,7 @@ raise ValueError(f"Expected dict or list, got {type(data)}")
 
 ```text
 
-# Better
+## Better
 
 def process_data(data: Union[dict, list]) -> None:
 
@@ -306,7 +306,7 @@ if isinstance(data, dict):
 
 ```text
 
-# dict processing
+## dict processing
 
 ```text
 
@@ -318,7 +318,7 @@ elif isinstance(data, list):
 
 ```text
 
-# list processing
+## list processing
 
 ```text
 
@@ -343,3 +343,4 @@ raise ValueError(f"Expected one of {acceptable_types}, got {type(data)}")
 
 Modern IDEs like VS Code with Pylance, PyCharm, or tools like mypy can help identify type annotation issues. Ensure your IDE is configured to check types with Python 3.10+
 compatibility.
+````

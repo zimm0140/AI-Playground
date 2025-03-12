@@ -22,12 +22,12 @@ pip install -e .
 ```python
 from hardware_detection import detect_hardware_type, get_hardware_info
 
-# Get detected hardware type
+## Get detected hardware type
 
 hardware_type = detect_hardware_type()
 print(f"Detected hardware: {hardware_type}")
 
-# Get detailed hardware information
+## Get detailed hardware information
 
 hardware_info = get_hardware_info()
 print(f"GPUs: {hardware_info['gpus']}")

@@ -19,9 +19,9 @@ Intel Arc GPUs (Alchemist and newer) offer excellent performance with these opti
 
 ### Environment Setup
 
-```bash
+````bash
 
-# Set up environment with Arc optimizations
+## Set up environment with Arc optimizations
 
 python setup_hardware_env.py --hardware acm
 
@@ -32,7 +32,7 @@ python setup_hardware_env.py --hardware acm
 1. **Enable Intel XPU backend**:
 
    ```python
-   # In your Python code
+   ## In your Python code
 
    import intel_extension_for_pytorch as ipex
    model = model.to("xpu")
@@ -42,7 +42,7 @@ python setup_hardware_env.py --hardware acm
 
    ```python
    import os
-   # For Arc A770
+   ## For Arc A770
 
    os.environ["ZE_AFFINITY_MASK"] = "0.0"
    ```text
@@ -50,7 +50,7 @@ python setup_hardware_env.py --hardware acm
 1. **Optimize memory usage**:
 
    ```python
-   # Clear cache between processing
+   ## Clear cache between processing
 
    import torch
    torch.xpu.empty_cache()
@@ -59,14 +59,14 @@ python setup_hardware_env.py --hardware acm
 1. **Enable mixed precision**:
 
    ```python
-   # Use BF16 for Arc GPUs
+   ## Use BF16 for Arc GPUs
 
    import torch
    with torch.xpu.amp.autocast(dtype=torch.bfloat16):
 
 ```text
 
-   # Your model inference code
+   ## Your model inference code
 
 ```text
 
@@ -95,7 +95,7 @@ Intel Meteor Lake CPUs with integrated GPUs benefit from these optimizations:
 
 ```bash
 
-# Set up environment with Meteor Lake optimizations
+## Set up environment with Meteor Lake optimizations
 
 python setup_hardware_env.py --hardware mtl
 
@@ -105,7 +105,7 @@ python setup_hardware_env.py --hardware mtl
 
 ```python
 
-# Use NPU for compatible operations
+## Use NPU for compatible operations
 
 os.environ["PYTORCH_MTL_NPU_MODE"] = "1"
 
@@ -115,7 +115,7 @@ os.environ["PYTORCH_MTL_NPU_MODE"] = "1"
 
 ```bash
 
-# Set high performance power plan on Windows
+## Set high performance power plan on Windows
 
 powercfg /setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
 
@@ -129,11 +129,11 @@ For NVIDIA GPUs, consider these optimizations:
 
 ```python
 
-# Set memory allocation strategy
+## Set memory allocation strategy
 
 torch.cuda.set_per_process_memory_fraction(0.8)  # Use 80% of available VRAM
 
-# Enable TF32 for better performance (RTX 30/40 series)
+## Enable TF32 for better performance (RTX 30/40 series)
 
 torch.backends.cuda.matmul.allow_tf32 = True
 torch.backends.cudnn.allow_tf32 = True
@@ -144,7 +144,7 @@ torch.backends.cudnn.allow_tf32 = True
 
 ```python
 
-# Use DataParallel for multiple GPUs
+## Use DataParallel for multiple GPUs
 
 model = torch.nn.DataParallel(model)
 
@@ -156,12 +156,12 @@ For systems without GPUs:
 
 ```python
 
-# Set thread count to optimize for your CPU
+## Set thread count to optimize for your CPU
 
 import torch
 torch.set_num_threads(8)  # Adjust based on your CPU cores
 
-# Enable MKL optimizations
+## Enable MKL optimizations
 
 import os
 os.environ["MKL_NUM_THREADS"] = "8"
@@ -174,11 +174,11 @@ os.environ["MKL_NUM_THREADS"] = "8"
 
 ```python
 
-# Use gradient checkpointing
+## Use gradient checkpointing
 
 model.gradient_checkpointing_enable()
 
-# Offload to CPU when appropriate
+## Offload to CPU when appropriate
 
 offload_config = {"offload_buffers": True}
 
@@ -199,7 +199,7 @@ To measure and optimize performance:
 
 ```bash
 
-# Run benchmarking tool
+## Run benchmarking tool
 
 python service/tools/benchmark.py --hardware acm --model sd_xl
 
@@ -249,3 +249,4 @@ For advanced users, edit `/uvfast.json` to fine-tune hardware configurations:
 ---
 **Previous**: [Hardware Compatibility](compatibility.md) | **Next**: [Intel Arc Guide](device-specific/intel-arc.md) | **See also**: [Performance
 Troubleshooting](../reference/troubleshooting.md)
+````

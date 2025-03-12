@@ -3,4 +3,4 @@ class RRDBNet:
         pass
 
     def forward(self, x):
-        return x 
+        return x

@@ -128,9 +128,7 @@ class TestSetupHardwareEnv(unittest.TestCase):
 
         # Test standard pip installation
         python_exec = Path(".venv/bin/python")
-        result = setup_hardware_env.install_requirements(
-            python_exec, "acm", dev=False, use_uv=False
-        )
+        result = setup_hardware_env.install_requirements(python_exec, "acm", dev=False, use_uv=False)
         self.assertTrue(result)
 
         # Test with dev dependencies

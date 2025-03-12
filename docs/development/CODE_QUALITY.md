@@ -10,15 +10,18 @@ written in Rust that combines the functionality of multiple Python linting tools
 ### Common Linting Issues
 
 1. **Unused Imports (F401)**
+
    - Remove unused imports or add `# noqa: F401` with an explanation if the import is needed for side effects.
 
    - Example: `import module  # noqa: F401 - Import needed for registration`
 
 1. **Unused Variables (F841)**
+
    - Use `_` for variables you don't need: `_, result = function_with_multiple_returns()`
    - Or add `# noqa: F841` if you need to keep the variable for clarity.
 
 1. **Module Level Import Not at Top of File (E402)**
+
    - Keep all imports at the top of the file.
    - If you need to modify environment variables before importing, add `# noqa: E402` to the imports.
 
@@ -30,7 +33,7 @@ We use [pre-commit](https://pre-commit.com/) to run checks before each commit. T
 
 1. Install pre-commit:
 
-```bash
+````bash
 pip install pre-commit
 
 ```text
@@ -88,3 +91,4 @@ If you encounter CI failures:
 1. Run `python check_linting.py` locally to see if you can reproduce the issues.
 1. Fix the issues manually or use the helper scripts.
 1. Run pre-commit to verify your fixes before pushing again.
+````

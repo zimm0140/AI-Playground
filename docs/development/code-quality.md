@@ -26,7 +26,7 @@ All Python code should adhere to [PEP 8](https://peps.python.org/pep-0008/), wit
 - **Comments**: Use complete sentences in comments
 - **Naming Conventions**:
 
-```text
+````text
 
 - `snake_case` for functions, methods, and variables
 - `PascalCase` for class names
@@ -168,7 +168,7 @@ def test_hardware_detection_with_arc_gpu():
 
 ```text
 
-# Arrange
+## Arrange
 
 ```text
 
@@ -180,7 +180,7 @@ mock_gpu_info = ["Intel(R) Arc(TM) A770 Graphics"]
 
 ```text
 
-# Act
+## Act
 
 ```text
 
@@ -198,7 +198,7 @@ result = hardware_detection.detect_hardware_type()
 
 ```text
 
-# Assert
+## Assert
 
 ```text
 
@@ -249,7 +249,7 @@ Configuration for code quality tools is stored in:
 
 ```toml
 
-# pyproject.toml example
+## pyproject.toml example
 
 [tool.ruff]
 target-version = "py310"
@@ -294,3 +294,4 @@ Documentation should be:
 
 ---
 **Previous**: [Contributing Guide](contributing.md) | **Next**: [Testing Guide](testing.md) | **See also**: [Linting](linting.md)
+````

@@ -22,4 +22,5 @@ For information on AI Playground terms and disclaimers, please refer to the `not
 
 ## Usage of AI Models
 
-When using AI models with AI Playground, please be aware that each model may have its own license terms and usage restrictions. Always check the license terms for any model used in AI Playground, particularly noting any restrictions on usage.
+When using AI models with AI Playground, please be aware that each model may have its own license terms and usage restrictions. Always check the license terms for any model used in
+AI Playground, particularly noting any restrictions on usage.

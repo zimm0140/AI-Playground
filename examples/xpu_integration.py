@@ -3,7 +3,7 @@
 XPU Integration Example
 
 This script demonstrates how to integrate hardware detection with XPU hijacks
-to automatically configure PyTorch for the appropriate backend based on the 
+to automatically configure PyTorch for the appropriate backend based on the
 available hardware.
 """
 

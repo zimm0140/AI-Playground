@@ -19,23 +19,20 @@ Maximum memory needed: 8GB
 | 7 | 6 |
 | 8 | 2 |
 
-
 ## Model Usage
 
 | Model | Workflows |
 | ----- | --------- |
-| RunDiffusion---Juggernaut-XL-v9\vae\diffusion_pytorch_model.fp16.safetensors (vae) | FaceSwapHD.json, Line2ImageHD-Fast.json, Line2ImageHD-Quality.json |
-| black-forest-labs---FLUX.1-schnell\ae.safetensors (vae) | fluxQ4.json, fluxQ8.json |
-| latent-consistency---lcm-lora-sdxl\pytorch_lora_weights.safetensors (lora) | FaceSwapHD.json, Line2ImageHD-Fast.json |
-| stabilityai---control-lora\control-LoRAs-rank128\control-lora-canny-rank128.safetensors (controlnet) | Line2ImageHD-Fast.json, Line2ImageHD-Quality.json |
-
+| RunDiffusion---Juggernaut-XL-v9\\vae\\diffusion_pytorch_model.fp16.safetensors (vae) | FaceSwapHD.json, Line2ImageHD-Fast.json, Line2ImageHD-Quality.json |
+| black-forest-labs---FLUX.1-schnell\\ae.safetensors (vae) | fluxQ4.json, fluxQ8.json |
+| latent-consistency---lcm-lora-sdxl\\pytorch_lora_weights.safetensors (lora) | FaceSwapHD.json, Line2ImageHD-Fast.json |
+| stabilityai---control-lora\\control-LoRAs-rank128\\control-lora-canny-rank128.safetensors (controlnet) | Line2ImageHD-Fast.json, Line2ImageHD-Quality.json |
 
 ## Custom Node Extensions
 
 | Extension | Workflows |
 | --------- | --------- |
 | comfyui-face-swap | CopyFace.json, FaceSwapHD.json |
-
 
 ## Python Package Requirements
 
@@ -44,7 +41,6 @@ Maximum memory needed: 8GB
 | opencv-python | CopyFace.json, FaceSwapHD.json |
 | insightface | CopyFace.json, FaceSwapHD.json |
 | onnxruntime-gpu | CopyFace.json, FaceSwapHD.json |
-
 
 ## Individual Workflow Details
 
@@ -76,8 +72,8 @@ Maximum memory needed: 8GB
 
 ### Required Models
 
-- Vae: RunDiffusion---Juggernaut-XL-v9\vae\diffusion_pytorch_model.fp16.safetensors
-- Lora: latent-consistency---lcm-lora-sdxl\pytorch_lora_weights.safetensors
+- Vae: RunDiffusion---Juggernaut-XL-v9\\vae\\diffusion_pytorch_model.fp16.safetensors
+- Lora: latent-consistency---lcm-lora-sdxl\\pytorch_lora_weights.safetensors
 
 ### Required Custom Nodes
 
@@ -98,9 +94,9 @@ Maximum memory needed: 8GB
 
 ### Required Models
 
-- Vae: RunDiffusion---Juggernaut-XL-v9\vae\diffusion_pytorch_model.fp16.safetensors
-- Lora: latent-consistency---lcm-lora-sdxl\pytorch_lora_weights.safetensors
-- Controlnet: stabilityai---control-lora\control-LoRAs-rank128\control-lora-canny-rank128.safetensors
+- Vae: RunDiffusion---Juggernaut-XL-v9\\vae\\diffusion_pytorch_model.fp16.safetensors
+- Lora: latent-consistency---lcm-lora-sdxl\\pytorch_lora_weights.safetensors
+- Controlnet: stabilityai---control-lora\\control-LoRAs-rank128\\control-lora-canny-rank128.safetensors
 
 ### Memory Requirements
 
@@ -111,8 +107,8 @@ Maximum memory needed: 8GB
 
 ### Required Models
 
-- Vae: RunDiffusion---Juggernaut-XL-v9\vae\diffusion_pytorch_model.fp16.safetensors
-- Controlnet: stabilityai---control-lora\control-LoRAs-rank128\control-lora-canny-rank128.safetensors
+- Vae: RunDiffusion---Juggernaut-XL-v9\\vae\\diffusion_pytorch_model.fp16.safetensors
+- Controlnet: stabilityai---control-lora\\control-LoRAs-rank128\\control-lora-canny-rank128.safetensors
 
 ### Memory Requirements
 
@@ -130,7 +126,7 @@ Maximum memory needed: 8GB
 
 ### Required Models
 
-- Vae: black-forest-labs---FLUX.1-schnell\ae.safetensors
+- Vae: black-forest-labs---FLUX.1-schnell\\ae.safetensors
 
 ### Memory Requirements
 
@@ -141,7 +137,7 @@ Maximum memory needed: 8GB
 
 ### Required Models
 
-- Vae: black-forest-labs---FLUX.1-schnell\ae.safetensors
+- Vae: black-forest-labs---FLUX.1-schnell\\ae.safetensors
 
 ### Memory Requirements
 

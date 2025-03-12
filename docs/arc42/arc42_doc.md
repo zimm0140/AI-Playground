@@ -34,12 +34,12 @@ TBD
 
 ![](AI-PG_ContextView.svg)
 
-| Node                     | Description                                                                                                                                                                               |
+| Node | Description |
 |--------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| GitHub                   | Github repositories hosting 3rd party extensions. Additional Extensions are cloned and set up on behalf of the user                                                                       |
-| AI Playground Repository | Github repositories of AI Playground. Additional workflows are released by intel and pushed to this repository. The application may update their workflow definitions by the intel source |
-| Model Repositories       | The models used for inference need to be downloaded from external sources, e.g. huggingface.com                                                                                           |
-
+| GitHub | Github repositories hosting 3rd party extensions. Additional Extensions are cloned and set up on behalf of the user |
+| AI Playground Repository | Github repositories of AI Playground. Additional workflows are released by intel and pushed to this repository. The application may update their
+workflow definitions by the intel source |
+| Model Repositories | The models used for inference need to be downloaded from external sources, e.g. huggingface.com |
 
 ## Building Block View
 
@@ -69,7 +69,7 @@ interface of an "apiService", which especially specifies the set up steps needed
 <table>
 <thead>
 
-```text
+````text
 <th>Debt</th>
 <th>Description</th>
 <th>Impact</th>
@@ -157,3 +157,4 @@ computational resources.
 ```text
   </tr>
 </table>
+````

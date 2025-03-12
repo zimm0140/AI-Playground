@@ -15,4 +15,4 @@ class Document:
         self.metadata = metadata or {}
 
     def __repr__(self):
-        return f"Document(page_content={self.page_content}, metadata={self.metadata})" 
+        return f"Document(page_content={self.page_content}, metadata={self.metadata})"

@@ -20,48 +20,46 @@ import io
 import logging
 import math
 import os
+import shlex
 import shutil
+import subprocess
 from typing import IO, Optional, Union
 
 import torch
 from PIL import Image
 
 import service.service_config as service_config
-import subprocess
-import shlex
 
 
 def image_to_base64(image: Image.Image):
     """
     Convert a PIL Image to a base64-encoded data URL string.
-    
+
     Args:
         image: PIL Image object to convert
-        
+
     Returns:
         str: Base64-encoded data URL string with PNG format
     """
     buffered = io.BytesIO()
     image.save(buffered, format="PNG")
-    return "data:image/png;base64,{}".format(
-        base64.b64encode(buffered.getvalue()).decode("utf-8")
-    )
+    return "data:image/png;base64,{}".format(base64.b64encode(buffered.getvalue()).decode("utf-8"))
 
 
 def generate_mask_image(mask_flag_bytes: bytes, width: int, height: int):
     """
     Generate a mask image from binary mask data.
-    
+
     Args:
         mask_flag_bytes: Binary data representing the mask
         width: Width of the mask image
         height: Height of the mask image
-        
+
     Returns:
         Image.Image: PIL RGB image created from the mask data
     """
-    from PIL import Image
     import numpy as np
+    from PIL import Image
 
     np_data = np.frombuffer(mask_flag_bytes, dtype=np.uint8)
     image = Image.fromarray(np_data.reshape((height, width)), mode="L").convert("RGB")
@@ -72,11 +70,11 @@ def generate_mask_image(mask_flag_bytes: bytes, width: int, height: int):
 def get_shape_ceil(h: float, w: float):
     """
     Calculate a shape size rounded up to the nearest multiple of 64.
-    
+
     Args:
         h: Height value
         w: Width value
-        
+
     Returns:
         float: Square root of area (h*w) rounded up to nearest multiple of 64
     """
@@ -86,10 +84,10 @@ def get_shape_ceil(h: float, w: float):
 def get_image_shape_ceil(image: Image.Image):
     """
     Get the ceiling of an image shape rounded to the nearest multiple of 64.
-    
+
     Args:
         image: Input image
-        
+
     Returns:
         float: Square root of image area rounded up to nearest multiple of 64
     """
@@ -100,17 +98,17 @@ def get_image_shape_ceil(image: Image.Image):
 def check_mmodel_exist(type: int, repo_id: str, backend: str) -> bool:
     """
     Check if a model exists in the specified backend.
-    
+
     Delegates to backend-specific functions based on the backend parameter.
-    
+
     Args:
         type: Integer type identifier for the model
         repo_id: Repository ID of the model
         backend: Backend type ("default", "openvino", "comfyui", or "llama_cpp")
-        
+
     Returns:
         bool: True if the model exists, False otherwise
-        
+
     Raises:
         NameError: If an unknown backend is specified
     """
@@ -124,15 +122,16 @@ def check_mmodel_exist(type: int, repo_id: str, backend: str) -> bool:
         return check_llama_cpp_model_exists(type, repo_id)
     else:
         raise NameError("Unknown Backend")
-        
+
+
 def check_openvino_model_exists(type, repo_id) -> bool:
     """
     Check if an OpenVINO model exists.
-    
+
     Args:
         type: Model type (unused in this function)
         repo_id: Repository ID of the model
-        
+
     Returns:
         bool: True if the model exists, False otherwise
     """
@@ -144,11 +143,11 @@ def check_openvino_model_exists(type, repo_id) -> bool:
 def check_llama_cpp_model_exists(type, repo_id) -> bool:
     """
     Check if a llama.cpp model exists.
-    
+
     Args:
         type: Model type to convert to string representation
         repo_id: Repository ID of the model
-        
+
     Returns:
         bool: True if the model exists, False otherwise
     """
@@ -156,98 +155,106 @@ def check_llama_cpp_model_exists(type, repo_id) -> bool:
     dir_to_look_for = os.path.join(model_dir, repo_local_root_dir_name(repo_id), extract_model_id_pathsegments(repo_id))
     return os.path.exists(dir_to_look_for)
 
+
 def check_comfyui_model_exists(type, repo_id) -> bool:
     """
     Check if a ComfyUI model exists.
-    
+
     Different model types have different directory structures:
     - faceswap/facerestore models use a flat directory structure
     - nsfwdetector has a special directory structure
     - other model types use a nested directory structure
-    
+
     Args:
         type: Model type to convert to string representation
         repo_id: Repository ID of the model
-        
+
     Returns:
         bool: True if the model exists, False otherwise
     """
     model_type = convert_model_type(type)
     model_dir = service_config.comfy_ui_model_paths.get(model_type)
-    if model_type == 'faceswap' or model_type == 'facerestore':
+    if model_type == "faceswap" or model_type == "facerestore":
         dir_to_look_for = os.path.join(model_dir, flat_repo_local_dir_name(repo_id))
-    elif model_type == 'nsfwdetector':
-        dir_to_look_for = os.path.join(model_dir, 'vit-base-nsfw-detector', extract_model_id_pathsegments(repo_id))
+    elif model_type == "nsfwdetector":
+        dir_to_look_for = os.path.join(model_dir, "vit-base-nsfw-detector", extract_model_id_pathsegments(repo_id))
     else:
-        dir_to_look_for = os.path.join(model_dir, repo_local_root_dir_name(repo_id), extract_model_id_pathsegments(repo_id))
+        dir_to_look_for = os.path.join(
+            model_dir, repo_local_root_dir_name(repo_id), extract_model_id_pathsegments(repo_id)
+        )
     return os.path.exists(dir_to_look_for)
+
 
 def trim_repo(repo_id):
     """
     Get the first two segments of a repository ID.
-    
+
     Args:
         repo_id: Repository ID to trim
-        
+
     Returns:
         str: First two path segments of the repository ID
     """
     return "/".join(repo_id.split("/")[:2])
 
+
 def extract_model_id_pathsegments(repo_id) -> str:
     """
     Extract all segments after the first two from a repository ID.
-    
+
     Args:
         repo_id: Repository ID to extract from
-        
+
     Returns:
         str: Path segments after the first two, joined with "/"
     """
     return "/".join(repo_id.split("/")[2:])
 
+
 def repo_local_root_dir_name(repo_id):
     """
     Convert the first two segments of a repository ID to a local directory name.
-    
+
     Replaces "/" with "---" for use in the filesystem.
-    
+
     Args:
         repo_id: Repository ID to convert
-        
+
     Returns:
         str: Local directory name based on repository organization/name
     """
     return "---".join(repo_id.split("/")[:2])
 
+
 def flat_repo_local_dir_name(repo_id):
     """
     Convert an entire repository ID to a flat local directory name.
-    
+
     Replaces all "/" with "---" for use in the filesystem.
-    
+
     Args:
         repo_id: Repository ID to convert
-        
+
     Returns:
         str: Flattened local directory name
     """
     return "---".join(repo_id.split("/"))
 
+
 def check_defaultbackend_mmodel_exist(type: int, repo_id: str) -> bool:
     """
     Check if a model exists in the default backend.
-    
+
     Different model types require different checks:
     - LLM (0): Checks for existence of the repository directory
     - Stable Diffusion (1): Checks for model_index.json or single file
     - LoRA (2): Checks for pytorch_lora_weights.safetensors or .bin
     - Other types: Have specific file/directory checks
-    
+
     Args:
         type: Integer type identifier for the model
         repo_id: Repository ID of the model
-        
+
     Returns:
         bool: True if the model exists, False otherwise
     """
@@ -266,9 +273,7 @@ def check_defaultbackend_mmodel_exist(type: int, repo_id: str) -> bool:
         if is_single_file(repo_id):
             return os.path.exists(os.path.join(dir, repo_id))
         else:
-            return os.path.exists(
-                os.path.join(dir, folder_name, "pytorch_lora_weights.safetensors")
-            ) or os.path.exists(
+            return os.path.exists(os.path.join(dir, folder_name, "pytorch_lora_weights.safetensors")) or os.path.exists(
                 os.path.join(dir, folder_name, "pytorch_lora_weights.bin")
             )
     elif type == 3:
@@ -278,9 +283,7 @@ def check_defaultbackend_mmodel_exist(type: int, repo_id: str) -> bool:
         import realesrgan
 
         dir = service_config.service_model_paths.get("ESRGAN")
-        return os.path.exists(
-            os.path.join(dir, realesrgan.ESRGAN_MODEL_URL.split("/")[-1])
-        )
+        return os.path.exists(os.path.join(dir, realesrgan.ESRGAN_MODEL_URL.split("/")[-1]))
     elif type == 5:
         dir = service_config.service_model_paths.get("embedding")
         return os.path.exists(os.path.join(dir, folder_name))
@@ -289,31 +292,28 @@ def check_defaultbackend_mmodel_exist(type: int, repo_id: str) -> bool:
         if is_single_file(repo_id):
             return os.path.exists(os.path.join(dir, repo_id))
         else:
-            return os.path.exists(
-                os.path.join(dir, repo_id.replace("/", "---"), "model_index.json")
-            )
+            return os.path.exists(os.path.join(dir, repo_id.replace("/", "---"), "model_index.json"))
     elif type == 7:
         dir = service_config.service_model_paths.get("preview")
         return (
-                os.path.exists(os.path.join(dir, folder_name, "config.json"))
-                or os.path.exists(os.path.join(dir, f"{repo_id}.safetensors"))
-                or os.path.exists(os.path.join(dir, f"{repo_id}.bin"))
+            os.path.exists(os.path.join(dir, folder_name, "config.json"))
+            or os.path.exists(os.path.join(dir, f"{repo_id}.safetensors"))
+            or os.path.exists(os.path.join(dir, f"{repo_id}.bin"))
         )
-
 
 
 def convert_model_type(type: int):
     """
     Convert an integer model type to its string representation.
-    
+
     Handles all known model types for different backends.
-    
+
     Args:
         type: Integer type identifier for the model
-        
+
     Returns:
         str: String representation of the model type
-        
+
     Raises:
         Exception: If an unknown model type is provided
     """
@@ -364,11 +364,11 @@ def convert_model_type(type: int):
 def get_model_path(type: int, backend: str) -> Optional[str]:
     """
     Get the base directory path for a model type on a specific backend.
-    
+
     Args:
         type: Integer type identifier for the model
         backend: Backend type ("default", "llama_cpp", "openvino", or "comfyui")
-        
+
     Returns:
         str: Directory path for the specified model type and backend
     """
@@ -384,16 +384,15 @@ def get_model_path(type: int, backend: str) -> Optional[str]:
         raise NameError("Unknown Backend")
 
 
-
 def calculate_md5(file_path: str):
     """
     Calculate the MD5 hash of a file.
-    
+
     Reads the file in chunks to efficiently handle large files.
-    
+
     Args:
         file_path: Path to the file to hash
-        
+
     Returns:
         str: Hexadecimal MD5 hash of the file
     """
@@ -407,32 +406,30 @@ def calculate_md5(file_path: str):
 def create_cache_path(md5: str, file_size: int):
     """
     Create a cache path based on an MD5 hash and file size.
-    
+
     The path is structured with nested directories based on the MD5 hash
     to avoid too many files in a single directory.
-    
+
     Args:
         md5: MD5 hash of the file
         file_size: Size of the file in bytes
-        
+
     Returns:
         str: Absolute path to the cache location
     """
     cache_dir = "./cache"
     sub_dirs = [md5[i : i + 4] for i in range(0, len(md5), 4)]
-    cache_path = os.path.abspath(
-        os.path.join(cache_dir, *sub_dirs, f"{md5}_{file_size}")
-    )
+    cache_path = os.path.abspath(os.path.join(cache_dir, *sub_dirs, f"{md5}_{file_size}"))
     return cache_path
 
 
 def calculate_md5_from_stream(file_stream: IO[bytes]):
     """
     Calculate the MD5 hash of a file from a stream.
-    
+
     Args:
         file_stream: Stream of bytes to hash
-        
+
     Returns:
         str: Hexadecimal MD5 hash of the stream contents
     """
@@ -445,10 +442,10 @@ def calculate_md5_from_stream(file_stream: IO[bytes]):
 def cache_file(file_path: Union[IO[bytes], str], file_size: int) -> str:
     """
     Cache a file using content-based addressing.
-    
+
     Creates a hard link between the original file and the cached file,
     which saves disk space while preserving the file in both locations.
-    
+
     Args:
         file_path: Path to the file to cache
         file_size: Size of the file in bytes
@@ -471,12 +468,12 @@ def cache_file(file_path: Union[IO[bytes], str], file_size: int) -> str:
 def is_single_file(filename: str):
     """
     Check if a filename represents a single model file.
-    
+
     Single files are identified by specific extensions (.safetensors, .bin, .gguf).
-    
+
     Args:
         filename: Filename to check
-        
+
     Returns:
         bool: True if it's a single file, False otherwise
     """
@@ -486,14 +483,14 @@ def is_single_file(filename: str):
 def get_ESRGAN_size():
     """
     Get the file size of the ESRGAN model.
-    
+
     Makes a request to the ESRGAN URL and reads the Content-Length header.
-    
+
     Returns:
         int: Size of the ESRGAN model in bytes
     """
-    import requests
     import realesrgan
+    import requests
 
     response = requests.get(realesrgan.ESRGAN_MODEL_URL, stream=True)
     with response:
@@ -503,7 +500,7 @@ def get_ESRGAN_size():
 def get_support_graphics():
     """
     Get a list of supported Intel XPU graphics devices.
-    
+
     Returns:
         list: List of dictionaries with device index and name information
     """
@@ -527,16 +524,16 @@ def get_support_graphics():
 def call_subprocess(process_command: str, cwd: Optional[str] = None) -> str:
     """
     Execute a subprocess command and return the output.
-    
+
     Uses shlex to handle command parsing and logs the command execution.
-    
+
     Args:
         process_command: Command string to execute
         cwd: Optional working directory for the command
-        
+
     Returns:
         str: Output from the command, stripped of trailing whitespace
-        
+
     Raises:
         subprocess.CalledProcessError: If the command execution fails
     """
@@ -549,12 +546,13 @@ def call_subprocess(process_command: str, cwd: Optional[str] = None) -> str:
         logging.error(f"Failed to call subprocess {process_command} with error {e}")
         raise e
 
+
 def remove_existing_filesystem_resource(path: str):
     """
     Remove a file or directory if it exists.
-    
+
     Handles both files and directories with appropriate removal methods.
-    
+
     Args:
         path: Path to the file or directory to remove
     """

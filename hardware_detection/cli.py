@@ -7,11 +7,7 @@ import sys
 from pathlib import Path
 
 from hardware_detection import __version__
-from hardware_detection.core import (
-    detect_hardware_type,
-    get_hardware_info,
-    print_hardware_info,
-)
+from hardware_detection.core import detect_hardware_type, get_hardware_info, print_hardware_info
 
 
 def setup_logging(debug: bool = False) -> None:
@@ -26,26 +22,16 @@ def setup_logging(debug: bool = False) -> None:
 
 def main() -> int:
     """Run the CLI."""
-    parser = argparse.ArgumentParser(
-        description="Hardware detection CLI for identifying specialized hardware."
-    )
-    parser.add_argument(
-        "--version", action="version", version=f"hardware_detection {__version__}"
-    )
-    parser.add_argument(
-        "-v", "--verbose", action="store_true", help="Enable verbose output"
-    )
-    parser.add_argument(
-        "-d", "--debug", action="store_true", help="Enable debug output"
-    )
+    parser = argparse.ArgumentParser(description="Hardware detection CLI for identifying specialized hardware.")
+    parser.add_argument("--version", action="version", version=f"hardware_detection {__version__}")
+    parser.add_argument("-v", "--verbose", action="store_true", help="Enable verbose output")
+    parser.add_argument("-d", "--debug", action="store_true", help="Enable debug output")
 
     subparsers = parser.add_subparsers(dest="command", help="Command to run")
 
     # Info command
     info_parser = subparsers.add_parser("info", help="Show hardware information")
-    info_parser.add_argument(
-        "--json", action="store_true", help="Output in JSON format"
-    )
+    info_parser.add_argument("--json", action="store_true", help="Output in JSON format")
 
     # Detect command
     detect_parser = subparsers.add_parser("detect", help="Detect hardware type")

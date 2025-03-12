@@ -1,7 +1,7 @@
 """
 Llama.cpp Chat API Test Client
 -----------------------------
-This script demonstrates how to interact with the Llama.cpp Web API service 
+This script demonstrates how to interact with the Llama.cpp Web API service
 for language model chat functionality. It shows how to:
 
 1. Create a properly formatted request to the LLM chat endpoint
@@ -12,8 +12,10 @@ The example sends a speculative question about future events to test
 the model's response handling and understanding of time contexts.
 """
 
+import socket
+
+import pytest
 import requests
-import pytest, socket
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 sock.settimeout(1)

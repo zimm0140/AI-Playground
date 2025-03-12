@@ -6,7 +6,7 @@ This document describes the linting practices used in the AI-Playground project 
 
 The project uses [Ruff](https://github.com/astral-sh/ruff) for Python code linting, with the following configuration:
 
-```bash
+````bash
 
 ## Standard linting configuration
 
@@ -119,3 +119,4 @@ To ensure code quality before committing, you can set up pre-commit hooks locall
 
 ```text
 This will check your Python code for linting issues before each commit.
+````

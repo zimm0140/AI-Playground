@@ -8,30 +8,26 @@ different workflow formats and edge cases.
 
 import os
 import sys
-from typing import Dict, Any
+from typing import Any, Dict
 
 # Add the GitHub workflows scripts directory to the Python path
-script_dir = os.path.dirname(
-    os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-)
+script_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.append(os.path.join(script_dir, ".github", "workflows", "scripts"))
 
 # Import the workflow parser functions after modifying the path
-from utils.workflow_parser import (  # noqa: E402
-    get_workflow_nodes,
-    get_workflow_links,
-    build_link_map,
-    get_workflow_attribute,
+from utils.workflow_parser import (
+    build_link_map,  # noqa: E402
     get_node_class_type,
     get_node_inputs,
+    get_workflow_attribute,
+    get_workflow_links,
+    get_workflow_nodes,
 )
 
 
 def test_get_workflow_nodes_traditional_format():
     """Test extracting nodes from traditional format workflow"""
-    workflow = {
-        "nodes": {"1": {"class_type": "LoadImage"}, "2": {"class_type": "SaveImage"}}
-    }
+    workflow = {"nodes": {"1": {"class_type": "LoadImage"}, "2": {"class_type": "SaveImage"}}}
     nodes = get_workflow_nodes(workflow)
     assert nodes is not None
     assert "1" in nodes

@@ -1,7 +1,7 @@
 """
 Llama.cpp Backend Implementation Module
 ------------------------------------
-This module provides a concrete implementation of the LLMInterface for the Llama.cpp 
+This module provides a concrete implementation of the LLMInterface for the Llama.cpp
 runtime. It handles model loading, text generation, and resource management
 for Large Language Models using the Llama.cpp C++ library with Python bindings.
 
@@ -10,13 +10,14 @@ providing the functionality necessary for integrating Llama.cpp-optimized models
 with the rest of the system.
 """
 
-from typing import Dict, List, Callable
-from os import path
-from llama_interface import LLMInterface
-from llama_cpp import CreateChatCompletionStreamResponse, Iterator, Llama
-from llama_params import LLMParams
-import model_config
 import gc
+from os import path
+from typing import Callable, Dict, List
+
+import model_config
+from llama_cpp import CreateChatCompletionStreamResponse, Iterator, Llama
+from llama_interface import LLMInterface
+from llama_params import LLMParams
 
 
 class LlamaCpp(LLMInterface):
@@ -72,11 +73,7 @@ class LlamaCpp(LLMInterface):
 
             model_base_path = model_config.llamaCppConfig.get("ggufLLM")
             namespace, repo, *model = model_repo_id.split("/")
-            model_path = path.abspath(
-                path.join(
-                    model_base_path, "---".join([namespace, repo]), "---".join(model)
-                )
-            )
+            model_path = path.abspath(path.join(model_base_path, "---".join([namespace, repo]), "---".join(model)))
 
             self._model = Llama(
                 model_path=model_path,
@@ -89,9 +86,7 @@ class LlamaCpp(LLMInterface):
             if callback is not None:
                 callback("finish")
 
-    def create_chat_completion(
-        self, messages: List[Dict[str, str]], max_tokens: int = 1024
-    ):
+    def create_chat_completion(self, messages: List[Dict[str, str]], max_tokens: int = 1024):
         """
         Generate text completion based on conversation messages.
 
@@ -105,9 +100,7 @@ class LlamaCpp(LLMInterface):
         Returns:
             Iterator of streaming response chunks from the Llama.cpp library
         """
-        completion: Iterator[
-            CreateChatCompletionStreamResponse
-        ] = self._model.create_chat_completion(
+        completion: Iterator[CreateChatCompletionStreamResponse] = self._model.create_chat_completion(
             messages=messages,
             max_tokens=max_tokens,
             stream=True,

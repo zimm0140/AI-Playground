@@ -216,15 +216,10 @@ class UVFast:
                     )
                 else:
                     # Install uv on Unix-like systems
-                    subprocess.run(
-                        ["curl", "-sSf", "https://astral.sh/uv/install.sh", "|", "sh"], check=True
-                    )
+                    subprocess.run(["curl", "-sSf", "https://astral.sh/uv/install.sh", "|", "sh"], check=True)
                 return True
             except subprocess.SubprocessError:
-                logging.error(
-                    "Failed to install uv. Please install it manually from "
-                    "https://github.com/astral-sh/uv"
-                )
+                logging.error("Failed to install uv. Please install it manually from https://github.com/astral-sh/uv")
                 return False
 
     def _create_venv(self, clean: bool = False) -> bool:
@@ -480,9 +475,7 @@ class UVFast:
                 if self._ensure_uv_installed():
                     subprocess.run(["uv", "pip", "install", "-r", req_file], check=True)
                 else:
-                    subprocess.run(
-                        [sys.executable, "-m", "pip", "install", "-r", req_file], check=True
-                    )
+                    subprocess.run([sys.executable, "-m", "pip", "install", "-r", req_file], check=True)
             except subprocess.SubprocessError as e:
                 logging.error(f"Error installing dependencies: {e}")
                 return 1
@@ -526,20 +519,14 @@ class UVFast:
         subparsers = parser.add_subparsers(dest="command", help="Command to run")
 
         # Setup command
-        setup_parser = subparsers.add_parser(
-            "setup", help="Set up the environment for the specified hardware"
-        )
+        setup_parser = subparsers.add_parser("setup", help="Set up the environment for the specified hardware")
         setup_parser.add_argument(
             "--hardware",
             choices=HARDWARE_TYPES,
             help="Hardware type to set up environment for (default: auto-detect)",
         )
-        setup_parser.add_argument(
-            "--clean", action="store_true", help="Clean existing environment before setup"
-        )
-        setup_parser.add_argument(
-            "--dev", action="store_true", help="Install development dependencies"
-        )
+        setup_parser.add_argument("--clean", action="store_true", help="Clean existing environment before setup")
+        setup_parser.add_argument("--dev", action="store_true", help="Install development dependencies")
         setup_parser.add_argument(
             "--no-lock",
             action="store_true",
@@ -562,40 +549,28 @@ class UVFast:
             choices=HARDWARE_TYPES,
             help="Hardware type to generate lockfile for (default: auto-detect)",
         )
-        lock_parser.add_argument(
-            "--all", action="store_true", help="Generate lockfiles for all hardware types"
-        )
-        lock_parser.add_argument(
-            "--dev", action="store_true", help="Include development dependencies"
-        )
+        lock_parser.add_argument("--all", action="store_true", help="Generate lockfiles for all hardware types")
+        lock_parser.add_argument("--dev", action="store_true", help="Include development dependencies")
 
         # Info command
-        info_parser = subparsers.add_parser(
-            "info", help="Display information about the environment"
-        )
+        info_parser = subparsers.add_parser("info", help="Display information about the environment")
         info_parser.add_argument("--verbose", action="store_true", help="Show verbose information")
         info_parser.add_argument("--packages", action="store_true", help="Show installed packages")
 
         # Legacy install command
-        legacy_parser = subparsers.add_parser(
-            "legacy-install", help="Install dependencies using pip instead of uv"
-        )
+        legacy_parser = subparsers.add_parser("legacy-install", help="Install dependencies using pip instead of uv")
         legacy_parser.add_argument(
             "--hardware",
             choices=HARDWARE_TYPES,
             help="Hardware type to install dependencies for (default: auto-detect)",
         )
-        legacy_parser.add_argument(
-            "--dev", action="store_true", help="Install development dependencies"
-        )
+        legacy_parser.add_argument("--dev", action="store_true", help="Install development dependencies")
 
         # Hardware check command
         hardware_parser = subparsers.add_parser(
             "hardware-check", help="Check hardware and show compatibility information"
         )
-        hardware_parser.add_argument(
-            "--verbose", action="store_true", help="Show verbose hardware information"
-        )
+        hardware_parser.add_argument("--verbose", action="store_true", help="Show verbose hardware information")
 
         args = parser.parse_args()
 

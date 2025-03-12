@@ -1,23 +1,25 @@
 import json
-import jsonschema
 import sys
+
+import jsonschema
+
 
 def validate_workflow():
     try:
         # Load schema and workflow files
-        schema_file = 'WebUI/external/schemas/workflow-schema.json'
-        workflow_file = 'WebUI/external/workflows/Colorize.json'
-        
+        schema_file = "WebUI/external/schemas/workflow-schema.json"
+        workflow_file = "WebUI/external/workflows/Colorize.json"
+
         print(f"Using Python from: {sys.executable}")
         print(f"Loading schema from: {schema_file}")
         print(f"Loading workflow from: {workflow_file}")
-        
-        with open(schema_file, 'r') as f:
+
+        with open(schema_file, "r") as f:
             schema = json.load(f)
-        
-        with open(workflow_file, 'r') as f:
+
+        with open(workflow_file, "r") as f:
             workflow = json.load(f)
-            
+
         # Validate the workflow against the schema
         jsonschema.validate(workflow, schema)
         print("Validation successful!")
@@ -26,5 +28,6 @@ def validate_workflow():
         print(f"Validation error: {e}")
         return 1
 
+
 if __name__ == "__main__":
-    sys.exit(validate_workflow()) 
+    sys.exit(validate_workflow())

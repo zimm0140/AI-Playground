@@ -7,30 +7,36 @@ This document provides a step-by-step guide for implementing and using the `uvfa
 ### 1. Core Files
 
 1. **Create the uvfast.py script**:
+
    - Copy the `uvfast.py` script to your project root
    - Make it executable: `chmod +x uvfast.py` (on Unix/Linux/macOS)
 
 1. **Create convenience wrappers**:
+
    - For Unix/Linux/macOS: Create `scripts/uvfast.sh`
    - For Windows: Create `scripts/uvfast.ps1`
    - Make them executable: `git update-index --chmod=+x scripts/uvfast.sh scripts/uvfast.ps1`
 
 1. **Create the configuration file**:
+
    - Create `uvfast.json` in your project root with your project-specific settings
 
 ### 2. Requirements Files
 
 1. **Base requirements**:
+
    - Ensure you have a `requirements.txt` file with core dependencies
 
 1. **Development requirements**:
+
    - Create `requirements-dev.txt` with development dependencies
    - Include testing, linting, and type checking packages
 
 1. **Hardware-specific requirements** (optional):
+
    - Create separate files for different hardware configurations:
 
-```text
+````text
 
  - `requirements-hardware-base.txt`
  - `requirements-hardware-acm.txt` (for Intel Arc GPUs)
@@ -65,27 +71,27 @@ This document provides a step-by-step guide for implementing and using the `uvfa
 
 ```bash
 
-# Setup environment with development dependencies
+## Setup environment with development dependencies
 
 python uvfast.py setup --dev
 
-# Show environment information
+## Show environment information
 
 python uvfast.py info
 
-# Generate lockfiles for all hardware types
+## Generate lockfiles for all hardware types
 
 python uvfast.py lock
 
-# Run tests
+## Run tests
 
 python uvfast.py run pytest
 
-# Run linting
+## Run linting
 
 python uvfast.py run ruff check .
 
-# Run type checking
+## Run type checking
 
 python uvfast.py run mypy .
 
@@ -95,11 +101,11 @@ python uvfast.py run mypy .
 
 ```bash
 
-# Unix/Linux/macOS
+## Unix/Linux/macOS
 
 ./scripts/uvfast.sh setup --dev
 
-# Windows PowerShell
+## Windows PowerShell
 
 .\scripts\uvfast.ps1 setup --dev
 
@@ -109,11 +115,11 @@ python uvfast.py run mypy .
 
 ```bash
 
-# Setup for Intel Arc GPUs
+## Setup for Intel Arc GPUs
 
 python uvfast.py setup --hardware acm --dev
 
-# Setup for OpenVINO
+## Setup for OpenVINO
 
 python uvfast.py setup --hardware ovino --dev
 
@@ -192,3 +198,4 @@ python uvfast.py setup --hardware ovino --dev
 1. **Missing dependencies**:
    - Check hardware-specific requirements
    - Verify lockfiles are up to date
+````

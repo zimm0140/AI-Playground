@@ -14,7 +14,6 @@ AI-Playground supports all Intel Arc GPU models:
 | A380 | 6GB | Small to medium models | Good |
 | A310 | 4GB | Small models only | Basic |
 
-
 ## Hardware Requirements
 
 ### Driver Requirements
@@ -23,7 +22,6 @@ AI-Playground supports all Intel Arc GPU models:
 |----|------------------------|-------------------|
 | Windows | 31.0.101.4255 | Latest available |
 | Linux | Mesa 23.1 | Mesa 23.3+ |
-
 
 ### System Requirements
 
@@ -39,41 +37,52 @@ AI-Playground supports all Intel Arc GPU models:
 #### Windows
 
 1. Download the latest driver from [Intel's download center](https://downloadcenter.intel.com/product/226793/Intel-Arc-A-series-Graphics)
+
 1. Install the driver package
+
 1. Restart your system
+
 1. Verify installation with:
 
-   ```bash
-   # Run hardware detection
+   ````bash
+   ## Run hardware detection
 
    python hardware_detection.py
    ```text
+
+   ````
 
 #### Linux
 
 1. Update your system:
 
-   ```bash
+   ````bash
    sudo apt update && sudo apt upgrade
    ```text
 
+   ````
+
 1. Install required packages:
 
-   ```bash
+   ````bash
    sudo apt install mesa-utils
    ```text
 
+   ````
+
 1. Verify installation:
 
-   ```bash
+   ````bash
    glxinfo | grep "OpenGL renderer"
    ```text
 
+   ````
+
 ### Environment Setup
 
-```bash
+````bash
 
-# Setup environment optimized for Arc GPUs
+## Setup environment optimized for Arc GPUs
 
 python setup_hardware_env.py --hardware acm
 
@@ -96,15 +105,15 @@ Use the "xpu" device in your code:
 import torch
 import intel_extension_for_pytorch as ipex
 
-# Move model to XPU
+## Move model to XPU
 
 model = model.to("xpu")
 
-# Move input tensors to XPU
+## Move input tensors to XPU
 
 input_tensor = input_tensor.to("xpu")
 
-# Run inference
+## Run inference
 
 with torch.xpu.amp.autocast(dtype=torch.bfloat16):
 
@@ -122,13 +131,13 @@ Set these environment variables for optimal performance:
 
 ```bash
 
-# Windows (PowerShell)
+## Windows (PowerShell)
 
 $env:ZE_AFFINITY_MASK = "0.0"
 $env:SYCL_CACHE_PERSISTENT = "1"
 $env:IPEX_XPU_MAX_STREAMS = "8"
 
-# Linux (Bash)
+## Linux (Bash)
 
 export ZE_AFFINITY_MASK="0.0"
 export SYCL_CACHE_PERSISTENT="1"
@@ -142,11 +151,11 @@ Arc GPUs benefit from careful memory management:
 
 ```python
 
-# Clear XPU cache when needed
+## Clear XPU cache when needed
 
 torch.xpu.empty_cache()
 
-# Monitor memory usage
+## Monitor memory usage
 
 print(f"Memory allocated: {torch.xpu.memory_allocated() / 1e9:.2f} GB")
 print(f"Memory reserved: {torch.xpu.memory_reserved() / 1e9:.2f} GB")
@@ -169,11 +178,11 @@ print(f"Memory reserved: {torch.xpu.memory_reserved() / 1e9:.2f} GB")
 
 ```bash
 
-# Check GPU information
+## Check GPU information
 
 python -c "import torch; import intel_extension_for_pytorch as ipex; print(torch.xpu.get_device_properties(0))"
 
-# Run diagnostic tool
+## Run diagnostic tool
 
 python service/tools/intel_gpu_diagnostics.py
 
@@ -188,12 +197,12 @@ python service/tools/intel_gpu_diagnostics.py
    ```python
    from intel_extension_for_pytorch.quantization import prepare, convert
 
-   # Prepare model for quantization
+   ## Prepare model for quantization
 
    qconfig = ipex.quantization.default_static_qconfig
    prepared_model = prepare(model, qconfig, example_inputs=example_inputs)
 
-   # Convert to quantized model
+   ## Convert to quantized model
 
    quantized_model = convert(prepared_model)
    ```text
@@ -216,7 +225,7 @@ Test different batch sizes to find the optimal value for your specific Arc GPU m
 
 ```python
 
-# Example batch size benchmark
+## Example batch size benchmark
 
 batch_sizes = [1, 2, 4, 8, 16]
 results = {}
@@ -225,13 +234,13 @@ for bs in batch_sizes:
 
 ```text
 
-# Test inference speed with batch size bs
+## Test inference speed with batch size bs
 
 ```text
 
 ```text
 
-# Record timing information
+## Record timing information
 
 ```text
 
@@ -260,3 +269,4 @@ Typical optimal batch sizes:
 
 ---
 **Previous**: [Hardware Optimization](../optimization.md) | **See also**: [Meteor Lake Guide](intel-meteor-lake.md)
+````

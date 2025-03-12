@@ -11,12 +11,13 @@ The module implements:
 3. Metrics collection for token generation speed and latency measurements
 """
 
-import threading
-from queue import Empty, Queue
 import json
+import threading
 import time
 import traceback
-from typing import Dict, List, Callable
+from queue import Empty, Queue
+from typing import Callable, Dict, List
+
 from openvino_interface import LLMInterface
 from openvino_params import LLMParams
 
@@ -149,10 +150,7 @@ class LLM_SSE_Adapter:
         Args:
             ex: The exception that occurred
         """
-        if (
-            isinstance(ex, NotImplementedError)
-            and ex.__str__() == "Access to repositories lists is not implemented."
-        ):
+        if isinstance(ex, NotImplementedError) and ex.__str__() == "Access to repositories lists is not implemented.":
             self.put_msg(
                 {
                     "type": "error",
@@ -249,9 +247,7 @@ class LLM_SSE_Adapter:
 
             prompt = params.prompt
             full_prompt = convert_prompt(prompt)
-            self.llm_interface.create_chat_completion(
-                full_prompt, self.stream_function, params.max_tokens
-            )
+            self.llm_interface.create_chat_completion(full_prompt, self.stream_function, params.max_tokens)
 
             # Calculate and send metrics
             self.last_token_time = time.time()
@@ -259,19 +255,14 @@ class LLM_SSE_Adapter:
                 "type": "metrics",
                 "num_tokens": self.num_tokens,
                 "total_time": self.last_token_time - self.start_time,
-                "overall_tokens_per_second": self.num_tokens
-                / (self.last_token_time - self.start_time)
+                "overall_tokens_per_second": self.num_tokens / (self.last_token_time - self.start_time)
                 if self.num_tokens > 0
                 else 0,
-                "second_plus_tokens_per_second": (self.num_tokens - 1)
-                / (self.last_token_time - self.first_token_time)
+                "second_plus_tokens_per_second": (self.num_tokens - 1) / (self.last_token_time - self.first_token_time)
                 if self.num_tokens > 1
                 else None,
-                "first_token_latency": self.first_token_time - self.start_time
-                if self.num_tokens > 0
-                else None,
-                "after_token_latency": (self.last_token_time - self.first_token_time)
-                / (self.num_tokens - 1)
+                "first_token_latency": self.first_token_time - self.start_time if self.num_tokens > 0 else None,
+                "after_token_latency": (self.last_token_time - self.first_token_time) / (self.num_tokens - 1)
                 if self.num_tokens > 1
                 else None,
             }
@@ -338,9 +329,7 @@ def convert_prompt(prompt: List[Dict[str, str]]):
     while i < prompt_len:
         chat_history.append({"role": "user", "content": prompt[i].get("question")})
         if i < prompt_len - 1:
-            chat_history.append(
-                {"role": "assistant", "content": prompt[i].get("answer")}
-            )
+            chat_history.append({"role": "assistant", "content": prompt[i].get("answer")})
         i = i + 1
     return chat_history
 

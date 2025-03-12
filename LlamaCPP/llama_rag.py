@@ -20,17 +20,15 @@ import gc
 import json
 import os
 import time
-from typing import Any, List, Dict
+from typing import Any, Dict, List
 
-from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.embeddings import LlamaCppEmbeddings
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+
 from langchain_community.document_loaders.markdown import UnstructuredMarkdownLoader
 from langchain_community.document_loaders.pdf import PyPDFLoader
 from langchain_community.document_loaders.text import TextLoader
-from langchain_community.document_loaders.word_document import (
-    UnstructuredWordDocumentLoader,
-    Docx2txtLoader,
-)
+from langchain_community.document_loaders.word_document import Docx2txtLoader, UnstructuredWordDocumentLoader
 from langchain_community.vectorstores.faiss import FAISS, Document
 
 #### CONFIGURATIONS ------------------------------------------------------------------------------------------------------------------------
@@ -67,11 +65,7 @@ class EmbeddingWrapper:
         start = time.time()
         print(f"******* loading {model_path} start ")
         self.model = LlamaCppEmbeddings(model_path=model_path)
-        print(
-            "******* loading {} finish. cost {:3f}s".format(
-                model_path, time.time() - start
-            )
-        )
+        print("******* loading {} finish. cost {:3f}s".format(model_path, time.time() - start))
 
     def embed_documents(self, texts: List[str]) -> List[List[float]]:
         """
@@ -141,17 +135,9 @@ class EmbeddingDatabase:
         """
         self.embeddings = embeddings
         index_cache = os.path.join(INDEX_DATABASE_PATH, "index.faiss")
-        self.db = (
-            FAISS.load_local(INDEX_DATABASE_PATH, self.embeddings)
-            if os.path.exists(index_cache)
-            else None
-        )
+        self.db = FAISS.load_local(INDEX_DATABASE_PATH, self.embeddings) if os.path.exists(index_cache) else None
         index_json = os.path.join(INDEX_DATABASE_PATH, "index.json")
-        self.index_list = (
-            self.__load_exists_index(index_json)
-            if os.path.exists(index_json)
-            else list()
-        )
+        self.index_list = self.__load_exists_index(index_json) if os.path.exists(index_json) else list()
         self.text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=CHUNK_SIZE, chunk_overlap=CHUNK_OVERLAP, length_function=len
         )
@@ -298,9 +284,7 @@ class EmbeddingDatabase:
         if self.db is None:
             return False, None, None
 
-        docs = self.db.similarity_search_with_relevance_scores(
-            query, k=INDEX_NUM, score_threshold=0.4
-        )
+        docs = self.db.similarity_search_with_relevance_scores(query, k=INDEX_NUM, score_threshold=0.4)
         if not docs:
             return False, None, None
 
@@ -393,7 +377,7 @@ def dispose():
 if __name__ == "__main__":
     """
     Example usage of the RAG system when run as a script.
-    
+
     This block demonstrates the typical workflow:
     1. Initialize the system with an embedding model
     2. Add a document to the index
@@ -402,9 +386,7 @@ if __name__ == "__main__":
     5. Clean up resources
     """
     # Example Usage
-    init(
-        model_path="/Users/daniel/silicon/AI-Playground/LlamaCPP/models/llm/gguf/bge-large-en-v1.5-q8_0.gguf"
-    )
+    init(model_path="/Users/daniel/silicon/AI-Playground/LlamaCPP/models/llm/gguf/bge-large-en-v1.5-q8_0.gguf")
     add_index_file("/Users/daniel/silicon/AI-Playground/hello.txt")
     success, context, source = query("What is the content about?")
     print("Query success:", success)

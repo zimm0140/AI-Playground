@@ -12,11 +12,12 @@ Thank you for your interest in contributing to AI-Playground! This document outl
 ### Option 1: Using Conda (Recommended)
 
 1. **Install Conda**:
+
    - Download and install [Miniconda](https://docs.conda.io/en/latest/miniconda.html) or [Anaconda](https://www.anaconda.com/products/distribution)
 
 1. **Create and activate the environment**:
 
-```bash
+````bash
 
 ## Create a new Conda environment
 
@@ -247,3 +248,4 @@ commit automatically with `git commit -s`.
 -----
 
 Again, thanks for your interest in contributing to this project. We appreciate your efforts to make our project even better!
+````

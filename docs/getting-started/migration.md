@@ -9,7 +9,7 @@ Version 2.x introduces significant changes to hardware detection, environment ma
 
 ### Step 1: Update Your Repository
 
-```bash
+````bash
 git pull origin main
 
 ```text
@@ -20,11 +20,11 @@ It's recommended to create a fresh environment for v2.x:
 
 ```bash
 
-# Remove old environment
+## Remove old environment
 
 rm -rf .venv
 
-# Set up new environment with hardware detection
+## Set up new environment with hardware detection
 
 python setup_hardware_env.py --clean
 
@@ -66,7 +66,7 @@ Configuration files have changed format in v2.x. If you have custom configuratio
 1. Workflows now use the new format in `v2.x`. To migrate existing workflows:
 
    ```bash
-   # Convert old workflow to new format
+   ## Convert old workflow to new format
 
    python service/tools/convert_workflow.py --input old_workflow.json --output new_workflow.json
    ```text
@@ -83,11 +83,11 @@ Example of updated API calls:
 
 ```python
 
-# Old v1.x API call
+## Old v1.x API call
 
 response = requests.post("<http://localhost:8000/api/v1/workflow",> json=workflow_data)
 
-# New v2.x API call
+## New v2.x API call
 
 headers = {"X-API-Key": "your_api_key"}
 response = requests.post("<http://localhost:8000/api/v2/workflow",> headers=headers, json=workflow_data)
@@ -131,3 +131,4 @@ For further assistance, please [open an issue](https://github.com/intel/AI-Playg
 
 ---
 **Previous**: [Installation Guide](installation.md) | **Next**: [Hardware Overview](../hardware/overview.md) | **See also**: [Troubleshooting](../reference/troubleshooting.md)
+````

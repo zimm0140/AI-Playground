@@ -18,25 +18,23 @@ import json
 import os
 import re
 import time
-from typing import Any, List, Dict
+from typing import Any, Dict, List
+
+import aipg_utils as utils
 
 # from sentence_transformers import SentenceTransformer
 import intel_extension_for_pytorch as ipex  # noqa: F401
+import service_config
 import torch
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_community.document_loaders.markdown import UnstructuredMarkdownLoader
-from langchain_community.document_loaders.pdf import PyPDFLoader
-from langchain_community.document_loaders.text import TextLoader
-from langchain_community.document_loaders.word_document import (
-    UnstructuredWordDocumentLoader,
-    Docx2txtLoader,
-)
-from langchain_community.vectorstores.faiss import FAISS, Document
 from langchain_core.embeddings import Embeddings
 from sentence_transformers import SentenceTransformer
 
-import aipg_utils as utils
-import service_config
+from langchain_community.document_loaders.markdown import UnstructuredMarkdownLoader
+from langchain_community.document_loaders.pdf import PyPDFLoader
+from langchain_community.document_loaders.text import TextLoader
+from langchain_community.document_loaders.word_document import Docx2txtLoader, UnstructuredWordDocumentLoader
+from langchain_community.vectorstores.faiss import FAISS, Document
 
 #### CONFIGURATIONS ------------------------------------------------------------------------------------------------------------------------
 INDEX_DATABASE_PATH = "./db/"  # Faiss database folder
@@ -49,36 +47,29 @@ MAX_NEW_TOKENS = 320  # Max length of LLM output
 class EmbeddingWrapper(Embeddings):
     """
     Wrapper class for SentenceTransformer embeddings to integrate with LangChain.
-    
+
     This class implements the LangChain Embeddings interface, loading embedding models
     from local storage and providing methods to create embeddings for documents and queries.
     """
+
     def __init__(self, repo_id: str):
         """
         Initialize the embedding model.
-        
+
         Args:
             repo_id: Repository ID for the embedding model to load
         """
-        model_embd_path = os.path.join(
-            service_config.service_model_paths.get("embedding"), repo_id.replace("/", "---")
-        )
+        model_embd_path = os.path.join(service_config.service_model_paths.get("embedding"), repo_id.replace("/", "---"))
         start = time.time()
         print(f"******* loading {model_embd_path} start ")
-        self.model = SentenceTransformer(
-            model_embd_path, trust_remote_code=True, device=service_config.device
-        )
+        self.model = SentenceTransformer(model_embd_path, trust_remote_code=True, device=service_config.device)
 
-        print(
-            "******* loading {} finish. cost{:3f}".format(
-                model_embd_path, time.time() - start
-            )
-        )
+        print("******* loading {} finish. cost{:3f}".format(model_embd_path, time.time() - start))
 
     def to(self, device: str):
         """
         Move the model to the specified device.
-        
+
         Args:
             device: Target device for the model
         """
@@ -87,18 +78,16 @@ class EmbeddingWrapper(Embeddings):
     def embed_documents(self, texts: List[str]) -> List[List[float]]:
         """
         Create embeddings for a list of documents.
-        
+
         Args:
             texts: List of text strings to embed
-            
+
         Returns:
             List of embedding vectors as lists of floats
         """
         torch.xpu.synchronize()
         t0 = time.time()
-        embeddings = [
-            self.model.encode(text, normalize_embeddings=True) for text in texts
-        ]
+        embeddings = [self.model.encode(text, normalize_embeddings=True) for text in texts]
         # Convert embeddings from NumPy arrays to lists for serialization
         embeddings_as_lists = [embedding.tolist() for embedding in embeddings]
         torch.xpu.synchronize()
@@ -109,10 +98,10 @@ class EmbeddingWrapper(Embeddings):
     def embed_query(self, text: str) -> List[float]:
         """
         Create embedding for a query string.
-        
+
         Args:
             text: Query text to embed
-            
+
         Returns:
             Embedding vector as a list of floats
         """
@@ -122,10 +111,11 @@ class EmbeddingWrapper(Embeddings):
 class EmbeddingDatabase:
     """
     FAISS vector database for document embeddings.
-    
+
     Manages document embeddings, persistence, and retrieval operations.
     Supports adding, querying, and deleting document indexes.
     """
+
     db: FAISS
     embeddings: EmbeddingWrapper
     text_splitter: RecursiveCharacterTextSplitter
@@ -134,7 +124,7 @@ class EmbeddingDatabase:
     def __init__(self, embeddings: EmbeddingWrapper):
         """
         Initialize the embedding database.
-        
+
         Args:
             embeddings: EmbeddingWrapper instance for creating embeddings
         """
@@ -150,11 +140,7 @@ class EmbeddingDatabase:
             else None
         )
         index_json = os.path.join(INDEX_DATABASE_PATH, "index.json")
-        self.index_list = (
-            self.__load_exists_index(index_json)
-            if os.path.exists(index_json)
-            else list()
-        )
+        self.index_list = self.__load_exists_index(index_json) if os.path.exists(index_json) else list()
         self.text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=CHUNK_SIZE,
             chunk_overlap=CHUNK_OVERLAP,
@@ -165,7 +151,7 @@ class EmbeddingDatabase:
     def to(self, device: str):
         """
         Move the embedding model to the specified device.
-        
+
         Args:
             device: Target device for the embedding model
         """
@@ -174,10 +160,10 @@ class EmbeddingDatabase:
     def __load_exists_index(self, index_json: str):
         """
         Load existing index information from JSON file.
-        
+
         Args:
             index_json: Path to the index JSON file
-            
+
         Returns:
             List of index entries or empty list if loading fails
         """
@@ -191,7 +177,7 @@ class EmbeddingDatabase:
     def __save_index(self, file_base_name: str, md5: str, doc_ids: str):
         """
         Save index information to disk.
-        
+
         Args:
             file_base_name: Base name of the indexed file
             md5: MD5 hash of the file for identification
@@ -208,7 +194,7 @@ class EmbeddingDatabase:
     def __add_documents(self, file_base_name: str, docs: List[Document], md5: str):
         """
         Add documents to the FAISS database.
-        
+
         Args:
             file_base_name: Base name of the file being added
             docs: List of Document objects to add
@@ -226,10 +212,10 @@ class EmbeddingDatabase:
     def __analyze_file_to_db(self, file: str, md5: str):
         """
         Process a file and add its contents to the database.
-        
+
         Loads the file using the appropriate loader based on file type,
         splits the content into chunks, and adds them to the database.
-        
+
         Args:
             file: Path to the file to analyze
             md5: MD5 hash of the file for identification
@@ -271,10 +257,10 @@ class EmbeddingDatabase:
     def add_index_file(self, file: str):
         """
         Add a file to the index.
-        
+
         Args:
             file: Path to the file to index
-            
+
         Returns:
             Tuple of (status_code, md5) where status_code is 1 if file already exists
             and 0 if file was newly added
@@ -292,10 +278,10 @@ class EmbeddingDatabase:
     def query_database(self, query: str):
         """
         Query the database for relevant document content.
-        
+
         Args:
             query: The query string to search for
-            
+
         Returns:
             Tuple of (success, context, source_file) where:
             - success: Boolean indicating if relevant content was found
@@ -308,9 +294,7 @@ class EmbeddingDatabase:
         print("******* query from database ++ ")
         if self.db is None:
             return False, None, None
-        docs = self.db.similarity_search_with_relevance_scores(
-            query, k=2, score_threshold=0.4
-        )
+        docs = self.db.similarity_search_with_relevance_scores(query, k=2, score_threshold=0.4)
         if docs.__len__() == 0:
             return False, None, None
         # print("------------docs: ", docs[:2])
@@ -327,7 +311,7 @@ class EmbeddingDatabase:
     def delete_index(self, md5: str):
         """
         Delete a document from the index by its MD5 hash.
-        
+
         Args:
             md5: MD5 hash of the document to delete
         """
@@ -361,14 +345,14 @@ class EmbeddingDatabase:
 def add_index_file(file: str):
     """
     Add a file to the RAG index.
-    
+
     Args:
         file: Path to the file to index
-        
+
     Returns:
         Tuple of (status_code, md5) where status_code is 1 if file already exists
         and 0 if file was newly added
-        
+
     Raises:
         Exception: If file type is not supported
     """
@@ -379,7 +363,7 @@ def add_index_file(file: str):
         result = embedding_database.add_index_file(file)
         torch.xpu.synchronize()
         end = time.time()
-        print(f"add index file cost {end-start}s")
+        print(f"add index file cost {end - start}s")
     else:
         raise Exception("not suppported file type")
     return result
@@ -388,7 +372,7 @@ def add_index_file(file: str):
 def to(device: str):
     """
     Move the embedding model to the specified device.
-    
+
     Args:
         device: Target device for the embedding model
     """
@@ -399,10 +383,10 @@ def to(device: str):
 def query(query: str):
     """
     Query the RAG database for relevant content.
-    
+
     Args:
         query: The query string to search for
-        
+
     Returns:
         Tuple of (success, context, source_file) with relevant document information
     """
@@ -411,7 +395,7 @@ def query(query: str):
     start = time.time()
     success, context, source_file = embedding_database.query_database(query)
     end = time.time()
-    print(f'query by keyword "{query}" cost {end-start}s')
+    print(f'query by keyword "{query}" cost {end - start}s')
     torch.xpu.synchronize()
     return success, context, source_file
 
@@ -419,7 +403,7 @@ def query(query: str):
 def delete_index(md5: str):
     """
     Delete a document from the RAG index by its MD5 hash.
-    
+
     Args:
         md5: MD5 hash of the document to delete
     """
@@ -430,7 +414,7 @@ def delete_index(md5: str):
 def get_index_list():
     """
     Get a list of all indexed documents.
-    
+
     Returns:
         List of document index entries with name, MD5, and document IDs
     """
@@ -447,9 +431,9 @@ Is_Inited = False
 def init(repo_id: str, device: int):
     """
     Initialize the RAG system.
-    
+
     Sets up the embedding model and database, and configures the device.
-    
+
     Args:
         repo_id: Repository ID for the embedding model
         device: Device ID for XPU acceleration
@@ -465,7 +449,7 @@ def init(repo_id: str, device: int):
 def dispose():
     """
     Clean up RAG system resources.
-    
+
     Releases memory used by embedding models and database, and clears GPU cache.
     """
     global embedding_database, embedding_wrapper, Is_Inited

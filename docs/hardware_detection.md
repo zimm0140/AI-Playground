@@ -11,7 +11,7 @@ If using from another project, you can install directly:
 
 ```bash
 
-# From the repository root
+## From the repository root
 
 pip install -e .
 
@@ -25,21 +25,21 @@ Import directly from the `hardware_detection` package:
 
 ```python
 
-# Import from the hardware_detection package (recommended)
+## Import from the hardware_detection package (recommended)
 
 from hardware_detection import detect_hardware_type, get_gpu_info, get_hardware_info
 
-# Check hardware type
+## Check hardware type
 
 hardware_type = detect_hardware_type()
 if hardware_type == "bmg":  # NVIDIA GPU
 
-    # NVIDIA-specific code
+    ## NVIDIA-specific code
 
     pass
 elif hardware_type == "arl_h":  # AMD GPU
 
-    # AMD-specific code
+    ## AMD-specific code
 
     pass
 
@@ -51,11 +51,11 @@ The module can also be imported from the legacy location, but this approach is d
 
 ```python
 
-# Legacy import (deprecated)
+## Legacy import (deprecated)
 
 from tools.hardware import hardware_detection
 
-# Check hardware type
+## Check hardware type
 
 hardware_type = hardware_detection.detect_hardware_type()
 
@@ -72,13 +72,13 @@ Detect the available hardware type.
 **Returns:**
 
 - A string representing the hardware type:
-    - `"base"`: CPU only
-    - `"bmg"`: NVIDIA GPU
-    - `"arl_h"`: AMD GPU
-    - `"acm"`: Intel Arc GPU
-    - `"mtl"`: Intel Meteor Lake
-    - `"lnl"`: Intel Lunar Lake
-    - `"ovino"`: OpenVINO-compatible
+  - `"base"`: CPU only
+  - `"bmg"`: NVIDIA GPU
+  - `"arl_h"`: AMD GPU
+  - `"acm"`: Intel Arc GPU
+  - `"mtl"`: Intel Meteor Lake
+  - `"lnl"`: Intel Lunar Lake
+  - `"ovino"`: OpenVINO-compatible
 
 **Example:**
 
@@ -113,10 +113,10 @@ Get information about the CPU.
 **Returns:**
 
 - A dictionary containing CPU information:
-    - `vendor`: CPU manufacturer
-    - `name`: CPU model name
-    - `cores`: Number of CPU cores
-    - `features`: (Optional) List of CPU features
+  - `vendor`: CPU manufacturer
+  - `name`: CPU model name
+  - `cores`: Number of CPU cores
+  - `features`: (Optional) List of CPU features
 
 **Example:**
 
@@ -134,12 +134,12 @@ Get comprehensive information about the system hardware.
 **Returns:**
 
 - A dictionary with hardware information:
-    - `system`: Operating system
-    - `python_version`: Python version
-    - `gpus`: List of available GPUs
-    - `cpu`: CPU information
-    - `detected_hardware`: Detected hardware type
-    - `openvino_available`: Whether OpenVINO is available
+  - `system`: Operating system
+  - `python_version`: Python version
+  - `gpus`: List of available GPUs
+  - `cpu`: CPU information
+  - `detected_hardware`: Detected hardware type
+  - `openvino_available`: Whether OpenVINO is available
 
 **Example:**
 
@@ -183,33 +183,33 @@ still supported but will display deprecation warnings.
 The new package structure provides:
 
 1. Better dependency management
-2. Proper namespacing
-3. Type hints and documentation
-4. Easier testing
-5. Future extensibility
+1. Proper namespacing
+1. Type hints and documentation
+1. Easier testing
+1. Future extensibility
 
 ### Steps to Migrate
 
 1. Replace import statements:
 
    ```python
-   # Old
+   ## Old
 
    from tools.hardware import hardware_detection
 
-   # New
+   ## New
 
    from hardware_detection import detect_hardware_type, get_gpu_info
    ```
 
-2. Update function calls:
+1. Update function calls:
 
    ```python
-   # Old
+   ## Old
 
    hardware_type = hardware_detection.detect_hardware_type()
 
-   # New
+   ## New
 
    hardware_type = detect_hardware_type()
    ```

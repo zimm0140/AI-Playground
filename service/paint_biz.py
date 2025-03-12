@@ -24,34 +24,33 @@ import gc
 import os
 import queue
 import random
+import re
 import time
+from threading import Event
 from typing import Any, Callable, Dict, List
+
 import aipg_utils as utils
-import service_config
 import inpaint_utils
-from diffusers import (
-    DiffusionPipeline,
-    StableDiffusionPipeline,
-    StableDiffusionXLPipeline,
-    AutoPipelineForInpainting,
-    AutoPipelineForImage2Image,
-    StableDiffusionImg2ImgPipeline,
-    StableDiffusionXLImg2ImgPipeline,
-    StableDiffusionInpaintPipeline,
-    StableDiffusionXLInpaintPipeline,
-    LCMScheduler,
-    AutoencoderTiny,
-)
-from diffusers.pipelines.stable_diffusion.safety_checker import (
-    StableDiffusionSafetyChecker,
-)
+import schedulers_util
+import service_config
 import torch
+from compel import Compel
+from diffusers import (
+    AutoencoderTiny,
+    AutoPipelineForImage2Image,
+    AutoPipelineForInpainting,
+    DiffusionPipeline,
+    LCMScheduler,
+    StableDiffusionImg2ImgPipeline,
+    StableDiffusionInpaintPipeline,
+    StableDiffusionPipeline,
+    StableDiffusionXLImg2ImgPipeline,
+    StableDiffusionXLInpaintPipeline,
+    StableDiffusionXLPipeline,
+)
+from diffusers.pipelines.stable_diffusion.safety_checker import StableDiffusionSafetyChecker
 from PIL import Image
 from realesrgan import RealESRGANer
-import re
-import schedulers_util
-from compel import Compel
-from threading import Event
 from xpu_hijacks import ipex_hijacks
 
 # Apply Intel XPU (GPU) hijacks to make PyTorch operations work on Intel GPUs
@@ -72,7 +71,7 @@ print("workarounds applied")
 class TextImageParams:
     """
     Base parameters class for text-to-image generation.
-    
+
     Attributes:
         device: GPU device ID to use for generation
         prompt: Text prompt describing the desired image
@@ -90,6 +89,7 @@ class TextImageParams:
         image_preview: Whether to enable preview during generation (0=off, 1=on)
         safe_check: Whether to enable safety checking (0=off, 1=on)
     """
+
     device: int
     prompt: str
     model_name: str
@@ -113,13 +113,14 @@ class TextImageParams:
 class ImageToImageParams(TextImageParams):
     """
     Parameters for image-to-image generation.
-    
+
     Extends TextImageParams with image source and denoising strength.
-    
+
     Attributes:
         image: Path to the source image
         denoise: Strength of transformation (0.0-1.0, higher = more transformation)
     """
+
     image: str
     denoise: float
 
@@ -127,36 +128,39 @@ class ImageToImageParams(TextImageParams):
 class UpscaleImageParams(ImageToImageParams):
     """
     Parameters for image upscaling.
-    
+
     Extends ImageToImageParams with scaling factor.
-    
+
     Attributes:
         scale: Factor by which to upscale the image
     """
+
     scale: float
 
 
 class InpaintParams(ImageToImageParams):
     """
     Parameters for image inpainting.
-    
+
     Extends ImageToImageParams with a mask image that defines the area to inpaint.
-    
+
     Attributes:
         mask_image: Path to the mask image (white areas will be inpainted)
     """
+
     mask_image: str
 
 
 class OutpaintParams(ImageToImageParams):
     """
     Parameters for image outpainting.
-    
+
     Extends ImageToImageParams with a direction to extend the image.
-    
+
     Attributes:
         direction: Direction to extend the image ("left", "right", "up", "down")
     """
+
     direction: str
 
 
@@ -164,6 +168,7 @@ class StopGenerateException(Exception):
     """
     Exception raised when image generation is stopped by user request.
     """
+
     def __str__(self):
         return "user stop generate image"
 
@@ -171,9 +176,10 @@ class StopGenerateException(Exception):
 class NoWatermark:
     """
     Dummy watermark class to replace the default watermarking in Stable Diffusion.
-    
+
     Used to disable watermarking on generated images.
     """
+
     def apply_watermark(self, img):
         return img
 
@@ -187,12 +193,12 @@ class NoWatermark:
 _basic_model_pipe: StableDiffusionPipeline | StableDiffusionXLPipeline = None
 # Extended model pipeline for specialized tasks (img2img, inpainting, etc.)
 _ext_model_pipe: (
-        StableDiffusionPipeline
-        | StableDiffusionXLPipeline
-        | StableDiffusionImg2ImgPipeline
-        | StableDiffusionXLImg2ImgPipeline
-        | StableDiffusionInpaintPipeline
-        | StableDiffusionXLInpaintPipeline
+    StableDiffusionPipeline
+    | StableDiffusionXLPipeline
+    | StableDiffusionImg2ImgPipeline
+    | StableDiffusionXLImg2ImgPipeline
+    | StableDiffusionInpaintPipeline
+    | StableDiffusionXLInpaintPipeline
 ) = None
 # RealESRGAN super-resolution model instance for upscaling
 _realESRGANer: RealESRGANer = None
@@ -247,17 +253,17 @@ _safety_checker: StableDiffusionSafetyChecker = None
 def get_basic_model(input_model_name: str) -> DiffusionPipeline | Any:
     """
     Load or retrieve the basic diffusion model pipeline.
-    
+
     This function manages loading and caching of the primary diffusion model.
     If the requested model is already loaded, it returns the cached instance.
     Otherwise, it loads the model from disk, configures it, and caches it for future use.
-    
+
     Args:
         input_model_name: The model name in format "config_key:model_name"
-        
+
     Returns:
         A configured diffusion pipeline ready for use
-        
+
     Raises:
         Exception: If the model cannot be found or loaded
         StopGenerateException: If loading is interrupted by user
@@ -295,15 +301,11 @@ def get_basic_model(input_model_name: str) -> DiffusionPipeline | Any:
         _basic_model_pipe = load_model_from_single_file(model_path)
     else:
         model_floder = model_name.replace("/", "---")
-        model_path = os.path.abspath(
-            os.path.join(model_base_path, model_floder, "model_index.json")
-        )
+        model_path = os.path.abspath(os.path.join(model_base_path, model_floder, "model_index.json"))
         if not os.path.exists(model_path):
             raise Exception(f'can not find model "{model_name}"', model_path)
 
-        _basic_model_pipe = load_model_from_pretrained(
-            os.path.abspath(os.path.join(model_base_path, model_floder))
-        )
+        _basic_model_pipe = load_model_from_pretrained(os.path.abspath(os.path.join(model_base_path, model_floder)))
 
     _last_lora = "None"
     _last_scheduler = "None"
@@ -321,11 +323,7 @@ def get_basic_model(input_model_name: str) -> DiffusionPipeline | Any:
     _basic_model_pipe.enable_vae_tiling()
     _basic_model_pipe.to(service_config.device)
 
-    print(
-        "load model {} finish. cost {}s".format(
-            model_name, round(time.time() - start, 3)
-        )
-    )
+    print("load model {} finish. cost {}s".format(model_name, round(time.time() - start, 3)))
 
     if load_model_callback is not None:
         load_model_callback("finish")
@@ -338,18 +336,16 @@ def get_basic_model(input_model_name: str) -> DiffusionPipeline | Any:
 def process_preview_taesd():
     """
     Initialize or reload the tiny autoencoder for generation previews.
-    
-    Loads the appropriate tiny autoencoder model (TAESD) based on the current 
+
+    Loads the appropriate tiny autoencoder model (TAESD) based on the current
     diffusion model type (SD1.5 or SDXL) to enable efficient generation previews.
     The TAESD provides fast approximate decoding of latent space for previews.
     """
     global _taesd_vae_type, _taesd_vae
 
     if isinstance(
-            _basic_model_pipe,
-            StableDiffusionXLPipeline
-            | StableDiffusionXLImg2ImgPipeline
-            | StableDiffusionXLInpaintPipeline,
+        _basic_model_pipe,
+        StableDiffusionXLPipeline | StableDiffusionXLImg2ImgPipeline | StableDiffusionXLInpaintPipeline,
     ) and (_taesd_vae_type != "sdxl" or _taesd_vae is None):
         _taesd_vae = AutoencoderTiny.from_pretrained(
             os.path.join(service_config.service_model_paths.get("preview"), "madebyollin---taesdxl"),
@@ -357,10 +353,8 @@ def process_preview_taesd():
         )
         _taesd_vae_type = "sdxl"
     elif isinstance(
-            _basic_model_pipe,
-            StableDiffusionPipeline
-            | StableDiffusionImg2ImgPipeline
-            | StableDiffusionInpaintPipeline,
+        _basic_model_pipe,
+        StableDiffusionPipeline | StableDiffusionImg2ImgPipeline | StableDiffusionInpaintPipeline,
     ) and (_taesd_vae_type != "sd1.5" or _taesd_vae is None):
         _taesd_vae = AutoencoderTiny.from_pretrained(
             os.path.join(service_config.service_model_paths.get("preview"), "madebyollin---taesd"),
@@ -374,19 +368,19 @@ def process_preview_taesd():
 def get_ext_pipe(params: TextImageParams, pipe_classes: List, init_class: any):
     """
     Get or initialize an extended pipeline for specialized tasks.
-    
-    Creates or reuses an extended pipeline for specific generation tasks like 
-    img2img, inpainting, or outpainting. If a suitable pipeline is already 
+
+    Creates or reuses an extended pipeline for specific generation tasks like
+    img2img, inpainting, or outpainting. If a suitable pipeline is already
     loaded, it will be reused; otherwise, a new one will be created.
-    
+
     Args:
         params: Generation parameters
         pipe_classes: List of valid pipeline classes for the task
         init_class: Class to use for initializing a new pipeline
-        
+
     Returns:
         Configured pipeline for the specified task
-        
+
     Raises:
         StopGenerateException: If initialization is interrupted by user
     """
@@ -412,13 +406,13 @@ def get_ext_pipe(params: TextImageParams, pipe_classes: List, init_class: any):
 def load_model_from_single_file(model_signle_file: str):
     """
     Load a diffusion model from a single file (safetensors or ckpt).
-    
+
     Attempts to load either an SDXL or SD1.5 model based on the filename,
     falling back to the other format if the initial attempt fails.
-    
+
     Args:
         model_signle_file: Path to the model file
-        
+
     Returns:
         Loaded diffusion pipeline
     """
@@ -426,42 +420,32 @@ def load_model_from_single_file(model_signle_file: str):
     is_xl = re.search("[-_]xl[-_\.]", base_name, flags=re.I) is not None
     if is_xl:
         try:
-            pipe = StableDiffusionXLPipeline.from_single_file(
-                model_signle_file, torch_dtype=torch.bfloat16
-            )
+            pipe = StableDiffusionXLPipeline.from_single_file(model_signle_file, torch_dtype=torch.bfloat16)
 
         except Exception:
-            pipe = StableDiffusionPipeline.from_single_file(
-                model_signle_file, torch_dtype=torch.bfloat16
-            )
+            pipe = StableDiffusionPipeline.from_single_file(model_signle_file, torch_dtype=torch.bfloat16)
     else:
         try:
-            pipe = StableDiffusionPipeline.from_single_file(
-                model_signle_file, torch_dtype=torch.bfloat16
-            )
+            pipe = StableDiffusionPipeline.from_single_file(model_signle_file, torch_dtype=torch.bfloat16)
         except Exception:
-            pipe = StableDiffusionXLPipeline.from_single_file(
-                model_signle_file, torch_dtype=torch.bfloat16
-            )
+            pipe = StableDiffusionXLPipeline.from_single_file(model_signle_file, torch_dtype=torch.bfloat16)
     return pipe
 
 
 def load_model_from_pretrained(model_dir: str):
     """
     Load a diffusion model from a directory of model components.
-    
+
     Detects and loads the appropriate model precision (fp16 or fp32)
     based on available model files.
-    
+
     Args:
         model_dir: Directory containing the model files
-        
+
     Returns:
         Loaded diffusion pipeline
     """
-    if os.path.exists(
-            os.path.join(model_dir, "unet/diffusion_pytorch_model.fp32.safetensors")
-    ) or os.path.exists(
+    if os.path.exists(os.path.join(model_dir, "unet/diffusion_pytorch_model.fp32.safetensors")) or os.path.exists(
         os.path.join(model_dir, "unet/diffusion_pytorch_model.fp32.bin")
     ):
         pipe = DiffusionPipeline.from_pretrained(
@@ -470,14 +454,10 @@ def load_model_from_pretrained(model_dir: str):
             variant="fp32",
             device=service_config.device,
         )
-    elif os.path.exists(
-            os.path.join(model_dir, "unet/diffusion_pytorch_model.fp16.safetensors")
-    ) or os.path.exists(
+    elif os.path.exists(os.path.join(model_dir, "unet/diffusion_pytorch_model.fp16.safetensors")) or os.path.exists(
         os.path.join(model_dir, "unet/diffusion_pytorch_model.fp16.bin")
     ):
-        pipe = DiffusionPipeline.from_pretrained(
-            model_dir, torch_dtype=torch.bfloat16, variant="fp16"
-        )
+        pipe = DiffusionPipeline.from_pretrained(model_dir, torch_dtype=torch.bfloat16, variant="fp16")
     else:
         pipe = DiffusionPipeline.from_pretrained(model_dir, torch_dtype=torch.bfloat16)
     return pipe
@@ -486,22 +466,18 @@ def load_model_from_pretrained(model_dir: str):
 def set_lora(pipe: StableDiffusionPipeline | StableDiffusionXLPipeline, lora: str):
     """
     Apply LoRA (Low-Rank Adaptation) weights to a diffusion model.
-    
+
     Loads and applies LoRA weights to customize model behavior.
     Caches the last used LoRA to avoid unnecessary reloading.
-    
+
     Args:
         pipe: The diffusion pipeline to modify
         lora: Name of the LoRA adapter to apply, or "None" to remove
-    
+
     Raises:
         Exception: If the specified LoRA cannot be found
     """
-    global \
-        _default_scheduler, \
-        _last_lora, \
-        download_progress_callback, \
-        download_completed_callback
+    global _default_scheduler, _last_lora, download_progress_callback, download_completed_callback
     if lora == _last_lora:
         return
     if lora != "None":
@@ -525,15 +501,13 @@ def set_lora(pipe: StableDiffusionPipeline | StableDiffusionXLPipeline, lora: st
     _last_lora = lora
 
 
-def set_scheduler(
-        pipe: StableDiffusionPipeline | StableDiffusionXLPipeline, scheduler_name: str
-):
+def set_scheduler(pipe: StableDiffusionPipeline | StableDiffusionXLPipeline, scheduler_name: str):
     """
     Set the scheduler for a diffusion pipeline.
-    
+
     Changes the noise scheduler used during the diffusion process,
     which affects the image generation quality and characteristics.
-    
+
     Args:
         pipe: The diffusion pipeline to modify
         scheduler_name: Name of the scheduler to use
@@ -544,33 +518,28 @@ def set_scheduler(
 
 
 def set_components(
-        pipe: (
-                StableDiffusionPipeline
-                | StableDiffusionXLPipeline
-                | StableDiffusionInpaintPipeline
-                | StableDiffusionXLInpaintPipeline
-        ),
-        params: TextImageParams,
+    pipe: (
+        StableDiffusionPipeline
+        | StableDiffusionXLPipeline
+        | StableDiffusionInpaintPipeline
+        | StableDiffusionXLInpaintPipeline
+    ),
+    params: TextImageParams,
 ):
     """
     Set up the components for a diffusion pipeline based on generation parameters.
-    
+
     Configures the pipeline with the appropriate scheduler, LoRA, safety checker,
     and preview functionality based on the provided parameters.
-    
+
     Args:
         pipe: The diffusion pipeline to configure
         params: Generation parameters to apply
-        
+
     Raises:
         StopGenerateException: If configuration is interrupted by user
     """
-    global \
-        _last_scheduler, \
-        _last_lora, \
-        load_model_components_callback, \
-        _taesd_vae, \
-        _safety_checker
+    global _last_scheduler, _last_lora, load_model_components_callback, _taesd_vae, _safety_checker
 
     if load_model_components_callback is not None:
         load_model_components_callback("start")
@@ -578,9 +547,7 @@ def set_components(
     if params.image_preview == 1:
         process_preview_taesd()
 
-    if params.safe_check and isinstance(
-            pipe, StableDiffusionPipeline | StableDiffusionInpaintPipeline
-    ):
+    if params.safe_check and isinstance(pipe, StableDiffusionPipeline | StableDiffusionInpaintPipeline):
         pipe.safety_checker = _safety_checker
     else:
         pipe.safety_checker = None
@@ -600,9 +567,9 @@ def set_components(
 def get_ESRGANer():
     """
     Get or initialize the RealESRGAN super-resolution model.
-    
+
     Lazy-loads the RealESRGAN model for image upscaling.
-    
+
     Returns:
         Configured RealESRGANer instance ready for upscaling
     """
@@ -616,15 +583,15 @@ def get_ESRGANer():
 def convert_prompt_to_compel_format(prompt):
     """
     Convert prompt text to the format expected by Compel.
-    
+
     Transforms common attention weight formats into the syntax used by Compel:
     - (word:1.2) becomes (word)1.2
     - [word] becomes (word)0.909090909
     - [word:1.2] becomes (word)0.9
-    
+
     Args:
         prompt: Original prompt text
-        
+
     Returns:
         Converted prompt compatible with Compel
     """
@@ -642,41 +609,36 @@ def convert_prompt_to_compel_format(prompt):
 
 
 def __callback_on_step_end__(
-        model: (
-                StableDiffusionPipeline
-                | StableDiffusionXLPipeline
-                | StableDiffusionInpaintPipeline
-                | StableDiffusionXLInpaintPipeline
-        ),
-        step: int,
-        timesteps: int,
-        callback_kwargs: Dict,
+    model: (
+        StableDiffusionPipeline
+        | StableDiffusionXLPipeline
+        | StableDiffusionInpaintPipeline
+        | StableDiffusionXLInpaintPipeline
+    ),
+    step: int,
+    timesteps: int,
+    callback_kwargs: Dict,
 ):
     """
     Callback function called at the end of each diffusion step.
-    
+
     Handles progress reporting and preview image generation during the diffusion process.
     If preview generation is enabled, it uses the tiny autoencoder to create
     approximate previews of the current image state every few steps.
-    
+
     Args:
         model: The diffusion model being used
         step: Current step number
         timesteps: Total number of timesteps
         callback_kwargs: Dictionary containing step data, including latents
-        
+
     Returns:
         The unchanged callback_kwargs dictionary
-        
+
     Raises:
         StopGenerateException: If generation is interrupted by user
     """
-    global \
-        step_end_callback, \
-        _generate_idx, \
-        _preview_enabled, \
-        _taesd_vae, \
-        _preview_queue
+    global step_end_callback, _generate_idx, _preview_enabled, _taesd_vae, _preview_queue
 
     assert_stop_generate()
 
@@ -700,14 +662,10 @@ def __callback_on_step_end__(
                         image[0],
                     )
             else:
-                step_end_callback(
-                    _generate_idx, step, model.num_timesteps, _preview_enabled, None
-                )
+                step_end_callback(_generate_idx, step, model.num_timesteps, _preview_enabled, None)
 
         else:
-            step_end_callback(
-                _generate_idx, step, model.num_timesteps, _preview_enabled, None
-            )
+            step_end_callback(_generate_idx, step, model.num_timesteps, _preview_enabled, None)
 
     return callback_kwargs
 
@@ -718,19 +676,17 @@ def __callback_on_step_end__(
 # region generate_image_function
 
 
-def convet_compel_prompt(
-        prompt: str, pipe: StableDiffusionPipeline | StableDiffusionXLPipeline
-):
+def convet_compel_prompt(prompt: str, pipe: StableDiffusionPipeline | StableDiffusionXLPipeline):
     """
     Process text prompt using Compel for improved text conditioning.
-    
-    Creates text embeddings for model input using Compel, which provides 
+
+    Creates text embeddings for model input using Compel, which provides
     improved control over text prompt weighting and emphasis.
-    
+
     Args:
         prompt: The text prompt to process
         pipe: The diffusion pipeline that will use the embeddings
-        
+
     Returns:
         Dictionary of inputs for the pipeline containing processed prompt embeddings
     """
@@ -767,19 +723,19 @@ def convet_compel_prompt(
 
 
 def text_to_image(
-        params: TextImageParams,
+    params: TextImageParams,
 ):
     """
     Generate images from text prompts.
-    
+
     The core text-to-image generation function that:
     1. Loads the appropriate model
     2. Processes the text prompt with Compel
     3. Runs diffusion with the specified parameters
     4. Outputs the generated images
-    
+
     Supports batch generation with different seeds for each image.
-    
+
     Args:
         params: Text-to-image generation parameters
     """
@@ -799,11 +755,7 @@ def text_to_image(
     with torch.inference_mode():
         while _generate_idx < params.generate_number:
             # Update seed for the current image generation iteration to ensure unique outputs in batch mode.
-            params.seed = (
-                random.randint(0, 0xFFFFFFFE)
-                if seed == -1
-                else seed + _generate_idx & 0xFFFFFFFF
-            )
+            params.seed = random.randint(0, 0xFFFFFFFE) if seed == -1 else seed + _generate_idx & 0xFFFFFFFF
             params.seed = 0 if params.seed == 0xFFFFFFFF else params.seed
             generator = torch.Generator("cpu").manual_seed(params.seed)
 
@@ -825,15 +777,15 @@ def text_to_image(
 def image_to_image(params: ImageToImageParams):
     """
     Transform an existing image using text prompts.
-    
+
     Performs image-to-image generation by:
     1. Loading the appropriate specialized pipeline
     2. Processing the input image
     3. Running diffusion with the text prompt to transform the image
     4. Outputting the generated images
-    
+
     The denoise parameter controls how much of the original image is preserved.
-    
+
     Args:
         params: Image-to-image generation parameters
     """
@@ -847,9 +799,7 @@ def image_to_image(params: ImageToImageParams):
     set_components(pipe, params)
     pipe.to(service_config.device)
     input_image = Image.open(params.image)
-    input_image = (
-        input_image.convert("RGB") if input_image.mode != "RGB" else input_image
-    )
+    input_image = input_image.convert("RGB") if input_image.mode != "RGB" else input_image
     if input_image.width != params.width or input_image.height != params.height:
         input_image = input_image.resize((params.width, params.height))
 
@@ -860,11 +810,7 @@ def image_to_image(params: ImageToImageParams):
     seed = params.seed
     with torch.inference_mode():
         while _generate_idx < params.generate_number:
-            params.seed = (
-                random.randint(0, 0xFFFFFFFE)
-                if seed == -1
-                else seed + _generate_idx & 0xFFFFFFFF
-            )
+            params.seed = random.randint(0, 0xFFFFFFFE) if seed == -1 else seed + _generate_idx & 0xFFFFFFFF
             params.seed = 0 if params.seed == 0xFFFFFFFF else params.seed
             generator = torch.Generator("cpu").manual_seed(params.seed)
 
@@ -889,14 +835,14 @@ def image_to_image(params: ImageToImageParams):
 def upscale(params: UpscaleImageParams):
     """
     Upscale an image to a higher resolution.
-    
+
     Offers two upscaling modes:
     1. Pure RealESRGAN upscaling (when denoise ≤ 0.1)
     2. Diffusion-enhanced upscaling (when denoise > 0.1)
-    
+
     The second mode combines Stable Diffusion refinement with RealESRGAN
     to produce high-quality upscaled images with enhanced details.
-    
+
     Args:
         params: Upscaling parameters including scale factor and denoise strength
     """
@@ -904,14 +850,10 @@ def upscale(params: UpscaleImageParams):
 
     input_image = Image.open(params.image)
 
-    input_image = (
-        input_image.convert("RGB") if input_image.mode != "RGB" else input_image
-    )
+    input_image = input_image.convert("RGB") if input_image.mode != "RGB" else input_image
 
     if params.denoise <= 0.1:
-        out_image = Image.fromarray(
-            get_ESRGANer().enhance(input_image, params.scale)[0]
-        )
+        out_image = Image.fromarray(get_ESRGANer().enhance(input_image, params.scale)[0])
         if image_out_callback is not None:
             image_out_callback(0, out_image, params)
     else:
@@ -947,9 +889,7 @@ def upscale(params: UpscaleImageParams):
                 callback_on_step_end=__callback_on_step_end__,
                 **custom_inputs,
             ).images[0]
-            out_image = Image.fromarray(
-                get_ESRGANer().enhance(out_image, params.scale)[0]
-            )
+            out_image = Image.fromarray(get_ESRGANer().enhance(out_image, params.scale)[0])
             params.width = out_image.width
             params.height = out_image.height
             output_image(pipe, out_image, params)
@@ -959,16 +899,16 @@ def upscale(params: UpscaleImageParams):
 def inpaint(params: InpaintParams):
     """
     Fill in masked regions of an image using text prompts.
-    
+
     Performs inpainting by:
     1. Loading a specialized inpainting pipeline
     2. Processing the input image and mask
     3. Slicing the image to focus on the masked area
     4. Running diffusion to generate content in the masked region
     5. Blending the new content with the original image
-    
+
     The mask defines which areas will be regenerated (white areas in the mask).
-    
+
     Args:
         params: Inpainting parameters including image path, mask path, and prompt
     """
@@ -985,14 +925,10 @@ def inpaint(params: InpaintParams):
 
     input_image = Image.open(params.image)
     mask_image = Image.open(params.mask_image)
-    input_image = (
-        input_image.convert("RGB") if input_image.mode != "RGB" else input_image
-    )
+    input_image = input_image.convert("RGB") if input_image.mode != "RGB" else input_image
     mask_image = mask_image.convert("RGB") if mask_image.mode != "RGB" else mask_image
 
-    slice_image, mask_image, slice_box = inpaint_utils.pre_input_and_mask(
-        input_image, mask_image
-    )
+    slice_image, mask_image, slice_box = inpaint_utils.pre_input_and_mask(input_image, mask_image)
 
     slice_w, slice_h = slice_image.size
     out_width, out_height, out_radio = inpaint_utils.calc_out_size(
@@ -1009,11 +945,7 @@ def inpaint(params: InpaintParams):
     custom_inputs = convet_compel_prompt(params.prompt, pipe)
     with torch.inference_mode():
         while _generate_idx < params.generate_number:
-            params.seed = (
-                random.randint(0, 0xFFFFFFFE)
-                if seed == -1
-                else seed + _generate_idx & 0xFFFFFFFF
-            )
+            params.seed = random.randint(0, 0xFFFFFFFE) if seed == -1 else seed + _generate_idx & 0xFFFFFFFF
             params.seed = 0 if params.seed == 0xFFFFFFFF else params.seed
             generator = torch.Generator("cpu").manual_seed(params.seed)
 
@@ -1032,15 +964,11 @@ def inpaint(params: InpaintParams):
                 force_unmasked_unchanged=True,
             ).images[0]
 
-            gen_image = pipe.image_processor.apply_overlay(
-                mask_image, slice_image, repainted_image
-            )
+            gen_image = pipe.image_processor.apply_overlay(mask_image, slice_image, repainted_image)
 
             if out_radio != 1:
                 realESRGANer = get_ESRGANer()
-                gen_image = Image.fromarray(
-                    realESRGANer.enhance(gen_image, out_radio)[0]
-                )
+                gen_image = Image.fromarray(realESRGANer.enhance(gen_image, out_radio)[0])
 
             slice_width = slice_box[2] - slice_box[0]
             slice_height = slice_box[3] - slice_box[1]
@@ -1056,16 +984,16 @@ def inpaint(params: InpaintParams):
 def outpaint(params: OutpaintParams):
     """
     Extend an image beyond its original boundaries using text prompts.
-    
+
     Performs outpainting by:
     1. Loading a specialized inpainting pipeline
     2. Expanding the original image with transparent/blank areas
     3. Creating a mask for the expanded areas
     4. Running diffusion to generate content in the expanded areas
     5. Blending the new content with the original image
-    
+
     The direction parameter determines which side to expand the image.
-    
+
     Args:
         params: Outpainting parameters including image path, direction, and prompt
     """
@@ -1112,11 +1040,7 @@ def outpaint(params: OutpaintParams):
     custom_inputs = convet_compel_prompt(params.prompt, pipe)
     with torch.inference_mode():
         while _generate_idx < params.generate_number:
-            params.seed = (
-                random.randint(0, 0xFFFFFFFE)
-                if seed == -1
-                else seed + _generate_idx & 0xFFFFFFFF
-            )
+            params.seed = random.randint(0, 0xFFFFFFFE) if seed == -1 else seed + _generate_idx & 0xFFFFFFFF
             params.seed = 0 if params.seed == 0xFFFFFFFF else params.seed
             generator = torch.Generator("cpu").manual_seed(params.seed)
             repainted_image: Image.Image = pipe(
@@ -1134,9 +1058,7 @@ def outpaint(params: OutpaintParams):
                 force_unmasked_unchanged=True,
             ).images[0]
 
-            unmasked_unchanged_image = pipe.image_processor.apply_overlay(
-                inpaint_mask, inpaint_image, repainted_image
-            )
+            unmasked_unchanged_image = pipe.image_processor.apply_overlay(inpaint_mask, inpaint_image, repainted_image)
 
             if scale_ratio != 1:
                 unmasked_unchanged_image = Image.fromarray(
@@ -1150,12 +1072,12 @@ def outpaint(params: OutpaintParams):
 def is_image_completely_black(image: Image):
     """
     Check if an image is entirely black.
-    
+
     Used for safety checking to detect if an image was filtered out.
-    
+
     Args:
         image: The PIL image to check
-        
+
     Returns:
         True if the image is completely black, False otherwise
     """
@@ -1164,15 +1086,15 @@ def is_image_completely_black(image: Image):
 
 
 def output_image(
-        pipe: StableDiffusionPipeline | StableDiffusionXLPipeline,
-        image: Image.Image,
-        params: TextImageParams,
+    pipe: StableDiffusionPipeline | StableDiffusionXLPipeline,
+    image: Image.Image,
+    params: TextImageParams,
 ):
     """
     Process and output a generated image.
-    
+
     Handles safety checking and sends the image to the output callback.
-    
+
     Args:
         pipe: The diffusion pipeline that generated the image
         image: The generated image
@@ -1187,14 +1109,14 @@ def output_image(
 def generate(params: TextImageParams):
     """
     Main entry point for image generation.
-    
+
     Dispatches to the appropriate generation function based on the mode parameter:
     - Mode 0: Text-to-image
     - Mode 1: Upscale
     - Mode 2: Image-to-image
     - Mode 3: Inpaint
     - Mode 4: Outpaint
-    
+
     Args:
         params: Generation parameters
     """
@@ -1248,18 +1170,11 @@ def generate(params: TextImageParams):
 def dispose_basic_model():
     """
     Clean up the basic model pipeline resources.
-    
+
     Releases memory used by the basic model pipeline, extended pipeline,
     and tiny autoencoder. Resets state variables and clears GPU cache.
     """
-    global \
-        _basic_model_pipe, \
-        _ext_model_pipe, \
-        _taesd_vae, \
-        _last_lora, \
-        _last_scheduler, \
-        _last_mode, \
-        _last_model_name
+    global _basic_model_pipe, _ext_model_pipe, _taesd_vae, _last_lora, _last_scheduler, _last_mode, _last_model_name
 
     stop_generate()
 
@@ -1287,7 +1202,7 @@ def dispose_basic_model():
 def dispose_ext_model():
     """
     Clean up the extended model pipeline resources.
-    
+
     Releases memory used by the extended model pipeline and clears GPU cache.
     """
     global _ext_model_pipe
@@ -1300,7 +1215,7 @@ def dispose_ext_model():
 def dispose():
     """
     Clean up all model resources.
-    
+
     Releases memory used by the RealESRGAN model and all diffusion pipelines.
     Called when shutting down or needing to free all resources.
     """
@@ -1314,7 +1229,7 @@ def dispose():
 def stop_generate():
     """
     Stop any ongoing image generation process.
-    
+
     Sets a flag to request generation stopping and waits for the process
     to acknowledge the stop request via an event.
     """
@@ -1330,10 +1245,10 @@ def stop_generate():
 def assert_stop_generate():
     """
     Check if generation should stop and raise an exception if so.
-    
+
     Called at various points during generation to allow early termination.
     Signals that the stop was acknowledged by setting an event.
-    
+
     Raises:
         StopGenerateException: If generation stop has been requested
     """
@@ -1347,7 +1262,7 @@ def assert_stop_generate():
 def clear_xpu_cache():
     """
     Clear the GPU (XPU) memory cache.
-    
+
     Utility function for manual memory management to free GPU memory.
     """
     torch.xpu.empty_cache()

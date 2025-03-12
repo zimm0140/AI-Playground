@@ -1,7 +1,7 @@
 """
 OpenVINO Backend Implementation Module
 ------------------------------------
-This module provides a concrete implementation of the LLMInterface for the OpenVINO 
+This module provides a concrete implementation of the LLMInterface for the OpenVINO
 runtime. It handles model loading, text generation, and resource management
 for Large Language Models optimized with Intel's OpenVINO toolkit.
 
@@ -10,13 +10,14 @@ providing the functionality necessary for integrating OpenVINO-optimized models
 with the rest of the system.
 """
 
-from typing import Dict, List, Callable
-from os import path
-from openvino_interface import LLMInterface
-import openvino_genai
-from openvino_params import LLMParams
-import openvino_model_config as model_config
 import gc
+from os import path
+from typing import Callable, Dict, List
+
+import openvino_genai
+import openvino_model_config as model_config
+from openvino_interface import LLMInterface
+from openvino_params import LLMParams
 
 
 class OpenVino(LLMInterface):
@@ -71,9 +72,7 @@ class OpenVino(LLMInterface):
             # Enable compilation cache for better performance
             enable_compile_cache = dict()
             enable_compile_cache["CACHE_DIR"] = "llm_cache"
-            self._model = openvino_genai.LLMPipeline(
-                model_path, "AUTO", **enable_compile_cache
-            )
+            self._model = openvino_genai.LLMPipeline(model_path, "AUTO", **enable_compile_cache)
             self._tokenizer = self._model.get_tokenizer()
 
             self._last_repo_id = model_repo_id
@@ -104,9 +103,7 @@ class OpenVino(LLMInterface):
         config = openvino_genai.GenerationConfig()
         config.max_new_tokens = max_tokens
 
-        full_prompt = self._tokenizer.apply_chat_template(
-            messages, add_generation_prompt=True
-        )
+        full_prompt = self._tokenizer.apply_chat_template(messages, add_generation_prompt=True)
         return self._model.generate(full_prompt, config, streamer)
 
     def unload_model(self):
