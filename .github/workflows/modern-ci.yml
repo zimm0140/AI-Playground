@@ -54,14 +54,7 @@ jobs:
 
       - name: Run tests with coverage
         run: |
-          python -m pytest -v hardware_detection/tests/ --cov=hardware_detection --cov-report=xml --cov-report=term-missing --import-mode=append
-
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
-        with:
-          file: ./coverage.xml
-          fail_ci_if_error: false
-          token: ${{ secrets.CODECOV_TOKEN }}
+          python -m pytest -v hardware_detection/tests/ --cov=hardware_detection --cov-report=term-missing --import-mode=append
 
   lint:
     runs-on: ubuntu-latest
