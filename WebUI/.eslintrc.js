@@ -9,10 +9,12 @@ module.exports = {
     'plugin:vue/vue3-recommended',
     'eslint:recommended',
     '@vue/typescript/recommended',
-    'prettier',
+    '@vue/eslint-config-typescript',
+    '@vue/eslint-config-prettier',
   ],
   parserOptions: {
     ecmaVersion: 2021,
+    parser: '@typescript-eslint/parser',
   },
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
@@ -38,4 +40,9 @@ module.exports = {
       },
     },
   ],
+  settings: {
+    'import/resolver': {
+      typescript: {},
+    },
+  },
 }
