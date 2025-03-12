@@ -9,10 +9,10 @@ Usage:
     python validate_components.py --components-dir DIR --output-dir DIR
 """
 
+import argparse
+import json
 import os
 import sys
-import json
-import argparse
 from datetime import datetime
 
 
@@ -29,7 +29,7 @@ def validate_component(component_file):
     issues = []
 
     try:
-        with open(component_file, "r", encoding="utf-8") as f:
+        with open(component_file, encoding="utf-8") as f:
             component = json.load(f)
     except json.JSONDecodeError as e:
         return False, [f"Invalid JSON: {str(e)}"]

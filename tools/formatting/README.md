@@ -16,29 +16,29 @@ This directory contains scripts for formatting code and documentation in the AI 
 
 To fix README formatting issues:
 
-```
+````text
 
 python tools/formatting/fix_readme.py [file]
 
-```
+```text
 
 For enhanced README formatting:
 
-```
+```text
 
 python tools/formatting/fix_readme_final.py [file]
 
-```
+```text
 
 ### JavaScript/TypeScript Formatting
 
 To format JavaScript or TypeScript files using Prettier:
 
-```
+```text
 
 node tools/formatting/fix_with_prettier.js [file]
 
-```
+```text
 
 ## Configuration
 
@@ -47,3 +47,4 @@ These tools use configuration files from the `config` directory:
 - `.prettierrc`, `.prettierrc.json`: Configuration for Prettier code formatter
 
 Note: Copies of these configuration files are also available in the project root directory for compatibility with tools that expect them there.
+````

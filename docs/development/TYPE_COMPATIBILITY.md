@@ -10,12 +10,12 @@ Python 3.10 introduced the pipe (`|`) operator as a more concise way to define u
 
 #### Before (Python 3.9 and earlier)
 
-````python
+\`\`\`text\`python
 from typing import Union
 
-def process_data(data: Union[dict, list]) -> Union[str, None]:
+def process_data(data: Union[dict, list]) -> Union\[str, None\]:
 
-```text
+````text
 
 ...
 
@@ -343,4 +343,5 @@ raise ValueError(f"Expected one of {acceptable_types}, got {type(data)}")
 
 Modern IDEs like VS Code with Pylance, PyCharm, or tools like mypy can help identify type annotation issues. Ensure your IDE is configured to check types with Python 3.10+
 compatibility.
+```text`
 ````

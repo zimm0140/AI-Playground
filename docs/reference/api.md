@@ -6,7 +6,7 @@ This document provides a comprehensive reference for the AI-Playground API, incl
 
 - [REST API](#rest-api)
 
-````text
+\`\`\`text\`text
 
 - [Authentication](#authentication)
 - [Model Management](#model-management)
@@ -14,7 +14,7 @@ This document provides a comprehensive reference for the AI-Playground API, incl
 - [Hardware Management](#hardware-management)
 - [System](#system)
 
-```text
+````text
 - [Python API](#python-api)
 
 ```text
@@ -1379,4 +1379,5 @@ client.set_hardware(device_type="cpu")
 
 ---
 **Previous**: [Python API Reference](python-api.md) | **Next**: [Configuration Reference](configuration.md) | **See also**: [API Design](../architecture/api-design.md)
+```text`
 ````

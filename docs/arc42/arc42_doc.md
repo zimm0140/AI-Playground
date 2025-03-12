@@ -69,12 +69,13 @@ interface of an "apiService", which especially specifies the set up steps needed
 <table>
 <thead>
 
-````text
+\`\`\`text\`text
+
 <th>Debt</th>
 <th>Description</th>
 <th>Impact</th>
 
-```text
+````text
 </thead>
   <tr>
 
@@ -157,4 +158,5 @@ computational resources.
 ```text
   </tr>
 </table>
+```text`
 ````

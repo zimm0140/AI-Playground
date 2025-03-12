@@ -13,7 +13,7 @@ import sys
 
 def fix_artifact_names(file_path):
     """Fix artifact names in a workflow file."""
-    with open(file_path, "r", encoding="utf-8") as f:
+    with open(file_path, encoding="utf-8") as f:
         content = f.read()
 
     # Keep track of the changes we make

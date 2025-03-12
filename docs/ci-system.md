@@ -45,7 +45,7 @@ Pre-commit hooks are used to catch issues before they're committed to the reposi
 
 To set up pre-commit hooks:
 
-````bash
+\`\`\`text\`bash
 
 ## On Unix/Linux/macOS or Git Bash
 
@@ -53,9 +53,9 @@ To set up pre-commit hooks:
 
 ## On Windows with PowerShell
 
-.\.github\setup-hooks.ps1
+..github\\setup-hooks.ps1
 
-```text
+````text
 
 ### Available Hooks
 
@@ -175,4 +175,5 @@ The CI system tracks performance metrics to help identify bottlenecks and improv
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
 - [Pre-commit Hooks Guide](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks)
 - [Ruff Documentation](https://docs.astral.sh/ruff/)
+```text`
 ````

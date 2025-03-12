@@ -8,10 +8,10 @@ This script automatically fixes Ruff linting issues in the service directory by:
 3. Generating a report of what was fixed and what needs manual attention
 """
 
-import os
-import sys
-import subprocess
 import glob
+import os
+import subprocess
+import sys
 
 
 def find_service_python_files():
@@ -47,7 +47,7 @@ def run_ruff_fix(files=None):
         result = subprocess.run(
             ["ruff", "check", "--select=E,F,W", "--statistics"] + files,
             capture_output=True,
-            text=True,
+            text=True, check=False,
         )
 
         # Print the full output for debugging
@@ -66,7 +66,7 @@ def run_ruff_fix(files=None):
         _ = subprocess.run(  # noqa: F841 (was fix_result)
             ["ruff", "check", "--select=E,F,W", "--fix"] + files,
             capture_output=True,
-            text=True,
+            text=True, check=False,
         )
 
         # Run check again to see what issues remain
@@ -74,7 +74,7 @@ def run_ruff_fix(files=None):
         after_result = subprocess.run(
             ["ruff", "check", "--select=E,F,W", "--statistics"] + files,
             capture_output=True,
-            text=True,
+            text=True, check=False,
         )
 
         print("After fix Ruff check output:")
@@ -88,21 +88,21 @@ def run_ruff_fix(files=None):
             subprocess.run(
                 ["ruff", "check", "--select=F401", "--fix"] + files,
                 capture_output=True,
-                text=True,
+                text=True, check=False,
             )
 
             # Try fixing just line length issues (E501)
             subprocess.run(
                 ["ruff", "check", "--select=E501", "--fix"] + files,
                 capture_output=True,
-                text=True,
+                text=True, check=False,
             )
 
             # Run one final check
             final_result = subprocess.run(
                 ["ruff", "check", "--select=E,F,W", "--statistics"] + files,
                 capture_output=True,
-                text=True,
+                text=True, check=False,
             )
 
             if final_result.returncode == 0:

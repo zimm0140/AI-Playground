@@ -17,12 +17,15 @@ import json
 import os
 import threading
 from queue import Empty, Queue
-from typing import List
 
 import aipg_utils as utils
 import realesrgan
 from file_downloader import FileDownloader
-from model_downloader import DownloadException, HFPlaygroundDownloader, NotEnoughDiskSpaceException
+from model_downloader import (
+    DownloadException,
+    HFPlaygroundDownloader,
+    NotEnoughDiskSpaceException,
+)
 from psutil._common import bytes2human
 from web_request_bodies import DownloadModelData
 
@@ -95,12 +98,7 @@ class Model_Downloader_Adapter:
             speed: Current download speed in bytes per second
         """
         print(
-            "download {} {}/{} speed {}".format(
-                repo_id,
-                bytes2human(download_size),
-                bytes2human(total_size),
-                bytes2human(speed),
-            )
+            f"download {repo_id} {bytes2human(download_size)}/{bytes2human(total_size)} speed {bytes2human(speed)}"
         )
         data = {
             "type": "download_model_progress",
@@ -108,7 +106,7 @@ class Model_Downloader_Adapter:
             "download_size": bytes2human(download_size),
             "total_size": bytes2human(total_size),
             "percent": round(download_size / total_size * 100, 2),
-            "speed": "{}/s".format(bytes2human(speed)),
+            "speed": f"{bytes2human(speed)}/s",
         }
         self.put_msg(data)
 
@@ -166,7 +164,7 @@ class Model_Downloader_Adapter:
             self.put_msg({"type": "error", "err_type": "unknown_exception"})
         print(f"exception:{str(ex)}")
 
-    def download(self, model_download_list: List[DownloadModelData]):
+    def download(self, model_download_list: list[DownloadModelData]):
         """
         Start downloading a list of models.
 
@@ -182,7 +180,7 @@ class Model_Downloader_Adapter:
         threading.Thread(target=self.__start_download, kwargs={"model_download_list": model_download_list}).start()
         return self.generator()
 
-    def __start_download(self, model_download_list: List[DownloadModelData]):
+    def __start_download(self, model_download_list: list[DownloadModelData]):
         """
         Download thread that processes each model in the list.
 

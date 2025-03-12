@@ -8,7 +8,7 @@ The LLMParams class encapsulates all configuration options needed for text gener
 including conversation prompts, device selection, RAG configuration, and model settings.
 """
 
-from typing import Any, Dict, List
+from typing import Any
 
 
 class LLMParams:
@@ -30,12 +30,12 @@ class LLMParams:
                               (temperature, top_p, etc.)
     """
 
-    prompt: List[Dict[str, str]]
+    prompt: list[dict[str, str]]
     device: int
     enable_rag: bool
     model_repo_id: str
     max_tokens: int
-    generation_parameters: Dict[str, Any]
+    generation_parameters: dict[str, Any]
 
     def __init__(
         self,

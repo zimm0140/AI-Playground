@@ -6,12 +6,12 @@ This script analyzes the codebase for potential platform-specific issues
 that might cause compatibility problems across different operating systems.
 """
 
-import os
-import re
+import argparse
 import glob
 import json
+import os
+import re
 import sys
-import argparse
 from collections import defaultdict
 
 
@@ -155,7 +155,7 @@ class PlatformCompatibilityChecker:
 
         # Read the file and check its content
         try:
-            with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+            with open(file_path, encoding="utf-8", errors="ignore") as f:
                 content = f.read()
 
                 # Check for line endings
@@ -223,7 +223,7 @@ class PlatformCompatibilityChecker:
             return issues
 
         try:
-            with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+            with open(file_path, encoding="utf-8", errors="ignore") as f:
                 content = f.read()
 
                 # Check for platform-specific imports
@@ -284,7 +284,7 @@ class PlatformCompatibilityChecker:
             return issues
 
         try:
-            with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+            with open(file_path, encoding="utf-8", errors="ignore") as f:
                 content = f.read()
 
                 # Check for platform-specific conditional blocks

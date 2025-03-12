@@ -21,10 +21,11 @@ import queue
 import shutil
 import time
 import traceback
+from collections.abc import Callable
 from os import makedirs, path, rename
 from threading import Lock, Thread
 from time import sleep
-from typing import Any, Callable, Dict, List
+from typing import Any
 
 import aipg_utils as utils
 import psutil
@@ -132,9 +133,7 @@ class NotEnoughDiskSpaceException(Exception):
         """
         self.requires_space = requires_space
         self.free_space = free_space
-        message = "Not enough disk space. It requires {}, but only {} of free space is available".format(
-            bytes2human(requires_space), bytes2human(free_space)
-        )
+        message = f"Not enough disk space. It requires {bytes2human(requires_space)}, but only {bytes2human(free_space)} of free space is available"
         super().__init__(message)
 
 
@@ -339,7 +338,7 @@ class HFPlaygroundDownloader:
         else:
             return item["size"]
 
-    def enum_file_list(self, file_list: List, enum_path: str, model_type: int, is_root=True):
+    def enum_file_list(self, file_list: list, enum_path: str, model_type: int, is_root=True):
         """
         Recursively enumerate files in a Hugging Face repository.
 
@@ -368,12 +367,7 @@ class HFPlaygroundDownloader:
                     model_type == 1
                     and is_root
                     and (name.endswith(".safetensors") or name.endswith(".pt") or name.endswith(".ckpt"))
-                ):
-                    continue
-                elif model_type == 5 and (name.endswith(".safetensors") or name.endswith(".onnx")):
-                    continue
-                # ignore no used files
-                elif (
+                ) or model_type == 5 and (name.endswith(".safetensors") or name.endswith(".onnx")) or (
                     name.endswith(".png")
                     or name.endswith(".gitattributes")
                     or name.endswith(".md")
@@ -390,7 +384,7 @@ class HFPlaygroundDownloader:
                 url = hf_hub_url(repo_id=utils.trim_repo(self.repo_id), subfolder=subfolder, filename=filename)
                 file_list.append(HFFileItem(relative_path, size, url))
 
-    def enum_sd_unet(self, file_list: List[str | Dict[str, Any]]):
+    def enum_sd_unet(self, file_list: list[str | dict[str, Any]]):
         """
         Filter Stable Diffusion UNet model files to select the appropriate precision.
 

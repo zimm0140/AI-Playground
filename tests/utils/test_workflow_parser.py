@@ -8,7 +8,7 @@ different workflow formats and edge cases.
 
 import os
 import sys
-from typing import Any, Dict
+from typing import Any
 
 # Add the GitHub workflows scripts directory to the Python path
 script_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -73,7 +73,7 @@ def test_get_workflow_nodes_api_format_direct():
 def test_get_workflow_nodes_invalid():
     """Test handling of invalid workflow formats"""
     # Empty workflow
-    workflow: Dict[str, Any] = {}
+    workflow: dict[str, Any] = {}
     nodes = get_workflow_nodes(workflow)
     assert nodes is None
 
@@ -116,7 +116,7 @@ def test_get_workflow_links_api_format():
 def test_get_workflow_links_invalid():
     """Test handling of invalid links formats"""
     # Empty workflow
-    workflow: Dict[str, Any] = {}
+    workflow: dict[str, Any] = {}
     links = get_workflow_links(workflow)
     assert links is None
 

@@ -6,10 +6,10 @@ This script analyzes the web_api.py file and generates a concise API
 documentation summary in Markdown format, organized by endpoint function.
 """
 
+import argparse
 import os
 import re
 from collections import defaultdict
-import argparse
 
 
 def extract_endpoints(file_path):
@@ -18,7 +18,7 @@ def extract_endpoints(file_path):
         print(f"Error: File not found: {file_path}")
         return []
 
-    with open(file_path, "r", encoding="utf-8") as f:
+    with open(file_path, encoding="utf-8") as f:
         content = f.read()
 
     # Patterns to match route definitions
@@ -75,20 +75,19 @@ def extract_endpoints(file_path):
                     methods = [
                         m.strip(" \"'") for m in method_match.group(1).split(",")
                     ]
+                # Infer from decorator
+                elif "@app.get" in route_def:
+                    methods = ["GET"]
+                elif "@app.post" in route_def:
+                    methods = ["POST"]
+                elif "@app.put" in route_def:
+                    methods = ["PUT"]
+                elif "@app.delete" in route_def:
+                    methods = ["DELETE"]
+                elif "@app.patch" in route_def:
+                    methods = ["PATCH"]
                 else:
-                    # Infer from decorator
-                    if "@app.get" in route_def:
-                        methods = ["GET"]
-                    elif "@app.post" in route_def:
-                        methods = ["POST"]
-                    elif "@app.put" in route_def:
-                        methods = ["PUT"]
-                    elif "@app.delete" in route_def:
-                        methods = ["DELETE"]
-                    elif "@app.patch" in route_def:
-                        methods = ["PATCH"]
-                    else:
-                        methods = ["GET"]  # Default to GET
+                    methods = ["GET"]  # Default to GET
 
                 routes.append((route, methods))
 

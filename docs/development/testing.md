@@ -29,10 +29,10 @@ The tests are organized as follows:
 
 To run all tests:
 
-````bash
+\`\`\`text\`bash
 pytest
 
-```text
+````text
 
 ### Running Tests with Detailed Output
 
@@ -333,4 +333,5 @@ This will show which core modules have tests and which functions might lack cove
 
 ---
 **Previous**: [Code Quality Standards](code-quality.md) | **Next**: [Linting](linting.md) | **See also**: [Contributing Guide](contributing.md)
+```text`
 ````

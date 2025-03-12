@@ -24,7 +24,7 @@ def main():
 
         print(f"🛠️ Fixing issues in {directory}...")
         try:
-            result = subprocess.run(["ruff", "check", "--fix", directory], capture_output=True, text=True)
+            result = subprocess.run(["ruff", "check", "--fix", directory], capture_output=True, text=True, check=False)
 
             if result.returncode != 0:
                 print(f"❌ Failed to fix all issues in {directory}")
@@ -34,7 +34,7 @@ def main():
                 print(f"✅ Successfully fixed issues in {directory}")
 
             # Also run formatter
-            format_result = subprocess.run(["ruff", "format", directory], capture_output=True, text=True)
+            format_result = subprocess.run(["ruff", "format", directory], capture_output=True, text=True, check=False)
 
             if format_result.returncode != 0:
                 print(f"❌ Failed to format {directory}")

@@ -34,10 +34,10 @@ and included in the CI summary.
 
 To run the hardware compatibility test manually:
 
-````bash
+\`\`\`text\`bash
 .github/workflows/scripts/test_hardware_compatibility.sh
 
-```text
+````text
 
 ## Reports and Artifacts
 
@@ -210,4 +210,5 @@ If you encounter issues with the hardware compatibility testing:
 1. **Review the raw JSON data** - Examine the detailed data for insights
 1. **Run the script manually** with debug flags for more information
 1. **Check for recent changes** to dependency structures
+```text`
 ````

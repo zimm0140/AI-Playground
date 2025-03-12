@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 """Unit tests for uvfast.py module."""
 
-import json
 import os
 import sys
 import unittest
 from pathlib import Path
-from unittest.mock import MagicMock, mock_open, patch
+from unittest.mock import mock_open, patch
 
 # Add parent directory to path so we can import from the root
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))

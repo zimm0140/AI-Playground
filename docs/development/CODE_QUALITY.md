@@ -33,10 +33,10 @@ We use [pre-commit](https://pre-commit.com/) to run checks before each commit. T
 
 1. Install pre-commit:
 
-````bash
+\`\`\`text\`bash
 pip install pre-commit
 
-```text
+````text
 1. Install the hooks:
 
 ```bash
@@ -91,4 +91,5 @@ If you encounter CI failures:
 1. Run `python check_linting.py` locally to see if you can reproduce the issues.
 1. Fix the issues manually or use the helper scripts.
 1. Run pre-commit to verify your fixes before pushing again.
+```text`
 ````

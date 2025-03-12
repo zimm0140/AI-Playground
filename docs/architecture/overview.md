@@ -15,15 +15,15 @@ these key principles:
 
 ### Architecture Diagram
 
-````text
+\`\`\`text\`text
 ┌────────────────────────────────────────────────────────────────┐
-│                         API Layer                              │
-│  ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌──────────┐  │
-│  │ REST API    │ │ CLI         │ │ Python API  │ │ WebUI    │  │
-│  └─────────────┘ └─────────────┘ └─────────────┘ └──────────┘  │
+│ API Layer │
+│ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌──────────┐ │
+│ │ REST API │ │ CLI │ │ Python API │ │ WebUI │ │
+│ └─────────────┘ └─────────────┘ └─────────────┘ └──────────┘ │
 └────────────────────────────────────────────────────────────────┘
 
-```text
+````text
 
 ```text
 
@@ -402,4 +402,5 @@ Planned architectural improvements include:
 
 ---
 **Previous**: [Linting Guide](../development/linting.md) | **Next**: [API Design](api-design.md) | **See also**: [Hardware Overview](../hardware/overview.md)
+```text`
 ````

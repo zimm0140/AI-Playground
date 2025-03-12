@@ -6,10 +6,10 @@ This script analyzes all requirements files in the project to ensure consistency
 in naming conventions, formatting, and documentation.
 """
 
+import argparse
+import glob
 import os
 import re
-import glob
-import argparse
 from collections import defaultdict
 
 
@@ -78,7 +78,7 @@ class RequirementsChecker:
                 "metrics": {},
             }
 
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             content = f.read()
 
         lines = content.strip().split("\n")

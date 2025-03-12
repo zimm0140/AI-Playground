@@ -11,16 +11,17 @@ This script simulates execution of ComfyUI workflows using dummy models:
 This provides more meaningful testing without requiring large model downloads.
 """
 
-import os
-import sys
-import json
 import argparse
 import glob
+import json
 import logging
+import os
+import sys
 import time
 import traceback
 from datetime import datetime
-from typing import Dict, List, Any
+from typing import Any
+
 import numpy as np
 
 try:
@@ -33,8 +34,7 @@ except ImportError:
 
 # Add the parent directory to the path so we can import the utils package
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from utils.workflow_parser import get_workflow_nodes, get_workflow_links, build_link_map
-
+from utils.workflow_parser import build_link_map, get_workflow_links, get_workflow_nodes
 
 # Configure logging
 logging.basicConfig(
@@ -46,7 +46,7 @@ logger = logging.getLogger("ComfyWorkflowSimulator")
 class ModelSimulation:
     """Simulates models for lightweight testing"""
 
-    def __init__(self, model_type: str, parameters: Dict[str, Any] = None):
+    def __init__(self, model_type: str, parameters: dict[str, Any] = None):
         self.model_type = model_type
         self.parameters = parameters or {}
         self.tensor_data = None
@@ -165,7 +165,7 @@ class ModelSimulation:
 class NodeSimulation:
     """Simulates execution of ComfyUI nodes"""
 
-    def __init__(self, node_type: str, node_id: str, inputs: Dict[str, Any] = None):
+    def __init__(self, node_type: str, node_id: str, inputs: dict[str, Any] = None):
         self.node_type = node_type
         self.node_id = node_id
         self.inputs = inputs or {}
@@ -294,12 +294,11 @@ class NodeSimulation:
             else:
                 noise = np.random.randn(*latent.shape) * 0.1
                 return {"latent": latent + noise}
+        # If no latent provided, return a dummy tensor
+        elif TORCH_AVAILABLE:
+            return {"latent": torch.randn(1, 4, 64, 64)}
         else:
-            # If no latent provided, return a dummy tensor
-            if TORCH_AVAILABLE:
-                return {"latent": torch.randn(1, 4, 64, 64)}
-            else:
-                return {"latent": np.random.randn(1, 4, 64, 64)}
+            return {"latent": np.random.randn(1, 4, 64, 64)}
 
     def _execute_VAEDecode(self):
         """Simulate VAE decoding from latent to image"""
@@ -319,12 +318,11 @@ class NodeSimulation:
                 # NumPy version
                 B, _, H, W = samples.shape
                 return {"image": np.random.randn(B, 3, H * 8, W * 8)}
+        # Fallback
+        elif TORCH_AVAILABLE:
+            return {"image": torch.randn(1, 3, 512, 512)}
         else:
-            # Fallback
-            if TORCH_AVAILABLE:
-                return {"image": torch.randn(1, 3, 512, 512)}
-            else:
-                return {"image": np.random.randn(1, 3, 512, 512)}
+            return {"image": np.random.randn(1, 3, 512, 512)}
 
     def _execute_SaveImage(self):
         """Simulate saving an image"""
@@ -363,12 +361,11 @@ class NodeSimulation:
                 new_H = int(H * scale)
                 new_W = int(W * scale)
                 return {"image": np.random.randn(B, C, new_H, new_W)}
+        # Fallback
+        elif TORCH_AVAILABLE:
+            return {"image": torch.randn(1, 3, 1024, 1024)}
         else:
-            # Fallback
-            if TORCH_AVAILABLE:
-                return {"image": torch.randn(1, 3, 1024, 1024)}
-            else:
-                return {"image": np.random.randn(1, 3, 1024, 1024)}
+            return {"image": np.random.randn(1, 3, 1024, 1024)}
 
     # Add more node-specific simulation methods as needed
 
@@ -393,11 +390,11 @@ class ComfyWorkflowSimulator:
             "workflows": [],
         }
 
-    def find_workflow_files(self) -> List[str]:
+    def find_workflow_files(self) -> list[str]:
         """Find all workflow JSON files in the specified directory"""
         return glob.glob(os.path.join(self.workflows_dir, "*.json"))
 
-    def topological_sort(self, workflow: Dict) -> List[str]:
+    def topological_sort(self, workflow: dict) -> list[str]:
         """Sort nodes in topological order for execution"""
         if "links" not in workflow:
             return []
@@ -459,7 +456,7 @@ class ComfyWorkflowSimulator:
 
         return result
 
-    def simulate_workflow(self, file_path: str) -> Dict[str, Any]:
+    def simulate_workflow(self, file_path: str) -> dict[str, Any]:
         """Simulate the execution of a ComfyUI workflow"""
         result = {
             "file": file_path,
@@ -474,7 +471,7 @@ class ComfyWorkflowSimulator:
 
         # Load workflow file
         try:
-            with open(file_path, "r", encoding="utf-8") as f:
+            with open(file_path, encoding="utf-8") as f:
                 workflow = json.load(f)
 
             # Get nodes using the utility function
@@ -610,7 +607,7 @@ class ComfyWorkflowSimulator:
         )
         return result
 
-    def simulate_all_workflows(self) -> Dict[str, Any]:
+    def simulate_all_workflows(self) -> dict[str, Any]:
         """Simulate all workflows in the directory"""
         workflow_files = self.find_workflow_files()
         self.results["summary"]["total_workflows"] = len(workflow_files)

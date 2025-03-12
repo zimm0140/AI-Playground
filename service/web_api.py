@@ -29,7 +29,7 @@ try:
     import torchvision.transforms.functional_tensor  # noqa: F401
 except ImportError:
     try:
-        import torchvision.transforms.functional as functional
+        from torchvision.transforms import functional
 
         sys.modules["torchvision.transforms.functional_tensor"] = functional
     except ImportError:
@@ -51,7 +51,13 @@ from apiflask import APIFlask
 from flask import Response, jsonify, request, stream_with_context
 from llm_adapter import LLM_SSE_Adapter
 from model_downloader import HFPlaygroundDownloader
-from paint_biz import ImageToImageParams, InpaintParams, OutpaintParams, TextImageParams, UpscaleImageParams
+from paint_biz import (
+    ImageToImageParams,
+    InpaintParams,
+    OutpaintParams,
+    TextImageParams,
+    UpscaleImageParams,
+)
 from psutil._common import bytes2human
 from sd_adapter import SD_SSE_Adapter
 
@@ -441,7 +447,7 @@ def download_model(download_request_data: DownloadModelRequestBody):
         traceback.print_exc()
 
         model_download_adpater._adapter.stop_download()
-        ex_str = '{{"type": "error", "err_type": "{}"}}'.format(e)
+        ex_str = f'{{"type": "error", "err_type": "{e}"}}'
         return Response(stream_with_context([ex_str]), content_type="text/event-stream")
 
 

@@ -97,7 +97,7 @@ class SD_SSE_Adapter:
             "download_size": bytes2human(download_size),
             "total_size": bytes2human(total_size),
             "percent": round(download_size / total_size * 100, 2),
-            "speed": "{}/s".format(bytes2human(speed)),
+            "speed": f"{bytes2human(speed)}/s",
         }
         self.put_msg(data)
 

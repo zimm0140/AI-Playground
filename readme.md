@@ -12,10 +12,10 @@ A Python package for detecting and managing hardware configurations.
 
 ## Installation
 
-```bash
+````bash
 pip install -e .
 
-```
+```text
 
 ## Usage
 
@@ -30,7 +30,7 @@ hardware_type = detect_hardware_type()
 
 gpu_info = get_gpu_info()
 
-```
+```text
 
 ## Development
 
@@ -41,3 +41,4 @@ gpu_info = get_gpu_info()
 ## License
 
 MIT
+````

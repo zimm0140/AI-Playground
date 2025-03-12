@@ -22,7 +22,7 @@ def debug_print(message, level="INFO"):
 
 def ensure_file_in_root(source_path, target_name=None):
     """Copy a file to the root directory if it doesn't exist there."""
-    root_dir = Path(".")
+    root_dir = Path()
     source = Path(source_path)
 
     if not source.exists():
@@ -51,21 +51,43 @@ def setup_hardware_detection():
 
     # First check for the new package structure
     if Path("hardware_detection").exists() and Path("hardware_detection").is_dir():
-        debug_print("Found hardware_detection package, using package structure")
+        return setup_package_structure()
+    else:
+        return setup_legacy_structure()
 
-        # Create necessary directories
-        for subdir in ["", "tests"]:
-            init_file = Path("hardware_detection") / subdir / "__init__.py"
-            if init_file.exists():
-                debug_print(f"Found {init_file}")
-            else:
-                debug_print(f"Creating {init_file}")
-                init_dir = init_file.parent
-                init_dir.mkdir(parents=True, exist_ok=True)
-                with open(init_file, "w") as f:
-                    if subdir == "":
-                        f.write(
-                            '''"""Hardware detection package for identifying and utilizing specialized hardware."""
+
+def setup_package_structure():
+    """Set up new package structure for hardware detection."""
+    debug_print("Found hardware_detection package, using package structure")
+
+    # Create necessary directories and __init__ files
+    create_package_init_files()
+
+    # Create py.typed file for type hints
+    create_py_typed_file()
+
+    # Set up the compatibility layer
+    create_compatibility_layer()
+
+    debug_print("Hardware detection setup complete")
+    return True
+
+
+def create_package_init_files():
+    """Create __init__.py files in the hardware_detection package."""
+    for subdir in ["", "tests"]:
+        init_file = Path("hardware_detection") / subdir / "__init__.py"
+        if init_file.exists():
+            debug_print(f"Found {init_file}")
+        else:
+            debug_print(f"Creating {init_file}")
+            init_dir = init_file.parent
+            init_dir.mkdir(parents=True, exist_ok=True)
+
+            with open(init_file, "w") as f:
+                if subdir == "":
+                    f.write(
+                        '''"""Hardware detection package for identifying and utilizing specialized hardware."""
 
 __version__ = "1.0.0"
 
@@ -87,28 +109,43 @@ __all__ = [
     "print_hardware_info",
 ]
 '''
-                        )
-                    else:
-                        f.write('"""Auto-generated hardware_detection package."""\n')
+                    )
+                else:
+                    f.write('"""Auto-generated hardware_detection package."""\n')
 
-        # Create py.typed file for type hints
-        py_typed_file = Path("hardware_detection/py.typed")
-        if not py_typed_file.exists():
-            debug_print(f"Creating {py_typed_file}")
-            with open(py_typed_file, "w") as f:
-                f.write("")  # Empty file is sufficient
 
-        # Set up the compatibility layer
-        tools_hw_dir = Path("tools/hardware")
-        tools_hw_dir.mkdir(parents=True, exist_ok=True)
+def create_py_typed_file():
+    """Create py.typed file for type hints."""
+    py_typed_file = Path("hardware_detection/py.typed")
+    if not py_typed_file.exists():
+        debug_print(f"Creating {py_typed_file}")
+        with open(py_typed_file, "w") as f:
+            f.write("")  # Empty file is sufficient
 
-        # Create the compatibility layer if it doesn't exist
-        compat_file = tools_hw_dir / "hardware_detection.py"
-        if not compat_file.exists():
-            debug_print(f"Creating compatibility layer at {compat_file}")
-            with open(compat_file, "w") as f:
-                f.write(
-                    '''#!/usr/bin/env python3
+
+def create_compatibility_layer():
+    """Create compatibility layer for hardware detection in tools/hardware."""
+    tools_hw_dir = Path("tools/hardware")
+    tools_hw_dir.mkdir(parents=True, exist_ok=True)
+
+    # Create the compatibility layer if it doesn't exist
+    compat_file = tools_hw_dir / "hardware_detection.py"
+    if not compat_file.exists():
+        debug_print(f"Creating compatibility layer at {compat_file}")
+        with open(compat_file, "w") as f:
+            f.write(get_compatibility_layer_content())
+
+    # Create __init__.py in tools/hardware
+    tools_hw_init = tools_hw_dir / "__init__.py"
+    if not tools_hw_init.exists():
+        debug_print(f"Creating {tools_hw_init}")
+        with open(tools_hw_init, "w") as f:
+            f.write('"""Hardware detection compatibility package."""\n')
+
+
+def get_compatibility_layer_content():
+    """Return the content for the compatibility layer file."""
+    return '''#!/usr/bin/env python3
 """Compatibility module for hardware detection.
 
 This module provides backward compatibility with the previous file-based structure.
@@ -217,42 +254,32 @@ if __name__ == "__main__":
     print(f"Hardware Detection Module v{__version__}")
     print_hardware_info(verbose=("-v" in sys.argv or "--verbose" in sys.argv))
 '''
-                )
 
-        # Create __init__.py in tools/hardware
-        tools_hw_init = tools_hw_dir / "__init__.py"
-        if not tools_hw_init.exists():
-            debug_print(f"Creating {tools_hw_init}")
-            with open(tools_hw_init, "w") as f:
-                f.write('"""Hardware detection compatibility package."""\n')
 
-        debug_print("Hardware detection setup complete")
-        return True
-
+def setup_legacy_structure():
+    """Set up legacy file-based structure for hardware detection."""
     # Legacy setup for older structure
     # Copy from tools/hardware if it exists there
     if Path("tools/hardware/hardware_detection.py").exists():
         debug_print("Found hardware_detection.py in tools/hardware/")
         ensure_file_in_root("tools/hardware/hardware_detection.py")
-    else:
-        debug_print(
-            "Warning: hardware_detection.py not found in tools/hardware/", "WARNING"
-        )
-        # Try to find the hardware_detection.py file elsewhere
-        for path in [
-            "hardware_detection.py",
-            "tools/scripts/hardware_detection.py",
-            "scripts/hardware_detection.py",
-        ]:
-            if Path(path).exists():
-                debug_print(f"Found hardware_detection.py at {path}")
-                ensure_file_in_root(path, "hardware_detection.py")
-                break
-        else:
-            debug_print("Error: Could not find hardware_detection.py", "ERROR")
-            return False
+        return True
 
-    return True
+    # Try to find the hardware_detection.py file elsewhere
+    debug_print("Warning: hardware_detection.py not found in tools/hardware/", "WARNING")
+
+    for path in [
+        "hardware_detection.py",
+        "tools/scripts/hardware_detection.py",
+        "scripts/hardware_detection.py",
+    ]:
+        if Path(path).exists():
+            debug_print(f"Found hardware_detection.py at {path}")
+            ensure_file_in_root(path, "hardware_detection.py")
+            return True
+
+    debug_print("Error: Could not find hardware_detection.py", "ERROR")
+    return False
 
 
 def setup_mock_hardware():
@@ -368,9 +395,7 @@ def create_requirements_files():
         "service/requirements-ls_level_zero.txt",
     ]
 
-    base_content = (
-        "# Base requirements for testing\ntorch>=2.0.0\nnumpy>=1.24.0\npytest>=7.0.0\n"
-    )
+    base_content = "# Base requirements for testing\ntorch>=2.0.0\nnumpy>=1.24.0\npytest>=7.0.0\n"
 
     for req_file in requirements_files:
         req_path = Path(req_file)
@@ -385,9 +410,7 @@ def create_requirements_files():
                     if "ovino" in req_file:
                         f.write("\n# OpenVINO requirements\nopenvino-stub>=1.0.0\n")
                     elif "acm" in req_file or "Arc" in req_file:
-                        f.write(
-                            "\n# Intel Arc requirements\nintel-extension-for-pytorch>=2.0.0\n"
-                        )
+                        f.write("\n# Intel Arc requirements\nintel-extension-for-pytorch>=2.0.0\n")
         except Exception as e:
             debug_print(f"Error creating requirements file {req_file}: {e}", "ERROR")
             traceback.print_exc()
@@ -424,17 +447,15 @@ def setup_openvino_stub():
                 f.write('version = "STUB.2023.0.0"\n\n')
                 f.write("def Core(*args, **kwargs):\n")
                 f.write('    """Mock Core class."""\n')
-                f.write(
-                    '    return type("Runtime", (), {"compile_model": lambda *a, **k: None})()\n'
-                )
+                f.write('    return type("Runtime", (), {"compile_model": lambda *a, **k: None})()\n')
             debug_print("Created simple OpenVINO stub module")
 
         # Create empty __pycache__ to avoid warnings
         (openvino_stub_path / "__pycache__").mkdir(exist_ok=True)
 
         # Ensure the stub is in the Python path
-        sys.path.append(str(Path(".").absolute()))
-        debug_print(f"Added {Path('.').absolute()} to Python path")
+        sys.path.append(str(Path().absolute()))
+        debug_print(f"Added {Path().absolute()} to Python path")
     except Exception as e:
         debug_print(f"Error setting up OpenVINO stub: {e}", "ERROR")
         traceback.print_exc()
@@ -450,9 +471,7 @@ def setup_intel_extension_stub():
     try:
         import intel_extension_for_pytorch
 
-        debug_print(
-            f"Intel Extension for PyTorch already installed: {intel_extension_for_pytorch.__file__}"
-        )
+        debug_print(f"Intel Extension for PyTorch already installed: {intel_extension_for_pytorch.__file__}")
         return
     except ImportError:
         debug_print("Intel Extension for PyTorch not found, creating stub")
@@ -462,18 +481,14 @@ def setup_intel_extension_stub():
         intel_stub_path.mkdir(exist_ok=True)
 
         # Copy the stub implementation
-        stub_source = Path(
-            ".github/workflows/scripts/intel_extension_for_pytorch_stub.py"
-        )
+        stub_source = Path(".github/workflows/scripts/intel_extension_for_pytorch_stub.py")
         if stub_source.exists():
             shutil.copy2(stub_source, intel_stub_path / "__init__.py")
             debug_print("Installed Intel Extension for PyTorch stub module from file")
         else:
             # Create a simple stub if the source file doesn't exist
             with open(intel_stub_path / "__init__.py", "w") as f:
-                f.write(
-                    '"""Intel Extension for PyTorch stub module for CI testing."""\n\n'
-                )
+                f.write('"""Intel Extension for PyTorch stub module for CI testing."""\n\n')
                 f.write('__version__ = "2.0.110+mock"\n\n')
                 f.write("def xpu_device_name():\n")
                 f.write('    """Get the XPU device name."""\n')
@@ -545,9 +560,7 @@ def ensure_module_structure():
                         f.write(f'"""Auto-generated {dir_path} package."""\n')
                     debug_print(f"Created {dir_init}")
             except Exception as e:
-                debug_print(
-                    f"Error setting up module structure for {dir_path}: {e}", "ERROR"
-                )
+                debug_print(f"Error setting up module structure for {dir_path}: {e}", "ERROR")
                 traceback.print_exc()
 
     return False

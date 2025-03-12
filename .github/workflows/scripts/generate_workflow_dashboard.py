@@ -14,11 +14,11 @@ The dashboard provides a single view of all workflow information,
 making it easier to manage and track the workflows.
 """
 
-import os
-import json
 import argparse
 import datetime
-from typing import Dict, Any, Set
+import json
+import os
+from typing import Any
 
 
 class ComfyWorkflowDashboard:
@@ -53,7 +53,7 @@ class ComfyWorkflowDashboard:
                 self.validation_dir, "workflow_validation_results.json"
             )
             if os.path.exists(validation_file):
-                with open(validation_file, "r", encoding="utf-8") as f:
+                with open(validation_file, encoding="utf-8") as f:
                     self.validation_data = json.load(f)
                 print(
                     f"Loaded validation data for {len(self.validation_data.get('workflows', []))} workflows"
@@ -73,7 +73,7 @@ class ComfyWorkflowDashboard:
                 self.requirements_dir, "workflow_requirements_results.json"
             )
             if os.path.exists(requirements_file):
-                with open(requirements_file, "r", encoding="utf-8") as f:
+                with open(requirements_file, encoding="utf-8") as f:
                     self.requirements_data = json.load(f)
                 print(
                     f"Loaded requirements data for {len(self.requirements_data.get('workflows', []))} workflows"
@@ -91,7 +91,7 @@ class ComfyWorkflowDashboard:
         try:
             tests_file = os.path.join(self.tests_dir, "workflow_test_results.json")
             if os.path.exists(tests_file):
-                with open(tests_file, "r", encoding="utf-8") as f:
+                with open(tests_file, encoding="utf-8") as f:
                     self.tests_data = json.load(f)
                 print(
                     f"Loaded test data for {len(self.tests_data.get('workflow_results', []))} workflows"
@@ -109,7 +109,7 @@ class ComfyWorkflowDashboard:
         try:
             history_file = os.path.join(self.versions_dir, "workflow_history.json")
             if os.path.exists(history_file):
-                with open(history_file, "r", encoding="utf-8") as f:
+                with open(history_file, encoding="utf-8") as f:
                     self.versions_data = json.load(f)
                 print(
                     f"Loaded version history for {len(self.versions_data.get('workflows', []))} workflows"
@@ -122,7 +122,7 @@ class ComfyWorkflowDashboard:
             print(f"Error loading version history: {e}")
             return False
 
-    def collect_all_workflows(self) -> Set[str]:
+    def collect_all_workflows(self) -> set[str]:
         """Collect names of all workflows from all sources"""
         workflows = set()
 
@@ -152,7 +152,7 @@ class ComfyWorkflowDashboard:
 
         return workflows
 
-    def integrate_data(self) -> Dict[str, Dict[str, Any]]:
+    def integrate_data(self) -> dict[str, dict[str, Any]]:
         """Integrate data from all sources into a single dashboard"""
         # Collect all workflows
         all_workflows = self.collect_all_workflows()

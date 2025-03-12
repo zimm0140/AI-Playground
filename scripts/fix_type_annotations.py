@@ -10,11 +10,8 @@ Usage:
 """
 
 import argparse
-import ast
 import os
 import re
-from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
 
 
 def parse_args() -> argparse.Namespace:
@@ -35,7 +32,7 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def find_python_files(directory: str) -> List[str]:
+def find_python_files(directory: str) -> list[str]:
     """Find all Python files in the given directory and subdirectories."""
     python_files = []
     for root, _, files in os.walk(directory):
@@ -45,7 +42,7 @@ def find_python_files(directory: str) -> List[str]:
     return python_files
 
 
-def fix_import_from_typing(content: str) -> Tuple[str, bool]:
+def fix_import_from_typing(content: str) -> tuple[str, bool]:
     """Fix imports from typing module for Python 3.10+ compatibility."""
     # Pattern to find imports from typing
     pattern = r"from\s+typing\s+import\s+([^#\n]+)"
@@ -76,7 +73,7 @@ def fix_import_from_typing(content: str) -> Tuple[str, bool]:
     return new_content, changed
 
 
-def fix_optional_annotations(content: str) -> Tuple[str, bool]:
+def fix_optional_annotations(content: str) -> tuple[str, bool]:
     """Fix Optional[Type] annotations to Type | None for Python 3.10+."""
     # Pattern to find Optional[Type] annotations
     pattern = r"Optional\[([^\]]+)\]"
@@ -101,7 +98,7 @@ def fix_optional_annotations(content: str) -> Tuple[str, bool]:
     return content, False
 
 
-def fix_union_annotations(content: str) -> Tuple[str, bool]:
+def fix_union_annotations(content: str) -> tuple[str, bool]:
     """Fix Union[Type1, Type2] annotations to Type1 | Type2 for Python 3.10+."""
     # Pattern to find Union[Type1, Type2] annotations
     pattern = r"Union\[([^\]]+)\]"
@@ -129,7 +126,7 @@ def fix_union_annotations(content: str) -> Tuple[str, bool]:
 def process_file(file_path: str, dry_run: bool, verbose: bool) -> bool:
     """Process a single Python file and fix type annotations."""
     try:
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             content = f.read()
 
         original_content = content
@@ -179,7 +176,7 @@ def main() -> None:
         files = find_python_files(path)
 
     if args.dry_run:
-        print(f"Dry run mode - no changes will be made")
+        print("Dry run mode - no changes will be made")
 
     modified_count = 0
     total_count = len(files)

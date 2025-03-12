@@ -36,14 +36,14 @@ This document provides a step-by-step guide for implementing and using the `uvfa
 
    - Create separate files for different hardware configurations:
 
+\`\`\`text\`text
+
+- `requirements-hardware-base.txt`
+- `requirements-hardware-acm.txt` (for Intel Arc GPUs)
+- `requirements-hardware-ovino.txt` (for OpenVINO)
+- Add any other hardware-specific configurations
+
 ````text
-
- - `requirements-hardware-base.txt`
- - `requirements-hardware-acm.txt` (for Intel Arc GPUs)
- - `requirements-hardware-ovino.txt` (for OpenVINO)
- - Add any other hardware-specific configurations
-
-```text
 
 ### 3. Documentation
 
@@ -198,4 +198,5 @@ python uvfast.py setup --hardware ovino --dev
 1. **Missing dependencies**:
    - Check hardware-specific requirements
    - Verify lockfiles are up to date
+```text`
 ````

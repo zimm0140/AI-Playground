@@ -23,7 +23,7 @@ def patch_import(file_path):
         file_path: Path to the Python file that needs to be patched
     """
     # Read the file
-    with open(file_path, "r") as file:
+    with open(file_path) as file:
         lines = file.readlines()
 
     # Patch the import line

@@ -25,16 +25,16 @@ def fix_whitespace_issues(file_path):
 
         original_content = content
 
-        # Fix trailing whitespace
+        # Fix trailing whitespace (W291) - more aggressively
         content = re.sub(r"[ \t]+$", "", content, flags=re.MULTILINE)
 
-        # Fix blank lines with whitespace
+        # Fix blank lines with whitespace (W293) - more aggressively
         content = re.sub(r"^[ \t]+$", "", content, flags=re.MULTILINE)
 
-        # Ensure file ends with a single newline
+        # Ensure file ends with a single newline (W292)
         content = content.rstrip("\n") + "\n"
 
-        # Fix unnecessary list() calls
+        # Fix unnecessary list() calls (C408)
         content = re.sub(r"list\(\[\]|\[\]\)", "[]", content)
         content = re.sub(r"list\(\[([^]]*)\]\)", r"[\1]", content)
 
@@ -53,7 +53,7 @@ def run_isort(file_path):
     """Run isort on the given file to fix import sorting."""
     try:
         subprocess.run(
-            [sys.executable, "-m", "isort", file_path],
+            [sys.executable, "-m", "isort", "--profile", "black", file_path],
             check=True,
             capture_output=True,
         )
@@ -72,6 +72,54 @@ def run_ruff_format(file_path):
         )
         return True
     except subprocess.CalledProcessError:
+        return False
+
+
+def fix_long_lines(file_path, max_line_length=120):
+    """Attempt to fix overly long lines by breaking them at logical points."""
+    try:
+        with open(file_path, encoding="utf-8") as f:
+            content = f.read()
+
+        original_content = content
+        lines = content.split("\n")
+        new_lines = []
+
+        for line in lines:
+            # Skip comments, docstrings, and already short lines
+            if line.lstrip().startswith(("#", '"', "'")) or len(line) <= max_line_length:
+                new_lines.append(line)
+                continue
+
+            # Try to break long lines at logical points
+            if "," in line and not any(quote in line for quote in ["'", '"']):
+                # Split at commas for function arguments and lists
+                parts = line.split(",")
+                indent = len(line) - len(line.lstrip())
+                current_line = parts[0]
+
+                for part in parts[1:]:
+                    if len(current_line + "," + part) <= max_line_length:
+                        current_line += "," + part
+                    else:
+                        new_lines.append(current_line + ",")
+                        current_line = " " * (indent + 4) + part.lstrip()
+
+                new_lines.append(current_line)
+            else:
+                # Can't safely break the line, leave it for manual fixing
+                new_lines.append(line)
+
+        new_content = "\n".join(new_lines)
+
+        # Write changes if needed
+        if new_content != original_content:
+            with open(file_path, "w", encoding="utf-8") as f:
+                f.write(new_content)
+            return True
+        return False
+    except Exception as e:
+        print(f"Error trying to fix long lines in {file_path}: {e}")
         return False
 
 
@@ -100,7 +148,10 @@ def main():
         isort_fixed = run_isort(file_path)
         ruff_fixed = run_ruff_format(file_path)
 
-        if whitespace_fixed or isort_fixed or ruff_fixed:
+        # Try to fix long lines
+        long_lines_fixed = fix_long_lines(file_path)
+
+        if whitespace_fixed or isort_fixed or ruff_fixed or long_lines_fixed:
             fixed_count += 1
             print(f"✅ Fixed issues in {file_path}")
         else:

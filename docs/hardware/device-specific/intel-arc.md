@@ -44,11 +44,15 @@ AI-Playground supports all Intel Arc GPU models:
 
 1. Verify installation with:
 
-   ````bash
+   \`\`\`text\`bash
+
    ## Run hardware detection
 
    python hardware_detection.py
-   ```text
+
+   ````text
+
+   ```text`
 
    ````
 
@@ -56,37 +60,46 @@ AI-Playground supports all Intel Arc GPU models:
 
 1. Update your system:
 
-   ````bash
+   \`\`\`text\`bash
    sudo apt update && sudo apt upgrade
-   ```text
+
+   ````text
+
+   ```text`
 
    ````
 
 1. Install required packages:
 
-   ````bash
+   \`\`\`text\`bash
    sudo apt install mesa-utils
-   ```text
+
+   ````text
+
+   ```text`
 
    ````
 
 1. Verify installation:
 
-   ````bash
+   \`\`\`text\`bash
    glxinfo | grep "OpenGL renderer"
-   ```text
+
+   ````text
+
+   ```text`
 
    ````
 
 ### Environment Setup
 
-````bash
+\`\`\`text\`bash
 
 ## Setup environment optimized for Arc GPUs
 
 python setup_hardware_env.py --hardware acm
 
-```text
+````text
 
 This will install the required dependencies including:
 
@@ -269,4 +282,5 @@ Typical optimal batch sizes:
 
 ---
 **Previous**: [Hardware Optimization](../optimization.md) | **See also**: [Meteor Lake Guide](intel-meteor-lake.md)
+```text`
 ````

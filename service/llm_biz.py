@@ -23,17 +23,23 @@ import threading
 import time
 import traceback
 from os import path
-from typing import Any, Dict, List
+from typing import Any
 
 import torch
-from transformers import AutoTokenizer, PreTrainedModel, PreTrainedTokenizer, StoppingCriteriaList, TextIteratorStreamer
+from transformers import (
+    AutoTokenizer,
+    PreTrainedModel,
+    PreTrainedTokenizer,
+    StoppingCriteriaList,
+    TextIteratorStreamer,
+)
 
 try:
     from ipex_llm.transformers import AutoModelForCausalLM
 except ModuleNotFoundError:
     from transformers import AutoModelForCausalLM
 
-from typing import Callable
+from collections.abc import Callable
 
 import service_config
 from transformers.generation.stopping_criteria import (
@@ -61,13 +67,13 @@ class LLMParams:
         generation_parameters: Additional parameters for the generation process
     """
 
-    prompt: List[Dict[str, str]]
+    prompt: list[dict[str, str]]
     device: int
     enable_rag: bool
     model_repo_id: str
     max_tokens: int
     print_metrics: bool
-    generation_parameters: Dict[str, Any]
+    generation_parameters: dict[str, Any]
 
     def __init__(
         self,
@@ -160,7 +166,7 @@ def stream_chat_generate(
 
 
 def generate(
-    prompt: List[Dict[str, str]],
+    prompt: list[dict[str, str]],
     model: PreTrainedModel,
     tokenizer: PreTrainedTokenizer,
     max_new_tokens: int,
@@ -268,7 +274,7 @@ def process_rag(
     # Query RAG system for relevant context
     query_success, context, rag_source = rag.query(prompt)
     if query_success:
-        print("rag query input\r\n{}output:\r\n{}".format(prompt, context))
+        print(f"rag query input\r\n{prompt}output:\r\n{context}")
         # Format the prompt with the retrieved context
         prompt = RAG_PROMPT_FORMAT.format(prompt=prompt, context=context)
         if text_out_callback is not None:
@@ -350,7 +356,7 @@ def chat(
 
             _last_repo_id = model_repo_id
 
-            print("load llm model {} finish. cost {}s".format(model_repo_id, round(time.time() - start, 3)))
+            print(f"load llm model {model_repo_id} finish. cost {round(time.time() - start, 3)}s")
             if load_model_callback is not None:
                 load_model_callback("finish")
 

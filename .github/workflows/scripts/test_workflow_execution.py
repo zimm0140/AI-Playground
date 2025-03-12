@@ -11,15 +11,14 @@ This script performs lightweight validation of ComfyUI workflow execution:
 This allows testing the basic correctness of workflows without running the full ComfyUI environment.
 """
 
-import os
-import sys
-import json
 import argparse
 import glob
+import json
 import logging
-from datetime import datetime
+import os
+import sys
 from collections import defaultdict, deque
-
+from datetime import datetime
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
@@ -395,7 +394,7 @@ class ComfyWorkflowTester:
 
         try:
             # Load the workflow
-            with open(file_path, "r", encoding="utf-8") as f:
+            with open(file_path, encoding="utf-8") as f:
                 workflow = json.load(f)
 
             # Simulate execution

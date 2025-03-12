@@ -700,7 +700,7 @@ def verify_hardware_detection():
 
         # Run the hardware detection script to display info
         try:
-            result = subprocess.run(
+            subprocess.run(
                 [sys.executable, "tools/hardware/hardware_detection.py", "--verbose"],
                 check=True,
                 text=True,

@@ -19,13 +19,13 @@ Intel Arc GPUs (Alchemist and newer) offer excellent performance with these opti
 
 ### Environment Setup
 
-````bash
+\`\`\`text\`bash
 
 ## Set up environment with Arc optimizations
 
 python setup_hardware_env.py --hardware acm
 
-```text
+````text
 
 ### Performance Tuning
 
@@ -249,4 +249,5 @@ For advanced users, edit `/uvfast.json` to fine-tune hardware configurations:
 ---
 **Previous**: [Hardware Compatibility](compatibility.md) | **Next**: [Intel Arc Guide](device-specific/intel-arc.md) | **See also**: [Performance
 Troubleshooting](../reference/troubleshooting.md)
+```text`
 ````

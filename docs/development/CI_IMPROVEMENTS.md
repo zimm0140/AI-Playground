@@ -59,15 +59,15 @@ Improved documentation across the CI system:
 
 The updated CI workflow now follows this structure:
 
-````text
+\`\`\`text\`text
 .github/workflows/
-├── main.yml                # Main workflow file
+├── main.yml # Main workflow file
 
-├── WORKFLOW.md             # Workflow documentation
+├── WORKFLOW.md # Workflow documentation
 
 └── scripts/
 
-```text
+````text
 ├── README.md           # Scripts documentation
 
 ```text
@@ -102,4 +102,5 @@ Potential future improvements for the CI workflow:
 1. **MacOS Testing**: Add MacOS job for complete platform coverage
 1. **UI Testing**: Add browser-based testing if the project has a web interface
 1. **Deployment Testing**: Add tests to verify deployment works correctly
+```text`
 ````

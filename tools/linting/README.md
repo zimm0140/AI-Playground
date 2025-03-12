@@ -16,45 +16,45 @@ This directory contains scripts for linting and fixing common code quality issue
 
 To fix markdown linting issues:
 
-```
+````text
 
 python tools/linting/fix_markdown_lint.py [directory_or_file]
 
-```
+```text
 
 For advanced markdown fixes:
 
-```
+```text
 
 python tools/fix_markdown_advanced.py [directory_or_file]
 
-```
+```text
 
 ### Python Linting
 
 To check for linting issues:
 
-```
+```text
 
 python tools/linting/check_linting.py
 
-```
+```text
 
 To fix common linting issues:
 
-```
+```text
 
 python tools/linting/fix_lint_issues.py [file]
 
-```
+```text
 
 To fix unused variable warnings:
 
-```
+```text
 
 python tools/linting/fix_unused_variables.py [file]
 
-```
+```text
 
 ## Configuration
 
@@ -67,3 +67,4 @@ These tools use configuration files from the `config` directory:
 - `.pre-commit-config.yaml`: Configuration for pre-commit hooks
 
 Note: Copies of these configuration files are also available in the project root directory for compatibility with tools that expect them there.
+````

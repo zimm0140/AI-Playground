@@ -11,14 +11,15 @@ It formats the notification based on the CI results and provides links
 to view detailed reports.
 """
 
-import os
-import json
 import argparse
+import json
+import os
 import smtplib
-import requests
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 from datetime import datetime
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
+import requests
 
 
 class NotificationSender:
@@ -60,7 +61,7 @@ class NotificationSender:
         """Load metrics from the metrics file."""
         if os.path.exists(self.metrics_file):
             try:
-                with open(self.metrics_file, "r") as f:
+                with open(self.metrics_file) as f:
                     return json.load(f)
             except Exception as e:
                 print(f"Error loading metrics file: {str(e)}")

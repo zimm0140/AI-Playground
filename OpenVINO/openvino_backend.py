@@ -11,8 +11,8 @@ with the rest of the system.
 """
 
 import gc
+from collections.abc import Callable
 from os import path
-from typing import Callable, Dict, List
 
 import openvino_genai
 import openvino_model_config as model_config
@@ -81,7 +81,7 @@ class OpenVino(LLMInterface):
 
     def create_chat_completion(
         self,
-        messages: List[Dict[str, str]],
+        messages: list[dict[str, str]],
         streamer: Callable[[str], None],
         max_tokens: int = 1024,
     ):

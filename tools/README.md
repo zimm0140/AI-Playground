@@ -31,10 +31,11 @@ This directory contains various utility scripts and tools used in the AI Playgro
 
 Most scripts can be run directly with Python:
 
-```
+````text
 
 python tools/linting/fix_markdown_lint.py
 
-```
+```text
 
 See individual script documentation for specific usage instructions.
+````

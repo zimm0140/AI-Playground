@@ -7,7 +7,11 @@ import sys
 from pathlib import Path
 
 from hardware_detection import __version__
-from hardware_detection.core import detect_hardware_type, get_hardware_info, print_hardware_info
+from hardware_detection.core import (
+    detect_hardware_type,
+    get_hardware_info,
+    print_hardware_info,
+)
 
 
 def setup_logging(debug: bool = False) -> None:
@@ -34,7 +38,7 @@ def main() -> int:
     info_parser.add_argument("--json", action="store_true", help="Output in JSON format")
 
     # Detect command
-    detect_parser = subparsers.add_parser("detect", help="Detect hardware type")
+    _ = subparsers.add_parser("detect", help="Detect hardware type")
 
     # Mock command
     mock_parser = subparsers.add_parser("mock", help="Create mock environment")

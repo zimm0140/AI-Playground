@@ -19,20 +19,22 @@ All Python code should adhere to [PEP 8](https://peps.python.org/pep-0008/), wit
 - **Line Length**: Maximum line length is 100 characters
 - **Indentation**: 4 spaces per indentation level (no tabs)
 - **Imports**: Group imports in the following order:
-  1. Standard library imports
-  1. Related third-party imports
-  1. Local application/library-specific imports
+
+1. Standard library imports
+1. Related third-party imports
+1. Local application/library-specific imports
+
 - **Whitespace**: Use whitespace consistently as specified in PEP 8
 - **Comments**: Use complete sentences in comments
 - **Naming Conventions**:
 
-````text
+\`\`\`text\`text
 
 - `snake_case` for functions, methods, and variables
 - `PascalCase` for class names
 - `UPPER_CASE` for constants
 
-```text
+````text
 
 ### Type Hints
 
@@ -294,4 +296,5 @@ Documentation should be:
 
 ---
 **Previous**: [Contributing Guide](contributing.md) | **Next**: [Testing Guide](testing.md) | **See also**: [Linting](linting.md)
+```text`
 ````

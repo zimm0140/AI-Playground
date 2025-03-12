@@ -11,13 +11,13 @@ This script tracks changes to ComfyUI workflow files over time:
 This helps track workflow changes over time and identify potential compatibility issues.
 """
 
-import os
-import json
-import hashlib
 import argparse
-import glob
 import datetime
-from typing import Dict, List, Tuple, Any, Optional
+import glob
+import hashlib
+import json
+import os
+from typing import Any
 
 
 class WorkflowVersion:
@@ -30,7 +30,7 @@ class WorkflowVersion:
         node_count: int,
         link_count: int,
         structure_hash: str,
-        changes: List[str] = None,
+        changes: list[str] = None,
     ):
         self.hash_value = hash_value
         self.timestamp = timestamp
@@ -39,7 +39,7 @@ class WorkflowVersion:
         self.structure_hash = structure_hash
         self.changes = changes or []
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for serialization"""
         return {
             "hash": self.hash_value,
@@ -51,7 +51,7 @@ class WorkflowVersion:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "WorkflowVersion":
+    def from_dict(cls, data: dict[str, Any]) -> "WorkflowVersion":
         """Create from dictionary"""
         return cls(
             hash_value=data["hash"],
@@ -67,7 +67,7 @@ class WorkflowHistory:
     """Represents the version history of a workflow"""
 
     def __init__(
-        self, workflow_id: str, filename: str, versions: List[WorkflowVersion] = None
+        self, workflow_id: str, filename: str, versions: list[WorkflowVersion] = None
     ):
         self.workflow_id = workflow_id
         self.filename = filename
@@ -77,13 +77,13 @@ class WorkflowHistory:
         """Add a new version to the history"""
         self.versions.append(version)
 
-    def get_latest_version(self) -> Optional[WorkflowVersion]:
+    def get_latest_version(self) -> WorkflowVersion | None:
         """Get the most recent version"""
         if not self.versions:
             return None
         return sorted(self.versions, key=lambda v: v.timestamp, reverse=True)[0]
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for serialization"""
         return {
             "workflow_id": self.workflow_id,
@@ -92,7 +92,7 @@ class WorkflowHistory:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "WorkflowHistory":
+    def from_dict(cls, data: dict[str, Any]) -> "WorkflowHistory":
         """Create from dictionary"""
         history = cls(workflow_id=data["workflow_id"], filename=data["filename"])
         history.versions = [
@@ -118,14 +118,14 @@ class WorkflowVersionTracker:
         os.makedirs(output_dir, exist_ok=True)
 
         # Load existing history if available
-        self.workflow_history: Dict[str, WorkflowHistory] = {}
+        self.workflow_history: dict[str, WorkflowHistory] = {}
         if os.path.exists(self.history_file):
             self.load_history()
 
     def load_history(self) -> None:
         """Load workflow history from file"""
         try:
-            with open(self.history_file, "r", encoding="utf-8") as f:
+            with open(self.history_file, encoding="utf-8") as f:
                 data = json.load(f)
                 for history_data in data.get("workflows", []):
                     history = WorkflowHistory.from_dict(history_data)
@@ -154,16 +154,16 @@ class WorkflowVersionTracker:
         except Exception as e:
             print(f"Error saving history: {e}")
 
-    def find_workflow_files(self) -> List[str]:
+    def find_workflow_files(self) -> list[str]:
         """Find all workflow JSON files in the specified directory"""
         return glob.glob(os.path.join(self.workflows_dir, "*.json"))
 
-    def calculate_hash(self, content: Dict) -> str:
+    def calculate_hash(self, content: dict) -> str:
         """Calculate a hash of the workflow content"""
         serialized = json.dumps(content, sort_keys=True)
         return hashlib.sha256(serialized.encode()).hexdigest()
 
-    def calculate_structure_hash(self, workflow: Dict) -> str:
+    def calculate_structure_hash(self, workflow: dict) -> str:
         """Calculate a hash representing the workflow structure (nodes and connections)
         This ignores node positions, workflow title, and specific parameter values.
         It focuses on the types of nodes, their input parameters (keys only), and how they're connected.
@@ -206,7 +206,7 @@ class WorkflowVersionTracker:
         serialized = json.dumps(structure, sort_keys=True)
         return hashlib.sha256(serialized.encode()).hexdigest()
 
-    def detect_changes(self, old_workflow: Dict, new_workflow: Dict) -> List[str]:
+    def detect_changes(self, old_workflow: dict, new_workflow: dict) -> list[str]:
         """Detect changes between two versions of a workflow"""
         changes = []
 
@@ -297,7 +297,7 @@ class WorkflowVersionTracker:
 
         return changes
 
-    def is_breaking_change(self, changes: List[str]) -> bool:
+    def is_breaking_change(self, changes: list[str]) -> bool:
         """Determine if changes might be breaking"""
         # Consider removal of nodes or connections as potentially breaking
         for change in changes:
@@ -305,14 +305,14 @@ class WorkflowVersionTracker:
                 return True
         return False
 
-    def track_workflow(self, file_path: str) -> Tuple[bool, WorkflowHistory]:
+    def track_workflow(self, file_path: str) -> tuple[bool, WorkflowHistory]:
         """Track a single workflow file, updating its version history"""
         filename = os.path.basename(file_path)
         print(f"Tracking workflow: {filename}")
 
         try:
             # Load the workflow
-            with open(file_path, "r", encoding="utf-8") as f:
+            with open(file_path, encoding="utf-8") as f:
                 workflow = json.load(f)
 
             # Calculate workflow ID and hashes
@@ -345,7 +345,7 @@ class WorkflowVersionTracker:
                 # For this, we need to load the previous version's content
                 # This is a simplification - in a real system, we might store the actual content
                 if os.path.exists(file_path + ".prev"):
-                    with open(file_path + ".prev", "r", encoding="utf-8") as f:
+                    with open(file_path + ".prev", encoding="utf-8") as f:
                         prev_workflow = json.load(f)
                     changes = self.detect_changes(prev_workflow, workflow)
                 else:
@@ -382,7 +382,7 @@ class WorkflowVersionTracker:
 
         return False, None
 
-    def track_all_workflows(self) -> Dict[str, WorkflowHistory]:
+    def track_all_workflows(self) -> dict[str, WorkflowHistory]:
         """Track all workflows in the directory"""
         workflow_files = self.find_workflow_files()
         print(f"Found {len(workflow_files)} workflow files")

@@ -6,13 +6,14 @@ This script collects key performance indicators from the CI process and generate
 a metrics dashboard with insights on test performance, coverage trends, and build times.
 """
 
-import os
-import json
-import glob
 import argparse
-import xml.etree.ElementTree as ET
-import datetime
 import csv
+import datetime
+import glob
+import json
+import os
+import xml.etree.ElementTree as ET
+
 import matplotlib.pyplot as plt
 
 
@@ -53,7 +54,7 @@ class CIMetricsCollector:
 
         for result_file in test_result_files:
             try:
-                with open(result_file, "r") as f:
+                with open(result_file) as f:
                     results = json.load(f)
 
                 # Extract platform from filename or content
@@ -213,7 +214,7 @@ class CIMetricsCollector:
 
         for perf_file in performance_files:
             try:
-                with open(perf_file, "r") as f:
+                with open(perf_file) as f:
                     reader = csv.DictReader(f)
                     step_durations = {}
                     for row in reader:
@@ -271,7 +272,7 @@ class CIMetricsCollector:
 
         for security_file in security_files:
             try:
-                with open(security_file, "r") as f:
+                with open(security_file) as f:
                     content = f.read()
 
                 # Parse vulnerability counts
@@ -332,7 +333,7 @@ class CIMetricsCollector:
 
         for platform_file in platform_files:
             try:
-                with open(platform_file, "r") as f:
+                with open(platform_file) as f:
                     platform_issues = json.load(f)
 
                 # Count total issues
@@ -380,7 +381,7 @@ class CIMetricsCollector:
 
         if os.path.exists(history_file):
             try:
-                with open(history_file, "r") as f:
+                with open(history_file) as f:
                     history_data = json.load(f)
             except Exception as e:
                 print(f"Error reading history file: {str(e)}")

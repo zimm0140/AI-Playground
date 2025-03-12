@@ -13,9 +13,9 @@ The FileDownloader class handles downloading files from URLs, with support for:
 import os
 import time
 import traceback
+from collections.abc import Callable
 from io import BufferedWriter
 from threading import Thread
-from typing import Callable
 
 import requests
 from exceptions import DownloadException

@@ -15,7 +15,6 @@ This module serves as a contract between the client and server, ensuring that
 requests conform to the expected structure before being processed by the service.
 """
 
-from typing import List, Optional
 
 import marshmallow_dataclass
 from marshmallow import EXCLUDE  # Used to ignore unknown fields in requests
@@ -43,7 +42,7 @@ class DownloadModelData:
     type: int
     repo_id: str
     backend: str
-    additionalLicenseLink: Optional[str]
+    additionalLicenseLink: str | None
 
 
 @marshmallow_dataclass.dataclass
@@ -59,7 +58,7 @@ class DownloadModelRequestBody:
               a separate model to download.
     """
 
-    data: List[DownloadModelData]
+    data: list[DownloadModelData]
 
 
 @marshmallow_dataclass.dataclass
@@ -79,7 +78,7 @@ class ComfyUICustomNodesGithubRepoId:
 
     username: str
     repoName: str
-    gitRef: Optional[str]
+    gitRef: str | None
 
 
 @marshmallow_dataclass.dataclass
@@ -95,7 +94,7 @@ class ComfyUICustomNodesDownloadRequest:
               Each entry specifies a separate repository containing custom nodes.
     """
 
-    data: List[ComfyUICustomNodesGithubRepoId]
+    data: list[ComfyUICustomNodesGithubRepoId]
 
 
 @marshmallow_dataclass.dataclass
@@ -113,8 +112,8 @@ class ComfyUICheckWorkflowRequirementRequest:
                     These need to be installed from GitHub before the workflow can run.
     """
 
-    pythonPackages: List[str]
-    customNodes: List[ComfyUICustomNodesGithubRepoId]
+    pythonPackages: list[str]
+    customNodes: list[ComfyUICustomNodesGithubRepoId]
 
 
 @marshmallow_dataclass.dataclass
@@ -130,4 +129,4 @@ class ComfyUIPackageInstallRequest:
               version specifiers (e.g., "numpy>=1.20.0").
     """
 
-    data: List[str]
+    data: list[str]

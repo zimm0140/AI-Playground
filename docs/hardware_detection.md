@@ -9,13 +9,13 @@ The module is included in the project and requires no additional installation st
 
 If using from another project, you can install directly:
 
-```bash
+````bash
 
 ## From the repository root
 
 pip install -e .
 
-```
+```text
 
 ## Usage
 
@@ -43,7 +43,7 @@ elif hardware_type == "arl_h":  # AMD GPU
 
     pass
 
-```
+```text
 
 ### Legacy Usage (Deprecated)
 
@@ -59,7 +59,7 @@ from tools.hardware import hardware_detection
 
 hardware_type = hardware_detection.detect_hardware_type()
 
-```
+```text
 
 ## API Reference
 
@@ -87,7 +87,7 @@ from hardware_detection import detect_hardware_type
 hardware = detect_hardware_type()
 print(f"Detected hardware: {hardware}")
 
-```
+```text
 
 #### `get_gpu_info() -> List[str]`
 
@@ -104,7 +104,7 @@ from hardware_detection import get_gpu_info
 gpus = get_gpu_info()
 print(f"Available GPUs: {gpus}")
 
-```
+```text
 
 #### `get_cpu_info() -> Dict[str, Any]`
 
@@ -125,7 +125,7 @@ from hardware_detection import get_cpu_info
 cpu = get_cpu_info()
 print(f"CPU: {cpu['name']} with {cpu['cores']} cores")
 
-```
+```text
 
 #### `get_hardware_info() -> Dict[str, Any]`
 
@@ -148,7 +148,7 @@ from hardware_detection import get_hardware_info
 info = get_hardware_info()
 print(json.dumps(info, indent=2))
 
-```
+```text
 
 #### `print_hardware_info(verbose: bool = False) -> None`
 
@@ -164,7 +164,7 @@ Print information about the system hardware.
 from hardware_detection import print_hardware_info
 print_hardware_info(verbose=True)
 
-```
+```text
 
 ## Environment Variables
 
@@ -200,7 +200,7 @@ The new package structure provides:
    ## New
 
    from hardware_detection import detect_hardware_type, get_gpu_info
-   ```
+   ```text
 
 1. Update function calls:
 
@@ -212,4 +212,5 @@ The new package structure provides:
    ## New
 
    hardware_type = detect_hardware_type()
-   ```
+   ```text
+````

@@ -67,7 +67,7 @@ The following software requirements apply based on the hardware platform:
 
 ### Intel Arc GPUs
 
-````bash
+\`\`\`text\`bash
 
 ## Install Intel GPU driver (Windows)
 
@@ -77,7 +77,7 @@ The following software requirements apply based on the hardware platform:
 
 python setup_hardware_env.py --hardware acm
 
-```text
+````text
 
 ### NVIDIA GPUs
 
@@ -131,4 +131,5 @@ This will generate a report about your hardware configuration and any potential 
 
 ---
 **Previous**: [Hardware Overview](overview.md) | **Next**: [Hardware Optimization](optimization.md) | **See also**: [Intel Arc Guide](device-specific/intel-arc.md)
+```text`
 ````

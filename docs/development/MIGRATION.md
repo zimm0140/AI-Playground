@@ -24,7 +24,8 @@ This guide helps you migrate to the modern Python development workflow using uv 
 
 1. **Install uv**:
 
-   ````bash
+   \`\`\`text\`bash
+
    ## Unix/Linux/macOS
 
    curl -LsSf <https://astral.sh/uv/install.sh> | sh
@@ -32,13 +33,17 @@ This guide helps you migrate to the modern Python development workflow using uv 
    ## Windows
 
    powershell -ExecutionPolicy ByPass -c "irm <https://astral.sh/uv/install.ps1> | iex"
-   ```text
+
+   ````text
+
+   ```text`
 
    ````
 
 1. **Migrate existing environments**:
 
-   ````bash
+   \`\`\`text\`bash
+
    ## Generate lockfiles from your existing requirements
 
    uv pip compile requirements.txt --output-file requirements.lock
@@ -51,7 +56,10 @@ This guide helps you migrate to the modern Python development workflow using uv 
    ## Install using lockfiles
 
    uv pip sync requirements.lock requirements-dev.lock
-   ```text
+
+   ````text
+
+   ```text`
 
    ````
 
@@ -59,7 +67,8 @@ This guide helps you migrate to the modern Python development workflow using uv 
 
    We've provided convenient script wrappers in `scripts/run_with_uv.sh` (Unix/macOS) and `scripts/run_with_uv.ps1` (Windows).
 
-   ````bash
+   \`\`\`text\`bash
+
    ## Run tests
 
    ./scripts/run_with_uv.sh test
@@ -67,7 +76,10 @@ This guide helps you migrate to the modern Python development workflow using uv 
    ## Run linters
 
    ./scripts/run_with_uv.sh lint
-   ```text
+
+   ````text
+
+   ```text`
 
    ````
 
@@ -75,7 +87,7 @@ This guide helps you migrate to the modern Python development workflow using uv 
 
 Python 3.10 introduced new type annotation syntax. We've provided a helper script to identify type annotations that can be updated:
 
-````bash
+\`\`\`text\`bash
 
 ## Scan the entire project
 
@@ -85,7 +97,7 @@ python scripts/fix_type_annotations.py .
 
 python scripts/fix_type_annotations.py path/to/file.py
 
-```text
+````text
 
 For detailed guidance on type compatibility issues and solutions, see the [Type Compatibility Guide](TYPE_COMPATIBILITY.md).
 
@@ -222,4 +234,5 @@ A: No. Users installing via pip will still be able to do so. These changes enhan
 ### Q: What if I encounter type checking errors after migration?
 
 A: Use the `scripts/fix_type_annotations.py` script to help identify and fix type annotation issues.
+```text`
 ````

@@ -140,23 +140,23 @@ def fix_code_blocks(content):
 
     while i < len(lines):
         line = lines[i]
-        
+
         # Detect start/end of code blocks
         if line.startswith("```"):
             # If starting a code block and previous line is not blank
             if not in_code_block and i > 0 and result and result[-1].strip():
                 result.append("")  # Add blank line before code block
-            
+
             # Add the code block marker
             result.append(line)
             in_code_block = not in_code_block
-            
+
             # If ending a code block and next line exists and is not blank
             if not in_code_block and i < len(lines) - 1 and lines[i + 1].strip():
                 result.append("")  # Add blank line after code block
         else:
             result.append(line)
-        
+
         i += 1
 
     return "\n".join(result)

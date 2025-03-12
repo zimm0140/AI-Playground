@@ -72,7 +72,7 @@ def get_gpu_info() -> list:
                 ["wmic", "path", "win32_VideoController", "get", "Name"],
                 capture_output=True,
                 text=True,
-                timeout=5,
+                timeout=5, check=False,
             ).stdout
             gpus = [line.strip() for line in output.split("\n")[1:] if line.strip()]
         elif system == "Linux":
@@ -81,7 +81,7 @@ def get_gpu_info() -> list:
                 ["lspci", "-v"],
                 capture_output=True,
                 text=True,
-                timeout=5,
+                timeout=5, check=False,
             ).stdout
 
             # Extract GPU names from lspci output
@@ -97,7 +97,7 @@ def get_gpu_info() -> list:
                 ["system_profiler", "SPDisplaysDataType"],
                 capture_output=True,
                 text=True,
-                timeout=5,
+                timeout=5, check=False,
             ).stdout
 
             # Extract GPU names from system_profiler output
@@ -153,7 +153,7 @@ def get_cpu_info() -> dict:
                     ["wmic", "cpu", "get", wmic_key],
                     capture_output=True,
                     text=True,
-                    timeout=5,
+                    timeout=5, check=False,
                 ).stdout
                 value = output.split("\n")[1].strip()
                 info[key] = value
@@ -183,7 +183,7 @@ def get_cpu_info() -> dict:
                 ["sysctl", "-n", "machdep.cpu.vendor"],
                 capture_output=True,
                 text=True,
-                timeout=5,
+                timeout=5, check=False,
             ).stdout
             info["vendor"] = vendor_output.strip()
 
@@ -191,7 +191,7 @@ def get_cpu_info() -> dict:
                 ["sysctl", "-n", "machdep.cpu.brand_string"],
                 capture_output=True,
                 text=True,
-                timeout=5,
+                timeout=5, check=False,
             ).stdout
             info["name"] = name_output.strip()
 
@@ -199,7 +199,7 @@ def get_cpu_info() -> dict:
                 ["sysctl", "-n", "hw.physicalcpu"],
                 capture_output=True,
                 text=True,
-                timeout=5,
+                timeout=5, check=False,
             ).stdout
             try:
                 info["cores"] = int(cores_output.strip())
@@ -256,10 +256,11 @@ def is_openvino_available() -> bool:
         return True
 
     try:
-        import openvino  # type: ignore
+        # Use importlib.util to check for package without import warning
+        import importlib.util
 
-        return True
-    except ImportError:
+        return importlib.util.find_spec("openvino") is not None
+    except (ImportError, AttributeError):
         return False
 
 

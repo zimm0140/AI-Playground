@@ -127,7 +127,7 @@ def test_torch_tensor_creation(device):
 def test_neural_network(device):
     """Test a simple neural network on the configured device."""
     import torch
-    import torch.nn as nn
+    from torch import nn
 
     print(f"\nTesting neural network on {device}...")
     try:

@@ -16,7 +16,8 @@ This directory contains curated and validated ComfyUI workflows that have been t
 
 ## Workflow Validation System
 
-All workflows in this repository undergo a comprehensive validation process to ensure quality, compatibility, and proper documentation. Our CI system includes:
+All workflows in this repository undergo a comprehensive validation process to ensure quality, compatibility,
+    and proper documentation. Our CI system includes:
 
 ### 1. Structural Validation
 
@@ -78,7 +79,8 @@ Each workflow is provided as a JSON file that can be imported directly into Comf
 
 ## Required Models
 
-Most workflows require specific checkpoint models, VAEs, or LoRAs. Check the dashboard or workflow documentation for specific requirements.
+Most workflows require specific checkpoint models, VAEs,
+    or LoRAs. Check the dashboard or workflow documentation for specific requirements.
 
 ## Contributing Workflows
 
@@ -93,7 +95,8 @@ To contribute a new workflow:
 
 ## Documentation
 
-For more detailed information about the workflow validation system, see [docs/comfyui_workflow_validation.md](../../docs/comfyui_workflow_validation.md)
+For more detailed information about the workflow validation system,
+    see [docs/comfyui_workflow_validation.md](../../docs/comfyui_workflow_validation.md)
 """
 
 # Path to the README file

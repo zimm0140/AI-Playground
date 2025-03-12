@@ -19,7 +19,7 @@ Dependencies:
 
 import argparse
 import sys
-from typing import Any, Dict, List
+from typing import Any
 
 # These imports are from packages specified in the uv-x-package comments
 import requests
@@ -28,7 +28,7 @@ from rich.table import Table
 from tqdm import tqdm
 
 
-def get_github_repos(org_name: str, n: int = 5) -> List[Dict[str, Any]]:
+def get_github_repos(org_name: str, n: int = 5) -> list[dict[str, Any]]:
     """Fetch GitHub repositories for a given organization.
 
     Args:
@@ -52,7 +52,7 @@ def get_github_repos(org_name: str, n: int = 5) -> List[Dict[str, Any]]:
         return []
 
 
-def display_repos(repos: List[Dict[str, Any]]) -> None:
+def display_repos(repos: list[dict[str, Any]]) -> None:
     """Display repository information in a formatted table.
 
     Args:

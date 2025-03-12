@@ -9,8 +9,8 @@ Usage:
     python update_python_files.py
 """
 
-import os
 import glob
+import os
 import subprocess
 import tempfile
 
@@ -18,7 +18,7 @@ import tempfile
 def run_command(command, show_output=True):
     """Run a command and return the result."""
     print(f"Running: {' '.join(command)}")
-    result = subprocess.run(command, capture_output=True, text=True)
+    result = subprocess.run(command, capture_output=True, text=True, check=False)
     if show_output:
         if result.stdout:
             print("\nOutput:")
@@ -90,7 +90,7 @@ def fix_ruff_issues(files):
 def add_guard_clauses(files):
     """Add guard clauses to python scripts if missing."""
     for filename in files:
-        with open(filename, "r") as f:
+        with open(filename) as f:
             content = f.read()
 
         if (

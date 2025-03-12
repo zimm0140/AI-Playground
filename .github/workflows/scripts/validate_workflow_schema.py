@@ -9,12 +9,13 @@ Usage:
     python validate_workflow_schema.py --workflows-dir DIR --schema-file FILE --output-file FILE
 """
 
+import argparse
+import json
 import os
 import sys
-import json
-import argparse
-import jsonschema
 from datetime import datetime
+
+import jsonschema
 
 # Add the parent directory to the path so we can import the utils package
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -33,7 +34,7 @@ def validate_workflow(workflow_file, schema):
         tuple: (is_valid, error_message)
     """
     try:
-        with open(workflow_file, "r", encoding="utf-8") as f:
+        with open(workflow_file, encoding="utf-8") as f:
             workflow = json.load(f)
 
         # Use utility function to check for nodes in different formats
@@ -86,7 +87,7 @@ def validate_all_workflows(workflows_dir, schema_file, output_file):
     """
     # Load the schema
     try:
-        with open(schema_file, "r", encoding="utf-8") as f:
+        with open(schema_file, encoding="utf-8") as f:
             schema = json.load(f)
     except Exception as e:
         print(f"Error loading schema file: {str(e)}")

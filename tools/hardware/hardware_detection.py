@@ -12,7 +12,7 @@ import importlib.util
 import os
 import sys
 import warnings
-from typing import Any, Dict, List
+from typing import Any
 
 # Check if hardware_detection package exists
 PACKAGE_EXISTS = importlib.util.find_spec("hardware_detection") is not None
@@ -58,7 +58,7 @@ else:
         # Default to 'base' for CI environments
         return os.environ.get("SIMULATED_HARDWARE", "base")
 
-    def get_gpu_info() -> List[str]:
+    def get_gpu_info() -> list[str]:
         """Stub function for GPU info.
 
         Returns:
@@ -66,7 +66,7 @@ else:
         """
         return ["Stub GPU for CI"]
 
-    def get_cpu_info() -> Dict[str, Any]:
+    def get_cpu_info() -> dict[str, Any]:
         """Stub function for CPU info.
 
         Returns:
@@ -86,7 +86,7 @@ else:
         """
         return False
 
-    def get_hardware_info() -> Dict[str, Any]:
+    def get_hardware_info() -> dict[str, Any]:
         """Stub function for hardware info.
 
         Returns:

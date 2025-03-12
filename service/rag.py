@@ -18,7 +18,7 @@ import json
 import os
 import re
 import time
-from typing import Any, Dict, List
+from typing import Any
 
 import aipg_utils as utils
 
@@ -33,7 +33,10 @@ from sentence_transformers import SentenceTransformer
 from langchain_community.document_loaders.markdown import UnstructuredMarkdownLoader
 from langchain_community.document_loaders.pdf import PyPDFLoader
 from langchain_community.document_loaders.text import TextLoader
-from langchain_community.document_loaders.word_document import Docx2txtLoader, UnstructuredWordDocumentLoader
+from langchain_community.document_loaders.word_document import (
+    Docx2txtLoader,
+    UnstructuredWordDocumentLoader,
+)
 from langchain_community.vectorstores.faiss import FAISS, Document
 
 #### CONFIGURATIONS ------------------------------------------------------------------------------------------------------------------------
@@ -64,7 +67,7 @@ class EmbeddingWrapper(Embeddings):
         print(f"******* loading {model_embd_path} start ")
         self.model = SentenceTransformer(model_embd_path, trust_remote_code=True, device=service_config.device)
 
-        print("******* loading {} finish. cost{:3f}".format(model_embd_path, time.time() - start))
+        print(f"******* loading {model_embd_path} finish. cost{time.time() - start:3f}")
 
     def to(self, device: str):
         """
@@ -75,7 +78,7 @@ class EmbeddingWrapper(Embeddings):
         """
         self.model.to(device)
 
-    def embed_documents(self, texts: List[str]) -> List[List[float]]:
+    def embed_documents(self, texts: list[str]) -> list[list[float]]:
         """
         Create embeddings for a list of documents.
 
@@ -95,7 +98,7 @@ class EmbeddingWrapper(Embeddings):
         print("-----------SentenceTransformer--embedding cost time(s): ", t1 - t0)
         return embeddings_as_lists
 
-    def embed_query(self, text: str) -> List[float]:
+    def embed_query(self, text: str) -> list[float]:
         """
         Create embedding for a query string.
 
@@ -119,7 +122,7 @@ class EmbeddingDatabase:
     db: FAISS
     embeddings: EmbeddingWrapper
     text_splitter: RecursiveCharacterTextSplitter
-    index_list: List[Dict[str, Any]]
+    index_list: list[dict[str, Any]]
 
     def __init__(self, embeddings: EmbeddingWrapper):
         """
@@ -168,7 +171,7 @@ class EmbeddingDatabase:
             List of index entries or empty list if loading fails
         """
         try:
-            with open(index_json, "r") as f:
+            with open(index_json) as f:
                 return json.load(f)
         except Exception as e:
             print(f"load index.json error: {e}")
@@ -191,7 +194,7 @@ class EmbeddingDatabase:
             json.dump(self.index_list, f)
         self.db.save_local(INDEX_DATABASE_PATH)
 
-    def __add_documents(self, file_base_name: str, docs: List[Document], md5: str):
+    def __add_documents(self, file_base_name: str, docs: list[Document], md5: str):
         """
         Add documents to the FAISS database.
 
@@ -249,10 +252,10 @@ class EmbeddingDatabase:
 
         # Embedding the splitted pieces of text
         if docs is not None:
-            print("anayze {} got index file {}".format(file_base_name, docs.__len__()))
+            print(f"anayze {file_base_name} got index file {docs.__len__()}")
             self.__add_documents(file_base_name, docs, md5)
         else:
-            raise Exception("can't not anayze {} ".format(file_base_name))
+            raise Exception(f"can't not anayze {file_base_name} ")
 
     def add_index_file(self, file: str):
         """

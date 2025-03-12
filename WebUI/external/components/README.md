@@ -25,15 +25,15 @@ To use a component in your workflow:
 
 Each component follows this standard format:
 
-````json
+\`\`\`text\`json
 {
-  "name": "Component Name",
-  "description": "What this component does",
-  "version": "1.0.0",
-  "type": "image_loader|text_encoder|sampler|output_processor|etc",
-  "inputs": [
+"name": "Component Name",
+"description": "What this component does",
+"version": "1.0.0",
+"type": "image_loader|text_encoder|sampler|output_processor|etc",
+"inputs": \[
 
-```text
+````text
 
 {
   "name": "input_1",
@@ -136,4 +136,5 @@ To create a new component:
 - Test components in isolation before including them in workflows
 - Consider resource requirements when designing components
 
+```text`
 ````

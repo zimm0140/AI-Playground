@@ -8,16 +8,16 @@ This script automatically fixes Ruff linting issues in the codebase by:
 3. Supporting both local and CI environments
 """
 
-import os
-import sys
-import subprocess
 import glob
+import os
+import subprocess
+import sys
 
 
 def find_python_files(directory="."):
     """Find all Python files in the given directory, excluding venvs and hidden dirs."""
     py_files = []
-    exclude_patterns = ["**/venv/**", "**/.venv/**", "**/__pycache__/**", "**/\.*/**"]
+    exclude_patterns = ["**/venv/**", "**/.venv/**", "**/__pycache__/**", r"**/\.*/**"]
 
     # Find all Python files
     for py_file in glob.glob(f"{directory}/**/*.py", recursive=True):
@@ -47,7 +47,7 @@ def run_ruff_fix(files=None, directory="."):
         # First run Ruff check to see what issues exist
         print(f"Running Ruff check on {len(files)} Python files...")
         result = subprocess.run(
-            ["ruff", "check"] + files, capture_output=True, text=True
+            ["ruff", "check"] + files, capture_output=True, text=True, check=False
         )
 
         if result.returncode == 0:
@@ -56,12 +56,12 @@ def run_ruff_fix(files=None, directory="."):
         # Now run with --fix to auto-fix issues
         print("Running Ruff fix to automatically correct issues...")
         _ = subprocess.run(  # noqa: F841 (was fix_result)
-            ["ruff", "check", "--fix"] + files, capture_output=True, text=True
+            ["ruff", "check", "--fix"] + files, capture_output=True, text=True, check=False
         )
 
         # Run check again to see what issues remain
         after_result = subprocess.run(
-            ["ruff", "check"] + files, capture_output=True, text=True
+            ["ruff", "check"] + files, capture_output=True, text=True, check=False
         )
 
         if after_result.returncode == 0:

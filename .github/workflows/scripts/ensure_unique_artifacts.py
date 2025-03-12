@@ -7,8 +7,8 @@ and ensures that all artifact names are unique to prevent conflicts.
 It adds job-specific prefixes to artifact names to make them unique.
 """
 
-import os
 import glob
+import os
 import re
 
 
@@ -35,7 +35,7 @@ def ensure_unique_artifacts():
 
     # First pass - catalog all artifact names
     for file_path in workflow_files:
-        with open(file_path, "r") as f:
+        with open(file_path) as f:
             content = f.read()
 
         # Extract workflow name
@@ -99,7 +99,7 @@ def ensure_unique_artifacts():
     # Second pass - update artifact names to make them unique
     for file_path in workflow_files:
         updated = False
-        with open(file_path, "r") as f:
+        with open(file_path) as f:
             lines = f.readlines()
 
         # Extract workflow name for prefixing

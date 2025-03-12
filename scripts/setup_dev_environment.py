@@ -18,7 +18,6 @@ import platform
 import subprocess
 import sys
 from pathlib import Path
-from typing import List, Optional, Tuple
 
 
 def print_step(message: str) -> None:
@@ -28,7 +27,7 @@ def print_step(message: str) -> None:
     print("=" * 80)
 
 
-def run_command(cmd: List[str], cwd: Optional[str] = None, check: bool = True) -> Tuple[int, str]:
+def run_command(cmd: list[str], cwd: str | None = None, check: bool = True) -> tuple[int, str]:
     """Run a command and return the exit code and output."""
     print(f"Running: {' '.join(cmd)}")
     try:

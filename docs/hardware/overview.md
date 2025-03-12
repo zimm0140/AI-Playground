@@ -23,13 +23,13 @@ AI-Playground supports the following hardware platforms with varying levels of o
 
 AI-Playground includes a sophisticated hardware detection system that identifies your specific hardware configuration and sets up the environment accordingly:
 
-````bash
+\`\`\`text\`bash
 
 ## Automatic detection and setup
 
 python setup_hardware_env.py
 
-```text
+````text
 
 The detection system:
 
@@ -107,4 +107,5 @@ For optimization techniques specific to your hardware, see the [Hardware Optimiz
 
 ---
 **Previous**: [Migration Guide](../getting-started/migration.md) | **Next**: [Hardware Compatibility](compatibility.md) | **See also**: [Device-Specific Guides](device-specific/)
+```text`
 ````

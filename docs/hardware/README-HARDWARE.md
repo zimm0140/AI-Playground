@@ -60,11 +60,11 @@ The implementation combines modern Python packaging practices with hardware dete
 
 1. Clone the repository and navigate to the project directory:
 
-````bash
+\`\`\`text\`bash
 git clone <repository-url>
 cd <project-directory>
 
-```text
+````text
 
 1. Run the setup command to create an environment for your hardware:
 
@@ -231,4 +231,5 @@ You can customize the hardware detection and environment configuration by modify
 - Customize detection patterns
 - Change dependency paths
 - Configure environment settings
+```text`
 ````

@@ -14,11 +14,11 @@ This directory contains scripts for hardware detection and configuration in the 
 
 To detect and report hardware capabilities:
 
-```
+````text
 
 python tools/hardware/hardware_detection.py
 
-```
+```text
 
 This script will:
 
@@ -31,11 +31,11 @@ This script will:
 
 To set up the hardware environment:
 
-```
+```text
 
 python tools/hardware/setup_hardware_env.py
 
-```
+```text
 
 This script will:
 
@@ -85,7 +85,7 @@ print(f"GPUs: {info['gpus']}")
 print(f"CPU: {info['cpu']}")
 print(f"OpenVINO available: {info['openvino_available']}")
 
-```
+```text
 
 ### Command Line Usage
 
@@ -94,14 +94,14 @@ You can also run the module directly to print hardware information:
 ```bash
 python tools/hardware/hardware_detection.py
 
-```
+```text
 
 Add the `--verbose` or `-v` flag to see more detailed information:
 
 ```bash
 python tools/hardware/hardware_detection.py --verbose
 
-```
+```text
 
 ## Hardware Types
 
@@ -127,33 +127,33 @@ To simulate specific hardware in CI, set the `SIMULATED_HARDWARE` environment va
 export SIMULATED_HARDWARE=acm
 python tools/hardware/hardware_detection.py
 
-```
+```text
 
 You can also use the provided setup script:
 
 ```bash
 python .github/workflows/scripts/hardware_env_setup.py acm
 
-```
+```text
 
 ### Mock Files
 
 The module can also use mock files to simulate hardware. Create a directory with the following structure:
 
-```
+```text
 
 .uvfast/mock/
   ├── gpu_info.txt
   └── cpu_info.txt
 
-```
+```text
 
 Then set the `UVFAST_MOCK_DIR` environment variable:
 
 ```bash
 export UVFAST_MOCK_DIR=.uvfast/mock
 
-```
+```text
 
 ## Configuration
 
@@ -175,4 +175,5 @@ Example configuration:
   }
 }
 
-```
+```text
+````

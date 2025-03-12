@@ -14,10 +14,10 @@ def validate_workflow():
         print(f"Loading schema from: {schema_file}")
         print(f"Loading workflow from: {workflow_file}")
 
-        with open(schema_file, "r") as f:
+        with open(schema_file) as f:
             schema = json.load(f)
 
-        with open(workflow_file, "r") as f:
+        with open(workflow_file) as f:
             workflow = json.load(f)
 
         # Validate the workflow against the schema

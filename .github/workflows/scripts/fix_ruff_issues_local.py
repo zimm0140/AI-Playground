@@ -12,10 +12,10 @@ Requirements:
     - ruff must be installed: pip install ruff
 """
 
-import subprocess
-import os
-import sys
 import glob
+import os
+import subprocess
+import sys
 
 
 def print_header(text):
@@ -60,7 +60,7 @@ def find_python_files(directory="service"):
 def run_command(command, show_output=True):
     """Run a command and return the result."""
     print(f"Running: {' '.join(command)}")
-    result = subprocess.run(command, capture_output=True, text=True)
+    result = subprocess.run(command, capture_output=True, text=True, check=False)
     if show_output:
         if result.stdout:
             print("\nOutput:")

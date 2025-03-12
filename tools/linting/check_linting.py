@@ -10,7 +10,7 @@ import sys
 def check_directory(directory):
     """Run ruff check on the specified directory."""
     print(f"Checking {directory}...")
-    result = subprocess.run(["ruff", "check", directory], capture_output=True, text=True)
+    result = subprocess.run(["ruff", "check", directory], capture_output=True, text=True, check=False)
 
     if result.returncode == 0:
         print(f"✅ {directory} passed!")

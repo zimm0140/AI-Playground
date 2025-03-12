@@ -33,7 +33,7 @@ implementation follows a pragmatic dual approach that allows both traditional an
 
 ### Traditional Installation (Backward Compatible)
 
-````bash
+\`\`\`text\`bash
 
 ## Install directly with pip
 
@@ -43,7 +43,7 @@ pip install -e .
 
 pip install -r requirements-dev.txt
 
-```text
+````text
 
 ### Modern Installation with uvfast
 
@@ -149,4 +149,5 @@ We welcome contributions to further improve this modernization effort. Please se
 ## License
 
 This project is licensed under the same license as the original project. See the LICENSE file for details.
+```text`
 ````

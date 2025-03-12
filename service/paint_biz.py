@@ -26,8 +26,9 @@ import queue
 import random
 import re
 import time
+from collections.abc import Callable
 from threading import Event
-from typing import Any, Callable, Dict, List
+from typing import Any
 
 import aipg_utils as utils
 import inpaint_utils
@@ -48,7 +49,9 @@ from diffusers import (
     StableDiffusionXLInpaintPipeline,
     StableDiffusionXLPipeline,
 )
-from diffusers.pipelines.stable_diffusion.safety_checker import StableDiffusionSafetyChecker
+from diffusers.pipelines.stable_diffusion.safety_checker import (
+    StableDiffusionSafetyChecker,
+)
 from PIL import Image
 from realesrgan import RealESRGANer
 from xpu_hijacks import ipex_hijacks
@@ -323,7 +326,7 @@ def get_basic_model(input_model_name: str) -> DiffusionPipeline | Any:
     _basic_model_pipe.enable_vae_tiling()
     _basic_model_pipe.to(service_config.device)
 
-    print("load model {} finish. cost {}s".format(model_name, round(time.time() - start, 3)))
+    print(f"load model {model_name} finish. cost {round(time.time() - start, 3)}s")
 
     if load_model_callback is not None:
         load_model_callback("finish")
@@ -365,7 +368,7 @@ def process_preview_taesd():
     _taesd_vae.to(service_config.device)
 
 
-def get_ext_pipe(params: TextImageParams, pipe_classes: List, init_class: any):
+def get_ext_pipe(params: TextImageParams, pipe_classes: list, init_class: any):
     """
     Get or initialize an extended pipeline for specialized tasks.
 
@@ -417,7 +420,7 @@ def load_model_from_single_file(model_signle_file: str):
         Loaded diffusion pipeline
     """
     base_name = os.path.basename(model_signle_file)
-    is_xl = re.search("[-_]xl[-_\.]", base_name, flags=re.I) is not None
+    is_xl = re.search(r"[-_]xl[-_\.]", base_name, flags=re.I) is not None
     if is_xl:
         try:
             pipe = StableDiffusionXLPipeline.from_single_file(model_signle_file, torch_dtype=torch.bfloat16)
@@ -617,7 +620,7 @@ def __callback_on_step_end__(
     ),
     step: int,
     timesteps: int,
-    callback_kwargs: Dict,
+    callback_kwargs: dict,
 ):
     """
     Callback function called at the end of each diffusion step.

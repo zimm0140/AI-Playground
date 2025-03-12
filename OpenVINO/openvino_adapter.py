@@ -15,8 +15,8 @@ import json
 import threading
 import time
 import traceback
+from collections.abc import Callable
 from queue import Empty, Queue
-from typing import Callable, Dict, List
 
 from openvino_interface import LLMInterface
 from openvino_params import LLMParams
@@ -310,7 +310,7 @@ _default_prompt = {
 }
 
 
-def convert_prompt(prompt: List[Dict[str, str]]):
+def convert_prompt(prompt: list[dict[str, str]]):
     """
     Convert the API prompt format to the chat history format expected by the LLM.
 
@@ -359,7 +359,7 @@ def process_rag(
     rag.to(device)
     query_success, context, rag_source = rag.query(prompt)
     if query_success:
-        print("rag query input\r\n{}output:\r\n{}".format(prompt, context))
+        print(f"rag query input\r\n{prompt}output:\r\n{context}")
         prompt = RAG_PROMPT_FORMAT.format(prompt=prompt, context=context)
         if text_out_callback is not None:
             text_out_callback(rag_source, 2)

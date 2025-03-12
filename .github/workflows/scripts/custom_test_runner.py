@@ -5,8 +5,8 @@ and continues despite failures.
 """
 import os
 import sys
-import unittest
 import traceback
+import unittest
 
 
 def run_tests():

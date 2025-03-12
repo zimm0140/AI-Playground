@@ -13,7 +13,7 @@ Cross-platform wrapper scripts for running commands with `uv`:
 
 #### Usage
 
-````bash
+\`\`\`text\`bash
 
 ## Unix/Linux/macOS
 
@@ -21,9 +21,9 @@ Cross-platform wrapper scripts for running commands with `uv`:
 
 ## Windows
 
-.\scripts\run_with_uv.ps1 [command]
+.\\scripts\\run_with_uv.ps1 [command]
 
-```text
+````text
 
 #### Available Commands
 
@@ -121,4 +121,5 @@ When adding new helper scripts to this directory:
 - Make scripts robust to different environments
 - Test scripts on multiple platforms when possible
 - Follow consistent coding style within scripts
+```text`
 ````

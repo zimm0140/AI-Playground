@@ -3,10 +3,10 @@ Utilities for parsing ComfyUI workflow files.
 Centralizes the logic for handling different workflow formats.
 """
 
-from typing import Dict, List, Optional, Any, Tuple
+from typing import Any
 
 
-def get_workflow_nodes(workflow: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+def get_workflow_nodes(workflow: dict[str, Any]) -> dict[str, Any] | None:
     """
     Extract nodes from a workflow, handling different formats:
     - Traditional format with top-level nodes
@@ -43,7 +43,7 @@ def get_workflow_nodes(workflow: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     return None
 
 
-def get_workflow_links(workflow: Dict[str, Any]) -> Optional[List[List[Any]]]:
+def get_workflow_links(workflow: dict[str, Any]) -> list[list[Any]] | None:
     """
     Extract links from a workflow, handling different formats.
 
@@ -68,7 +68,7 @@ def get_workflow_links(workflow: Dict[str, Any]) -> Optional[List[List[Any]]]:
     return None
 
 
-def build_link_map(workflow: Dict[str, Any]) -> Dict[str, Tuple[str, str, str]]:
+def build_link_map(workflow: dict[str, Any]) -> dict[str, tuple[str, str, str]]:
     """
     Build a map of node connections from a workflow.
 
@@ -105,7 +105,7 @@ def build_link_map(workflow: Dict[str, Any]) -> Dict[str, Tuple[str, str, str]]:
     return link_map
 
 
-def get_workflow_attribute(workflow: Dict[str, Any], attribute: str) -> Any:
+def get_workflow_attribute(workflow: dict[str, Any], attribute: str) -> Any:
     """
     Get an attribute from a workflow, checking both top-level and inside comfyUiApiWorkflow.
 
@@ -127,7 +127,7 @@ def get_workflow_attribute(workflow: Dict[str, Any], attribute: str) -> Any:
     return None
 
 
-def get_node_class_type(node: Dict[str, Any]) -> Optional[str]:
+def get_node_class_type(node: dict[str, Any]) -> str | None:
     """
     Get the class_type of a node, which indicates its functionality.
 
@@ -140,7 +140,7 @@ def get_node_class_type(node: Dict[str, Any]) -> Optional[str]:
     return node.get("class_type")
 
 
-def get_node_inputs(node: Dict[str, Any]) -> Dict[str, Any]:
+def get_node_inputs(node: dict[str, Any]) -> dict[str, Any]:
     """
     Get the inputs of a node, handling different formats.
 

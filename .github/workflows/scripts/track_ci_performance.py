@@ -10,14 +10,15 @@ The metrics are stored in JSON files for each workflow run and can be used
 to generate reports and visualizations to identify performance trends.
 """
 
-import os
-import json
-import time
 import argparse
+import json
+import os
 import platform
 import subprocess
-import psutil
+import time
 from datetime import datetime
+
+import psutil
 
 
 def collect_metrics(workflow_name, job_name, output_dir):
@@ -331,7 +332,7 @@ def main():
 
     # Load existing metrics if available
     if os.path.exists(metrics_file):
-        with open(metrics_file, "r") as f:
+        with open(metrics_file) as f:
             metrics = json.load(f)
     else:
         # Start new metrics if file doesn't exist

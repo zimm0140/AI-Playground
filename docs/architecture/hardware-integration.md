@@ -16,12 +16,12 @@ AI-Playground's hardware integration architecture is designed to:
 
 The hardware integration consists of several layers:
 
-````text
+\`\`\`text\`text
 ┌────────────────────────────────────────────────────────────────┐
-│                     Application Layer                          │
+│ Application Layer │
 └────────────────────────────────────────────────────────────────┘
 
-```text
+````text
 
 ```text
 
@@ -1644,4 +1644,5 @@ return {
 
 ---
 **Previous**: [API Design](api-design.md) | **Next**: [Data Flow](data-flow.md) | **See also**: [Architecture Overview](overview.md)
+```text`
 ````

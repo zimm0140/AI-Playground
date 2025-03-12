@@ -10,7 +10,6 @@ maintaining a unified interface for client code.
 """
 
 from abc import ABC, abstractmethod
-from typing import Dict, List, Optional
 
 from openvino_params import LLMParams
 
@@ -30,7 +29,7 @@ class LLMInterface(ABC):
     """
 
     stop_generate: bool
-    _model: Optional[object]
+    _model: object | None
 
     @abstractmethod
     def load_model(self, params: LLMParams, **kwargs):
@@ -63,7 +62,7 @@ class LLMInterface(ABC):
         pass
 
     @abstractmethod
-    def create_chat_completion(self, messages: List[Dict[str, str]]):
+    def create_chat_completion(self, messages: list[dict[str, str]]):
         """
         Generate a text completion based on the provided conversation messages.
 

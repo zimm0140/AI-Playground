@@ -9,10 +9,10 @@ Usage:
     python test_comfyui_workflows.py --workflows-dir DIR --output-dir DIR
 """
 
+import argparse
+import json
 import os
 import sys
-import json
-import argparse
 from datetime import datetime
 
 

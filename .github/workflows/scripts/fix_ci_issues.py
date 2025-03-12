@@ -18,7 +18,7 @@ def patch_files():
     # Fix invalid escape sequences in paint_biz.py
     if os.path.exists("service/paint_biz.py"):
         print("Patching service/paint_biz.py...")
-        with open("service/paint_biz.py", "r") as f:
+        with open("service/paint_biz.py") as f:
             content = f.read()
 
         # Fix invalid escape sequence
@@ -35,7 +35,7 @@ def patch_files():
     # Patch web_api.py to handle imports safely
     if os.path.exists("service/web_api.py"):
         print("Patching service/web_api.py...")
-        with open("service/web_api.py", "r") as f:
+        with open("service/web_api.py") as f:
             content = f.read()
 
         replacements = [
@@ -64,13 +64,13 @@ def patch_files():
             # Create a backup first
             if os.path.exists("service/tests/test_api.py.bak"):
                 os.remove("service/tests/test_api.py.bak")
-            with open("service/tests/test_api.py", "r") as f_src:
+            with open("service/tests/test_api.py") as f_src:
                 with open("service/tests/test_api.py.bak", "w") as f_dst:
                     f_dst.write(f_src.read())
             print("  - Created backup of test_api.py")
 
             # Read file content
-            with open("service/tests/test_api.py", "r") as f:
+            with open("service/tests/test_api.py") as f:
                 lines = f.readlines()
 
             # Process lines to fix indentation consistency
@@ -167,13 +167,13 @@ def patch_files():
             except SyntaxError as e:
                 print(f"  ! Syntax error in fixed file: {e}")
                 # Restore from backup if compile fails
-                with open("service/tests/test_api.py.bak", "r") as f_src:
+                with open("service/tests/test_api.py.bak") as f_src:
                     with open("service/tests/test_api.py", "w") as f_dst:
                         f_dst.write(f_src.read())
                 print("  - Restored original file from backup")
 
                 # Try a more aggressive fix - completely rebuild the try-except block
-                with open("service/tests/test_api.py", "r") as f:
+                with open("service/tests/test_api.py") as f:
                     content = f.read()
 
                 # Replace the problematic try-except block with a known good pattern
@@ -217,7 +217,7 @@ def patch_files():
     # Fix xpu_hijacks.py for more resilient ipex usage
     if os.path.exists("service/xpu_hijacks.py"):
         print("Patching service/xpu_hijacks.py...")
-        with open("service/xpu_hijacks.py", "r") as f:
+        with open("service/xpu_hijacks.py") as f:
             content = f.read()
 
         # Make ipex.has_xpu() calls safe
@@ -234,7 +234,7 @@ def patch_files():
     # Create dummy test_api.py if all else fails
     if os.path.exists("service/tests/test_api.py"):
         try:
-            with open("service/tests/test_api.py", "r") as f:
+            with open("service/tests/test_api.py") as f:
                 content = f.read()
 
             # Test if it compiles

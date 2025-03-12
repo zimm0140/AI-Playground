@@ -16,7 +16,7 @@ def fix_unused_variable(file_path):
     1. Change assignments to use '_' variable for unused values
     2. Comment out the assignment
     """
-    with open(file_path, "r", encoding="utf-8") as f:
+    with open(file_path, encoding="utf-8") as f:
         content = f.read()
 
     # Find lines with variable assignments that are never used
@@ -81,7 +81,7 @@ def main():
     # Also handle the F401 (unused import) in custom_test_runner.py
     custom_test_runner = os.path.join(scripts_dir, "custom_test_runner.py")
     if os.path.exists(custom_test_runner):
-        with open(custom_test_runner, "r", encoding="utf-8") as f:
+        with open(custom_test_runner, encoding="utf-8") as f:
             content = f.read()
 
         # Comment out or modify the unused import

@@ -9,11 +9,11 @@ Usage:
     python generate_workflow_docs.py --workflows-dir DIR --output-dir DIR [--create-index] [--create-gallery]
 """
 
-import os
-import sys
-import json
 import argparse
+import json
+import os
 import re
+import sys
 from datetime import datetime
 
 
@@ -25,7 +25,7 @@ def sanitize_filename(name):
 def load_workflow(workflow_file):
     """Load a workflow from a JSON file."""
     try:
-        with open(workflow_file, "r", encoding="utf-8") as f:
+        with open(workflow_file, encoding="utf-8") as f:
             return json.load(f)
     except Exception as e:
         print(f"Error loading workflow file: {str(e)}")

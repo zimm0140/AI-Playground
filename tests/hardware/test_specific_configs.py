@@ -37,7 +37,10 @@ def test_specific_hardware_detection(hardware_type):
     os.environ["SIMULATED_HARDWARE"] = hardware_type
 
     # Import the module (which should get our environment variable)
-    from tools.hardware.hardware_detection import detect_hardware_type, get_hardware_info
+    from tools.hardware.hardware_detection import (
+        detect_hardware_type,
+        get_hardware_info,
+    )
 
     # Test detection
     detected = detect_hardware_type()

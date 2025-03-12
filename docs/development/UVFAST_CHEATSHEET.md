@@ -6,7 +6,7 @@ This document provides a quick reference for common `uvfast.py` commands.
 
 ### Setup Environment
 
-````bash
+\`\`\`text\`bash
 
 ## Auto-detect hardware and set up environment
 
@@ -26,7 +26,7 @@ python uvfast.py setup --hardware mtl
 
 python uvfast.py setup --no-lockfile
 
-```text
+````text
 
 ### Show Environment Information
 
@@ -166,4 +166,5 @@ Edit `uvfast.json` to customize settings:
 ```text
 }
 
+```text`
 ````

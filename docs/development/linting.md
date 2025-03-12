@@ -16,7 +16,7 @@ AI-Playground primarily uses the following linting tools:
 
 The project uses Ruff with the following settings:
 
-````toml
+\`\`\`text\`toml
 
 ## in pyproject.toml
 
@@ -25,9 +25,9 @@ target-version = "py310"
 line-length = 100
 select = ["E", "F", "I", "W", "N", "B", "C4", "UP", "T20"]
 ignore = ["E501"]
-extend-exclude = [".git", ".github", ".venv", "venv", "__pycache__", "build", "dist"]
+extend-exclude = \[".git", ".github", ".venv", "venv", "__pycache__", "build", "dist"\]
 
-```text
+````text
 
 #### Key Rules
 
@@ -376,4 +376,5 @@ return model
 
 ---
 **Previous**: [Testing Guide](testing.md) | **Next**: [Project Architecture](../architecture/overview.md) | **See also**: [Code Quality Standards](code-quality.md)
+```text`
 ````

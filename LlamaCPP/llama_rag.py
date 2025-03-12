@@ -28,7 +28,10 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders.markdown import UnstructuredMarkdownLoader
 from langchain_community.document_loaders.pdf import PyPDFLoader
 from langchain_community.document_loaders.text import TextLoader
-from langchain_community.document_loaders.word_document import Docx2txtLoader, UnstructuredWordDocumentLoader
+from langchain_community.document_loaders.word_document import (
+    Docx2txtLoader,
+    UnstructuredWordDocumentLoader,
+)
 from langchain_community.vectorstores.faiss import FAISS, Document
 
 #### CONFIGURATIONS ------------------------------------------------------------------------------------------------------------------------

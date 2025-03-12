@@ -19,10 +19,10 @@ The tests are organized as follows:
 
 To run all tests:
 
-````bash
+\`\`\`text\`bash
 pytest
 
-```text
+````text
 
 ### Running Tests with Detailed Output
 
@@ -101,4 +101,5 @@ When adding tests:
 - Use mocks to isolate tests from external dependencies
 - Aim for high test coverage, especially for critical paths
 - Update tests when the corresponding code changes
+```text`
 ````

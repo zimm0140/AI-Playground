@@ -1,7 +1,7 @@
 import os
 from contextlib import nullcontext
 from functools import wraps
-from typing import Any, Callable, Dict, List, Optional, Tuple, TypeVar, Union, cast
+from typing import Any, TypeVar
 
 try:
     import numpy as np  # type: ignore
@@ -360,7 +360,9 @@ if device_supports_fp64 and os.environ.get("IPEX_FORCE_ATTENTION_SLICE", None) i
 else:
     # 32 bit attention workarounds for Alchemist:
     try:
-        from attention import scaled_dot_product_attention_32_bit as original_scaled_dot_product_attention
+        from attention import (
+            scaled_dot_product_attention_32_bit as original_scaled_dot_product_attention,
+        )
         from attention import torch_bmm_32_bit as original_torch_bmm
     except Exception:  # pylint: disable=broad-exception-caught
         original_torch_bmm = torch.bmm
@@ -620,9 +622,7 @@ def torch_tensor(data, *args, dtype=None, device=None, **kwargs):
             (isinstance(device, torch.device) and hasattr(device, "type") and device.type == "xpu")  # type: ignore
             or (isinstance(device, str) and "xpu" in device)
         ):
-            if dtype == torch.float64:
-                dtype = torch.float32
-            elif dtype is None and (hasattr(data, "dtype") and (data.dtype == torch.float64 or data.dtype == float)):
+            if dtype == torch.float64 or dtype is None and (hasattr(data, "dtype") and (data.dtype == torch.float64 or data.dtype == float)):
                 dtype = torch.float32
     return original_torch_tensor(data, *args, dtype=dtype, device=device, **kwargs)
 
@@ -827,7 +827,7 @@ R = TypeVar("R")
 
 
 @wraps(torch.linspace)
-def torch_linspace(*args: Any, device: Optional[Union[str, torch.device]] = None, **kwargs: Any) -> torch.Tensor:
+def torch_linspace(*args: Any, device: str | torch.device | None = None, **kwargs: Any) -> torch.Tensor:
     """
     Hijacked version of torch.linspace that converts CUDA device specifications to XPU.
 

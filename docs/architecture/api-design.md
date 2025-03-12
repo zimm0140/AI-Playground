@@ -19,10 +19,10 @@ The REST API provides HTTP endpoints for interacting with AI-Playground services
 
 ### Base URL
 
-````text
+\`\`\`text\`text
 https://<server>:<port>/api/v1
 
-```text
+````text
 
 ### Authentication
 
@@ -610,4 +610,5 @@ The API implements several security measures:
 
 ---
 **Previous**: [Architecture Overview](overview.md) | **Next**: [Hardware Integration](hardware-integration.md) | **See also**: [Python API Reference](../reference/python-api.md)
+```text`
 ````

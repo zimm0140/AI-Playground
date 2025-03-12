@@ -11,11 +11,11 @@ This script validates ComfyUI workflow JSON files to ensure they are:
 The script produces a report of any issues found in the workflows.
 """
 
-import os
-import sys
-import json
 import argparse
 import glob
+import json
+import os
+import sys
 from datetime import datetime
 
 
@@ -76,7 +76,6 @@ class ComfyWorkflowValidator:
             "FluxQ4",
             "FluxQ8",
             # LoRA nodes
-            "LoraLoader",
             "DiffControlNetLoader",
             # FaceSwap nodes
             "FaceSwapNode",
@@ -114,7 +113,7 @@ class ComfyWorkflowValidator:
 
         # Validate workflow structure
         try:
-            with open(file_path, "r", encoding="utf-8") as file:
+            with open(file_path, encoding="utf-8") as file:
                 workflow = json.load(file)
         except json.JSONDecodeError as e:
             file_result["issues"].append(

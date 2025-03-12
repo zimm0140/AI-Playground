@@ -14,16 +14,16 @@ Features:
 - Hardware-specific test environment setup recommendations
 """
 
+import argparse
+import glob
+import itertools
+import json
 import os
+import platform
 import re
 import sys
-import glob
-import json
-import argparse
 from collections import defaultdict
-from typing import Dict, List, Any
-import itertools
-import platform
+from typing import Any
 
 
 class HardwareCompatibilityTester:
@@ -57,7 +57,7 @@ class HardwareCompatibilityTester:
         # Create output directory
         os.makedirs(self.output_dir, exist_ok=True)
 
-    def find_hardware_requirements(self) -> Dict[str, List[str]]:
+    def find_hardware_requirements(self) -> dict[str, list[str]]:
         """Find hardware-specific requirements files."""
         hw_req_files = defaultdict(list)
 
@@ -81,7 +81,7 @@ class HardwareCompatibilityTester:
 
         return dict(hw_req_files)
 
-    def parse_requirements_file(self, file_path: str) -> Dict[str, str]:
+    def parse_requirements_file(self, file_path: str) -> dict[str, str]:
         """
         Parse a requirements file and extract package names and versions.
 
@@ -97,7 +97,7 @@ class HardwareCompatibilityTester:
             print(f"Warning: File {file_path} does not exist")
             return requirements
 
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             for line in f:
                 line = line.strip()
 
@@ -139,7 +139,7 @@ class HardwareCompatibilityTester:
 
         return requirements
 
-    def analyze_hardware_requirements(self) -> Dict[str, Dict[str, Dict[str, str]]]:
+    def analyze_hardware_requirements(self) -> dict[str, dict[str, dict[str, str]]]:
         """
         Analyze hardware-specific requirements and extract package versions.
 
@@ -160,7 +160,7 @@ class HardwareCompatibilityTester:
         self.hardware_requirements = hardware_requirements
         return hardware_requirements
 
-    def identify_conflicts(self) -> List[Dict[str, Any]]:
+    def identify_conflicts(self) -> list[dict[str, Any]]:
         """
         Identify conflicts between hardware-specific requirements.
 
@@ -208,7 +208,7 @@ class HardwareCompatibilityTester:
         self.conflict_data = conflicts
         return conflicts
 
-    def generate_compatibility_matrix(self) -> Dict[str, Dict[str, str]]:
+    def generate_compatibility_matrix(self) -> dict[str, dict[str, str]]:
         """
         Generate a compatibility matrix between hardware platforms.
 
@@ -328,13 +328,12 @@ class HardwareCompatibilityTester:
                 for hw2 in hw_platforms:
                     if hw1 == hw2:
                         f.write(" — |")
+                    elif hw2 in self.hardware_compatibility_matrix[hw1]:
+                        f.write(
+                            f" {self.hardware_compatibility_matrix[hw1][hw2]['score']} |"
+                        )
                     else:
-                        if hw2 in self.hardware_compatibility_matrix[hw1]:
-                            f.write(
-                                f" {self.hardware_compatibility_matrix[hw1][hw2]['score']} |"
-                            )
-                        else:
-                            f.write(" N/A |")
+                        f.write(" N/A |")
                 f.write("\n")
 
             # Write conflict details
@@ -593,7 +592,7 @@ def main():
             # Copy the GitHub summary to the step summary file
             summary_path = os.path.join(args.output_dir, "github_summary.md")
             if os.path.exists(summary_path):
-                with open(summary_path, "r", encoding="utf-8") as src:
+                with open(summary_path, encoding="utf-8") as src:
                     with open(step_summary, "a", encoding="utf-8") as dest:
                         dest.write(src.read())
                 print("Added summary to GitHub Actions output")

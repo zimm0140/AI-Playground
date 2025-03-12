@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
 
-import os
-import re
 
 
 def remove_compatibility_report_job():
     """Remove the compatibility_report job from the CI workflow file."""
     ci_file = ".github/workflows/ci.yml"
 
-    with open(ci_file, "r") as f:
+    with open(ci_file) as f:
         content = f.read()
 
     # Find the position of the compatibility_report job

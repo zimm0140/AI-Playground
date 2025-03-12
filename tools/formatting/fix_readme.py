@@ -9,7 +9,7 @@ import re
 def fix_readme():
     """Apply specific fixes to readme.md."""
     try:
-        with open("readme.md", "r", encoding="utf-8") as f:
+        with open("readme.md", encoding="utf-8") as f:
             content = f.read()
 
         # Fix HTML tags for badges

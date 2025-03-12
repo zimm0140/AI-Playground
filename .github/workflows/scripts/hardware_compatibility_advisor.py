@@ -14,11 +14,11 @@ Features:
 - Integration with existing hardware compatibility test results
 """
 
-import os
-import json
 import argparse
-from typing import Dict, List, Any
+import json
+import os
 from collections import defaultdict
+from typing import Any
 
 
 class HardwareCompatibilityAdvisor:
@@ -60,14 +60,14 @@ class HardwareCompatibilityAdvisor:
             return False
 
         try:
-            with open(self.data_file, "r", encoding="utf-8") as f:
+            with open(self.data_file, encoding="utf-8") as f:
                 self.compatibility_data = json.load(f)
             return True
         except Exception as e:
             print(f"Error loading compatibility data: {e}")
             return False
 
-    def analyze_conflicts(self) -> Dict[str, Any]:
+    def analyze_conflicts(self) -> dict[str, Any]:
         """
         Analyze conflicts and categorize them by severity and type.
 
@@ -114,7 +114,7 @@ class HardwareCompatibilityAdvisor:
             "mixed_conflicts": mixed_conflicts,
         }
 
-    def generate_version_suggestions(self, conflict: Dict[str, Any]) -> Dict[str, Any]:
+    def generate_version_suggestions(self, conflict: dict[str, Any]) -> dict[str, Any]:
         """
         Generate version standardization suggestions for a single conflict.
 
@@ -207,7 +207,7 @@ class HardwareCompatibilityAdvisor:
             "confidence": confidence,
         }
 
-    def generate_all_recommendations(self) -> Dict[str, List[Dict[str, Any]]]:
+    def generate_all_recommendations(self) -> dict[str, list[dict[str, Any]]]:
         """
         Generate recommendations for all conflicts.
 
@@ -243,7 +243,7 @@ class HardwareCompatibilityAdvisor:
 
         return self.recommendations
 
-    def generate_resolution_plan(self) -> Dict[str, Dict[str, str]]:
+    def generate_resolution_plan(self) -> dict[str, dict[str, str]]:
         """
         Generate a concrete resolution plan for each hardware platform.
 
@@ -307,7 +307,7 @@ class HardwareCompatibilityAdvisor:
         self.resolution_plans = resolution_plans
         return resolution_plans
 
-    def generate_optimized_requirements(self) -> Dict[str, Dict[str, str]]:
+    def generate_optimized_requirements(self) -> dict[str, dict[str, str]]:
         """
         Generate optimized requirements files based on resolution plan.
 
@@ -426,7 +426,7 @@ class HardwareCompatibilityAdvisor:
 
         return report_path
 
-    def generate_patch_files(self) -> List[str]:
+    def generate_patch_files(self) -> list[str]:
         """
         Generate patch files that can be applied to resolve conflicts.
 
@@ -696,7 +696,7 @@ def main():
             # Copy the GitHub summary to the step summary file
             summary_path = os.path.join(args.output_dir, "github_summary.md")
             if os.path.exists(summary_path):
-                with open(summary_path, "r", encoding="utf-8") as src:
+                with open(summary_path, encoding="utf-8") as src:
                     with open(step_summary, "a", encoding="utf-8") as dest:
                         dest.write(src.read())
                 print("Added summary to GitHub Actions output")

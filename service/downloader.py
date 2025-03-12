@@ -101,10 +101,7 @@ class ModelDownloaderApi:
                     is_sd
                     and is_root
                     and (name.endswith(".safetensors") or name.endswith(".pt") or name.endswith(".ckpt"))
-                ):
-                    continue
-                # ignore no used files
-                elif (
+                ) or (
                     name.endswith(".png")
                     or name.endswith(".gitattributes")
                     or name.endswith(".md")

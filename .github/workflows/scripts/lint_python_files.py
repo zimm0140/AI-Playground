@@ -8,9 +8,9 @@ before the main CI runs. This helps prevent CI failures due to simple
 syntax and style issues.
 """
 
+import ast
 import os
 import re
-import ast
 import sys
 
 
@@ -44,7 +44,7 @@ def lint_python_files(file_paths=None):
         print(f"Checking: {file_path}")
 
         try:
-            with open(file_path, "r", encoding="utf-8") as f:
+            with open(file_path, encoding="utf-8") as f:
                 content = f.read()
 
             # Check for syntax errors

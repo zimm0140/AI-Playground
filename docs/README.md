@@ -36,19 +36,19 @@ Most documentation is written in Markdown format and can be viewed directly on G
 
 The documentation site can be built using MkDocs:
 
-```
+````text
 
 mkdocs build
 
-```
+```text
 
 To serve the documentation locally:
 
-```
+```text
 
 mkdocs serve
 
-```
+```text
 
 See the `mkdocs.yml` file in the root directory for configuration details.
 
@@ -115,3 +115,4 @@ Documentation linting is configured in:
 ## Contact
 
 If you have questions about the documentation, please open an issue or contact the maintainers at <example@example.com>.
+````

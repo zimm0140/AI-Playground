@@ -9,10 +9,10 @@ Version 2.x introduces significant changes to hardware detection, environment ma
 
 ### Step 1: Update Your Repository
 
-````bash
+\`\`\`text\`bash
 git pull origin main
 
-```text
+````text
 
 ### Step 2: Clean Your Environment
 
@@ -131,4 +131,5 @@ For further assistance, please [open an issue](https://github.com/intel/AI-Playg
 
 ---
 **Previous**: [Installation Guide](installation.md) | **Next**: [Hardware Overview](../hardware/overview.md) | **See also**: [Troubleshooting](../reference/troubleshooting.md)
+```text`
 ````

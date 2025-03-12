@@ -12,11 +12,12 @@ This script generates badges for different aspects of the project such as:
 These badges can be included in the README file to provide quick insights into the project's health.
 """
 
-import os
-import json
 import argparse
-import xml.etree.ElementTree as ET
 import glob
+import json
+import os
+import xml.etree.ElementTree as ET
+
 import requests
 
 
@@ -148,7 +149,7 @@ class BadgesGenerator:
 
         if os.path.exists(metrics_file):
             try:
-                with open(metrics_file, "r") as f:
+                with open(metrics_file) as f:
                     metrics = json.load(f)
 
                 test_metrics = metrics.get("test_metrics", {})
@@ -175,7 +176,7 @@ class BadgesGenerator:
 
         if os.path.exists(metrics_file):
             try:
-                with open(metrics_file, "r") as f:
+                with open(metrics_file) as f:
                     metrics = json.load(f)
 
                 security_metrics = metrics.get("security_metrics", {})
@@ -249,7 +250,7 @@ class BadgesGenerator:
 
         if os.path.exists(dependency_report):
             try:
-                with open(dependency_report, "r") as f:
+                with open(dependency_report) as f:
                     content = f.read()
 
                 # Count the number of outdated packages (lines starting with "+")

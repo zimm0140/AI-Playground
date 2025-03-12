@@ -9,17 +9,17 @@ Usage:
     python version_workflow.py --workflows-dir DIR [--bump major|minor|patch] [--workflow FILE]
 """
 
+import argparse
+import json
 import os
 import sys
-import json
-import argparse
 from datetime import date
 
 
 def load_workflow(workflow_file):
     """Load a workflow from a JSON file."""
     try:
-        with open(workflow_file, "r", encoding="utf-8") as f:
+        with open(workflow_file, encoding="utf-8") as f:
             return json.load(f)
     except Exception as e:
         print(f"Error loading workflow file: {str(e)}")
@@ -203,7 +203,6 @@ def find_previous_version(workflow_file):
         "Warning: Finding previous versions requires integration with version control."
     )
     print("This feature is not implemented in this script.")
-    return None
 
 
 def process_all_workflows(workflows_dir, bump_type=None):

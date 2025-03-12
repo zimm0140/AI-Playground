@@ -12,14 +12,14 @@ Features:
 - Integration with the existing hardware compatibility system
 """
 
-import os
-import sys
-import json
 import argparse
+import json
+import os
 import re
 import shutil
-from typing import Dict, List, Any
+import sys
 from collections import defaultdict
+from typing import Any
 
 
 class HardwareCompatibilityAutofix:
@@ -77,7 +77,7 @@ class HardwareCompatibilityAutofix:
             return False
 
         try:
-            with open(self.data_file, "r", encoding="utf-8") as f:
+            with open(self.data_file, encoding="utf-8") as f:
                 self.compatibility_data = json.load(f)
             return True
         except Exception as e:
@@ -99,7 +99,7 @@ class HardwareCompatibilityAutofix:
         # Since the resolution plan is in markdown format, we need to extract the data sections
         try:
             # Load the raw resolution plan file content
-            with open(self.resolution_plan_file, "r", encoding="utf-8") as f:
+            with open(self.resolution_plan_file, encoding="utf-8") as f:
                 content = f.read()
 
             # Extract high priority recommendations section
@@ -141,7 +141,7 @@ class HardwareCompatibilityAutofix:
             print(f"Error loading recommendations: {e}")
             return False
 
-    def _parse_recommendations(self, text: str) -> List[Dict[str, str]]:
+    def _parse_recommendations(self, text: str) -> list[dict[str, str]]:
         """
         Parse recommendations from markdown text.
 
@@ -194,7 +194,7 @@ class HardwareCompatibilityAutofix:
 
         return recommendations
 
-    def apply_fixes(self) -> Dict[str, List[Dict[str, Any]]]:
+    def apply_fixes(self) -> dict[str, list[dict[str, Any]]]:
         """
         Apply recommendations to fix compatibility issues.
 
@@ -300,7 +300,7 @@ class HardwareCompatibilityAutofix:
             raise FileNotFoundError(f"Requirements file not found: {file_path}")
 
         # Read the file content
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             lines = f.readlines()
 
         # Create a backup if not in dry run mode
@@ -651,7 +651,7 @@ def main():
             # Copy the GitHub summary to the step summary file
             summary_path = os.path.join(args.output_dir, "github_summary.md")
             if os.path.exists(summary_path):
-                with open(summary_path, "r", encoding="utf-8") as src:
+                with open(summary_path, encoding="utf-8") as src:
                     with open(step_summary, "a", encoding="utf-8") as dest:
                         dest.write(src.read())
                 print("Added summary to GitHub Actions output")

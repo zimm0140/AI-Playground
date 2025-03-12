@@ -29,7 +29,7 @@ This guide provides detailed instructions for installing and configuring AI-Play
 
 The `setup_hardware_env.py` script automatically detects your hardware and sets up the appropriate environment:
 
-````bash
+\`\`\`text\`bash
 
 ## Clone the repository
 
@@ -40,7 +40,7 @@ cd AI-Playground
 
 python setup_hardware_env.py
 
-```text
+````text
 
 #### Additional Options
 
@@ -163,4 +163,5 @@ This will check that all required dependencies are installed and that your hardw
 
 ---
 **Previous**: [Quick Start Guide](quickstart.md) | **Next**: [Migration Guide](migration.md) | **See also**: [Hardware Compatibility](../hardware/compatibility.md)
+```text`
 ````

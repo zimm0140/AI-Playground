@@ -41,7 +41,7 @@ The system recognizes the following hardware types:
 
 To set up your environment for the detected hardware:
 
-````bash
+\`\`\`text\`bash
 
 ## Set up for automatically detected hardware
 
@@ -56,7 +56,7 @@ python uvfast.py setup --hardware ovino
 
 python uvfast.py setup --dev
 
-```text
+````text
 
 ### Using Lockfiles for Reproducible Environments
 
@@ -448,4 +448,5 @@ You can create a `uvfast.json` file in your project root to customize behavior:
 ```text
 
 This configuration allows for customized settings per hardware type, including environment variables and additional packages.
+```text`
 ````

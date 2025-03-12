@@ -10,7 +10,7 @@ We use `uv`, an extremely fast Python package manager, for dependency management
 
 1. **Install uv**:
 
-   ```bash
+   ````bash
    ## Unix/Linux/macOS
 
    curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -18,11 +18,13 @@ We use `uv`, an extremely fast Python package manager, for dependency management
    ## Windows
 
    powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
-   ```
+   ```text
+
+   ````
 
 1. **Clone and Setup**:
 
-   ```bash
+   ````bash
    git clone https://github.com/zimm0140/AI-Playground.git
    cd AI-Playground
 
@@ -40,7 +42,9 @@ We use `uv`, an extremely fast Python package manager, for dependency management
    ## Install pre-commit hooks
 
    pre-commit install
-   ```
+   ```text
+
+   ````
 
 ## Development Workflow
 
@@ -48,7 +52,7 @@ We use `uv`, an extremely fast Python package manager, for dependency management
 
 We provide convenient scripts for common development tasks:
 
-```bash
+````bash
 
 ## Unix/Linux/macOS
 
@@ -64,7 +68,7 @@ We provide convenient scripts for common development tasks:
 .\scripts\run_with_uv.ps1 lint
 .\scripts\run_with_uv.ps1 format
 
-```
+```text
 
 ### Before Submitting a Pull Request
 
@@ -72,26 +76,26 @@ We provide convenient scripts for common development tasks:
 
    ```bash
    ./scripts/run_with_uv.sh test
-   ```
+   ```text
 
 1. **Check code quality**:
 
    ```bash
    ./scripts/run_with_uv.sh lint
-   ```
+   ```text
 
 1. **Format your code**:
 
    ```bash
    ./scripts/run_with_uv.sh format
-   ```
+   ```text
 
 1. **Update lockfiles if you've changed dependencies**:
 
    ```bash
    uv pip compile requirements.txt --output-file requirements.lock
    uv pip compile requirements-dev.txt --output-file requirements-dev.lock
-   ```
+   ```text
 
 ## Type Annotations
 
@@ -105,17 +109,17 @@ We use Python type annotations and verify them with mypy. For Python 3.10+ compa
 
 Please use clear, descriptive commit messages that explain what changes you've made and why. Follow this format:
 
-```
+```text
 
 Area: Brief description of what changed
 
 More detailed explanation if needed
 
-```
+```text
 
 For example:
 
-```
+```text
 
 CI: Add uv support to GitHub Actions
 
@@ -123,7 +127,7 @@ CI: Add uv support to GitHub Actions
 - Update lockfiles for dependency tracking
 - Add helper scripts for common tasks
 
-```
+```text
 
 ## Need Help?
 
@@ -134,3 +138,4 @@ If you have questions about the development process or need help with your contr
 1. Ask for help in pull request comments
 
 Thank you for contributing to AI Playground!
+````

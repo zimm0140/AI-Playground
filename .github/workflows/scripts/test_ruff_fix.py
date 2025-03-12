@@ -7,11 +7,11 @@ without requiring manual intervention. It's useful to run this script before
 pushing changes to see if CI will pass.
 """
 
+import argparse
+import os
 import subprocess
 import sys
-import os
 import time
-import argparse
 
 
 def print_header(message):
@@ -26,13 +26,13 @@ def run_cmd(cmd, capture=True):
     print(f"Running: {' '.join(cmd)}")
     if capture:
         start_time = time.time()
-        result = subprocess.run(cmd, capture_output=True, text=True)
+        result = subprocess.run(cmd, capture_output=True, text=True, check=False)
         elapsed = time.time() - start_time
         print(f"Command completed in {elapsed:.2f}s with exit code {result.returncode}")
         return result
     else:
         start_time = time.time()
-        result = subprocess.run(cmd)
+        result = subprocess.run(cmd, check=False)
         elapsed = time.time() - start_time
         print(f"Command completed in {elapsed:.2f}s with exit code {result.returncode}")
         return result

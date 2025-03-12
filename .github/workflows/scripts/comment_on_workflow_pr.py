@@ -12,11 +12,11 @@ The comment helps reviewers understand the impact of workflow changes and
 helps PR authors address problems before merging.
 """
 
+import argparse
+import json
 import os
 import sys
-import json
-import argparse
-from typing import Dict, List, Any, Set
+from typing import Any
 
 
 class PRCommentGenerator:
@@ -30,7 +30,7 @@ class PRCommentGenerator:
         simulation_dir: str = "ci_artifacts/workflow_simulation",
         versions_dir: str = "ci_artifacts/workflow_versions",
         dashboard_dir: str = "ci_artifacts/workflow_dashboard",
-        changed_files: List[str] = None,
+        changed_files: list[str] = None,
         output_file: str = "workflow_pr_comment.md",
     ):
         self.validation_dir = validation_dir
@@ -64,7 +64,7 @@ class PRCommentGenerator:
                 self.validation_dir, "workflow_validation_results.json"
             )
             if os.path.exists(validation_file):
-                with open(validation_file, "r", encoding="utf-8") as f:
+                with open(validation_file, encoding="utf-8") as f:
                     self.validation_data = json.load(f)
                 return True
             else:
@@ -81,7 +81,7 @@ class PRCommentGenerator:
                 self.requirements_dir, "workflow_requirements_results.json"
             )
             if os.path.exists(requirements_file):
-                with open(requirements_file, "r", encoding="utf-8") as f:
+                with open(requirements_file, encoding="utf-8") as f:
                     self.requirements_data = json.load(f)
                 return True
             else:
@@ -96,7 +96,7 @@ class PRCommentGenerator:
         try:
             tests_file = os.path.join(self.tests_dir, "workflow_test_results.json")
             if os.path.exists(tests_file):
-                with open(tests_file, "r", encoding="utf-8") as f:
+                with open(tests_file, encoding="utf-8") as f:
                     self.tests_data = json.load(f)
                 return True
             else:
@@ -113,7 +113,7 @@ class PRCommentGenerator:
                 self.simulation_dir, "workflow_simulation_results.json"
             )
             if os.path.exists(simulation_file):
-                with open(simulation_file, "r", encoding="utf-8") as f:
+                with open(simulation_file, encoding="utf-8") as f:
                     self.simulation_data = json.load(f)
                 return True
             else:
@@ -128,7 +128,7 @@ class PRCommentGenerator:
         try:
             history_file = os.path.join(self.versions_dir, "workflow_history.json")
             if os.path.exists(history_file):
-                with open(history_file, "r", encoding="utf-8") as f:
+                with open(history_file, encoding="utf-8") as f:
                     self.versions_data = json.load(f)
                 return True
             else:
@@ -138,11 +138,11 @@ class PRCommentGenerator:
             print(f"Error loading version history: {e}")
             return False
 
-    def get_workflow_filenames(self) -> Set[str]:
+    def get_workflow_filenames(self) -> set[str]:
         """Extract workflow filenames from changed files paths"""
         return set(os.path.basename(file) for file in self.changed_workflows)
 
-    def get_workflow_validation_status(self, filename: str) -> Dict[str, Any]:
+    def get_workflow_validation_status(self, filename: str) -> dict[str, Any]:
         """Get validation status for a specific workflow"""
         if not self.validation_data:
             return {
@@ -166,7 +166,7 @@ class PRCommentGenerator:
             "issues": ["Workflow not found in validation results"],
         }
 
-    def get_workflow_requirements(self, filename: str) -> Dict[str, Any]:
+    def get_workflow_requirements(self, filename: str) -> dict[str, Any]:
         """Get requirements analysis for a specific workflow"""
         if not self.requirements_data:
             return {
@@ -193,7 +193,7 @@ class PRCommentGenerator:
             "memory_required": {"min": 0, "recommended": 0},
         }
 
-    def get_workflow_test_status(self, filename: str) -> Dict[str, Any]:
+    def get_workflow_test_status(self, filename: str) -> dict[str, Any]:
         """Get test execution status for a specific workflow"""
         if not self.tests_data:
             return {
@@ -216,7 +216,7 @@ class PRCommentGenerator:
             "issues": ["Workflow not found in test results"],
         }
 
-    def get_workflow_simulation_status(self, filename: str) -> Dict[str, Any]:
+    def get_workflow_simulation_status(self, filename: str) -> dict[str, Any]:
         """Get simulation status for a specific workflow"""
         if not self.simulation_data:
             return {
@@ -240,7 +240,7 @@ class PRCommentGenerator:
             "errors": ["Workflow not found in simulation results"],
         }
 
-    def get_workflow_changes(self, filename: str) -> Dict[str, Any]:
+    def get_workflow_changes(self, filename: str) -> dict[str, Any]:
         """Get version changes for a specific workflow"""
         if not self.versions_data:
             return {"has_history": False, "latest_changes": []}
@@ -271,7 +271,7 @@ class PRCommentGenerator:
 
         return {"has_history": False, "latest_changes": []}
 
-    def generate_workflow_summary(self, filename: str) -> Dict[str, Any]:
+    def generate_workflow_summary(self, filename: str) -> dict[str, Any]:
         """Generate a complete summary for a workflow"""
         validation = self.get_workflow_validation_status(filename)
         requirements = self.get_workflow_requirements(filename)

@@ -3,7 +3,6 @@
 Environment setup and validation script for AI-Playground
 """
 
-import os
 import platform
 import subprocess
 import sys

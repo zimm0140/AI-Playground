@@ -49,22 +49,56 @@ warn_unreachable = true
 strict_equality = true
 
 [tool.ruff]
-line-length = 120
+# Target Python 3.10 code
 target-version = "py310"
+# Never enforce line length (handled by formatter)
+line-length = 120
+
+# Excluding certain directories
+extend-exclude = [
+    "venv",
+    ".venv",
+    "node_modules",
+    "dist",
+    "build",
+    "__pycache__",
+    "typings",
+    ".git",
+    ".pytest_cache",
+    "WebUI/node_modules",
+]
 
 [tool.ruff.lint]
+# Enable recommended rules
 select = [
-    "E", # pycodestyle errors
-    "W", # pycodestyle warnings
-    "F", # pyflakes
-    "I", # isort
-    "C", # flake8-comprehensions
-    "B", # flake8-bugbear
+    "E",
+    "F",
+    "W",
+    "I",
+    "C90",
+    "UP",
+    "B",
+    "N",
+    "PL",
+    "A",
+    "C4",
+    "SIM",
+    "PTH",
 ]
-ignore = []
+# Ignore specific errors globally
+ignore = ["E501", "PLR0913", "PLR0915"]
+
+[tool.ruff.lint.per-file-ignores]
+"hardware_detection/tests/conftest.py" = ["F811"]
+"tests/hardware/conftest.py" = ["F811"]
+"tests/**/conftest.py" = ["F811"]
+"hardware_detection/core.py" = ["C901"]
+"hardware_detection.py" = ["C901"]
+"tools/scripts/uvfast.py" = ["C901"]
+".github/workflows/scripts/*.py" = ["C901"]
 
 [tool.ruff.format]
 quote-style = "double"
 indent-style = "space"
-skip-magic-trailing-comma = false
 line-ending = "auto"
+skip-magic-trailing-comma = false

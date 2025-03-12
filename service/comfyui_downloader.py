@@ -22,7 +22,7 @@ import requests
 import service_config
 from web_request_bodies import ComfyUICustomNodesGithubRepoId
 
-import service.aipg_utils as aipg_utils
+from service import aipg_utils
 
 git_download_url = "https://github.com/git-for-windows/git/releases/download/v2.47.1.windows.1/MinGit-2.47.1-64-bit.zip"
 comfyui_git_repo_url = "https://github.com/comfyanonymous/ComfyUI.git"

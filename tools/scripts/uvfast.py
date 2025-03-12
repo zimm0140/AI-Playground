@@ -117,7 +117,7 @@ class UVFast:
                 output = subprocess.run(
                     ["wmic", "path", "win32_VideoController", "get", "Name"],
                     capture_output=True,
-                    text=True,
+                    text=True, check=False,
                 ).stdout
                 gpu_names = [line.strip() for line in output.split("\n")[1:] if line.strip()]
 
@@ -138,7 +138,7 @@ class UVFast:
             subprocess.run(
                 [sys.executable, "-c", "import openvino"],
                 capture_output=True,
-                text=True,
+                text=True, check=False,
             )
             return "ovino"
         except (subprocess.SubprocessError, FileNotFoundError):
@@ -293,15 +293,14 @@ class UVFast:
                                 [str(python_executable), "-m", "pip", "install", "-r", req_file],
                                 check=True,
                             )
+                # Install from requirements file
+                elif self._ensure_uv_installed():
+                    subprocess.run(["uv", "pip", "install", "-r", req_file], check=True)
                 else:
-                    # Install from requirements file
-                    if self._ensure_uv_installed():
-                        subprocess.run(["uv", "pip", "install", "-r", req_file], check=True)
-                    else:
-                        subprocess.run(
-                            [str(python_executable), "-m", "pip", "install", "-r", req_file],
-                            check=True,
-                        )
+                    subprocess.run(
+                        [str(python_executable), "-m", "pip", "install", "-r", req_file],
+                        check=True,
+                    )
             except subprocess.SubprocessError as e:
                 logging.error(f"Error installing dependencies: {e}")
                 return 1
@@ -333,7 +332,7 @@ class UVFast:
             if self.hardware_type == "acm" and "XPU_VISIBLE_DEVICES" not in env:
                 env["XPU_VISIBLE_DEVICES"] = "0"
 
-            result = subprocess.run(cmd, env=env)
+            result = subprocess.run(cmd, env=env, check=False)
             return result.returncode
         except subprocess.SubprocessError as e:
             logging.error(f"Error running command: {e}")

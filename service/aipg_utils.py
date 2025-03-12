@@ -23,12 +23,12 @@ import os
 import shlex
 import shutil
 import subprocess
-from typing import IO, Optional, Union
+from typing import IO
 
 import torch
 from PIL import Image
 
-import service.service_config as service_config
+from service import service_config
 
 
 def image_to_base64(image: Image.Image):
@@ -361,7 +361,7 @@ def convert_model_type(type: int):
         raise Exception(f"unknown model type value {type}")
 
 
-def get_model_path(type: int, backend: str) -> Optional[str]:
+def get_model_path(type: int, backend: str) -> str | None:
     """
     Get the base directory path for a model type on a specific backend.
 
@@ -439,7 +439,7 @@ def calculate_md5_from_stream(file_stream: IO[bytes]):
     return file_hash.hexdigest()
 
 
-def cache_file(file_path: Union[IO[bytes], str], file_size: int) -> str:
+def cache_file(file_path: IO[bytes] | str, file_size: int) -> str:
     """
     Cache a file using content-based addressing.
 
@@ -521,7 +521,7 @@ def get_support_graphics():
     return graphics
 
 
-def call_subprocess(process_command: str, cwd: Optional[str] = None) -> str:
+def call_subprocess(process_command: str, cwd: str | None = None) -> str:
     """
     Execute a subprocess command and return the output.
 

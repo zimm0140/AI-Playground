@@ -13,7 +13,7 @@ import re
 import subprocess
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -42,7 +42,7 @@ def debug_print(message: str, level: str = "INFO") -> None:
     logger.log(level_map.get(level, logging.INFO), message)
 
 
-def safe_run_command(command: List[str], timeout: int = 5) -> str:
+def safe_run_command(command: list[str], timeout: int = 5) -> str:
     """Safely run a command and return its output."""
     try:
         result = subprocess.run(
@@ -58,7 +58,7 @@ def safe_run_command(command: List[str], timeout: int = 5) -> str:
         return ""
 
 
-def load_config() -> Dict[str, Any]:
+def load_config() -> dict[str, Any]:
     """Load configuration from uvfast.json."""
     # Try multiple locations for uvfast.json
     possible_paths = [
@@ -82,7 +82,7 @@ def load_config() -> Dict[str, Any]:
     return {"hardware_types": HARDWARE_TYPES, "default_hardware": "base"}
 
 
-def get_gpu_info() -> List[str]:
+def get_gpu_info() -> list[str]:
     """Get information about available GPUs.
 
     Detects NVIDIA, AMD, and Intel GPUs using various methods including
@@ -111,7 +111,7 @@ def get_gpu_info() -> List[str]:
 
     if mock_gpu_file.exists():
         try:
-            with open(mock_gpu_file, "r", encoding="utf-8") as f:
+            with open(mock_gpu_file, encoding="utf-8") as f:
                 gpus = [line.strip() for line in f.readlines() if line.strip()]
                 debug_print(f"Using mock GPU info: {gpus}")
                 return gpus
@@ -153,7 +153,7 @@ def get_gpu_info() -> List[str]:
     return gpus
 
 
-def get_cpu_info() -> Dict[str, Any]:
+def get_cpu_info() -> dict[str, Any]:
     """Get information about the CPU.
 
     Retrieves vendor, model name, core count, and additional information
@@ -206,7 +206,7 @@ def get_cpu_info() -> Dict[str, Any]:
 
     if mock_cpu_file.exists():
         try:
-            with open(mock_cpu_file, "r", encoding="utf-8") as f:
+            with open(mock_cpu_file, encoding="utf-8") as f:
                 for line in f:
                     if ":" in line:
                         key, value = line.split(":", 1)
@@ -243,7 +243,7 @@ def get_cpu_info() -> Dict[str, Any]:
         # Linux: Parse /proc/cpuinfo
         if os.path.exists("/proc/cpuinfo"):
             try:
-                with open("/proc/cpuinfo", "r", encoding="utf-8") as f:
+                with open("/proc/cpuinfo", encoding="utf-8") as f:
                     content = f.read()
 
                     # Extract vendor
@@ -318,7 +318,7 @@ def detect_hardware_type() -> str:
     return default_hw
 
 
-def _get_simulated_hardware() -> Optional[str]:
+def _get_simulated_hardware() -> str | None:
     """Check if simulated hardware is specified in environment variables.
 
     Returns:
@@ -333,8 +333,8 @@ def _get_simulated_hardware() -> Optional[str]:
 
 
 def _detect_specific_hardware(
-    detection_config: Dict[str, Any], gpus: List[str], cpu_info: Dict[str, Any]
-) -> Optional[str]:
+    detection_config: dict[str, Any], gpus: list[str], cpu_info: dict[str, Any]
+) -> str | None:
     """Check for specific hardware types based on detection configuration.
 
     Args:
@@ -367,7 +367,7 @@ def _detect_specific_hardware(
     return None
 
 
-def _check_gpu_match(hw_type: str, hw_config: Dict[str, Any], gpus: List[str]) -> bool:
+def _check_gpu_match(hw_type: str, hw_config: dict[str, Any], gpus: list[str]) -> bool:
     """Check if any GPU matches the pattern for this hardware type.
 
     Args:
@@ -387,7 +387,7 @@ def _check_gpu_match(hw_type: str, hw_config: Dict[str, Any], gpus: List[str]) -
     return False
 
 
-def _check_cpu_match(hw_type: str, hw_config: Dict[str, Any], cpu_info: Dict[str, Any]) -> bool:
+def _check_cpu_match(hw_type: str, hw_config: dict[str, Any], cpu_info: dict[str, Any]) -> bool:
     """Check if CPU matches the pattern for this hardware type.
 
     Args:
@@ -406,7 +406,7 @@ def _check_cpu_match(hw_type: str, hw_config: Dict[str, Any], cpu_info: Dict[str
     return False
 
 
-def _check_package_available(hw_type: str, hw_config: Dict[str, Any]) -> bool:
+def _check_package_available(hw_type: str, hw_config: dict[str, Any]) -> bool:
     """Check if a specific package is available for this hardware type.
 
     Args:
@@ -457,7 +457,7 @@ def is_openvino_available() -> bool:
         return False
 
 
-def get_hardware_info() -> Dict[str, Any]:
+def get_hardware_info() -> dict[str, Any]:
     """Get comprehensive information about the system hardware.
 
     Collects information about the system, GPU, CPU, detected hardware type,

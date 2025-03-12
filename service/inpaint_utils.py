@@ -20,7 +20,6 @@ Classes:
 Note: All non-English comments and commented-out code are preserved.
 """'''
 
-from typing import Tuple
 
 import cv2
 import numpy as np
@@ -45,7 +44,7 @@ def get_image_ndarray(image: Image.Image | np.ndarray) -> np.ndarray:
 
 def detect_mask_valid_edge(
     mask_image: Image.Image | np.ndarray,
-) -> Tuple[int, int, int, int]:
+) -> tuple[int, int, int, int]:
     """
     Detect the valid edge coordinates in a mask image.
 
@@ -65,7 +64,7 @@ def detect_mask_valid_edge(
 
     left, right = np.min(indices[1]), np.max(indices[1])
 
-    print("detect top:{},bottom:{}, left:{},right:{}".format(top, bottom, left, right))
+    print(f"detect top:{top},bottom:{bottom}, left:{left},right:{right}")
 
     return (left, top, right, bottom)
 
@@ -263,7 +262,7 @@ class UnsupportedFormat(Exception):
         self.t = input_type
 
     def __str__(self):
-        return "不支持'{}'模式的转换，请使用为图片地址(path)、PIL.Image(pil)或OpenCV(cv2)模式".format(self.t)
+        return f"不支持'{self.t}'模式的转换，请使用为图片地址(path)、PIL.Image(pil)或OpenCV(cv2)模式"
 
 
 class MatteMatting:
