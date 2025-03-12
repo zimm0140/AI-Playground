@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 name = "hardware_detection"
 version = "0.1.0"
 description = "Hardware detection module for ML workloads"
-readme = "README.md"
+readme = { text = "Hardware detection module for ML workloads", content-type = "text/plain" }
 requires-python = ">=3.10"
 license = "MIT"
 keywords = ["hardware", "detection", "ml", "gpu"]
