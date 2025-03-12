@@ -25,6 +25,10 @@
          <lastmod>2025-03-12</lastmod>
     </url>
     <url>
+         <loc>https://intel.github.io/AI-Playground/temp_readme/</loc>
+         <lastmod>2025-03-12</lastmod>
+    </url>
+    <url>
          <loc>https://intel.github.io/AI-Playground/arc42/arc42_doc/</loc>
          <lastmod>2025-03-12</lastmod>
     </url>
@@ -38,6 +42,62 @@
     </url>
     <url>
          <loc>https://intel.github.io/AI-Playground/architecture/overview/</loc>
+         <lastmod>2025-03-12</lastmod>
+    </url>
+    <url>
+         <loc>https://intel.github.io/AI-Playground/development/CI_IMPROVEMENTS/</loc>
+         <lastmod>2025-03-12</lastmod>
+    </url>
+    <url>
+         <loc>https://intel.github.io/AI-Playground/development/CODE_OF_CONDUCT/</loc>
+         <lastmod>2025-03-12</lastmod>
+    </url>
+    <url>
+         <loc>https://intel.github.io/AI-Playground/development/CODE_QUALITY/</loc>
+         <lastmod>2025-03-12</lastmod>
+    </url>
+    <url>
+         <loc>https://intel.github.io/AI-Playground/development/CODE_QUALITY_GUIDE/</loc>
+         <lastmod>2025-03-12</lastmod>
+    </url>
+    <url>
+         <loc>https://intel.github.io/AI-Playground/development/CODE_QUALITY_REPORT/</loc>
+         <lastmod>2025-03-12</lastmod>
+    </url>
+    <url>
+         <loc>https://intel.github.io/AI-Playground/development/FINAL_IMPLEMENTATION_REPORT/</loc>
+         <lastmod>2025-03-12</lastmod>
+    </url>
+    <url>
+         <loc>https://intel.github.io/AI-Playground/development/MIGRATION/</loc>
+         <lastmod>2025-03-12</lastmod>
+    </url>
+    <url>
+         <loc>https://intel.github.io/AI-Playground/development/MODERNIZATION_SUMMARY/</loc>
+         <lastmod>2025-03-12</lastmod>
+    </url>
+    <url>
+         <loc>https://intel.github.io/AI-Playground/development/PR-CHANGES/</loc>
+         <lastmod>2025-03-12</lastmod>
+    </url>
+    <url>
+         <loc>https://intel.github.io/AI-Playground/development/README-MODERNIZATION/</loc>
+         <lastmod>2025-03-12</lastmod>
+    </url>
+    <url>
+         <loc>https://intel.github.io/AI-Playground/development/SECURITY/</loc>
+         <lastmod>2025-03-12</lastmod>
+    </url>
+    <url>
+         <loc>https://intel.github.io/AI-Playground/development/TYPE_COMPATIBILITY/</loc>
+         <lastmod>2025-03-12</lastmod>
+    </url>
+    <url>
+         <loc>https://intel.github.io/AI-Playground/development/UVFAST_CHEATSHEET/</loc>
+         <lastmod>2025-03-12</lastmod>
+    </url>
+    <url>
+         <loc>https://intel.github.io/AI-Playground/development/UVFAST_IMPLEMENTATION_GUIDE/</loc>
          <lastmod>2025-03-12</lastmod>
     </url>
     <url>
@@ -69,6 +129,18 @@
          <lastmod>2025-03-12</lastmod>
     </url>
     <url>
+         <loc>https://intel.github.io/AI-Playground/hardware/HARDWARE_AWARE_README/</loc>
+         <lastmod>2025-03-12</lastmod>
+    </url>
+    <url>
+         <loc>https://intel.github.io/AI-Playground/hardware/HARDWARE_OPTIMIZATION_GUIDE/</loc>
+         <lastmod>2025-03-12</lastmod>
+    </url>
+    <url>
+         <loc>https://intel.github.io/AI-Playground/hardware/README-HARDWARE/</loc>
+         <lastmod>2025-03-12</lastmod>
+    </url>
+    <url>
          <loc>https://intel.github.io/AI-Playground/hardware/compatibility/</loc>
          <lastmod>2025-03-12</lastmod>
     </url>
@@ -86,6 +158,18 @@
     </url>
     <url>
          <loc>https://intel.github.io/AI-Playground/reference/api/</loc>
+         <lastmod>2025-03-12</lastmod>
+    </url>
+    <url>
+         <loc>https://intel.github.io/AI-Playground/workflows/workflow_dashboard/</loc>
+         <lastmod>2025-03-12</lastmod>
+    </url>
+    <url>
+         <loc>https://intel.github.io/AI-Playground/workflows/workflow_requirements_report/</loc>
+         <lastmod>2025-03-12</lastmod>
+    </url>
+    <url>
+         <loc>https://intel.github.io/AI-Playground/workflows/workflows-document/</loc>
          <lastmod>2025-03-12</lastmod>
     </url>
 </urlset>
