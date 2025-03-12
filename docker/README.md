@@ -14,8 +14,10 @@ This directory contains Docker configuration files for the AI Playground project
 To build the Docker image:
 
 ```
+
 cd docker
 docker build -t ai-playground .
+
 ```
 
 ### Running with Docker Compose
@@ -23,20 +25,26 @@ docker build -t ai-playground .
 To start the application and its dependencies:
 
 ```
+
 cd docker
 docker-compose up
+
 ```
 
 To run in detached mode:
 
 ```
+
 docker-compose up -d
+
 ```
 
 To stop the containers:
 
 ```
+
 docker-compose down
+
 ```
 
 ## Configuration
