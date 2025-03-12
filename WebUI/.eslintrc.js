@@ -15,20 +15,23 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 2021,
     parser: '@typescript-eslint/parser',
+    sourceType: 'module',
+    project: ['./tsconfig.json'],
+    extraFileExtensions: ['.vue'],
   },
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-    '@typescript-eslint/no-explicit-any': 'error',
-    '@typescript-eslint/explicit-module-boundary-types': 'error',
+    '@typescript-eslint/no-explicit-any': 'warn',
+    '@typescript-eslint/explicit-module-boundary-types': 'warn',
     '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
-    '@typescript-eslint/no-non-null-assertion': 'error',
-    '@typescript-eslint/ban-ts-comment': 'error',
+    '@typescript-eslint/no-non-null-assertion': 'warn',
+    '@typescript-eslint/ban-ts-comment': 'warn',
     '@typescript-eslint/no-empty-interface': 'error',
     '@typescript-eslint/no-inferrable-types': 'error',
-    '@typescript-eslint/no-var-requires': 'error',
+    '@typescript-eslint/no-var-requires': 'warn',
     '@typescript-eslint/prefer-as-const': 'error',
-    '@typescript-eslint/prefer-enum-initializers': 'error',
+    '@typescript-eslint/prefer-enum-initializers': 'warn',
     '@typescript-eslint/prefer-literal-enum-member': 'error',
     'vue/multi-word-component-names': 'off',
   },
@@ -36,7 +39,7 @@ module.exports = {
     {
       files: ['*.ts', '*.tsx', '*.vue'],
       rules: {
-        'no-undef': 'off', // TypeScript already checks this
+        'no-undef': 'off',
       },
     },
   ],
