@@ -1,46 +1,39 @@
-# Hardware Detection Project
+# Hardware Detection
 
-A Python-based hardware detection and configuration tool with a modern Vue.js web interface.
+A Python package for detecting and managing hardware configurations.
 
 ## Features
 
-- Automatic hardware detection and configuration
+- Hardware type detection
+- GPU information retrieval
+- CPU information retrieval
 - Cross-platform support (Windows, Linux)
-- Modern Vue.js-based web interface
-- Electron desktop application wrapper
+- Mock hardware support for testing
 
-## Development Setup
-
-1. Install Python dependencies:
+## Installation
 
 ```bash
-python -m pip install -e .
-
+pip install -e .
 ```
 
-2. Install WebUI dependencies:
+## Usage
 
-```bash
-cd WebUI
-npm install
+```python
+from hardware_detection import detect_hardware_type, get_gpu_info
 
+# Detect hardware type
+hardware_type = detect_hardware_type()
+
+# Get GPU information
+gpu_info = get_gpu_info()
 ```
 
-3. Run tests:
+## Development
 
-```bash
-python -m pytest
-
-```
-
-4. Start development server:
-
-```bash
-cd WebUI
-npm run dev
-
-```
+1. Clone the repository
+2. Install dependencies: `pip install -e ".[dev]"`
+3. Run tests: `pytest`
 
 ## License
 
-MIT License. See LICENSE file for details.
+MIT

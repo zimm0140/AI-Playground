@@ -58,9 +58,9 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install pytest pytest-cov types-requests mypy ruff
-          pip install -e .
           sudo apt-get update
-          sudo apt-get install -y build-essential
+          sudo apt-get install -y build-essential python3-dev
+          pip install -e .
         shell: bash
 
       - name: Run tests (Windows)
@@ -84,9 +84,8 @@ jobs:
         uses: docker/setup-buildx-action@v3
       - name: Build and test Docker image
         run: |
-          cd hardware_detection
           docker buildx build --load -t hardware-detection-test .
-          docker run --rm hardware-detection-test pytest -v tests/ --import-mode=append
+          docker run --rm hardware-detection-test pytest -v hardware_detection/tests/ --import-mode=append
         shell: bash
 
   integration-test:
