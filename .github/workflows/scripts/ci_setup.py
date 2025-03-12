@@ -8,7 +8,6 @@ This script performs necessary setup for CI environments:
 3. Sets up mocked hardware detection for testing
 """
 
-import os
 import shutil
 import subprocess
 import sys
@@ -18,7 +17,7 @@ from pathlib import Path
 
 def debug_print(message, level="INFO"):
     """Print debug information with a timestamp."""
-    print(f"[CI_SETUP:{level}] {message}")
+    print(f"[CI_SETUP:{level}] {message}", flush=True)
 
 
 def ensure_file_in_root(source_path, target_name=None):
@@ -54,7 +53,7 @@ def setup_hardware_detection():
     if Path("hardware_detection").exists() and Path("hardware_detection").is_dir():
         debug_print("Found hardware_detection package, using package structure")
 
-        # Ensure we have the required __init__.py files
+        # Create necessary directories
         for subdir in ["", "tests"]:
             init_file = Path("hardware_detection") / subdir / "__init__.py"
             if init_file.exists():
@@ -99,7 +98,7 @@ __all__ = [
             with open(py_typed_file, "w") as f:
                 f.write("")  # Empty file is sufficient
 
-        # Also set up the compatibility layer
+        # Set up the compatibility layer
         tools_hw_dir = Path("tools/hardware")
         tools_hw_dir.mkdir(parents=True, exist_ok=True)
 
@@ -250,93 +249,10 @@ if __name__ == "__main__":
                 ensure_file_in_root(path, "hardware_detection.py")
                 break
         else:
-            debug_print("Error: hardware_detection.py not found anywhere!", "ERROR")
-            # Create a minimal version to prevent failures
-            debug_print("Creating minimal hardware_detection.py")
-            with open("hardware_detection.py", "w") as f:
-                f.write(
-                    """#!/usr/bin/env python3
-\"\"\"Hardware detection module for CI environment.\"\"\"
+            debug_print("Error: Could not find hardware_detection.py", "ERROR")
+            return False
 
-import os
-import sys
-
-# Define hardware types
-HARDWARE_TYPES = ["base", "acm", "bmg", "mtl", "lnl", "ovino", "arl_h"]
-__version__ = "1.0.0"
-
-def load_config():
-    \"\"\"Load uvfast configuration.\"\"\"
-    return {"hardware_types": HARDWARE_TYPES, "default_hardware": "base"}
-
-def get_gpu_info():
-    \"\"\"Get GPU information.\"\"\"
-    if "SIMULATED_HARDWARE" in os.environ:
-        if os.environ.get("SIMULATED_HARDWARE") == "acm":
-            return ["Intel(R) Arc(TM) A770 Graphics (Simulated)"]
-        elif os.environ.get("SIMULATED_HARDWARE") == "ovino":
-            return ["Intel(R) UHD Graphics (Simulated)"]
-    return []
-
-def get_cpu_info():
-    \"\"\"Get CPU information.\"\"\"
-    return {"vendor": "Intel", "name": "CI Test CPU", "cores": 4}
-
-def detect_hardware_type():
-    \"\"\"Detect the hardware type.\"\"\"
-    if "SIMULATED_HARDWARE" in os.environ:
-        sim_hw = os.environ.get("SIMULATED_HARDWARE", "").lower()
-        if sim_hw in HARDWARE_TYPES:
-            return sim_hw
-    return "base"
-
-def is_openvino_available():
-    \"\"\"Check if OpenVINO is available.\"\"\"
-    return os.environ.get("SIMULATED_HARDWARE") == "ovino"
-
-def get_hardware_info():
-    \"\"\"Get hardware information.\"\"\"
-    return {
-        "system": "CI",
-        "python_version": ".".join(map(str, sys.version_info[:3])),
-        "gpus": get_gpu_info(),
-        "cpu": get_cpu_info(),
-        "detected_hardware": detect_hardware_type(),
-        "openvino_available": is_openvino_available(),
-    }
-
-def print_hardware_info(verbose=False):
-    \"\"\"Print hardware information.\"\"\"
-    info = get_hardware_info()
-    print(f"System: {info['system']}")
-    print(f"Python version: {info['python_version']}")
-    print(f"Detected hardware type: {info['detected_hardware']}")
-    print(f"GPUs: {info['gpus']}")
-    print(f"CPU: {info['cpu']}")
-    print(f"OpenVINO available: {info['openvino_available']}")
-"""
-                )
-
-    # Create __init__.py files to make directories importable
-    for dir_path_str in ["tools", "tools/hardware", "tools/scripts"]:
-        dir_path = Path(dir_path_str)
-        init_file = dir_path / "__init__.py"
-
-        if not dir_path.exists():
-            try:
-                dir_path.mkdir(parents=True, exist_ok=True)
-                debug_print(f"Created directory: {dir_path_str}")
-            except Exception as e:
-                debug_print(f"Error creating directory {dir_path_str}: {e}", "ERROR")
-
-        if not init_file.exists():
-            try:
-                debug_print(f"Creating {init_file}")
-                with open(init_file, "w") as f:
-                    f.write(f'"""Auto-generated {dir_path_str} package."""\n')
-            except Exception as e:
-                debug_print(f"Error creating {init_file}: {e}", "ERROR")
-                traceback.print_exc()
+    return True
 
 
 def setup_mock_hardware():
@@ -661,37 +577,16 @@ def setup_uvfast():
 
 
 def main():
-    """Main function to run all setup tasks."""
-    debug_print("Setting up CI environment...")
-    debug_print(f"Python version: {sys.version}")
-    debug_print(f"Current directory: {os.getcwd()}")
+    """Main entry point for CI setup."""
+    debug_print("Starting CI setup...")
 
-    try:
-        # Ensure proper module structure with __init__.py files
-        ensure_module_structure()
+    # Set up hardware detection first
+    if not setup_hardware_detection():
+        debug_print("Failed to set up hardware detection", "ERROR")
+        sys.exit(1)
 
-        # Ensure hardware detection is available
-        setup_hardware_detection()
-
-        # Set up mock hardware for testing
-        setup_mock_hardware()
-
-        # Set up uvfast configuration
-        setup_uvfast()
-
-        # Create any missing requirements files
-        create_requirements_files()
-
-        # Set up all mock modules (including OpenVINO and Intel Extension)
-        setup_mock_modules()
-
-        debug_print("CI environment setup complete!")
-        return 0
-    except Exception as e:
-        debug_print(f"Error in CI setup: {e}", "ERROR")
-        traceback.print_exc()
-        return 1
+    debug_print("CI setup completed successfully")
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()

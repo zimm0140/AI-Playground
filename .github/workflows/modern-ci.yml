@@ -8,15 +8,16 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.10", "3.11", "3.13"]
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
         include:
           - python-version: "3.10"
             name: "Compatibility Testing"
-          - python-version: "3.13"
+          - python-version: "3.11"
             name: "Latest Features Testing"
 
     steps:
@@ -41,24 +42,42 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install pytest pytest-cov types-requests
           python -m pip install -e .
+        shell: bash
 
       - name: Run CI setup script
         run: |
           python .github/workflows/scripts/ci_setup.py
+        shell: bash
+        env:
+          SIMULATED_HARDWARE: "base"
+          CI_TESTING: "true"
 
       - name: Verify hardware detection package
         run: |
           python -c "import hardware_detection; print(f'Version: {hardware_detection.__version__}')"
           python -c "import tools.hardware.hardware_detection; print(f'Compat Version: {tools.hardware.hardware_detection.__version__}')"
+        shell: bash
 
       - name: Run tests (traditional method)
         run: |
-          python -m pytest -v tests/
+          python -m pytest -v tests/ --import-mode=append
+        shell: bash
+        env:
+          SIMULATED_HARDWARE: "base"
+          CI_TESTING: "true"
 
       - name: Install uv
         run: |
           curl -LsSf https://astral.sh/uv/install.sh | sh
           echo "$HOME/.local/bin" >> $GITHUB_PATH
+        shell: bash
+        if: runner.os != 'Windows'
+
+      - name: Install uv (Windows)
+        run: |
+          iwr https://astral.sh/uv/install.ps1 -useb | iex
+        shell: pwsh
+        if: runner.os == 'Windows'
 
       - name: Cache uv packages
         uses: actions/cache@v3
@@ -73,73 +92,95 @@ jobs:
             ${{ runner.os }}-uv-${{ matrix.python-version }}-
             ${{ runner.os }}-uv-
 
-      - name: Test with uv
+      - name: Test with uv (Unix)
+        if: runner.os != 'Windows'
         run: |
           uv venv
           source .venv/bin/activate
           uv pip install pytest pytest-cov types-requests
           uv pip install -e .
-          uv run pytest -v tests/
+          uv run pytest -v tests/ --import-mode=append
+        shell: bash
+        env:
+          SIMULATED_HARDWARE: "base"
+          CI_TESTING: "true"
+
+      - name: Test with uv (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          uv venv
+          .venv\Scripts\activate
+          uv pip install pytest pytest-cov types-requests
+          uv pip install -e .
+          uv run pytest -v tests/ --import-mode=append
+        shell: pwsh
+        env:
+          SIMULATED_HARDWARE: "base"
+          CI_TESTING: "true"
 
   lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up Python 3.13
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.13"
+          python-version: "3.11"
 
       - name: Install uv
         run: |
           curl -LsSf https://astral.sh/uv/install.sh | sh
           echo "$HOME/.local/bin" >> $GITHUB_PATH
+        shell: bash
 
       - name: Install dependencies and run linting
         run: |
-          # Create a virtual environment first
           uv venv
-          # Activate the virtual environment
           source .venv/bin/activate
-          # Install dependencies
           uv pip install ruff mypy types-requests pytest
           uv pip install -e .
+        shell: bash
 
       - name: Lint with Ruff
         run: |
           source .venv/bin/activate
           uv run ruff check .
+        shell: bash
 
       - name: Type check with mypy
         run: |
           source .venv/bin/activate
           uv run mypy --python-version 3.10 --exclude '.github/workflows/scripts/*' .
+        shell: bash
 
       - name: Check markdown files
         run: |
           npm install -g markdownlint-cli
           markdownlint '**/*.md' --ignore node_modules || true
+        shell: bash
 
       - name: Fix markdown issues
         run: |
           python .github/workflows/scripts/fix_markdown_lint.py
           git diff --name-only
+        shell: bash
 
   audit:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up Python 3.13
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.13"
+          python-version: "3.11"
 
       - name: Install uv
         run: |
           curl -LsSf https://astral.sh/uv/install.sh | sh
           echo "$HOME/.local/bin" >> $GITHUB_PATH
+        shell: bash
 
       - name: Audit dependencies
         run: |
@@ -147,4 +188,5 @@ jobs:
           source .venv/bin/activate
           uv pip install -e .
           uv pip audit
+        shell: bash
         continue-on-error: true # Don't fail the build if vulnerabilities are found
