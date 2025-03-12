@@ -1,15 +1,49 @@
+/// <reference types="vite/client" />
+
 declare interface Window {
   chrome: Chrome
-  electronAPI: electronAPI
+  electronAPI: ElectronAPI
   envVars: { platformTitle: string; productVersion: string }
 }
 
 interface ImportMetaEnv {
   readonly VITE_PLATFORM_TITLE: string
+  readonly VITE_APP_TITLE: string
+  readonly VITE_API_URL: string
+  readonly VITE_WS_URL: string
 }
 
 interface ImportMeta {
   readonly env: ImportMetaEnv
+}
+
+interface MessageEvent<T = unknown> {
+  data: T
+  type: string
+  target: EventTarget | null
+}
+
+interface MessageCallback<T = unknown> {
+  (event: MessageEvent<T>): void
+}
+
+interface ElectronAPI {
+  addEventListener: (event: 'message', callback: MessageCallback) => void
+  removeEventListener: (
+    event: 'message',
+    callback: MessageCallback,
+  ) => void
+  send: (channel: string, data?: unknown) => void
+}
+
+interface ProcessEnv {
+  [key: string]: string | undefined
+}
+
+interface ErrorResponse {
+  message: string
+  code?: string
+  details?: Record<string, unknown>
 }
 
 type electronAPI = {

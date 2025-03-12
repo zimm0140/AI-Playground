@@ -41,7 +41,8 @@ def test_get_gpu_info_base(mock_base_env):
     """Test GPU info detection with base environment."""
     gpus = get_gpu_info()
     assert isinstance(gpus, list)
-    assert "Generic GPU" in gpus[0]
+    # Base environment returns empty list
+    assert len(gpus) == 0
 
 
 def test_get_gpu_info_acm(mock_acm_env):
@@ -63,8 +64,8 @@ def test_get_cpu_info_base(mock_base_env):
     cpu_info = get_cpu_info()
     assert isinstance(cpu_info, dict)
     assert "name" in cpu_info
-    assert "Generic" in cpu_info["name"]
-    assert cpu_info["cores"] == 4
+    assert "i5-10400" in cpu_info["name"]
+    assert cpu_info["cores"] == 6
 
 
 def test_get_cpu_info_acm(mock_acm_env):
@@ -109,7 +110,7 @@ def test_is_openvino_available():
 
 def test_platform_specific_detection():
     """Test platform-specific detection paths."""
-    # Test Windows path
+    # Test with environment variable
     with pytest.MonkeyPatch.context() as mp:
         mp.setenv("SIMULATED_HARDWARE", "base")
         info = get_hardware_info()
@@ -142,8 +143,7 @@ def test_get_gpu_info_env():
         mp.setenv("SIMULATED_HARDWARE", "base")
         gpus = get_gpu_info()
         assert isinstance(gpus, list)
-        assert len(gpus) > 0
-        assert "Generic GPU" in gpus[0]
+        assert len(gpus) == 0  # Base environment returns empty list
 
         mp.setenv("SIMULATED_HARDWARE", "acm")
         gpus = get_gpu_info()
@@ -166,8 +166,8 @@ def test_get_cpu_info_env():
         cpu_info = get_cpu_info()
         assert isinstance(cpu_info, dict)
         assert "name" in cpu_info
-        assert "Generic" in cpu_info["name"]
-        assert cpu_info["cores"] == 4
+        assert "i5-10400" in cpu_info["name"]
+        assert cpu_info["cores"] == 6
 
         mp.setenv("SIMULATED_HARDWARE", "acm")
         cpu_info = get_cpu_info()

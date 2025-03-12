@@ -1,6 +1,6 @@
 /// <reference types="vite/client" />
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import Vue from 'vue'
+import 'vue'
 
 declare module 'vue' {
   interface ComponentCustomProperties {
@@ -9,7 +9,7 @@ declare module 'vue' {
 }
 
 declare module '*.vue' {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-empty-object-type
-  const component: DefineComponent<any, {}, any>
+  import type { DefineComponent } from 'vue'
+  const component: DefineComponent<Record<string, unknown>, Record<string, unknown>, unknown>
   export default component
 }

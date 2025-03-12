@@ -119,20 +119,13 @@ export function log(message: string) {
   console.log(`[${dateFormat(new Date(), 'hh:mm:ss:fff')}] ${message}`)
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function convertToFormData(data: any) {
+export function convertToFormData(data: Record<string, unknown>): FormData {
   const formData = new FormData()
-  for (const key in data) {
-    const val = data[key]
-    if (val == null) {
-      continue
-    }
-    if (typeof val == 'boolean') {
-      formData.append(key, val ? '1' : '0')
-    } else if (val as Blob) {
-      formData.append(key, val)
-    } else {
-      formData.append(key, val.toString())
+  for (const [key, value] of Object.entries(data)) {
+    if (value instanceof File) {
+      formData.append(key, value)
+    } else if (value !== null && value !== undefined) {
+      formData.append(key, String(value))
     }
   }
   return formData

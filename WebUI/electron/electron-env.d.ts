@@ -1,4 +1,5 @@
 /// <reference types="vite-plugin-electron/electron-env" />
+/// <reference types="vite/client" />
 
 declare namespace NodeJS {
   interface ProcessEnv {
@@ -85,3 +86,36 @@ type BackendStatus =
   | 'installationFailed'
   | 'installing'
   | 'uninitializedStatus'
+
+interface ImportMetaEnv {
+  readonly MAIN_VITE_ELECTRON_WINDOW_CONFIG: WindowConfig
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv
+}
+
+interface WindowConfig {
+  width: number
+  height: number
+  minWidth?: number
+  minHeight?: number
+  frame?: boolean
+  title?: string
+  icon?: string
+  webPreferences?: {
+    nodeIntegration?: boolean
+    contextIsolation?: boolean
+    webSecurity?: boolean
+    allowRunningInsecureContent?: boolean
+  }
+  additionalArguments?: string[]
+}
+
+interface ProcessEnv {
+  [key: string]: string | undefined
+}
+
+interface ElectronProcess extends NodeJS.Process {
+  resourcesPath: string
+}
