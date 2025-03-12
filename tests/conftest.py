@@ -254,3 +254,139 @@ def temp_config_file(tmpdir):
     }
     config_file.write(json.dumps(config_data))
     return Path(str(config_file))
+
+
+@pytest.fixture(autouse=True)
+def setup_test_env():
+    """Set up test environment for all tests."""
+    # Store original environment
+    old_env = {
+        "SIMULATED_HARDWARE": os.environ.get("SIMULATED_HARDWARE"),
+        "CI_TESTING": os.environ.get("CI_TESTING"),
+        "UVFAST_MOCK_DIR": os.environ.get("UVFAST_MOCK_DIR"),
+    }
+
+    # Set test environment
+    os.environ["CI_TESTING"] = "true"
+    os.environ["SIMULATED_HARDWARE"] = "base"
+
+    # Create mock directory if it doesn't exist
+    mock_dir = Path(".uvfast/mock")
+    mock_dir.mkdir(parents=True, exist_ok=True)
+    os.environ["UVFAST_MOCK_DIR"] = str(mock_dir)
+
+    yield
+
+    # Restore original environment
+    for key, value in old_env.items():
+        if value is None:
+            os.environ.pop(key, None)
+        else:
+            os.environ[key] = value
+
+
+@pytest.fixture
+def mock_dir():
+    """Create a temporary directory for mock files."""
+    mock_dir = Path(".uvfast/mock")
+    mock_dir.mkdir(parents=True, exist_ok=True)
+    return mock_dir
+
+
+@pytest.fixture
+def mock_base_env(mock_dir):
+    """Set up a mock base environment."""
+    # Create mock files
+    with open(mock_dir / "gpu_info.txt", "w", encoding="utf-8") as f:
+        f.write("Generic GPU\n")
+
+    with open(mock_dir / "cpu_info.txt", "w", encoding="utf-8") as f:
+        f.write("vendor: Generic\n")
+        f.write("name: Generic CPU\n")
+        f.write("cores: 4\n")
+
+    # Set environment variables
+    old_mock_dir = os.environ.get("UVFAST_MOCK_DIR")
+    old_sim_hw = os.environ.get("SIMULATED_HARDWARE")
+
+    os.environ["UVFAST_MOCK_DIR"] = str(mock_dir)
+    os.environ["SIMULATED_HARDWARE"] = "base"
+
+    yield
+
+    # Restore environment variables
+    if old_mock_dir:
+        os.environ["UVFAST_MOCK_DIR"] = old_mock_dir
+    else:
+        os.environ.pop("UVFAST_MOCK_DIR", None)
+
+    if old_sim_hw:
+        os.environ["SIMULATED_HARDWARE"] = old_sim_hw
+    else:
+        os.environ.pop("SIMULATED_HARDWARE", None)
+
+
+@pytest.fixture
+def mock_acm_env(mock_dir):
+    """Set up a mock Intel Arc environment."""
+    # Create mock files
+    with open(mock_dir / "gpu_info.txt", "w", encoding="utf-8") as f:
+        f.write("Intel(R) Arc(TM) A770 Graphics\n")
+
+    with open(mock_dir / "cpu_info.txt", "w", encoding="utf-8") as f:
+        f.write("vendor: Intel\n")
+        f.write("name: Intel(R) Core(TM) i9-13900K\n")
+        f.write("cores: 24\n")
+
+    # Set environment variables
+    old_mock_dir = os.environ.get("UVFAST_MOCK_DIR")
+    old_sim_hw = os.environ.get("SIMULATED_HARDWARE")
+
+    os.environ["UVFAST_MOCK_DIR"] = str(mock_dir)
+    os.environ["SIMULATED_HARDWARE"] = "acm"
+
+    yield
+
+    # Restore environment variables
+    if old_mock_dir:
+        os.environ["UVFAST_MOCK_DIR"] = old_mock_dir
+    else:
+        os.environ.pop("UVFAST_MOCK_DIR", None)
+
+    if old_sim_hw:
+        os.environ["SIMULATED_HARDWARE"] = old_sim_hw
+    else:
+        os.environ.pop("SIMULATED_HARDWARE", None)
+
+
+@pytest.fixture
+def mock_ovino_env(mock_dir):
+    """Set up a mock OpenVINO environment."""
+    # Create mock files
+    with open(mock_dir / "gpu_info.txt", "w", encoding="utf-8") as f:
+        f.write("Intel(R) UHD Graphics 770\n")
+
+    with open(mock_dir / "cpu_info.txt", "w", encoding="utf-8") as f:
+        f.write("vendor: Intel\n")
+        f.write("name: Intel(R) Core(TM) i7-1370P\n")
+        f.write("cores: 16\n")
+
+    # Set environment variables
+    old_mock_dir = os.environ.get("UVFAST_MOCK_DIR")
+    old_sim_hw = os.environ.get("SIMULATED_HARDWARE")
+
+    os.environ["UVFAST_MOCK_DIR"] = str(mock_dir)
+    os.environ["SIMULATED_HARDWARE"] = "ovino"
+
+    yield
+
+    # Restore environment variables
+    if old_mock_dir:
+        os.environ["UVFAST_MOCK_DIR"] = old_mock_dir
+    else:
+        os.environ.pop("UVFAST_MOCK_DIR", None)
+
+    if old_sim_hw:
+        os.environ["SIMULATED_HARDWARE"] = old_sim_hw
+    else:
+        os.environ.pop("SIMULATED_HARDWARE", None)
