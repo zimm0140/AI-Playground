@@ -14,6 +14,7 @@ A Python package for automatic hardware detection and configuration.
 
 ```bash
 pip install -e .
+
 ```
 
 ## Usage
@@ -22,19 +23,23 @@ pip install -e .
 from hardware_detection import detect_hardware_type, get_hardware_info
 
 # Get detected hardware type
+
 hardware_type = detect_hardware_type()
 print(f"Detected hardware: {hardware_type}")
 
 # Get detailed hardware information
+
 hardware_info = get_hardware_info()
 print(f"GPUs: {hardware_info['gpus']}")
 print(f"CPU: {hardware_info['cpu']}")
+
 ```
 
 ## Testing
 
 ```bash
 python -m pytest hardware_detection/tests/
+
 ```
 
 ## License
