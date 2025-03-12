@@ -14,6 +14,7 @@ env:
 
 jobs:
   test:
+    name: Python Tests
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -37,6 +38,73 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: "pip"
 
+      - name: Install dependencies (Windows)
+        if: matrix.os == 'windows-latest'
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-cov types-requests mypy ruff
+          pip install -e .
+        shell: pwsh
+
+      - name: Install dependencies (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-cov types-requests mypy ruff
+          pip install -e .
+        shell: bash
+
+      - name: Run tests (Windows)
+        if: matrix.os == 'windows-latest'
+        run: |
+          python -m pytest -v hardware_detection/tests/ --cov=hardware_detection --cov-report=term-missing --import-mode=append
+        shell: pwsh
+
+      - name: Run tests (Linux)
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          python -m pytest -v hardware_detection/tests/ --cov=hardware_detection --cov-report=term-missing --import-mode=append
+        shell: bash
+
+  docker-test:
+    name: Docker Tests
+    runs-on: windows-latest
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Desktop
+        uses: crazy-max/ghaction-setup-docker@v2
+        with:
+          version: latest
+
+      - name: Build test image
+        run: |
+          docker build -t hardware-detection:test -f hardware_detection/Dockerfile .
+        shell: pwsh
+
+      - name: Run tests in container
+        run: |
+          docker run --rm hardware-detection:test pytest -v /app/hardware_detection/tests/
+        shell: pwsh
+
+  integration-test:
+    name: Hardware Integration Test
+    runs-on: windows-latest
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -44,13 +112,7 @@ jobs:
           pip install -e .
         shell: pwsh
 
-      - name: Run tests
-        run: |
-          python -m pytest -v hardware_detection/tests/ --cov=hardware_detection --cov-report=term-missing --import-mode=append
-        shell: pwsh
-
-      - name: Run hardware integration test
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      - name: Run integration tests
         env:
           SIMULATED_HARDWARE: "acm"
         run: |
@@ -58,6 +120,7 @@ jobs:
         shell: pwsh
 
   lint:
+    name: Linting
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
@@ -110,6 +173,7 @@ jobs:
         shell: pwsh
 
   audit:
+    name: Security Audit
     runs-on: windows-latest
     continue-on-error: true
     steps:
