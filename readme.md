@@ -156,7 +156,7 @@ npm install
 
 ### Prepare Python Environment
 
-1. Install Miniforge to manage your Conda environment: <https://github.com/conda-forge/miniforge>
+1. Install Miniforge to manage your Conda environment: https://github.com/conda-forge/miniforge
 
 2. Create a Conda environment with Python 3.11 and libuv:
 
@@ -224,7 +224,6 @@ The following models are linked directly from the application:
 | bge-large-en-v1.5 | [License](https://huggingface.co/datasets/choosealicense/licenses/blob/main/markdown/mit.md) | [Model Card](https://huggingface.co/BAAI/bge-large-en-v1.5) |
 | Latent Consistency Model (LCM) LoRA: SD1.5 | [License](https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/blob/main/LICENSE.md) | [Model Card](https://huggingface.co/latent-consistency/lcm-lora-sdv1-5) |
 | Latent Consistency Model (LCM) LoRA:SDXL | [License](https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/blob/main/LICENSE.md) | [Model Card](https://huggingface.co/latent-consistency/lcm-lora-sdxl) |
-
 
 ⚠️ **Important**: Always check license terms for any model used in AI Playground, particularly noting any restrictions on usage.
 
