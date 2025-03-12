@@ -399,19 +399,24 @@ Basic usage:
 from tools.hardware import hardware_detection
 
 # Get detected hardware type
+
 hardware_type = hardware_detection.detect_hardware_type()
 print(f"Detected hardware: {hardware_type}")
 
 # Get detailed hardware information
+
 hardware_info = hardware_detection.get_hardware_info()
 print(f"GPUs: {hardware_info['gpus']}")
 print(f"CPU: {hardware_info['cpu']}")
+
 ```
 
 Run the module directly for diagnostics:
 
 ```
+
 python -m tools.hardware.hardware_detection --verbose
+
 ```
 
 ## Configuration
@@ -431,6 +436,7 @@ Hardware detection can be configured via a `uvfast.json` file. Example:
     }
   }
 }
+
 ```
 
 ## CI/CD Integration
@@ -438,8 +444,11 @@ Hardware detection can be configured via a `uvfast.json` file. Example:
 The module includes comprehensive CI/CD support for testing in simulated hardware environments:
 
 ```bash
+
 # Run the CI setup script
+
 python .github/workflows/scripts/simple_hardware_ci.py --hardware-type acm
+
 ```
 
 This creates a simulated hardware environment with mock packages and files.
@@ -450,6 +459,7 @@ Run the test suite:
 
 ```bash
 pytest -xvs tests/hardware/
+
 ```
 
 ### Mock Environments
@@ -457,11 +467,15 @@ pytest -xvs tests/hardware/
 For testing different hardware configurations, use the `SIMULATED_HARDWARE` environment variable:
 
 ```bash
+
 # Simulate Intel Arc GPU
+
 SIMULATED_HARDWARE=acm python your_script.py
 
 # Simulate OpenVINO environment
+
 SIMULATED_HARDWARE=ovino python your_script.py
+
 ```
 
 ## License
