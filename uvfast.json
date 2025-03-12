@@ -39,43 +39,25 @@
     },
     "detection": {
         "acm": {
-            "gpu_name_pattern": "Intel.*Arc",
-            "requirements": [
-                "intel-gpu-stub>=1.0.0"
-            ]
+            "gpu_name_pattern": "Intel.*Arc|Arc.*Graphics|Intel.*Alchemist",
+            "cpu_name_pattern": "Intel.*i9"
         },
         "bmg": {
-            "gpu_name_pattern": "Intel.*Battlemage",
-            "requirements": [
-                "intel-gpu-stub>=1.0.0"
-            ]
+            "gpu_name_pattern": "Intel.*Battlemage|Celestial.*Graphics"
         },
         "mtl": {
-            "gpu_name_pattern": "Intel.*Meteor Lake",
-            "cpu_name_pattern": "Intel.*Core.*Ultra",
-            "requirements": [
-                "intel-gpu-stub>=1.0.0"
-            ]
+            "gpu_name_pattern": "Intel.*Meteor Lake|Meteor Lake.*Graphics"
         },
         "lnl": {
-            "gpu_name_pattern": "Intel.*Lunar Lake",
-            "cpu_name_pattern": "Intel.*Core.*Ultra.*200",
-            "requirements": [
-                "intel-gpu-stub>=1.0.0"
-            ]
+            "gpu_name_pattern": "Intel.*Lunar Lake|Lunar Lake.*Graphics"
         },
         "ovino": {
-            "cpu_name_pattern": "Intel.*Core.*i\\d-\\d{4}",
-            "requirements": [
-                "openvino>=2023.0.0"
-            ]
+            "cpu_name_pattern": "Intel.*i7",
+            "package_check": "openvino"
         },
         "arl_h": {
-            "gpu_name_pattern": "Intel.*Arrow Lake",
-            "cpu_name_pattern": "Intel.*Core.*Ultra.*300",
-            "requirements": [
-                "intel-gpu-stub>=1.0.0"
-            ]
+            "cpu_name_pattern": "Intel.*Alder Lake H|Intel.*12th.*H",
+            "gpu_name_pattern": "Intel.*Iris.*Xe"
         }
     },
     "scripts": {
@@ -107,5 +89,15 @@
             "acm": "intel/arc-gpu:latest",
             "ovino": "openvino/ubuntu22_runtime:latest"
         }
+    },
+    "ci": {
+        "enabled": true,
+        "mock_packages_dir": "tests/hardware/mocks",
+        "default_simulated_hardware": "base",
+        "test_hardware_matrix": [
+            "base",
+            "acm",
+            "ovino"
+        ]
     }
 }

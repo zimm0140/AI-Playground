@@ -381,13 +381,89 @@ This script:
 
 ### Hardware Detection Module
 
-The `hardware_detection.py` module provides functions to detect Intel hardware and is used by `uvfast.py` for hardware-specific dependency management. It has been designed to work both as a standalone module and as part of the reorganized `tools/hardware` package.
+A robust and configurable hardware detection module for identifying and utilizing specialized hardware in Python applications.
 
-In CI environments, you can simulate specific hardware by setting the `SIMULATED_HARDWARE` environment variable:
+## Features
 
-```bash
-SIMULATED_HARDWARE=acm python uvfast.py info
+- Automatic detection of specialized hardware (GPUs, specialized processors)
+- Support for Intel Arc GPUs, OpenVINO, and other hardware accelerators
+- Configurable detection rules via `uvfast.json`
+- Mock environment support for CI/CD testing
+- Cross-platform compatibility (Windows, Linux, macOS)
 
+## Usage
+
+Basic usage:
+
+```python
+from tools.hardware import hardware_detection
+
+# Get detected hardware type
+hardware_type = hardware_detection.detect_hardware_type()
+print(f"Detected hardware: {hardware_type}")
+
+# Get detailed hardware information
+hardware_info = hardware_detection.get_hardware_info()
+print(f"GPUs: {hardware_info['gpus']}")
+print(f"CPU: {hardware_info['cpu']}")
 ```
 
-Valid values: base, acm, bmg, mtl, lnl, ovino, arl_h
+Run the module directly for diagnostics:
+
+```
+python -m tools.hardware.hardware_detection --verbose
+```
+
+## Configuration
+
+Hardware detection can be configured via a `uvfast.json` file. Example:
+
+```json
+{
+  "hardware_types": ["base", "acm", "ovino"],
+  "default_hardware": "base",
+  "detection": {
+    "acm": {
+      "gpu_name_pattern": "Intel.*Arc|Arc.*Graphics"
+    },
+    "ovino": {
+      "package_check": "openvino"
+    }
+  }
+}
+```
+
+## CI/CD Integration
+
+The module includes comprehensive CI/CD support for testing in simulated hardware environments:
+
+```bash
+# Run the CI setup script
+python .github/workflows/scripts/simple_hardware_ci.py --hardware-type acm
+```
+
+This creates a simulated hardware environment with mock packages and files.
+
+## Development and Testing
+
+Run the test suite:
+
+```bash
+pytest -xvs tests/hardware/
+```
+
+### Mock Environments
+
+For testing different hardware configurations, use the `SIMULATED_HARDWARE` environment variable:
+
+```bash
+# Simulate Intel Arc GPU
+SIMULATED_HARDWARE=acm python your_script.py
+
+# Simulate OpenVINO environment
+SIMULATED_HARDWARE=ovino python your_script.py
+```
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.

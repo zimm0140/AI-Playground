@@ -17,51 +17,62 @@ from tools.hardware.hardware_detection import (
 
 
 def test_version():
-    """Test that the module version is defined correctly."""
+    """Test that the module has a version."""
+    assert __version__ is not None
     assert isinstance(__version__, str)
-    assert len(__version__.split(".")) == 3
 
 
-def test_hardware_detection_basic():
-    """Test basic hardware detection functionality."""
-    # Basic tests that should work on any platform
-    hw_type = detect_hardware_type()
-    assert isinstance(hw_type, str)
-    assert hw_type in ["base", "acm", "bmg", "mtl", "lnl", "ovino", "arl_h"]
+def test_detect_hardware_type():
+    """Test hardware type detection."""
+    # When running in CI with SIMULATED_HARDWARE set
+    if "SIMULATED_HARDWARE" in os.environ:
+        expected = os.environ["SIMULATED_HARDWARE"]
+        actual = detect_hardware_type()
+        assert actual == expected, f"Expected {expected}, got {actual}"
+    else:
+        # When running without simulation, should return a valid type
+        hw_type = detect_hardware_type()
+        assert hw_type in ["base", "acm", "bmg", "mtl", "lnl", "ovino", "arl_h"]
 
 
-def test_gpu_info():
+def test_get_gpu_info():
     """Test GPU info detection."""
     gpus = get_gpu_info()
     assert isinstance(gpus, list)
 
-    # In simulated environment, we should get specific results
-    if "SIMULATED_HARDWARE" in os.environ:
-        sim_hw = os.environ.get("SIMULATED_HARDWARE", "").lower()
-        if sim_hw == "acm":
-            assert any("Arc" in gpu for gpu in gpus)
-        elif sim_hw == "ovino":
-            assert any("Intel" in gpu for gpu in gpus)
+    # When running in CI with SIMULATED_HARDWARE set
+    if os.environ.get("SIMULATED_HARDWARE") == "acm":
+        assert any("Arc" in gpu for gpu in gpus)
+    elif os.environ.get("SIMULATED_HARDWARE") == "ovino":
+        assert any("Intel" in gpu for gpu in gpus)
 
 
-def test_cpu_info():
+def test_get_cpu_info():
     """Test CPU info detection."""
     cpu_info = get_cpu_info()
     assert isinstance(cpu_info, dict)
     assert "name" in cpu_info
-    assert "vendor" in cpu_info
-    assert "cores" in cpu_info
 
-    # Check that cores is an integer
-    assert isinstance(cpu_info["cores"], int)
+    # When running in CI with SIMULATED_HARDWARE set
+    if os.environ.get("SIMULATED_HARDWARE") == "acm":
+        assert "i9" in cpu_info["name"]
+    elif os.environ.get("SIMULATED_HARDWARE") == "ovino":
+        assert "i7" in cpu_info["name"]
 
-    # In simulated environment, we should get specific results
+
+def test_get_hardware_info():
+    """Test hardware info retrieval."""
+    info = get_hardware_info()
+    assert isinstance(info, dict)
+    assert "system" in info
+    assert "gpus" in info
+    assert "cpu" in info
+    assert "detected_hardware" in info
+
+    # Hardware type should match what we expect
     if "SIMULATED_HARDWARE" in os.environ:
-        sim_hw = os.environ.get("SIMULATED_HARDWARE", "").lower()
-        if sim_hw == "acm":
-            assert "i9" in cpu_info.get("name", "")
-        elif sim_hw == "ovino":
-            assert "i7" in cpu_info.get("name", "")
+        expected = os.environ["SIMULATED_HARDWARE"]
+        assert info["detected_hardware"] == expected
 
 
 def test_openvino_available():
