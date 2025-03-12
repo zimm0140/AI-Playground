@@ -15,6 +15,7 @@ A Python-based hardware detection and configuration tool with a modern Vue.js we
 
 ```bash
 python -m pip install -e .
+
 ```
 
 2. Install WebUI dependencies:
@@ -22,12 +23,14 @@ python -m pip install -e .
 ```bash
 cd WebUI
 npm install
+
 ```
 
 3. Run tests:
 
 ```bash
 python -m pytest
+
 ```
 
 4. Start development server:
@@ -35,6 +38,7 @@ python -m pytest
 ```bash
 cd WebUI
 npm run dev
+
 ```
 
 ## License
