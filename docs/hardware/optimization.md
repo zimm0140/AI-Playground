@@ -86,6 +86,7 @@ python setup_hardware_env.py --hardware acm
 | `IPEX_XPU_MAX_STREAMS` | "8" | Maximum number of streams |
 | `DPCT_SYSTEM_MEMORY_GRANULARITY_LEVEL` | "fine" | Memory granularity |
 
+
 ## Intel Meteor Lake Optimization
 
 Intel Meteor Lake CPUs with integrated GPUs benefit from these optimizations:
@@ -221,6 +222,7 @@ The tool will report:
 | NVIDIA RTX 3080+ | TF32 precision, CUDA graphs |
 | NVIDIA GTX 1660 | FP16 precision, reduced batch size |
 | CPU-only | Thread optimization, quantized models |
+
 
 ## Advanced Configuration
 

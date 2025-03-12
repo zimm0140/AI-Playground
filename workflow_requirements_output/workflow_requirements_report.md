@@ -18,11 +18,13 @@ Generated on: 2025-03-10 05:02:58
 | latent-consistency---lcm-lora-sdxl\pytorch_lora_weights.safetensors (lora) | FaceSwapHD.json, Line2ImageHD-Fast.json |
 | stabilityai---control-lora\control-LoRAs-rank128\control-lora-canny-rank128.safetensors (controlnet) | Line2ImageHD-Fast.json, Line2ImageHD-Quality.json |
 
+
 ### Custom Nodes
 
 | Custom Node Extension | Workflows |
 |----------------------|----------|
 | comfyui-face-swap | CopyFace.json, FaceSwapHD.json |
+
 
 ### Python Packages
 
@@ -31,6 +33,7 @@ Generated on: 2025-03-10 05:02:58
 | opencv-python | CopyFace.json, FaceSwapHD.json |
 | insightface | CopyFace.json, FaceSwapHD.json |
 | onnxruntime-gpu | CopyFace.json, FaceSwapHD.json |
+
 
 ### Memory Requirements
 
@@ -42,13 +45,14 @@ Generated on: 2025-03-10 05:02:58
 | 7GB | Colorize.json, CopyFace.json, FaceSwapHD.json, Video.json, fluxQ4.json, fluxQ8.json |
 | 8GB | Line2ImageHD-Fast.json, Line2ImageHD-Quality.json |
 
+
 ## Individual Workflow Requirements
 
 ### Colorize.json
 
 ✅ **Successfully analyzed**
 
-### Memory Requirements:
+### Memory Requirements
 
 - Minimum: 7GB
 - Recommended: 10GB
@@ -57,17 +61,17 @@ Generated on: 2025-03-10 05:02:58
 
 ✅ **Successfully analyzed**
 
-### Required Custom Nodes:
+### Required Custom Nodes
 
 - comfyui-face-swap
 
-### Required Python Packages:
+### Required Python Packages
 
 - opencv-python
 - insightface
 - onnxruntime-gpu
 
-### Memory Requirements:
+### Memory Requirements
 
 - Minimum: 7GB
 - Recommended: 10GB
@@ -76,22 +80,22 @@ Generated on: 2025-03-10 05:02:58
 
 ✅ **Successfully analyzed**
 
-### Required Models:
+### Required Models
 
 - Vae: RunDiffusion---Juggernaut-XL-v9\vae\diffusion_pytorch_model.fp16.safetensors
 - Lora: latent-consistency---lcm-lora-sdxl\pytorch_lora_weights.safetensors
 
-### Required Custom Nodes:
+### Required Custom Nodes
 
 - comfyui-face-swap
 
-### Required Python Packages:
+### Required Python Packages
 
 - opencv-python
 - insightface
 - onnxruntime-gpu
 
-### Memory Requirements:
+### Memory Requirements
 
 - Minimum: 7GB
 - Recommended: 10GB
@@ -100,13 +104,13 @@ Generated on: 2025-03-10 05:02:58
 
 ✅ **Successfully analyzed**
 
-### Required Models:
+### Required Models
 
 - Vae: RunDiffusion---Juggernaut-XL-v9\vae\diffusion_pytorch_model.fp16.safetensors
 - Lora: latent-consistency---lcm-lora-sdxl\pytorch_lora_weights.safetensors
 - Controlnet: stabilityai---control-lora\control-LoRAs-rank128\control-lora-canny-rank128.safetensors
 
-### Memory Requirements:
+### Memory Requirements
 
 - Minimum: 8GB
 - Recommended: 12GB
@@ -115,12 +119,12 @@ Generated on: 2025-03-10 05:02:58
 
 ✅ **Successfully analyzed**
 
-### Required Models:
+### Required Models
 
 - Vae: RunDiffusion---Juggernaut-XL-v9\vae\diffusion_pytorch_model.fp16.safetensors
 - Controlnet: stabilityai---control-lora\control-LoRAs-rank128\control-lora-canny-rank128.safetensors
 
-### Memory Requirements:
+### Memory Requirements
 
 - Minimum: 8GB
 - Recommended: 12GB
@@ -129,7 +133,7 @@ Generated on: 2025-03-10 05:02:58
 
 ✅ **Successfully analyzed**
 
-### Memory Requirements:
+### Memory Requirements
 
 - Minimum: 7GB
 - Recommended: 10GB
@@ -138,11 +142,11 @@ Generated on: 2025-03-10 05:02:58
 
 ✅ **Successfully analyzed**
 
-### Required Models:
+### Required Models
 
 - Vae: black-forest-labs---FLUX.1-schnell\ae.safetensors
 
-### Memory Requirements:
+### Memory Requirements
 
 - Minimum: 7GB
 - Recommended: 10GB
@@ -151,11 +155,11 @@ Generated on: 2025-03-10 05:02:58
 
 ✅ **Successfully analyzed**
 
-### Required Models:
+### Required Models
 
 - Vae: black-forest-labs---FLUX.1-schnell\ae.safetensors
 
-### Memory Requirements:
+### Memory Requirements
 
 - Minimum: 7GB
 - Recommended: 10GB

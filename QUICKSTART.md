@@ -23,6 +23,7 @@ On Windows:
 ```powershell
 powershell -ExecutionPolicy ByPass -c "irm <https://astral.sh/uv/install.ps1> | iex"
 
+
 ```text
 
 ### 2. Clone the Repository

@@ -102,6 +102,7 @@ For detailed guidance on type compatibility issues and solutions, see the [Type 
    ```python
    def func(x: int | str) -> float | None:
 
+
 ```text
 
    ...
@@ -127,6 +128,7 @@ For detailed guidance on type compatibility issues and solutions, see the [Type 
    After:
    ```python
    def func(x: int | None = None) -> str | None:
+
 
 ```text
 
@@ -187,22 +189,28 @@ The CI/CD pipeline has been updated to use uv for faster and more reliable build
 ## Migration FAQs
 
 ### Q: Do I need to uninstall pip?
+
 A: No. uv works alongside pip and doesn't replace it completely. The helper scripts will install uv if needed.
 
 ### Q: Will my existing scripts still work?
+
 A: Yes. We maintain backward compatibility with traditional workflows while offering improved alternatives.
 
 ### Q: How do I add a new dependency?
+
 A: Add it to `requirements.txt` or `requirements-dev.txt`, then run:
    ```bash
    uv pip compile requirements.txt --output-file requirements.lock
    ```text
 
 ### Q: Can I still use requirements.txt?
+
 A: Yes. We maintain compatibility with requirements.txt while leveraging uv's improved handling.
 
 ### Q: Will these changes affect existing installations?
+
 A: No. Users installing via pip will still be able to do so. These changes enhance the development experience without breaking compatibility.
 
 ### Q: What if I encounter type checking errors after migration?
+
 A: Use the `scripts/fix_type_annotations.py` script to help identify and fix type annotation issues.
