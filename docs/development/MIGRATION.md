@@ -1,36 +1,42 @@
 
-# Migration Guide for AI Playground {#migration-guide-for-ai-playground}
+# Migration Guide for AI Playground
 
 This guide helps you migrate to the modern Python development workflow using uv and Python 3.10+.
 
-## Table of Contents {#table-of-contents}
+## Table of Contents
 
 1. [Migrating from pip to uv](#migrating-from-pip-to-uv)
+2. [Updating Type Annotations for Python 3.10+](#updating-type-annotations-for-python-310)
+3. [Using Lockfiles for Reproducible Environments](#using-lockfiles-for-reproducible-environments)
+4. [Working with Docker](#working-with-docker)
+5. [CI/CD Pipeline Updates](#cicd-pipeline-updates)
+6. [Migration FAQs](#migration-faqs)
 
+1. [Migrating from pip to uv](#migrating-from-pip-to-uv)
+4. [Updating Type Annotations for Python 3.10+](#updating-type-annotations-for-python-310)
+5. [Scan the entire project](#scan-the-entire-project)
+6. [Scan a specific file](#scan-a-specific-file)
+8. [Using Lockfiles for Reproducible Environments](#using-lockfiles-for-reproducible-environments)
+9. [Working with Docker](#working-with-docker)
+10. [Build and run the development image](#build-and-run-the-development-image)
+11. [Build and run the production image](#build-and-run-the-production-image)
+13. [CI/CD Pipeline Updates](#cicd-pipeline-updates)
+14. [Migration FAQs](#migration-faqs)
 
-1. [Updating Type Annotations for Python 3.10+](#updating-type-annotations-for-python-310)
-
-
-1. [Using Lockfiles for Reproducible Environments](#using-lockfiles-for-reproducible-environments)
-
-
-1. [Working with Docker](#working-with-docker)
-
-
-1. [CI/CD Pipeline Updates](#cicd-pipeline-updates)
-
-
-1. [Migration FAQs](#migration-faqs)
 
 ## Migrating from pip to uv {#migrating-from-pip-to-uv}
 
-### Why Migrate to uv? {#why-migrate-to-uv}
+### Why Migrate to uv?
 
 - **Speed**: uv is 10-100x faster than pip for dependency resolution
+
 - **Reliability**: Improved dependency resolution and conflict handling
+
 - **Features**: Better support for modern Python packaging standards
+
 - **Lockfiles**: Native support for lockfile generation and updating
-### Step-by-Step Migration {#step-by-step-migration}
+
+### Step-by-Step Migration
 
 1. **Install uv**:
 
@@ -103,7 +109,7 @@ python scripts/fix_type_annotations.py path/to/file.py
 
 For detailed guidance on type compatibility issues and solutions, see the [Type Compatibility Guide](TYPE_COMPATIBILITY.md).
 
-### Common Type Annotation Updates {#common-type-annotation-updates}
+### Common Type Annotation Updates
 
 1. **Union Types**:
 
@@ -172,6 +178,7 @@ For detailed guidance on type compatibility issues and solutions, see the [Type 
 
 
    ```bash
+
 ## Using Lockfiles for Reproducible Environments {#using-lockfiles-for-reproducible-environments}
 
 The project now uses lockfiles to ensure reproducible environments:
@@ -212,11 +219,14 @@ docker run -p 5000:5000 ai-playground
 
 ```bash
 
-### Benefits of the uv-based Dockerfile {#benefits-of-the-uv-based-dockerfile}
+### Benefits of the uv-based Dockerfile
 
 - **Faster builds**: uv's speed dramatically reduces build times
+
 - **Reproducible environments**: Using lockfiles ensures consistent environments
+
 - **Multi-stage builds**: Separate development and production images
+
 - **Smaller images**: Only necessary dependencies are included
 
 ## CI/CD Pipeline Updates {#cicd-pipeline-updates}
@@ -236,15 +246,15 @@ The CI/CD pipeline has been updated to use uv for faster and more reliable build
 
 ## Migration FAQs {#migration-faqs}
 
-### Q: Do I need to uninstall pip? {#q-do-i-need-to-uninstall-pip}
+### Q: Do I need to uninstall pip?
 
 A: No. uv works alongside pip and doesn't replace it completely. The helper scripts will install uv if needed.
 
-### Q: Will my existing scripts still work? {#q-will-my-existing-scripts-still-work}
+### Q: Will my existing scripts still work?
 
 A: Yes. We maintain backward compatibility with traditional workflows while offering improved alternatives.
 
-### Q: How do I add a new dependency? {#q-how-do-i-add-a-new-dependency}
+### Q: How do I add a new dependency?
 
 A: Add it to `requirements.txt` or `requirements-dev.txt`, then run:
 
@@ -254,15 +264,15 @@ A: Add it to `requirements.txt` or `requirements-dev.txt`, then run:
 
    ```bash
 
-### Q: Can I still use requirements.txt? {#q-can-i-still-use-requirementstxt}
+### Q: Can I still use requirements.txt?
 
 A: Yes. We maintain compatibility with requirements.txt while leveraging uv's improved handling.
 
-### Q: Will these changes affect existing installations? {#q-will-these-changes-affect-existing-installations}
+### Q: Will these changes affect existing installations?
 
 A: No. Users installing via pip will still be able to do so. These changes enhance the development experience without breaking compatibility.
 
-### Q: What if I encounter type checking errors after migration? {#q-what-if-i-encounter-type-checking-errors-after-migration}
+### Q: What if I encounter type checking errors after migration?
 
 A: Use the `scripts/fix_type_annotations.py` script to help identify and fix type annotation issues.
 

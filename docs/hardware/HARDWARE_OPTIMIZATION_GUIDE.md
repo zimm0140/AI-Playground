@@ -1,35 +1,30 @@
 
-# Hardware Optimization Guide for AI Applications {#hardware-optimization-guide-for-ai-applications}
+# Hardware Optimization Guide for AI Applications
 
 This guide explains how to optimize your AI applications for Intel hardware using our hardware-aware environment management system.
 
-## Table of Contents {#table-of-contents}
+## Table of Contents
 
 1. [Overview](#overview)
+2. [Hardware Types](#hardware-types)
+3. [Environment Setup](#environment-setup)
+4. [Using the AI Framework Integration](#using-the-ai-framework-integration)
+5. [Working with LangChain](#working-with-langchain)
+6. [Working with Stable Diffusion](#working-with-stable-diffusion)
+7. [Performance Benchmarking](#performance-benchmarking)
+8. [Troubleshooting](#troubleshooting)
+9. [Advanced Configuration](#advanced-configuration)
 
+1. [Overview](#overview)
+2. [Hardware Types](#hardware-types)
+3. [Environment Setup](#environment-setup)
+6. [Using the AI Framework Integration](#using-the-ai-framework-integration)
+7. [Working with LangChain](#working-with-langchain)
+10. [Working with Stable Diffusion](#working-with-stable-diffusion)
+14. [Performance Benchmarking](#performance-benchmarking)
+16. [Troubleshooting](#troubleshooting)
+21. [Advanced Configuration](#advanced-configuration)
 
-1. [Hardware Types](#hardware-types)
-
-
-1. [Environment Setup](#environment-setup)
-
-
-1. [Using the AI Framework Integration](#using-the-ai-framework-integration)
-
-
-1. [Working with LangChain](#working-with-langchain)
-
-
-1. [Working with Stable Diffusion](#working-with-stable-diffusion)
-
-
-1. [Performance Benchmarking](#performance-benchmarking)
-
-
-1. [Troubleshooting](#troubleshooting)
-
-
-1. [Advanced Configuration](#advanced-configuration)
 
 ## Overview {#overview}
 
@@ -37,7 +32,9 @@ Our hardware-aware environment management system automatically detects your Inte
 system supports:
 
 - **Intel Arc GPUs** via XPU backends using Intel® Extension for PyTorch
+
 - **Intel CPUs** with OpenVINO optimizations
+
 - **Standard CPUs** as a fallback option
 
 The system integrates with popular AI frameworks like LangChain and Stable Diffusion to provide seamless acceleration without changing your application code.
@@ -55,46 +52,46 @@ The system recognizes the following hardware types:
 
 ## Environment Setup {#environment-setup}
 
-### Basic Setup {#basic-setup}
+### Basic Setup
 
 To set up your environment for the detected hardware:
 
 ```bash
 
-# Set up for automatically detected hardware {#set-up-for-automatically-detected-hardware}
+# Set up for automatically detected hardware
 
 python uvfast.py setup
 
-# Set up for specific hardware {#set-up-for-specific-hardware}
+# Set up for specific hardware
 
 python uvfast.py setup --hardware acm
 python uvfast.py setup --hardware ovino
 
-# Include development dependencies {#include-development-dependencies}
+# Include development dependencies
 
 python uvfast.py setup --dev
 
 ```text
 
-### Using Lockfiles for Reproducible Environments {#using-lockfiles-for-reproducible-environments}
+### Using Lockfiles for Reproducible Environments
 
 To ensure reproducible environments, use lockfiles:
 
 ```bash
 
-# Generate lockfile for the current hardware {#generate-lockfile-for-the-current-hardware}
+# Generate lockfile for the current hardware
 
 python uvfast.py lock
 
-# Generate lockfile for a specific hardware type {#generate-lockfile-for-a-specific-hardware-type}
+# Generate lockfile for a specific hardware type
 
 python uvfast.py lock --hardware acm
 
-# Generate lockfiles for all hardware types {#generate-lockfiles-for-all-hardware-types}
+# Generate lockfiles for all hardware types
 
 python uvfast.py lock --all
 
-# Sync environment from lockfile {#sync-environment-from-lockfile}
+# Sync environment from lockfile
 
 python uvfast.py sync
 
@@ -106,19 +103,19 @@ Our framework integrates with popular AI libraries to provide optimized performa
 
 ```python
 
-# Example of hardware-aware AI framework usage {#example-of-hardware-aware-ai-framework-usage}
+# Example of hardware-aware AI framework usage
 
 from examples.ai_frameworks_integration import configure_hardware, setup_langchain_model
 
-# Configure hardware and get device {#configure-hardware-and-get-device}
+# Configure hardware and get device
 
 device, hardware_type = configure_hardware()
 
-# Set up LangChain model with hardware-specific optimizations {#set-up-langchain-model-with-hardware-specific-optimizations}
+# Set up LangChain model with hardware-specific optimizations
 
 llm = setup_langchain_model(device, hardware_type)
 
-# Use the model {#use-the-model}
+# Use the model
 
 response = llm("Explain quantum computing in simple terms.")
 print(response)
@@ -129,17 +126,17 @@ print(response)
 
 To optimize LangChain performance on Intel hardware:
 
-### Basic Usage {#basic-usage}
+### Basic Usage
 
 ```python
 
 from examples.ai_frameworks_integration import configure_hardware, setup_langchain_model
 
-# Auto-configure hardware {#auto-configure-hardware}
+# Auto-configure hardware
 
 device, hw_type = configure_hardware()
 
-# Set up LangChain with hardware optimizations {#set-up-langchain-with-hardware-optimizations}
+# Set up LangChain with hardware optimizations
 
 llm = setup_langchain_model(
     device=device,
@@ -148,7 +145,7 @@ llm = setup_langchain_model(
 
 )
 
-# Use the optimized model {#use-the-optimized-model}
+# Use the optimized model
 
 response = llm("Explain the theory of relativity in simple terms.")
 print(response)
@@ -165,12 +162,12 @@ from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from examples.ai_frameworks_integration import configure_hardware, setup_langchain_model
 
-# Auto-configure hardware {#auto-configure-hardware}
+# Auto-configure hardware
 
 device, hw_type = configure_hardware()
 llm = setup_langchain_model(device, hw_type)
 
-# Create a prompt template {#create-a-prompt-template}
+# Create a prompt template
 
 template = """
 Answer the following question about {topic}.
@@ -179,11 +176,11 @@ Question: {question}
 """
 prompt = PromptTemplate(template=template, input_variables=["topic", "question"])
 
-# Create a chain {#create-a-chain}
+# Create a chain
 
 chain = LLMChain(llm=llm, prompt=prompt)
 
-# Run the chain {#run-the-chain}
+# Run the chain
 
 response = chain.run(topic="quantum computing", question="What is quantum entanglement?")
 
@@ -193,21 +190,21 @@ response = chain.run(topic="quantum computing", question="What is quantum entang
 
 To optimize Stable Diffusion on Intel hardware:
 
-### Basic Usage {#basic-usage}
+### Basic Usage
 
 ```python
 
 from examples.ai_frameworks_integration import configure_hardware, setup_stable_diffusion
 
-# Auto-configure hardware {#auto-configure-hardware}
+# Auto-configure hardware
 
 device, hw_type = configure_hardware()
 
-# Set up Stable Diffusion with hardware optimizations {#set-up-stable-diffusion-with-hardware-optimizations}
+# Set up Stable Diffusion with hardware optimizations
 
 pipeline, compel = setup_stable_diffusion(device, hw_type)
 
-# Generate an image {#generate-an-image}
+# Generate an image
 
 prompt = "a photo of an astronaut riding a horse on mars, highly detailed"
 conditioned_prompt = compel(prompt)
@@ -216,15 +213,15 @@ image.save("astronaut_on_mars.png")
 
 ```text
 
-### Optimizing for Speed {#optimizing-for-speed}
+### Optimizing for Speed
 
 For faster inference with reduced quality:
 
 ```python
 
-# For Intel Arc GPUs using Intel® Extension for PyTorch {#for-intel-arc-gpus-using-intel-extension-for-pytorch}
+# For Intel Arc GPUs using Intel® Extension for PyTorch
 
-# Lower precision and fewer steps for faster generation {#lower-precision-and-fewer-steps-for-faster-generation}
+# Lower precision and fewer steps for faster generation
 
 pipeline.set_progress_bar_config(disable=True)
 image = pipeline(
@@ -238,13 +235,13 @@ image = pipeline(
 
 ```text
 
-### Optimizing for Quality {#optimizing-for-quality}
+### Optimizing for Quality
 
 For higher quality images with longer generation time:
 
 ```python
 
-# Higher quality settings {#higher-quality-settings}
+# Higher quality settings
 
 image = pipeline(
     prompt="a photo of an astronaut riding a horse on mars, highly detailed",
@@ -262,11 +259,11 @@ To benchmark your hardware and identify optimal settings:
 
 ```bash
 
-# Run all benchmarks {#run-all-benchmarks}
+# Run all benchmarks
 
 python benchmarks/hardware_benchmark.py
 
-# Run specific benchmarks {#run-specific-benchmarks}
+# Run specific benchmarks
 
 python benchmarks/hardware_benchmark.py --matrix  # Matrix multiplication only
 
@@ -274,28 +271,31 @@ python benchmarks/hardware_benchmark.py --model   # Model inference only
 
 python benchmarks/hardware_benchmark.py --sd      # Stable Diffusion only
 
-# Specify iterations and output file {#specify-iterations-and-output-file}
+# Specify iterations and output file
 
 python benchmarks/hardware_benchmark.py --iterations 10 --output results.json
 
 ```text
 
-### Interpreting Benchmark Results {#interpreting-benchmark-results}
+### Interpreting Benchmark Results
 
 The benchmark tool measures:
 
 - **Matrix multiplication**: Fundamental operation for linear algebra in ML models
+
 - **Convolution operations**: Key for computer vision models
+
 - **Model inference speed**: LLM inference performance
+
 - **Image generation**: Stable Diffusion image generation time
 
 Lower times indicate better performance. Compare results across hardware types to determine the best configuration for your workload.
 
 ## Troubleshooting {#troubleshooting}
 
-### Common Issues {#common-issues}
+### Common Issues
 
-#### Intel Arc GPU Not Detected {#intel-arc-gpu-not-detected}
+#### Intel Arc GPU Not Detected
 
 If your Intel Arc GPU is not detected:
 
@@ -311,7 +311,7 @@ If your Intel Arc GPU is not detected:
 
    ```text
 
-#### OpenVINO Issues {#openvino-issues}
+#### OpenVINO Issues
 
 For OpenVINO problems:
 
@@ -321,7 +321,7 @@ For OpenVINO problems:
 
 1. Check for environment variable conflicts
 
-#### Performance Issues {#performance-issues}
+#### Performance Issues
 
 If you experience slower than expected performance:
 
@@ -333,7 +333,7 @@ If you experience slower than expected performance:
 
 ## Advanced Configuration {#advanced-configuration}
 
-### Custom Hardware Detection {#custom-hardware-detection}
+### Custom Hardware Detection
 
 You can customize hardware detection by editing `hardware_detection.py`:
 
@@ -350,13 +350,13 @@ def detect_hardware_type():
 
 ```text
 
-### Environment Variables {#environment-variables}
+### Environment Variables
 
-#### For Intel Arc GPUs {#for-intel-arc-gpus}
+#### For Intel Arc GPUs
 
 ```bash
 
-# Important environment variables for Intel Arc GPUs {#important-environment-variables-for-intel-arc-gpus}
+# Important environment variables for Intel Arc GPUs
 
 export XPU_VISIBLE_DEVICES=0  # Specify which GPU to use
 
@@ -368,11 +368,11 @@ export SYCL_PI_LEVEL_ZERO_USE_IMMEDIATE_COMMANDLISTS=1  # Improve performance
 
 ```text
 
-#### For OpenVINO {#for-openvino}
+#### For OpenVINO
 
 ```bash
 
-# Important environment variables for OpenVINO {#important-environment-variables-for-openvino}
+# Important environment variables for OpenVINO
 
 export OPENVINO_THREADING=TBB  # Use TBB threading
 
@@ -380,7 +380,7 @@ export OMP_NUM_THREADS=8  # Control number of OpenMP threads
 
 ```text
 
-### Configuring uvfast.json {#configuring-uvfastjson}
+### Configuring uvfast.json
 
 You can create a `uvfast.json` file in your project root to customize behavior:
 

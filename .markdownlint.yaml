@@ -47,8 +47,7 @@ MD026: true
 MD027: true
 
 # MD029 - Ordered list item prefix
-MD029:
-  style: "ordered"
+MD029: false
 
 # MD030 - Spaces after list markers
 MD030: true
@@ -84,6 +83,9 @@ MD047: true
 # MD048 - Code fence style
 MD048:
   style: "backtick"
+
+# MD051 - Link fragments
+MD051: false
 
 # MD055 - Table pipe style
 MD055:
