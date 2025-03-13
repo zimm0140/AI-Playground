@@ -10,8 +10,10 @@
     "preview": "vite preview",
     "lint:check": "eslint .",
     "lint:fix": "eslint . --fix",
+    "lint:ci": "eslint .",
     "format:check": "prettier --check .",
     "format:fix": "prettier --write .",
+    "format:ci": "prettier --check .",
     "type-check": "vue-tsc --noEmit"
   },
   "dependencies": {

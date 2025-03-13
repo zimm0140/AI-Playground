@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y \
 # Copy only necessary files first to leverage caching
 COPY setup.py /app/
 COPY pyproject.toml /app/ 
-COPY README.md /app/
+COPY readme.md /app/
 COPY hardware_detection /app/hardware_detection/
 
 # Install Python dependencies and test tools

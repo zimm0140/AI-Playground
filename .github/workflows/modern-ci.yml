@@ -277,7 +277,10 @@ jobs:
       - name: Check markdown files
         run: |
           pip install mdformat
-          echo "Running mdformat to automatically fix markdown files..."
+          echo "Running automatic fixes for markdown files..."
+          # Fix code blocks without language specifiers
+          python .github/workflows/scripts/fix_markdown_code_blocks.py
+          # Then run mdformat to fix other issues
           mdformat .
           # Ignore errors for now to allow CI to pass
           exit 0

@@ -4,7 +4,7 @@ This guide explains how to optimize your AI applications for Intel hardware usin
 
 ## Table of Contents
 
-1. [Introduction](#introduction)
+1. [Overview](#overview)
 2. [Hardware Detection](#hardware-detection)
 3. [Model Optimization](#model-optimization)
 4. [Performance Benchmarking](#performance-benchmarking)
