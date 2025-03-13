@@ -54,7 +54,7 @@ pip install -e .
 
 pip install -r requirements-dev.txt
 
-````text
+````
 
 ### Modern Installation with uvfast {#modern-installation-with-uvfast}
 
@@ -77,6 +77,7 @@ python uvfast.py run pytest
 ```
 
 #
+
 ##
 
  Using Wrapper Scripts {#using-wrapper-scripts}

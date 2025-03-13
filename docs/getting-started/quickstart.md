@@ -21,7 +21,7 @@ This guide will help you quickly set up and start using AI-Playground.
    git clone <https://github.com/intel/AI-Playground.git>
    cd AI-Playground
 
-   ````text
+   ````
 
    ````
 
@@ -35,7 +35,7 @@ This guide will help you quickly set up and start using AI-Playground.
 
    python setup_hardware_env.py
 
-   ````text
+   ````
 
    This will:
    - Detect your hardware configuration
@@ -60,7 +60,7 @@ This guide will help you quickly set up and start using AI-Playground.
 
    source .venv/bin/activate
 
-   ````text
+   ````
 
    ````
 
@@ -71,7 +71,7 @@ This guide will help you quickly set up and start using AI-Playground.
    \`\`\`text\`bash
    python service/main.py
 
-   ````text
+   ````
 
    ````
 

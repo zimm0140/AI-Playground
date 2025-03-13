@@ -42,7 +42,7 @@ To run all tests:
 \`\`\`text\`bash
 pytest
 
-````text
+````
 
 ### Running Tests with Detailed Output {#running-tests-with-detailed-output}
 
@@ -333,6 +333,7 @@ eturn_value = ["Intel(R) Arc(TM) A770 Graphics"]
 ```
 
 #
+
 # T {#t}
 
 est

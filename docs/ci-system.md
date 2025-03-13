@@ -66,7 +66,7 @@ To set up pre-commit hooks:
 
 ..github\\setup-hooks.ps1
 
-````text
+````
 
 ### Available Hooks {#available-hooks}
 
@@ -139,6 +139,7 @@ ash
 ```
 
 #
+
 ##
 
 # Linting Errors {#linting-errors}

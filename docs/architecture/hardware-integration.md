@@ -26,7 +26,7 @@ The hardware integration consists of several layers:
 │ Application Layer │
 └────────────────────────────────────────────────────────────────┘
 
-````text
+````
 
 ```
 
@@ -347,6 +347,7 @@ eural Processing Unit",
 ```
 
 #
+
 # Always add CPU as fallba {#always-add-cpu-as-fallba}
 
 ck {#always-add-cpu-as-fall

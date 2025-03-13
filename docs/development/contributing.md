@@ -32,7 +32,7 @@ conda activate ai-playground-env
 
 pip install -r requirements.txt
 
-````text
+````
 
 1. **Verify the environment**:
 

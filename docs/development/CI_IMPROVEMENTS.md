@@ -83,7 +83,7 @@ The updated CI workflow now follows this structure:
 
 └── scripts/
 
-````text
+````
 
 ├── README.md           # Scripts documentation
 

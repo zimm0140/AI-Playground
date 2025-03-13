@@ -75,7 +75,7 @@ To set up pre-commit hooks:
 pip install pre-commit
 pre-commit install
 
-````text
+````
 
 ## Troubleshooting Common Issues {#troubleshooting-common-issues}
 

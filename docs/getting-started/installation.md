@@ -48,7 +48,7 @@ cd AI-Playground
 
 python setup_hardware_env.py
 
-````text
+````
 
 #### Additional Options {#additional-options}
 
@@ -73,6 +73,7 @@ python setup_hardware_env.py --clean
 ```
 
 #
+
 ##
 
  Method 2: Manual Setup {#method-2-manual-setup}
