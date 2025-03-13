@@ -32,6 +32,7 @@ ruff check --select=E,F --ignore=E501 --extend-exclude=.git,.github,.venv,venv,*
 1. For Windows users:
 
 ```
+
    .\.
 gi
 thub\workflows\scripts\fix_ruff_windows.ps1
@@ -41,6 +42,7 @@ thub\workflows\scripts\fix_ruff_windows.ps1
 1. For Linux/Mac users:
 
 ```
+
    python
  .
 github/workflows/scripts/fix_ruff_issues_local.py
@@ -84,6 +86,7 @@ n
 import os  # Unused import
 
 ```
+
 **Fix
 **
 : Either remove the import or add a `# noqa: F401` comment if it's needed for side effects:
@@ -113,6 +116,7 @@ x=1+2  # Missing spaces
 def func(a,b):  # Missing space after comma
 
 ```
+
 _
 _F
 ix_*: Add appropriate spacing:
@@ -157,6 +161,7 @@ To ensure code quality before committing, you can set up pre-commit hooks locall
 .\.github\setup-hooks.ps1
 
 ```
+
 This will check your Python code for linting issues before each commit.
 
 ````

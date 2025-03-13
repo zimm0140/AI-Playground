@@ -109,6 +109,7 @@ conda activate ai-playground-env
 source .venv/bin/activate
 
 ```
+
 1. **Add new
 de
 
@@ -131,6 +132,7 @@ pip freeze > requirements.txt
 echo "package-name==1.2.3" >> requirements.txt
 
 ```
+
 1. __Never
 co
 
@@ -239,6 +241,7 @@ rules are pretty simple: if you can certify
 the below (from [developercertificate.org](http://developercertificate.org/)):
 
 ```
+
 Deve
 lo
 per Certificate of Origin
@@ -258,17 +261,20 @@ By making a contribution to this project, I certify that:
 (a) The contribution was created in whole or in part by me and I
 
 ```
+
 have th
 e
 right to submit it under the open source license
 indicated in the file; or
 
 ```
+
 (b
 )
 The contribution is based upon previous work that, to the best
 
 ```
+
 of my
  k
 nowledge, is covered under an appropriate open source
@@ -279,10 +285,12 @@ permitted to submit under a different license), as indicated
 in the file; or
 
 ```
+
 (c
 ) The contribution was provided directly to me by some other
 
 ```
+
 per
 so
 n who certified (a), (b) or (c) and I have not modified
@@ -293,6 +301,7 @@ it.
 (d) I understand and agree that this project and the contribution
 
 ```
+
 a
 re
  public and that a record of the contribution (including all
@@ -304,13 +313,16 @@ this project or the open source license(s) involved.
 `text
 
 ```
+
 T
 hen you just add a line to every git commit message:
 
 ```
+
 Signed-off-by: Joe Smith <joe.smith@email.com>
 
 ```
+
 Use your real name (sorry, no pseudonyms or anonymous contributions.)
 
 If you set your `user.name` and `user.email` git configs, you can sign your

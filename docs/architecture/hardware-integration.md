@@ -31,16 +31,20 @@ The hardware integration consists of several layers:
 ```
 
 ```
+
 ```
+
 │                 │
 ▼                 ▼
 
 ```
 
 ```
+
 ```
 
 ```
+
 ┌────────────────────────────────────────────────────────────────┐
 │                       Device Selector                          │
 └────────────────────────────────────────────────────────────────┘
@@ -48,18 +52,22 @@ The hardware integration consists of several layers:
 ```
 
 ```
+
 ```
 
 ```
+
 │                 │
 ▼                 ▼
 
 ```
 
 ```
+
 ```
 
 ```
+
 ┌────────────────────────────────────────────────────────
 ────────┐
 │
@@ -80,12 +88,14 @@ ardware Abstraction Layer
 ```
 
 ```
+
 │             │              │               │
 ▼             ▼              ▼               ▼
 
 ```
 
 ```
+
 ┌──────────────┐ ┌──────
 
 ────┐ ┌────
@@ -110,6 +120,7 @@ allback   │
 ```
 
 ```
+
 │             │              │
 
                │
@@ -120,6 +131,7 @@ allback   │
 ```
 
 ```
+
 ┌──────────────┐ ┌──────────┐ ┌──────
 
 ──────┐ ┌───────────
@@ -204,6 +216,7 @@ The hardware detection process consists of the following steps:
 def detect_hardware():
 
 ```
+
 """
 Detect available hardware and return prioritized list of device types.
 """
@@ -218,34 +231,42 @@ available_devices = []
 ```
 
 ```
+
 gpu_info = get_gpu_info()
 for gpu in gpu_info:
 
 ```
+
 if "Intel(R) Arc(TM)" in gpu:
 
 ```
+
 available_devices.append({
 
 ```
+
 "type": "arc",
 "name": gpu,
 "priority": 100,
 "backend": "xpu"
 
 ```
+
 })
 
 ```
+
 elif "Intel(R
 ) Battlemage(TM)
 " in gpu:
 
 ```
+
 availab
 le_devices.append({
 
 ```
+
 "type": "bmg",
 "name": gpu,
 "priority": 100,
@@ -253,6 +274,7 @@ le_devices.append({
 : "xpu"
 
 ```
+
 })
 
 ```tex
@@ -275,14 +297,17 @@ ck-for-nvidia-gpus-check-for-nvidia-gpus}
 ext
 
 ```
+
 for gpu in gpu_info:
 
 ```
+
 if
 "NVIDIA" in gp
 u:
 
 ```
+
 avai
 lable_devices.append({
 
@@ -297,12 +322,15 @@ lable_devices.append({
 "backend": "cuda"
 
 ```
+
 })
 
 ```
 
 ```
+
 ```
+
 ``
 `
 
@@ -313,18 +341,21 @@ eck-for-npu}
 ```
 
 ```
+
 if has_dptf_driver() an
 d has_npu_capabilit
 y()
 :
 
 ```
+
 available_
 
 devices.append
 ({
 
 ```
+
 "type": "
 npu
 ",
@@ -339,11 +370,13 @@ eural Processing Unit",
  "npu"
 
 ```
+
 })
 
 ```
 
 ```
+
 ```
 
 #
@@ -357,12 +390,14 @@ back}
 ```
 
 ```
+
 available_
 
 devices
 .append({
 
 ```
+
 "type": "cpu",
 "name"
 : "
@@ -375,9 +410,11 @@ rity": 10,
 ackend": "cpu"
 
 ```
+
 })
 
 ```
+
 `
 ``
 
@@ -391,6 +428,7 @@ highest-first}
 ```
 
 ```
+
 return
  sorted(available_devices, key
 =lambda x: x["p
@@ -430,6 +468,7 @@ p_arc_environ
 ment():
 
 ```
+
 """Set up
 
 environment for Intel Arc GPUs."""
@@ -447,9 +486,11 @@ os.environ["ONEAPI_DEVICE_SELECTOR"] = "level_zero:gpu"
 ```
 
 ```
+
 try:
 
 ```
+
 import intel_extension_for_pytorch as ipex
 
 torch.xpu.set
@@ -459,14 +500,17 @@ print(
 h and XPU backend enabled")
 
 ```
+
 except ImportError:
 
 ```
+
 print("Intel Extension for PyTorch not found, running with limited optimizations")
 
 ```
 
 ```
+
 ```
 
 ### Intel NPU Environment {#intel-npu-environment}
@@ -478,6 +522,7 @@ def setup_npu_environment()
 :
 
 ```
+
 """Se
 
 t up environ
@@ -490,21 +535,25 @@ E_AMX"
 ```
 
 ```
+
 try
 :
 
 ```
+
 import neural
 _compressor
 print("Neural Compressor found, NPU optimizations ena
 bled")
 
 ```
+
 except ImportError
 
 :
 
 ```
+
 p
 rint("Neural Compressor not found, ru
 nning with lim
@@ -514,6 +563,7 @@ izations")
 ```
 
 ```
+
 ```
 
 ### NVIDIA GPU Environment {#nvidia-gpu-environment}
@@ -523,6 +573,7 @@ izations")
 def setup_nvidia_environment():
 
 ```
+
 """Set up environment f
 
 or NVIDIA GPUs
@@ -537,15 +588,18 @@ os.environ["TF_FORCE_GPU_ALLOW_GROWTH"
 ```
 
 ```
+
 try
 :
 
 ```
+
 import torch
 
 if torch.cuda.is_available():
 
 ```
+
 torch.cuda.set_device(0)
 
 print(f"CU
@@ -558,10 +612,12 @@ _device_name(0)}")
 ```
 
 ```
+
 except
  ImportError:
 
 ```
+
 print("PyTorc
 h with CUDA not found")
 
@@ -591,6 +647,7 @@ def optimize_mo
 del_for_xpu(model):
 
 ```
+
 """Optimize a PyTorch mod
 
 el for Intel XPU (Arc GPU)."
@@ -616,6 +673,7 @@ t torch
 ```
 
 ```
+
 model = model.to("xpu")
 
 ```
@@ -627,6 +685,7 @@ model = model.to("xpu")
 ```
 
 ```
+
 model = ipex.optim
 ize(model, d
 type=torch.float16)
@@ -642,9 +701,11 @@ Trace the model if possible {#trace-the-model-if-possible}
 ```
 
 ```
+
 try:
 
 ```
+
 exampl
 
 e_input = torch.rand(1,
@@ -662,9 +723,11 @@ it.freeze(mod
 el)
 
 ```
+
 except Exception as e:
 
 ```
+
 pri
 
 nt(f"Model traci
@@ -674,7 +737,9 @@ e}")
 ```
 
 ```
+
 ```
+
 return mod
 
 el
@@ -719,6 +784,7 @@ ntization}
 ```
 
 ```
+
 quantizer = Quantizatio
 
 n("npu_
@@ -739,12 +805,14 @@ ration dataloader {#define-calibration-dataloader}
 ```
 
 ```
+
 calibration_data = get_c
 alibration_da
 ta()
 quantizer.calib_dataloader = calibration_data
 
 ```
+
 ``
 `
 
@@ -758,6 +826,7 @@ ntize-the-model}
 t
 
 ```
+
 quant
 ized_model = quantizer.fit()
 
@@ -765,6 +834,7 @@ ized_model = quantizer.fit()
 xt
 
 ```
+
 retur
 n quantized_model
 
@@ -784,6 +854,7 @@ e_model_for_
 cuda(model):
 
 ```
+
 """Optimize a PyTorch model for NVIDIA CUDA."""
 impo
 rt torch
@@ -802,11 +873,13 @@ da
 ```
 
 ```
+
 model
  = model.to(
 "cuda")
 
 ```
+
 text
 
 ```
@@ -824,11 +897,13 @@ mization}
 `text
 
 ```
+
 if hasattr(model, "half") and to
 rch.cud
 a.is_available():
 
 ```
+
 model = model.half()
  # Use FP16 if av
 
@@ -838,6 +913,7 @@ ailable
 ext
 
 ```
+
 ```
 
 ## Trace and comp {#trace-an
@@ -856,9 +932,11 @@ f-possible}
 ```
 
 ```
+
 try:
 
 ```
+
 ex
 ample_input = torch.rand(1
 , 3, 224, 224).to("cuda")
@@ -870,11 +948,13 @@ model = torch.jit.freeze(mo
 del)
 
 ```
+
 except Exce
 
 ption as e:
 
 ```
+
 print(f"Model tracin
 
 g failed
@@ -883,7 +963,9 @@ g failed
 ```
 
 ```
+
 ```
+
 return model
 
 ```
@@ -917,6 +999,7 @@ z
 e):
 
 ```
+
 """Manage memory
 
  for XPU execution."""
@@ -936,6 +1019,7 @@ ion_for_pytorch as ipex
 ```
 
 ```
+
 total_mem = torch.xpu.get_device_properties(0).to
 tal_memo
 ry
@@ -964,11 +1048,13 @@ ze-based-on-available-memory}
 ```
 
 ```
+
 estimated_batch_memory = model_size _ 4  # Rough estimate
 
 ```
 
 ```
+
 optimal_batch_size = min(batch_size, max(1, free
 
 _mem // estimated_batc
@@ -984,11 +1070,13 @@ h_memory))
 ```
 
 ```
+
 torch.xpu.empty_cache()
 
 ```
 
 ```
+
 return
 optimal_batc
 h_size
@@ -1010,6 +1098,7 @@ def manage_cuda_memory(batc
 h_size, model_size):
 
 ```
+
 """Manage m
 emory
 for CUD
@@ -1034,6 +1123,7 @@ ble-memory}
 ```
 
 ```
+
 total_mem =
 torch.cuda.ge
 t_device_properties(0)
@@ -1064,6 +1154,7 @@ culate-optimal-batch-size-based-on-available-memory}
 ```
 
 ```
+
 estimated_batch_memory = model_size _ 4  # Rough estimat
 
 e
@@ -1085,11 +1176,13 @@ ed_batch_memory))
 ```
 
 ```
+
 torch.cuda.
 empty_cache(
 )
 
 ```
+
 ``
 `
 return optimal_batch_size
@@ -1133,15 +1226,18 @@ ation}
 mory": {
 
 ```
+
 "max_batch_size": "auto",
 "preallocate": true,
 "offload_to_host": true
 
 ```
+
   },
   "execution": {
 
 ```
+
 "precision": "mixed",
 "preferred_format": "bf16",
 "optimize_for_inference": true,
@@ -1150,11 +1246,13 @@ _tim
 e_seconds": 60
 
 ```
+
   },
   "optimi
 zations": {
 
 ```
+
 "enable_concurrent_execution": true,
 "enable_tensor_parallelis
 m": true
@@ -1164,16 +1262,19 @@ nel_caching": tru
 e
 
 ```
+
   },
   "environment_variables": {
 
 ```
+
 "SYCL_CACHE_PERSISTENT": "1",
 "ONEAPI_DEVICE_SELECTOR": "l
 evel_zero
 :gpu"
 
 ```
+
   }
 }
 
@@ -1197,11 +1298,13 @@ figuration {#npu-configuration}
 te": false
 
 ```
+
   },
   "execu
 tion": {
 
 ```
+
 "precision": "bf16",
 "preferred_format
 ": "bf
@@ -1211,10 +1314,12 @@ for_inference":
  true
 
 ```
+
   },
   "optimizations": {
 
 ```
+
 "
 enable_winograd": true,
 "enable
@@ -1222,17 +1327,20 @@ _layer_fusion": tru
 e
 
 ```
+
   },
   "environment_var
 iables": {
 
 ```
+
 "DNNL_D
 EFAULT_FPMATH_MODE"
 : "BF16",
 "ONEDNN_MAX_CPU_ISA": "AVX512_CORE_AMX"
 
 ```
+
   }
 }
 
@@ -1257,6 +1365,7 @@ nds:
 class HardwareBackend:
 
 ```
+
 """Int
 erface
  for hardware backe
@@ -1266,9 +1375,11 @@ nds."""
 t
 
 ```
+
 def **init**(self, config=None):
 
 ```
+
 """Initialize the backend with optional configuration."""
 self.config = config or {}
 self.device_typ
@@ -1283,6 +1394,7 @@ t
 ```
 
 ```
+
 def setup(self):
 
 `
@@ -1297,10 +1409,13 @@ e NotImplementedError
 ```
 
 ```
+
 ```
+
 def is_available(self):
 
 ```
+
 """Check if this backend is available on the cur
 rent system."""
 r
@@ -1314,10 +1429,13 @@ or
 ```
 
 ```
+
 ```
+
 def optimize_model(self, model):
 
 ```
+
 """Optimize a mod
 el for this
 
@@ -1334,9 +1452,11 @@ ntedError
 ```
 
 ```
+
 def run_inference(self, model, inputs, __kwargs):
 
 ```
+
 """R
 un inferenc
 
@@ -1351,10 +1471,13 @@ dError
 ```
 
 ```
+
 ```
+
 def get_memory_info(self):
 
 ```
+
 """G
 et memory in
 format
@@ -1370,9 +1493,11 @@ xt
 ```
 
 ```
+
 def cleanup(self):
 
 ```
+
 """Clean up resources used by this b
 
 ackend.
@@ -1386,6 +1511,7 @@ Error
 ```
 
 ```
+
 ``
 `
 
@@ -1407,6 +1533,7 @@ PU backend:
 class XPUBackend(HardwareBackend):
 
 ```
+
 """Ba
 
 ckend for Intel
@@ -1417,9 +1544,11 @@ XPU (Arc
 ```
 
 ```
+
 def **init**(self, config=None):
 
 ```
+
 """Initialize the XPU backend."""
 super().**init**(config
 
@@ -1430,11 +1559,14 @@ self.device_type = "xpu"
 t
 
 ```
+
 ```
+
 def s
 etup(self):
 
 ```
+
 """Set up the XPU en
 
 vir
@@ -1449,10 +1581,12 @@ et-environment-variables}
 ```
 
 ```
+
 ```t
 ext
 
 ```
+
 os
 
 .environ["SYCL_CACHE_PERSI
@@ -1466,6 +1600,7 @@ _ZERO_USE_IMMEDIATE_COMMANDLISTS"] = "1"
 ```
 
 ```
+
 ```
 
 ```
@@ -1485,12 +1620,15 @@ ibraries}
 ```
 
 ```
+
 ```
 
 ```
+
 try:
 
 ```
+
 import intel_ext
 ension_for_
 
@@ -1506,9 +1644,11 @@ self.ipex
 return True
 
 ```
+
 except ImportError:
 
 ```
+
 print("Inte
 
 l Extensio
@@ -1523,18 +1663,22 @@ return False
 ```
 
 ```
+
 ```
 
 ```
+
 def is_available(self):
 
 ```
+
 """Check if XPU is avai
 lable."""
 
 try:
 
 ```
+
 import intel_exten
 sion_for_pytorch as ipex
 import torch
@@ -1546,35 +1690,44 @@ torch.xpu.is
 _available()
 
 ```
+
 except
  ImportError:
 
 ```
+
 return False
 
 ```
 
 ```
+
 ```
 
 ```
+
 def optimize_model(self, model):
 
 ```
+
 """Optimize model for XPU."""
 if not self.is_available():
 
 ```
+
 return model
 
 ```
+
 text
 
 ```
+
 `
 ``text
 
 ```
+
 `
 
 ``
@@ -1589,18 +1742,21 @@ U {#move-model-t
 o-xpu}
 
 ```
+
 `
 ``
 
 ```
 
 ```
+
 model = model.to("xpu")
 
 ``
 `text
 
 ```
+
 ```
 
 ```
@@ -1619,11 +1775,13 @@ ly-ipex-optimizations}
 `text
 
 ```
+
 ```tex
 
 t
 
 ```
+
 preci
 
 sion = self
@@ -1640,6 +1798,7 @@ if
 == "mixed" or precision == "fp16":
 
 ```
+
 model = self.ipex
 
 .optimize(m
@@ -1651,25 +1810,32 @@ del, dtype=
 self.torch.float16)
 
 ```
+
 else:
 
 ```
+
 model = self.ipex.optimize(model)
 
 ```
 
 ```
+
 ```
 
 ```
+
 ```
+
 retur
 n model
 
 ```
 
 ```
+
 ```
+
 def run_inference(self, mode
 l, inp
 uts, __
@@ -1677,6 +1843,7 @@ kwargs)
 :
 
 ```
+
 """Run inference on
  XPU."""
 
@@ -1703,12 +1870,15 @@ pu}
 ```
 
 ```
+
 ```
 
 ```
+
 ```
 
 ```
+
 inp
 uts = {k: v.to("xpu
 ") if hasattr(v, "to") else v
@@ -1716,13 +1886,16 @@ uts = {k: v.to("xpu
 ```
 
 ```
+
  for k, v in inputs.it
 ems()}
 
 ```
+
 text
 
 ```
+
 w
 
 ith se
@@ -1732,12 +1905,14 @@ orch.no_
 grad():
 
 ```
+
 outputs = model(__inputs)
 
 ```t
 ext
 
 ```
+
 els
 e:
 
@@ -1756,7 +1931,9 @@ s-to-xpu}
 ```
 
 ```
+
 ```
+
 te
 
 xt
@@ -1765,15 +1942,19 @@ xt
 
 ``
 `
+
 ```
+
 if hasattr(inpu
 
 ts, "to"):
 
 ```
+
 inputs = inputs.to("xpu")
 
 ```
+
 with self.
 torch.no
 _g
@@ -1795,9 +1976,11 @@ ts)
 
 ``
 `
+
 ```
 
 ```
+
 ```
 
 ```
@@ -1820,14 +2003,17 @@ d}
 ```
 
 ```
+
 ```te
 
 xt
 
 ```
+
 if kwargs.get("return_cpu", True):
 
 ```
+
 if isinstance(outputs, dict):
 
 ``
@@ -1844,6 +2030,7 @@ pu
 ```
 
 ```
+
   for k, v in outputs.ite
 ms()
 }
@@ -1851,10 +2038,13 @@ ms()
 ```
 
 ```
+
 ```
+
 elif hasattr(outputs, "to"):
 
 ```
+
 outputs = o
 
 utputs.to("cpu")
@@ -1862,21 +2052,26 @@ utputs.to("cpu")
 ```
 
 ```
+
 ```
 
 `
 
 ``
+
 ```
 
 ```
+
 return outputs
 
 ```te
 xt
 
 ```
+
 ```
+
 def get_memory_inf
 o(self):
 
@@ -1902,16 +2097,20 @@ s_avail
 able():
 
 ```
+
 return {"error
 ": "XPU not available"}
 
 ```
 
 ```
+
 ```
 
 ```
+
 ```
+
 device = se
 lf.t
 orch.xpu.current_device()
@@ -1933,12 +2132,15 @@ free_mem = total_mem - reserved_mem
 ```
 
 ```
+
 ```
 
 ```
+
 return {
 
 ```
+
 "total": total_mem,
 "reserved": reserved_me
 
@@ -1954,15 +2156,19 @@ _mem,
 "free": free_mem
 
 ```
+
 }
 
 ```
 
 ```
+
 ```
+
 def cleanup(self):
 
 ```
+
 """Clean up XPU resour
 ces
 ."""
@@ -1975,12 +2181,14 @@ _avail
 able():
 
 ```
+
 self.t
 orch.xpu.empty_cache()
 
 ```
 
 ```
+
 ```
 
 ```
@@ -2024,16 +2232,19 @@ pe
 class NewHardwareBackend(HardwareBackend):
 
 ```
+
 """Backend for new hardware type."""
 
 ```
 
 ```
+
 def **in
 it*
 *(self, config=None):
 
 ```
+
 super(
 ).**
 init**(
@@ -2046,6 +2257,7 @@ re"
 ```
 
 ```
+
 ```
 
 ## Implement required methods {#implement-req
@@ -2060,9 +2272,11 @@ ds}
 ```
 
 ```
+
 def setup(self):
 
 ```
+
 """Set up environ
 men
 t for ne
@@ -2076,15 +2290,19 @@ etup code {#setup-code}
 ```
 
 ```
+
 ```
 
 ```
+
 return True
 
 ```
 
 ```
+
 ```
+
 d
 
 ef
@@ -2096,6 +2314,7 @@ labl
 e(self):
 
 ```
+
 """C
 
 heck i
@@ -2109,14 +2328,17 @@ le."""
 ```
 
 ```
+
 ```
 
 ```
+
 return has_new_hardware
 
 ()
 
 ```
+
 `
 
 ``
@@ -2143,6 +2365,7 @@ detection-logic}
 def detect_new_hardware():
 
 ```
+
 """Detect if new hardware is a
 vailab
 le."""
@@ -2152,6 +2375,7 @@ le."""
 ```
 
 ```
+
 return True if new_har
 dware
 
@@ -2169,6 +2393,7 @@ ister-backend}
 def register_new_hardware():
 
 ```
+
 """Register new hardware b
 ackend
 ."""
@@ -2195,6 +2420,7 @@ re_perfo
 rmance(backend, model, inputs, iterations=10):
 
 ```
+
 """
 Monitor and benchm
 ark ha
@@ -2203,9 +2429,11 @@ rdware performance.
 ```
 
 ```
+
 Args:
 
 ```
+
 bac
 kend:
 
@@ -2220,11 +2448,14 @@ iterations: Number of iterations to run
 ```
 
 ```
+
 ```
+
 Retur
 ns:
 
 ```
+
 P
 
 erforma
@@ -2233,6 +2464,7 @@ i
 cs
 
 ```
+
 """
 
 ## Warm-
@@ -2244,6 +2476,7 @@ up run
 ```
 
 ```
+
 backen
 d.run
 
@@ -2263,6 +2496,7 @@ ence time {#measure-inference-time}
 ```
 
 ```
+
 st
 art_t
 
@@ -2271,16 +2505,19 @@ ime.time()
 for _ in range(iterations):
 
 ```
+
 backend.r
 u
 n_inference(model, inputs)
 
 ```
+
 end_ti
 me = t
 ime.time()
 
 ```
+
 ``
 `
 
@@ -2293,6 +2530,7 @@ ory usage {#get-memory-usage}
 ```
 
 ```
+
 memory_
 i
 nfo = backend.get_memory_info()
@@ -2313,6 +2551,7 @@ e
 xt
 
 ```
+
 tot
 a
 l_time = end_time - start_time
@@ -2324,6 +2563,7 @@ throughput = iterations / total_time
 text
 
 ```
+
 r
 e
 turn {
@@ -2337,6 +2577,7 @@ turn {
 "memory": memory_info
 
 ```
+
 }
 
 ```
@@ -2357,6 +2598,7 @@ turn {
 
 ---
 *_Previous**: [API Design](api-design.md) | **Next**: [Data Flow](data-flow.md) | **See also_*: [Architecture Overview](overview.md)
+
 
 ````
 

@@ -161,6 +161,7 @@ rdware-Specific Tips {#hardware-specific-tips}
 ### Intel Arc GPUs (acm) {#intel-arc-gpus-acm}
 
 ```
+
 b
 ash
 
@@ -204,6 +205,7 @@ Edit `uvfast.json` to customize settings:
 {
 
 ```
+
 "hardware_types": ["base", "acm", "bmg", "mtl", "lnl", "ovino"],
 "lockfiles_dir": ".lockfiles",
 "venv_dir": ".venv",
@@ -211,6 +213,7 @@ Edit `uvfast.json` to customize settings:
 "parallel_jobs": 4
 
 ```
+
 }
 
 ````

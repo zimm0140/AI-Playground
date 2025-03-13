@@ -164,6 +164,7 @@ son
   "requirements": {
 
 ```
+
 "
 ba
 se": "requirements.txt",
@@ -180,6 +181,7 @@ se": "requirements.txt",
   "lockfiles": {
 
 ```
+
 "
 base": "requirements.lock",
 "hardware": {
@@ -189,6 +191,7 @@ base": "requirements.lock",
 }
 
 ```
+
   }
 }
 

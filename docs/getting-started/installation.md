@@ -182,10 +182,12 @@ source .venv/bin/activate
 python test_venv.py
 
 ```
+
 This will check that all required dependencies are installed and that your hardware is properly detected.
 
 ---
 **Previous**: [Quick Start Guide](quickstart.md) | **Next**: [Migration Guide](migration.md) | __See also_*: [Hardware Compatibility](../hardware/compatibility.md)
+
 
 ````
 

@@ -79,6 +79,7 @@ python setup_hardware_env.py --hardware acm
    with torch.xpu.amp.autocast(dtype=torch.bfloat16):
 
 ```
+
    ## Your model i
 
 nference code
@@ -86,6 +87,7 @@ nference code
 ```
 
 ```
+
    output = mode
 
 l(input)
@@ -106,6 +108,7 @@ fic Settings {#arc-specific-settings}
 | `SYCL_CACHE_PERSISTENT` | "1" | Enable persistent SYCL cache |
 | `IPEX_XPU_MAX_STREAMS` | "8" | Maximum number of streams |
 | `DPCT_SYSTEM_MEMORY_GRANULARITY_LEVEL` | "fine" | Memory granularity |
+
 
 ## Intel Meteor Lake Optimization {#intel-meteor-lake-optimization}
 
@@ -299,6 +302,7 @@ The tool will report:
 | NVIDIA GTX 1660 | FP16 precision, reduced batch size |
 | CPU-only | Thread optimization, quantized models |
 
+
 ## Advanced Configuration {#advanced-configuration}
 
 For advanced users, edit `/uvfast.json` to fine-tune hardware configurations:
@@ -311,6 +315,7 @@ For advanced users, edit `/uvfast.json` to fine-tune hardware configurations:
   "hardware_optimizations": {
 
 ```
+
 "
 acm": {
   "thread_count": 8,
@@ -319,10 +324,12 @@ acm": {
 }
 
 ```
+
   }
 }
 
 ```
+
 ---
 **Previous**: [Hardware Compatibility](compatibility.md) | **Next**: [Intel Arc Guide](device-specific/intel-arc.md) | __See also_*: [Performance
 Troubleshooting](../reference/troubleshooting.md)

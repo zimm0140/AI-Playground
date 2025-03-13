@@ -42,12 +42,15 @@ The documentation site can be built using MkDocs:
 mkdocs build
 
 ```
+
 To serve the documentation locally:
 
 ```
+
 mkdocs serve
 
 ```
+
 See the `mkdocs.yml` file in the root directory for configuration details.
 
 ## Documentation Structure {#documentation-structure}

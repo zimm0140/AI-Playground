@@ -33,14 +33,18 @@ these key principles:
 ```
 
 ```
+
 ```
+
 │                 │
 ▼                 ▼
 
 ```
 
 ```
+
 ```
+
 text
 
 `
@@ -66,9 +70,11 @@ text
 ```
 
 ```
+
 ```
 
 ```
+
 │                 │
 ▼                 ▼
 
@@ -77,10 +83,13 @@ text
 xt
 
 ```
+
 ```
+
 text
 
 ```
+
 ┌─────────────────────────────────────────
 
 ────
@@ -100,9 +109,11 @@ text
 ```
 
 ```
+
 ```
 
 ```
+
 │                 │
 ▼
 
@@ -117,7 +128,9 @@ t
 ```
 
 ```
+
 ```
+
 ┌─────────────────────────────────────
 
 ───
@@ -229,6 +242,7 @@ re_type = detect_hardware_type()
 ```
 
 ```
+
 if hardware_type == "acm" and mode
 l_
 type == "
@@ -236,9 +250,11 @@ tra
 nsformer":
 
 ```
+
 return "xpu"
 
 ```
+
 elif hardware_type == "
 np
 u" and model_type
@@ -246,22 +262,27 @@ u" and model_type
 "transformer":
 
 ```
+
 return "npu"
 
 ```
+
 elif hardware_type ==
  "
 nvidia":
 
 ```
+
 retu
 rn
 "cuda"
 
 ```
+
 else:
 
 ```
+
 return
 "c
 pu"
@@ -269,6 +290,7 @@ pu"
 ```
 
 ```
+
 `
 ``
 
@@ -280,9 +302,7 @@ odule Structure
 
 {#module
 
--
-
-structur
+- structur
 e}
 
 The codebase follows a modular structure:
@@ -315,6 +335,7 @@ Configuration is handled through a layered approach:
   "hardware": {
 
 ```
+
 "de
 te
 ction": "auto",
@@ -323,10 +344,12 @@ ction": "auto",
 acm", "nvidia", "cpu"]
 
 ```
+
   },
   "optimization": {
 
 ```
+
 "
 precision": "mixed",
 "batch_si
@@ -335,6 +358,7 @@ ze"
 "threads": 4
 
 ```
+
   }
 }
 
@@ -357,6 +381,7 @@ e_t
 ype():
 
 ```
+
 """Detect available hardware
  an
 d return the hardware type."""
@@ -365,20 +390,24 @@ gpu_info = get_gpu_info()
 ```
 
 ```
+
 for gpu in gpu
 _in
 fo:
 
 ```
+
 if
 "Intel(R) Arc(TM)"
  in
  gpu:
 
 ```
+
 return "acm"
 
 ```
+
 elif "
 Int
 el(R) Bat
@@ -386,9 +415,11 @@ tlem
 age(TM)" in gpu:
 
 ```
+
 return "bmg"
 
 ```
+
 elif
  "N
 VIDIA" in
@@ -396,15 +427,18 @@ VIDIA" in
 :
 
 ```
+
 return "nvidia"
 
 ```
+
 tex
 t
 
 ```
 
 ```
+
 ```
 
 ## Che {
@@ -418,6 +452,7 @@ check-for-npu}
 ```
 
 ```
+
 if
  ha
 s_dptf_d
@@ -425,12 +460,14 @@ rive
 r():
 
 ```
+
 return "n
 pu"
 
 ```
 
 ```
+
 ```
 
 ##
@@ -449,6 +486,7 @@ as
 e"
 
 ```
+
 `
 ``
 
@@ -463,22 +501,26 @@ def
 setup_environment(hardware_type):
 
 ```
+
 ""
 "Set
 up environment variables for specific hardware."""
 if hardware_type == "acm":
 
 ```
+
 os
 .e
 nviron["SYCL_CACHE_PERSISTENT"] = "1"
 os.environ["SYCL_PI_LEVEL_ZERO_USE_IMMEDIATE_COMMANDLISTS"] = "1"
 
 ```
+
 elif
 hardware_type == "npu":
 
 ```
+
 os.
 environ["DNNL_DEFAULT_FPMATH_MODE"] = "BF16"
 os.environ["ONEDNN_MAX_CPU_ISA"] = "AVX512_CORE_AMX"
@@ -495,6 +537,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 ```
 
 ```
+
 ```
 
 ## Performance Considerations {#performance-considerations}
@@ -547,6 +590,7 @@ Planned architectural improvements include:
 
 ---
 **Previous**: [Linting Guide](../development/linting.md) | **Next**: [API Design](api-design.md) | __See also_*: [Hardware Overview](../hardware/overview.md)
+
 
 ````
 

@@ -103,6 +103,7 @@ To run tests with a coverage report:
 pytest --cov=. tests/
 
 ```
+
 For a more detaile
 d
 coverage report:
@@ -156,6 +157,7 @@ ge {#arrange}
 ```
 
 ```
+
 mo
 ck_gpu_info =
  ["Intel(R) Arc(TM)
@@ -172,6 +174,7 @@ ics"]
 ```
 
 ```
+
 with
  pa
 tch("hard
@@ -183,6 +186,7 @@ nfo",
 return_value=mock_gpu_info):
 
 ```
+
 result = hardware_detection.detect_har
 dwa
 re_type()
@@ -190,6 +194,7 @@ re_type()
 ```
 
 ```
+
 ```
 
 ## Assert {#assert}
@@ -227,21 +232,25 @@ le
 _config():
 
 ```
+
 """Fixture providing a sample conf
 ig
 uration."""
 return {
 
 ```
+
 "hardware_types": ["base", "a
 cm
 "],
 "default_hardware": "base",
 
 ```
+
 }
 
 ```
+
 def test_hardware_detecti
 on
 
@@ -259,6 +268,7 @@ re
 ```
 
 ```
+
 with patch("hard
 wa
 re_detect
@@ -276,9 +286,11 @@ st {#test-code-here-test}
 ```
 
 ```
+
 ```
 
 ```
+
 pass
 
 ``
@@ -322,6 +334,7 @@ ock
 ```
 
 ```
+
 mock
 _ge
 t_gpu_in
@@ -343,6 +356,7 @@ est
 ```
 
 ```
+
 res
 ult = ha
 rdwa
@@ -362,11 +376,13 @@ ults {#verify-results}
 ```
 
 ```
+
 assert r
 esu
 lt == "acm"
 
 ```
+
 `
 `
 `
@@ -394,6 +410,7 @@ n
 test.mark.parametrize("gpu_info,expected_type", [
 
 ```
+
 (
 ["Inte
 l(R) Arc(TM) A770 Graphics"], "acm"),
@@ -401,15 +418,18 @@ l(R) Arc(TM) A770 Graphics"], "acm"),
 (["NVIDIA GeForce RTX 3080"], "base"),
 
 ```
+
 ])
 
 def test_multiple_hardware_types(gpu_info, expected_type):
 
 ```
+
 with
 patch("hardware_detection.get_gpu_info", return_value=gpu_info):
 
 ```
+
 re
 sult = hardware_detection.detect_hardware_type()
 assert result == expected_type
@@ -449,6 +469,7 @@ The `test_coverage.py` file provides utilities to assess test coverage without a
 pytest tests/test_coverage.py -v
 
 ```
+
 This will show which core modules have tests and which functions might lack coverage, helping you identify areas that need more testing.
 
 ## Testing Strategies for Different Types of Code {#testing-strategies-for-different-types-of-code}
@@ -487,6 +508,7 @@ This will show which core modules have tests and which functions might lack cove
 
 ---
 **Previous**: [Code Quality Standards](code-quality.md) | **Next**: [Linting](linting.md) | __See also_*: [Contributing Guide](contributing.md)
+
 
 ````
 

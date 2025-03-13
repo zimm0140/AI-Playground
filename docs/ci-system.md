@@ -48,6 +48,7 @@ The main workflow files are:
 | `comfyui-pr-checks.yml` | Runs checks on PRs that modify ComfyUI workflows |
 | `ruff.yml` | Runs Python linting using Ruff |
 
+
 ## Pre-commit Hooks {#pre-commit-hooks}
 
 Pre-commit hooks are used to catch issues before they're committed to the repository. They run automatically when you commit changes.
@@ -101,6 +102,7 @@ The CI system includes several utility scripts that help maintain code quality a
 | `optimize_ci.py` | Optimizes CI workflow files for better performance |
 | `lint_python_files.py` | Lints Python files for common issues |
 | `remove_duplicate_sections.py` | Removes duplicate sections in workflow files |
+
 
 ## Best Practices {#best-practices}
 

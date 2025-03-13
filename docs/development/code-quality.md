@@ -60,6 +60,7 @@ ta:
 list[str], max_items: int = 10) -> dict[str, any]:
 
 ```
+
 """Process the input data and retur
 n re
 sults."""
@@ -87,6 +88,7 @@ onfi
 g: dict) -> bool:
 
 ```
+
 """
 Validate the configuration
 dict
@@ -95,9 +97,11 @@ ionary.
 ```
 
 ```
+
 Args:
 
 ```
+
 config
 : Th
 e confi
@@ -109,10 +113,13 @@ ctionary to validate
 ```
 
 ```
+
 ```
+
 Returns:
 
 ```
+
 True
 
  if
@@ -126,10 +133,13 @@ n is valid, False otherwise
 ```
 
 ```
+
 ```
+
 Raises:
 
 ```
+
 V
 
 alue
@@ -141,6 +151,7 @@ If
 onfiguration is missing required fields
 
 ```
+
 """
 ...
 
@@ -205,6 +216,7 @@ class
 figurationError(Exception):
 
 ```
+
 """Raised when
 ther
 e is an error in the configuration."""
@@ -274,6 +286,7 @@ _info
 t}
 
 ```
+
 `
 
 ``
@@ -281,6 +294,7 @@ with patc
 h("hardware_detection.get_gpu_info", return_value=mock_gpu_info):
 
 ```
+
 resu
 
 lt = hardware_detection.detect_hardware_type()
@@ -289,6 +303,7 @@ lt = hardware_detection.detect_hardware_type()
 ext
 
 ```
+
 ``
 
 `
@@ -302,6 +317,7 @@ sert {#assert}
 ext
 
 ```
+
 a
 ss
 ert result == "acm"
@@ -416,6 +432,7 @@ Documentation should be:
 
 ---
 **Previous**: [Contributing Guide](contributing.md) | **Next**: [Testing Guide](testing.md) | __See also_*: [Linting](linting.md)
+
 
 ````
 

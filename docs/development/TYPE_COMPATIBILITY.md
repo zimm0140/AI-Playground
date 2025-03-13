@@ -32,7 +32,9 @@ def process_d
 
 ata(data: dict | list) -> str | None:
 
+
 ```
+
 .
 .
 .
@@ -60,6 +62,7 @@ def process_data(data: Union[
 dict, list]) -> Union[str, None]:
 
 ```
+
 ...
 
 ```
@@ -87,6 +90,7 @@ def get_user(user_id:
 Optional[int] = None) -> Optional[dict]:
 
 ```
+
 ...
 
 ```
@@ -109,7 +113,9 @@ ef get_user(user_id: int | None = None) -> di
 c
 t | None:
 
+
 ```
+
 ...
 
 ```
@@ -138,6 +144,7 @@ s
 er_id: Optional[int] = None) -> Optional[dict]:
 
 ```
+
 ...
 
 ```
@@ -178,6 +185,7 @@ JSONVa
 lu
 e: TypeAlias = str | int | float | bool | None | dict[str, 'JSONValue'] | list['JSONValue']
 
+
 ```
 
 #### Migration Approach {#migration-approach}
@@ -213,6 +221,7 @@ f
  process_data(data: Dict[str, List[int]]) -> None:
 
 ```
+
 ...
 
 ```
@@ -237,6 +246,7 @@ tr
 , list[int]]) -> None:
 
 ```
+
 ...
 
 ```
@@ -265,6 +275,7 @@ st
 def process_data(data: Dict[str, List[int]]) -> None:
 
 ```
+
 ...
 
 ```
@@ -328,6 +339,7 @@ blematic}
 def process_path(path: Optional[str]) -> str:
 
 ```
+
 return os.path.join(path, "su
 bd
 ir")  # TypeError if path is None
@@ -341,14 +353,17 @@ pr
 ocess_path(path: Optional[str]) -> str:
 
 ```
+
 if path is None:
 
 ```
+
 path
 =
 ""
 
 ```
+
 return
 os
 .path.join(path
@@ -379,6 +394,7 @@ ic {#problematic}
 def process_data(data: Union[dict, list]) -> None:
 
 ```
+
 if isinstance(data, d
 ic
 t):
@@ -394,7 +410,9 @@ g {#dict-processing}
 ```
 
 ```
+
 ```
+
 elif isins
 
 ta
@@ -414,7 +432,9 @@ ssing {#list-processing}
 ```
 
 ```
+
 ```
+
 else:
 
 `
@@ -438,6 +458,7 @@ er {#better}
 def process_data(data: Union[dict, list]) -> None:
 
 ```
+
 if isi
 nstan
 ce(data, dict):
@@ -453,7 +474,9 @@ ct processing {#dict-processing}
 ```
 
 ```
+
 ```
+
 el
 
 if is
@@ -470,6 +493,7 @@ list processing {#list-processing}
 ext
 
 ```
+
 ``
 
 `
@@ -484,6 +508,7 @@ raise ValueError(f"Expected one of {acceptable_types}, got {type(data)}")
 ```
 
 ```
+
 ```
 
 ## IDE Support {#ide-support}

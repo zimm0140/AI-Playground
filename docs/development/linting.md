@@ -117,6 +117,7 @@ ruff check .
 ruff check --fix .
 
 ```
+
 To run mypy:
 
 ```bash
@@ -135,6 +136,7 @@ y
 mypy .
 
 ```
+
 To run markdownlint on Markdown files:
 
 ```bash
@@ -171,6 +173,7 @@ An import that's not used in the file:
 import os  # Unused import
 
 ```
+
 *_Fix
 __: Ei
 ther remove the import or add a `#
@@ -203,6 +206,7 @@ a,b):
   # Missing space after comma
 
 ```
+
 **Fix**: Add appropriate spacing:
 
 ```python
@@ -233,11 +237,13 @@ sing
 type annotations
 
 ```
+
 return data + 1
 
 ```
 
 ```
+
 **Fix**: A
 dd pr
 oper type
@@ -253,6 +259,7 @@ t) ->
 int:
 
 ```
+
 return data + 1
 
 ```
@@ -278,6 +285,7 @@ _for_
 pytorch  # May not be available on all systems
 
 ```
+
 **Fix**: Use conditional imports
 :
 
@@ -287,6 +295,7 @@ pytorch  # May not be available on all systems
 try:
 
 ```
+
 import intel_ex
 tension_for
 _pytorch
@@ -294,9 +303,11 @@ _pytorch
 HAS_INTEL_EXTENSION = True
 
 ```
+
 except ImportError:
 
 ```
+
 HAS_I
 
 NTEL_EXTENSION = Fa
@@ -354,6 +365,7 @@ t Bash {#on-linuxmacosgit-bash}
 .\.github\setup-hooks.ps1
 
 ```
+
 This will check your
 code for
  linting issues before each commit.
@@ -377,11 +389,13 @@ long_url = "<https://very-long-url-that-cannot-be-split.com/path/to/resource">  
 def connect_to_API():  # noqa: N802
 
 ```
+
 pass
 
 ```
 
 ```
+
 Use `# n
 
 oqa:`
@@ -408,6 +422,7 @@ for_ha
 rdware(model: torch.nn.Module, hardware_type: str) -> torch.nn.Module:
 
 ```
+
 """
 Optimize mo
 del for
@@ -416,6 +431,7 @@ specific hardware.
 ```
 
 ```
+
 Args:
 
 ``
@@ -430,24 +446,29 @@ hardware_type: One of "acm", "bmg", or "base"
 ```
 
 ```
+
 ```
+
 Returns
 
 :
 
 ```
+
 Opt
 imize
 d mo
 del
 
 ```
+
 """
 if hardw
 are
 _type == "acm":
 
 ```
+
 try:
 
 `
@@ -459,7 +480,9 @@ extension_for_pytorch as ipex  # noqa: F401
 ```
 
 ```
+
 ```
+
 `
 
 ``
@@ -467,17 +490,20 @@ extension_for_pytorch as ipex  # noqa: F401
 ```
 
 ```
+
 m
 
 odel =
  ipex.optimize(model)
 
 ```
+
 ex
 c
 ept ImportError:
 
 ```
+
 pass
  # Fall back to unoptimized model
 
@@ -491,6 +517,7 @@ ext
 `text
 
 ```
+
 r
 
 eturn model
@@ -513,6 +540,7 @@ eturn model
 
 ---
 **Previous**: [Testing Guide](testing.md) | **Next**: [Project Architecture](../architecture/overview.md) | __See also_*: [Code Quality Standards](code-quality.md)
+
 
 ````
 

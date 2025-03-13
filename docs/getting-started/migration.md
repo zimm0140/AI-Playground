@@ -47,6 +47,7 @@ Configuration files have changed format in v2.x. If you have custom configuratio
    {
 
 ```
+
  "
 project_name": "ai-playground",
  "python_version": "3.10",
@@ -58,6 +59,7 @@ project_name": "ai-playground",
    "hardware": {
 
 ```
+
  "
 bas
 e": "requirements-hardware-base.txt",
@@ -69,6 +71,7 @@ e": "requirements-hardware-base.txt",
  }
 
 ```
+
 }
 
    ```
@@ -157,6 +160,7 @@ For further assistance, please [open an issue](https://github.com/intel/AI-Playg
 
 ---
 **Previous**: [Installation Guide](installation.md) | **Next**: [Hardware Overview](../hardware/overview.md) | __See also_*: [Troubleshooting](../reference/troubleshooting.md)
+
 
 ````
 

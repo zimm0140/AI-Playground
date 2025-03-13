@@ -81,6 +81,7 @@ y
 setup --dev
 
 ```
+
 1. Activate the virtual
  e
 
@@ -101,6 +102,7 @@ s
 source .venv/bin/activate
 
 ```
+
 1. Run commands in th
 e
 
@@ -129,6 +131,7 @@ fa
 st.py setup --hardware acm --dev
 
 ```
+
 Available hardwar
 e
 types:
@@ -158,6 +161,7 @@ uv
 fast.py legacy-install --dev
 
 ```
+
 Or for fully tr
 ad
 itional installation:
@@ -170,6 +174,7 @@ tall -e .
 pip install -e ".[dev]"
 
 ```
+
 For hardware-
 sp
 ecific dependencies:
@@ -205,6 +210,7 @@ python uvfast.py lock
 python uvfast.py lock --all
 
 ```
+
 Install f
 ro
 m lockfiles:
@@ -230,6 +236,7 @@ h
 python uvfast.py info
 
 ```
+
 For m
 or
 e detailed information:
@@ -257,6 +264,7 @@ ash
 python examples/xpu_integration.py
 
 ```
+
 T
 hi
 s script automatically configures PyTorch for the appropriate backend (XPU for Intel GPUs, OpenVINO, or CPU) based on the detected hardware.
@@ -289,6 +297,7 @@ docker build --target openvino -t my-project:openvino .  # For OpenVINO
 docker run -it my-project:acm
 
 ```
+
 O
 r using Docker Compose with profiles:
 

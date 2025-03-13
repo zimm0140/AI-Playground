@@ -91,6 +91,7 @@ The updated CI workflow now follows this structure:
 `text
 
 ```
+
 ├
 ── analyze_test_coverage.sh
 ├── catalog_hardware.sh

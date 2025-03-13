@@ -48,6 +48,7 @@ ash
 pre-commit install
 
 ```
+
 1
 .
 Run against all files:
