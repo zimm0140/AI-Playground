@@ -1,3 +1,4 @@
+
 # Testing Guide
 
 This guide explains how to run and write tests for AI-Playground, helping developers ensure their changes maintain code quality and functionality.
@@ -7,10 +8,18 @@ This guide explains how to run and write tests for AI-Playground, helping develo
 Tests in AI-Playground should:
 
 1. *_Verify behavior, not implementation__: Focus on testing what the code does, not how it does it
-2. __Be independent__: Tests should not depend on other tests
-3. __Be deterministic__: Tests should pass or fail consistently
-4. __Be fast__: Tests should run quickly to encourage frequent testing
-5. __Cover edge cases__: Test normal operation and exceptional conditions
+
+
+1. **Be independent**: Tests should not depend on other tests
+
+
+1. **Be deterministic**: Tests should pass or fail consistently
+
+
+1. **Be fast**: Tests should run quickly to encourage frequent testing
+
+
+1. **Cover edge cases**: Test normal operation and exceptional conditions
 
 ## Test Structure
 
@@ -39,6 +48,7 @@ pytest
 To run tests with detailed output:
 
 ```bash
+
 pytest -v
 
 ```text
@@ -48,6 +58,7 @@ pytest -v
 To run tests from a specific file:
 
 ```bash
+
 pytest tests/test_hardware_detection.py
 
 ```text
@@ -57,6 +68,7 @@ pytest tests/test_hardware_detection.py
 To run a specific test function:
 
 ```bash
+
 pytest tests/test_hardware_detection.py::TestHardwareDetection::test_detect_arc_gpu
 
 ```text
@@ -66,6 +78,7 @@ pytest tests/test_hardware_detection.py::TestHardwareDetection::test_detect_arc_
 To run tests with a coverage report:
 
 ```bash
+
 pytest --cov=. tests/
 
 ```text
@@ -73,6 +86,7 @@ pytest --cov=. tests/
 For a more detailed coverage report:
 
 ```bash
+
 pytest --cov=. --cov-report=html tests/
 
 ```text
@@ -92,12 +106,17 @@ This will generate an HTML coverage report in the `htmlcov` directory.
 A good test function should:
 
 1. Set up the test environment (Arrange)
-2. Execute the code being tested (Act)
-3. Verify the expected outcomes (Assert)
+
+
+1. Execute the code being tested (Act)
+
+
+1. Verify the expected outcomes (Assert)
 
 Example:
 
 ```python
+
 def test_detect_arc_gpu():
 
 ```text
@@ -149,6 +168,7 @@ assert result == "acm"
 Fixtures are a powerful way to reuse test setup code:
 
 ```python
+
 @pytest.fixture
 def sample_config():
 
@@ -163,6 +183,7 @@ return {
 "default_hardware": "base",
 
 ```text
+
 }
 
 ```text
@@ -204,6 +225,7 @@ pass
 Use mocking to isolate the code being tested:
 
 ```python
+
 @patch("hardware_detection.get_gpu_info")
 def test_gpu_detection(mock_get_gpu_info):
 
@@ -250,13 +272,20 @@ assert result == "acm"
 When testing hardware-specific functionality:
 
 1. *_Mock hardware detection__: Don't rely on actual hardware for tests
-2. __Test all hardware paths__: Ensure each hardware configuration works
-3. __Test fallback behavior__: Verify code works with unsupported hardware
-4. __Parameterize tests__: Use parameterized tests for different hardware
+
+
+1. **Test all hardware paths**: Ensure each hardware configuration works
+
+
+1. **Test fallback behavior**: Verify code works with unsupported hardware
+
+
+1. **Parameterize tests**: Use parameterized tests for different hardware
 
 Example:
 
 ```python
+
 @pytest.mark.parametrize("gpu_info,expected_type", [
 
 ```text
@@ -266,6 +295,7 @@ Example:
 (["NVIDIA GeForce RTX 3080"], "base"),
 
 ```text
+
 ])
 def test_multiple_hardware_types(gpu_info, expected_type):
 
@@ -286,19 +316,32 @@ assert result == expected_type
 
 ## Testing Best Practices
 
-1. __Test the public API__: Focus on testing public interfaces, not implementation details
-2. __Keep tests simple__: Tests should be easy to understand
-3. __Test one thing per test__: Each test should verify a single behavior
-4. __Use meaningful test names__: Names should indicate what's being tested
-5. __Don't test external dependencies__: Mock external dependencies
-6. __Clean up after tests__: Tests should clean up any resources they create
-7. __Don't modify production code for testing__: Use mocks and dependency injection instead
+1. **Test the public API**: Focus on testing public interfaces, not implementation details
+
+
+1. **Keep tests simple**: Tests should be easy to understand
+
+
+1. **Test one thing per test**: Each test should verify a single behavior
+
+
+1. **Use meaningful test names**: Names should indicate what's being tested
+
+
+1. **Don't test external dependencies**: Mock external dependencies
+
+
+1. **Clean up after tests**: Tests should clean up any resources they create
+
+
+1. **Don't modify production code for testing**: Use mocks and dependency injection instead
 
 ## Test Coverage Assessment
 
 The `test_coverage.py` file provides utilities to assess test coverage without additional tools:
 
 ```bash
+
 pytest tests/test_coverage.py -v
 
 ```text
@@ -332,7 +375,7 @@ This will show which core modules have tests and which functions might lack cove
 - [pytest-cov Documentation](https://pytest-cov.readthedocs.io/)
 
 ---
-__Previous__: [Code Quality Standards](code-quality.md) | __Next__: [Linting](linting.md) | __See also_*: [Contributing Guide](contributing.md)
+**Previous**: [Code Quality Standards](code-quality.md) | **Next**: [Linting](linting.md) | __See also_*: [Contributing Guide](contributing.md)
 
 
 ```text`

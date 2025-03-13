@@ -1,3 +1,4 @@
+
 # Linting Tools
 
 This directory contains scripts for linting and fixing common code quality issues in the AI Playground project.

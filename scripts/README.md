@@ -1,3 +1,4 @@
+
 # Helper Scripts
 
 This directory contains various helper scripts to assist with development tasks in the AI Playground project.
@@ -109,9 +110,17 @@ This script:
 When adding new helper scripts to this directory:
 
 1. Follow the naming conventions: descriptive names in snake_case
+
+
 1. Add appropriate shebang lines and docstrings
+
+
 1. Make shell scripts executable: `chmod +x scripts/your_script.sh`
+
+
 1. Update this README with documentation for the script
+
+
 1. Include both Unix/Linux/macOS and Windows versions when applicable
 
 ## Best Practices

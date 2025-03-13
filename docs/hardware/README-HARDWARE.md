@@ -1,3 +1,4 @@
+
 # Hardware-Aware Python Environment Management
 
 This project implements a hardware-aware environment management system for Python projects, with a focus on Intel hardware acceleration for machine learning workloads.
@@ -24,13 +25,13 @@ The implementation combines modern Python packaging practices with hardware dete
    - Generate lockfiles for reproducible environments
    - Provide information about detected hardware
 
-1. __hardware_detection.py__: Hardware detection module
+1. **hardware_detection.py**: Hardware detection module
 
    - Detect Intel GPUs and processors
    - Identify appropriate dependencies based on hardware
    - Check for hardware-specific features
 
-1. __pyproject.toml__: Modern PEP 621 configuration
+1. **pyproject.toml**: Modern PEP 621 configuration
 
    - Core dependencies for all environments
    - Optional dependencies for specific hardware types
@@ -38,13 +39,13 @@ The implementation combines modern Python packaging practices with hardware dete
 
 ### Additional Components
 
-1. __GitHub Actions Workflow__: CI/CD pipeline for testing
+1. **GitHub Actions Workflow**: CI/CD pipeline for testing
 
    - Matrix testing across multiple Python versions
    - Simulated hardware environments
    - Lockfile validation
 
-1. __Docker Configuration__: Containerized development
+1. **Docker Configuration**: Containerized development
 
    - Hardware-specific container targets
    - Optimized for different acceleration types
@@ -69,6 +70,7 @@ cd <project-directory>
 1. Run the setup command to create an environment for your hardware:
 
 ```bash
+
 python uvfast.py setup --dev
 
 ```text
@@ -90,6 +92,7 @@ source .venv/bin/activate
 1. Run commands in the optimized environment:
 
 ```bash
+
 python uvfast.py run pytest
 
 ```text
@@ -99,6 +102,7 @@ python uvfast.py run pytest
 If you want to specify a hardware type explicitly:
 
 ```bash
+
 python uvfast.py setup --hardware acm --dev
 
 ```text
@@ -118,6 +122,7 @@ Available hardware types:
 For traditional installation with pip (but accelerated with uv):
 
 ```bash
+
 python uvfast.py legacy-install --dev
 
 ```text
@@ -125,6 +130,7 @@ python uvfast.py legacy-install --dev
 Or for fully traditional installation:
 
 ```bash
+
 pip install -e .
 pip install -e ".[dev]"
 
@@ -133,6 +139,7 @@ pip install -e ".[dev]"
 For hardware-specific dependencies:
 
 ```bash
+
 pip install -e ".[acm]"  # For Intel Arc GPUs
 
 pip install -e ".[ovino]"  # For OpenVINO
@@ -158,6 +165,7 @@ python uvfast.py lock --all
 Install from lockfiles:
 
 ```bash
+
 python uvfast.py setup --use-lockfile
 
 ```text
@@ -167,6 +175,7 @@ python uvfast.py setup --use-lockfile
 Display information about the current hardware and environment:
 
 ```bash
+
 python uvfast.py info
 
 ```text
@@ -174,6 +183,7 @@ python uvfast.py info
 For more detailed information:
 
 ```bash
+
 python uvfast.py info --verbose
 
 ```text
@@ -183,6 +193,7 @@ python uvfast.py info --verbose
 The examples directory contains a sample script demonstrating how to use hardware detection with PyTorch:
 
 ```bash
+
 python examples/xpu_integration.py
 
 ```text
@@ -218,6 +229,7 @@ docker run -it my-project:acm
 Or using Docker Compose with profiles:
 
 ```bash
+
 docker-compose --profile acm up
 docker-compose --profile openvino up
 

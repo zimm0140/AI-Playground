@@ -1,3 +1,4 @@
+
 # uvfast Command Cheat Sheet
 
 This document provides a quick reference for common `uvfast.py` commands.
@@ -153,6 +154,7 @@ python uvfast.py run pytest tests/openvino/
 Edit `uvfast.json` to customize settings:
 
 ```json
+
 {
 
 ```text
@@ -164,6 +166,7 @@ Edit `uvfast.json` to customize settings:
 "parallel_jobs": 4
 
 ```text
+
 }
 
 ```text`

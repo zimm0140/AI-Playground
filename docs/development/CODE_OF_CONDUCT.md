@@ -1,3 +1,4 @@
+
 # Contributor Covenant Code of Conduct
 
 ## Our Pledge
@@ -89,16 +90,16 @@ the consequences for any action they deem in violation of this Code of Conduct:
 *_Community Impact__: Use of inappropriate language or other behavior deemed
 unprofessional or unwelcome in the community.
 
-__Consequence__: A private, written warning from community leaders, providing
+**Consequence**: A private, written warning from community leaders, providing
 clarity around the nature of the violation and an explanation of why the
 behavior was inappropriate. A public apology may be requested.
 
 ### 2. Warning
 
-__Community Impact__: A violation through a single incident or series of
+**Community Impact**: A violation through a single incident or series of
 actions.
 
-__Consequence__: A warning with consequences for continued behavior. No
+**Consequence**: A warning with consequences for continued behavior. No
 interaction with the people involved, including unsolicited interaction with
 those enforcing the Code of Conduct, for a specified period of time. This
 includes avoiding interactions in community spaces as well as external channels
@@ -107,10 +108,10 @@ ban.
 
 ### 3. Temporary Ban
 
-__Community Impact__: A serious violation of community standards, including
+**Community Impact**: A serious violation of community standards, including
 sustained inappropriate behavior.
 
-__Consequence__: A temporary ban from any sort of interaction or public
+**Consequence**: A temporary ban from any sort of interaction or public
 communication with the community for a specified period of time. No public or
 private interaction with the people involved, including unsolicited interaction
 with those enforcing the Code of Conduct, is allowed during this period.
@@ -118,7 +119,7 @@ Violating these terms may lead to a permanent ban.
 
 ### 4. Permanent Ban
 
-__Community Impact__: Demonstrating a pattern of violation of community
+**Community Impact**: Demonstrating a pattern of violation of community
 standards, including sustained inappropriate behavior, harassment of an
 individual, or aggression toward or disparagement of classes of individuals.
 

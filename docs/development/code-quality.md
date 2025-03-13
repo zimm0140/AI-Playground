@@ -1,3 +1,4 @@
+
 # Code Quality Standards
 
 This document outlines the code quality standards for the AI-Playground project. Adhering to these standards ensures maintainable, readable, and robust code.
@@ -5,10 +6,10 @@ This document outlines the code quality standards for the AI-Playground project.
 ## General Principles
 
 - *_Readability__: Write code that is easy to read and understand
-- __Simplicity__: Prefer simple solutions over complex ones
-- __Maintainability__: Design code to be maintainable in the long term
-- __Testability__: Structure code to be easily testable
-- __Documentation__: Document all public-facing code
+- **Simplicity**: Prefer simple solutions over complex ones
+- **Maintainability**: Design code to be maintainable in the long term
+- **Testability**: Structure code to be easily testable
+- **Documentation**: Document all public-facing code
 
 ## Python Style Guide
 
@@ -16,17 +17,21 @@ This document outlines the code quality standards for the AI-Playground project.
 
 All Python code should adhere to [PEP 8](https://peps.python.org/pep-0008/), with the following specifics:
 
-- __Line Length__: Maximum line length is 100 characters
-- __Indentation__: 4 spaces per indentation level (no tabs)
-- __Imports__: Group imports in the following order:
+- **Line Length**: Maximum line length is 100 characters
+- **Indentation**: 4 spaces per indentation level (no tabs)
+- **Imports**: Group imports in the following order:
 
 1. Standard library imports
-2. Related third-party imports
-3. Local application/library-specific imports
 
-- __Whitespace__: Use whitespace consistently as specified in PEP 8
-- __Comments__: Use complete sentences in comments
-- __Naming Conventions__:
+
+1. Related third-party imports
+
+
+1. Local application/library-specific imports
+
+- **Whitespace**: Use whitespace consistently as specified in PEP 8
+- **Comments**: Use complete sentences in comments
+- **Naming Conventions**:
 
 \`\`\`text\`text
 
@@ -41,6 +46,7 @@ All Python code should adhere to [PEP 8](https://peps.python.org/pep-0008/), wit
 Use type hints for all function parameters and return values:
 
 ```python
+
 def process_data(input_data: list[str], max_items: int = 10) -> dict[str, any]:
 
 ```text
@@ -57,6 +63,7 @@ def process_data(input_data: list[str], max_items: int = 10) -> dict[str, any]:
 All modules, classes, and functions should have docstrings:
 
 ```python
+
 def validate_config(config: dict) -> bool:
 
 ```text
@@ -99,6 +106,7 @@ Raises:
 ValueError: If the configuration is missing required fields
 
 ```text
+
 """
 ...
 
@@ -138,6 +146,7 @@ ValueError: If the configuration is missing required fields
 - Use custom exception classes when appropriate
 
 ```python
+
 class ConfigurationError(Exception):
 
 ```text
@@ -166,6 +175,7 @@ pass
 - Group related tests in test classes
 
 ```python
+
 def test_hardware_detection_with_arc_gpu():
 
 ```text
@@ -218,14 +228,14 @@ The project uses several automated tools to maintain code quality:
 
 ### Linting Tools
 
-- __Ruff__: Fast Python linter with extensive rule set
-- __mypy__: Static type checking
-- __markdownlint__: Markdown linting
+- **Ruff**: Fast Python linter with extensive rule set
+- **mypy**: Static type checking
+- **markdownlint**: Markdown linting
 
 ### Formatting Tools
 
-- __Black__: Code formatter with opinionated style
-- __isort__: Import statement organizer
+- **Black**: Code formatter with opinionated style
+- **isort**: Import statement organizer
 
 ### Pre-commit Hooks
 
@@ -280,9 +290,15 @@ disallow_incomplete_defs = true
 When working with hardware-specific code:
 
 1. Use clear abstractions to separate hardware-specific code
-2. Add conditional imports for hardware-specific dependencies
-3. Use feature detection rather than version detection
-4. Include fallback implementations for unsupported hardware
+
+
+1. Add conditional imports for hardware-specific dependencies
+
+
+1. Use feature detection rather than version detection
+
+
+1. Include fallback implementations for unsupported hardware
 
 ## Documentation Quality
 
@@ -295,7 +311,7 @@ Documentation should be:
 - Highlight hardware requirements
 
 ---
-__Previous__: [Contributing Guide](contributing.md) | __Next__: [Testing Guide](testing.md) | __See also_*: [Linting](linting.md)
+**Previous**: [Contributing Guide](contributing.md) | **Next**: [Testing Guide](testing.md) | __See also_*: [Linting](linting.md)
 
 
 ```text`

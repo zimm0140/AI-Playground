@@ -1,3 +1,4 @@
+
 # AI Playground Workflows Documentation
 
 ## Structure of Workflow JSON Files
@@ -72,17 +73,21 @@
 "max": 4
 
 ```text
+
   }
 
 ```text
-  __Example Explanation:__ the batch\_Size field determines how many images will be generated at the same time. In AI Playground this value is set to "1" by default. The code
+
+  **Example Explanation:** the batch\_Size field determines how many images will be generated at the same time. In AI Playground this value is set to "1" by default. The code
 above adds a number slider to the settings menu with an input range from 1 to 4\. In the example image below, the batch\_size is set to 2 with a image generation number of 4,
 generating 8 total images.
 
 ```text
+
 ![image](https://github.com/user-attachments/assets/b5fb5c88-ca86-457d-8496-d182a4fcfea8)
 
 ```text
+
 **Allowed AI Playground Settings Names** for "displayedSettings" or "modifiableSettings"
 
     - "resolution",

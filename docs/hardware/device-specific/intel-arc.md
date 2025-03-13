@@ -1,3 +1,4 @@
+
 # Intel Arc GPUs Guide
 
 This guide provides detailed information for users running AI-Playground on Intel Arc GPUs.
@@ -40,16 +41,19 @@ AI-Playground supports all Intel Arc GPU models:
 
 1. Download the latest driver from [Intel's download center](https://downloadcenter.intel.com/product/226793/Intel-Arc-A-series-Graphics)
 
-2. Install the driver package
+1. Install the driver package
 
-3. Restart your system
+1. Restart your system
 
-4. Verify installation with:
+1. Verify installation with:
 
    ```bash
+
+
    # Run hardware detection
 
    python hardware_detection.py
+
    ```text
 
 #### Linux
@@ -57,19 +61,25 @@ AI-Playground supports all Intel Arc GPU models:
 1. Update your system:
 
    ```bash
+
    sudo apt update && sudo apt upgrade
+
    ```text
 
-2. Install required packages:
+1. Install required packages:
 
    ```bash
+
    sudo apt install mesa-utils
+
    ```text
 
-3. Verify installation:
+1. Verify installation:
 
    ```bash
+
    glxinfo | grep "OpenGL renderer"
+
    ```text
 
 ### Environment Setup
@@ -96,6 +106,7 @@ This will install the required dependencies including:
 Use the "xpu" device in your code:
 
 ```python
+
 import torch
 import intel_extension_for_pytorch as ipex
 
@@ -184,6 +195,7 @@ python service/tools/intel_gpu_diagnostics.py
 1. **Quantization**:
 
    ```python
+
    from intel_extension_for_pytorch.quantization import prepare, convert
 
    # Prepare model for quantization
@@ -194,13 +206,16 @@ python service/tools/intel_gpu_diagnostics.py
    # Convert to quantized model
 
    quantized_model = convert(prepared_model)
+
    ```text
 
-2. **BF16 Mixed Precision**:
+1. **BF16 Mixed Precision**:
 
    ```python
+
    with torch.xpu.amp.autocast(dtype=torch.bfloat16):
        output = model(input_tensor)
+
    ```text
 
 ### Batch Size Optimization
@@ -215,6 +230,7 @@ batch_sizes = [1, 2, 4, 8, 16]
 results = {}
 
 for bs in batch_sizes:
+
     # Test inference speed with batch size bs
 
     # Record timing information

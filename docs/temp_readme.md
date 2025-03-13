@@ -1,3 +1,4 @@
+
 # ComfyUI Workflow Repository
 
 This directory contains curated and validated ComfyUI workflows that have been tested and verified for compatibility with our system.
@@ -60,9 +61,15 @@ All workflows in this repository undergo a comprehensive validation process to e
 Each workflow is provided as a JSON file that can be imported directly into ComfyUI. To use a workflow:
 
 1. Download the JSON file
-2. Open ComfyUI in your browser
-3. Right-click anywhere in the canvas
-4. Select "Load" and choose the downloaded JSON file
+
+
+1. Open ComfyUI in your browser
+
+
+1. Right-click anywhere in the canvas
+
+
+1. Select "Load" and choose the downloaded JSON file
 
 ## Required Models
 
@@ -73,11 +80,21 @@ Most workflows require specific checkpoint models, VAEs, or LoRAs. Check the das
 To contribute a new workflow:
 
 1. Create a fork of this repository
-2. Add your workflow JSON file to this directory
-3. Create a pull request
-4. Our CI system will automatically validate your workflow
-5. Address any issues identified in the validation
-6. Once all checks pass, your workflow will be reviewed for merging
+
+
+1. Add your workflow JSON file to this directory
+
+
+1. Create a pull request
+
+
+1. Our CI system will automatically validate your workflow
+
+
+1. Address any issues identified in the validation
+
+
+1. Once all checks pass, your workflow will be reviewed for merging
 
 ## Documentation
 

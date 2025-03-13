@@ -1,3 +1,4 @@
+
 # Contributing to AI Playground
 
 First off, thank you for considering contributing to AI Playground. It's people like you that make this project such a great tool. We welcome contributions from everyone as long
@@ -15,7 +16,7 @@ Thank you for your interest in contributing to AI-Playground! This document outl
 
    - Download and install [Miniconda](https://docs.conda.io/en/latest/miniconda.html) or [Anaconda](https://www.anaconda.com/products/distribution)
 
-1. __Create and activate the environment__:
+1. **Create and activate the environment**:
 
 \`\`\`text\`bash
 
@@ -32,7 +33,9 @@ conda activate ai-playground-env
 pip install -r requirements.txt
 
 ```text`text
-1. __Verify the environment__:
+
+
+1. **Verify the environment**:
 
 ```bash
 
@@ -42,13 +45,13 @@ python -c "import sys; print(sys.executable)"
 
 ## Test that jsonschema is installed
 
-python -c "import jsonschema; print(f'jsonschema version: {jsonschema.__version__}')"
+python -c "import jsonschema; print(f'jsonschema version: {jsonschema.**version**}')"
 
 ```text
 
 ### Option 2: Using venv
 
-1. __Create and activate the environment__:
+1. **Create and activate the environment**:
 
 ```bash
 
@@ -70,7 +73,7 @@ pip install -r requirements.txt
 
 ## Environment Management Best Practices
 
-1. __Always activate your environment before working on the project__:
+1. **Always activate your environment before working on the project**:
 
 ```bash
 
@@ -87,7 +90,9 @@ conda activate ai-playground-env
 source .venv/bin/activate
 
 ```text
-1. __Add new dependencies to requirements.txt__:
+
+
+1. **Add new dependencies to requirements.txt**:
 
 When adding a new package, update the requirements.txt file:
 
@@ -102,6 +107,8 @@ pip freeze > requirements.txt
 echo "package-name==1.2.3" >> requirements.txt
 
 ```text
+
+
 1. __Never commit environment directories_*:
 
 The .gitignore file is set up to exclude environment directories (.venv/, env/, etc.).
@@ -164,10 +171,16 @@ The process described here has several goals:
 Please follow these steps to have your contribution considered by the maintainers:
 
 1. Always set base branch to [dev](https://github.com/intel/AI-Playground/tree/dev), do NOT make pull requests to the main branch without a strong reason.
-2. Follow all instructions in [the template](/.github/pull_request_template.md).
-3. After you submit your pull request, verify that all [status checks](https://docs.github.
+
+
+1. Follow all instructions in [the template](/.github/pull_request_template.md).
+
+
+1. After you submit your pull request, verify that all [status checks](https://docs.github.
+
 com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/about-status-checks) are passing.
-4. [Sign your work](/CONTRIBUTING.md#sign-your-work).
+
+1. [Sign your work](/CONTRIBUTING.md#sign-your-work).
 
 While the prerequisites above must be satifisfied prior to have your pull request reviewed, the reviewer(s) may ask you to complete additional design work, tests, or other changes
 before your pull request can be ultimately accepted.
@@ -189,6 +202,7 @@ rules are pretty simple: if you can certify
 the below (from [developercertificate.org](http://developercertificate.org/)):
 
 ```text
+
 Developer Certificate of Origin
 Version 1.1
 
@@ -206,13 +220,16 @@ By making a contribution to this project, I certify that:
 (a) The contribution was created in whole or in part by me and I
 
 ```text
+
 have the right to submit it under the open source license
 indicated in the file; or
 
 ```text
+
 (b) The contribution is based upon previous work that, to the best
 
 ```text
+
 of my knowledge, is covered under an appropriate open source
 license and I have the right under that license to submit that
 work with modifications, whether created in whole or in part
@@ -221,16 +238,20 @@ permitted to submit under a different license), as indicated
 in the file; or
 
 ```text
+
 (c) The contribution was provided directly to me by some other
 
 ```text
+
 person who certified (a), (b) or (c) and I have not modified
 it.
 
 ```text
+
 (d) I understand and agree that this project and the contribution
 
 ```text
+
 are public and that a record of the contribution (including all
 personal information I submit with it, including my sign-off) is
 maintained indefinitely and may be redistributed consistent with
@@ -239,12 +260,15 @@ this project or the open source license(s) involved.
 ```text
 
 ```text
+
 Then you just add a line to every git commit message:
 
 ```text
+
 Signed-off-by: Joe Smith <joe.smith@email.com>
 
 ```text
+
 Use your real name (sorry, no pseudonyms or anonymous contributions.)
 
 If you set your `user.name` and `user.email` git configs, you can sign your

@@ -1,3 +1,4 @@
+
 # API Design
 
 This document describes the API design for AI-Playground, covering both the REST API and Python API interfaces.
@@ -7,11 +8,21 @@ This document describes the API design for AI-Playground, covering both the REST
 The AI-Playground APIs are designed with the following principles:
 
 1. **Consistency**: APIs follow consistent patterns and naming conventions
-2. **Simplicity**: Common operations are simple and intuitive
-3. **Flexibility**: Advanced options are available when needed
-4. **Documentation**: All APIs are well-documented with examples
-5. **Versioning**: APIs are versioned to ensure backward compatibility
-6. **Error handling**: Clear error messages and appropriate status codes
+
+
+1. **Simplicity**: Common operations are simple and intuitive
+
+
+1. **Flexibility**: Advanced options are available when needed
+
+
+1. **Documentation**: All APIs are well-documented with examples
+
+
+1. **Versioning**: APIs are versioned to ensure backward compatibility
+
+
+1. **Error handling**: Clear error messages and appropriate status codes
 
 ## REST API
 
@@ -30,6 +41,7 @@ https://<server>:<port>/api/v1
 The API supports token-based authentication:
 
 ```http
+
 Authorization: Bearer <api_token>
 
 ```text
@@ -82,6 +94,7 @@ Authorization: Bearer <api_token>
 Request:
 
 ```http
+
 POST /api/v1/inference/text-generation
 Content-Type: application/json
 
@@ -97,6 +110,7 @@ Content-Type: application/json
 Response:
 
 ```http
+
 HTTP/1.1 200 OK
 Content-Type: application/json
 
@@ -125,6 +139,7 @@ Content-Type: application/json
 Request:
 
 ```http
+
 POST /api/v1/inference/batch/image-classification
 Content-Type: application/json
 
@@ -141,6 +156,7 @@ Content-Type: application/json
 Response:
 
 ```http
+
 HTTP/1.1 200 OK
 Content-Type: application/json
 
@@ -179,6 +195,7 @@ Content-Type: application/json
 Errors are returned as JSON with appropriate HTTP status codes:
 
 ```http
+
 HTTP/1.1 400 Bad Request
 Content-Type: application/json
 
@@ -213,6 +230,7 @@ The Python API provides a programmatic interface for integrating AI-Playground i
 ### Installation
 
 ```bash
+
 pip install ai-playground
 
 ```text
@@ -220,6 +238,7 @@ pip install ai-playground
 ### Client Initialization
 
 ```python
+
 from ai_playground import AIPlayground
 
 ## Initialize with default settings
@@ -330,6 +349,7 @@ model.set_hardware_profile("low-memory")
 ### Error Handling
 
 ```python
+
 from ai_playground.exceptions import ModelNotFoundError, HardwareNotSupportedError
 
 try:
@@ -399,6 +419,7 @@ For applications requiring real-time updates, a WebSocket API is available.
 ### Connection
 
 ```javascript
+
 const socket = new WebSocket('wss://your-server/api/v1/ws');
 
 socket.onopen = () => {
@@ -416,6 +437,7 @@ socket.onopen = () => {
 ### Streaming Inference
 
 ```javascript
+
 // Request streaming inference
 socket.send(JSON.stringify({
   type: 'inference',
@@ -449,7 +471,9 @@ socket.onmessage = (event) => {
 AI-Playground APIs are versioned to ensure backward compatibility:
 
 1. **REST API**: Version in URL path (e.g., `/api/v1/models`)
-2. **Python API**: Version in package (e.g., `from ai_playground.v1 import AIPlayground`)
+
+
+1. **Python API**: Version in package (e.g., `from ai_playground.v1 import AIPlayground`)
 
 When breaking changes are necessary, a new version is released with:
 
@@ -463,10 +487,18 @@ When breaking changes are necessary, a new version is released with:
 The API implements several security measures:
 
 1. **Authentication**: Token-based auth for all API calls
-2. **Authorization**: Role-based access control for sensitive operations
-3. **Rate limiting**: Prevents abuse of the API
-4. **Input validation**: Thoroughly validates all input data
-5. **TLS encryption**: All API traffic is encrypted
+
+
+1. **Authorization**: Role-based access control for sensitive operations
+
+
+1. **Rate limiting**: Prevents abuse of the API
+
+
+1. **Input validation**: Thoroughly validates all input data
+
+
+1. **TLS encryption**: All API traffic is encrypted
 
 ## Additional Resources
 

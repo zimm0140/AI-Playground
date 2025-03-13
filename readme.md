@@ -1,3 +1,4 @@
+
 # Hardware Detection
 
 A Python package for detecting and managing hardware configurations.
@@ -13,6 +14,7 @@ A Python package for detecting and managing hardware configurations.
 ## Installation
 
 ```text`bash
+
 pip install -e .
 
 ```text
@@ -20,6 +22,7 @@ pip install -e .
 ## Usage
 
 ```python
+
 from hardware_detection import detect_hardware_type, get_gpu_info
 
 ## Detect hardware type
@@ -35,7 +38,11 @@ gpu_info = get_gpu_info()
 ## Development
 
 1. Clone the repository
+
+
 1. Install dependencies: `pip install -e ".[dev]"`
+
+
 1. Run tests: `pytest`
 
 ## License

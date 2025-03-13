@@ -1,3 +1,4 @@
+
 # ComfyUI Component Library
 
 This directory contains reusable components for ComfyUI workflows. Components are modular, self-contained parts of workflows that can be reused across multiple different workflows.
@@ -18,7 +19,11 @@ Each component is defined in its own JSON file with standard inputs and outputs,
 To use a component in your workflow:
 
 1. Reference it in your workflow file's `components` array with the appropriate `componentId`
+
+
 1. Import the component nodes into your workflow by using the component loader
+
+
 1. Connect the component's inputs and outputs to other parts of your workflow
 
 ## Component Structure
@@ -42,6 +47,7 @@ Each component follows this standard format:
 }
 
 ```text
+
   ],
   "outputs": [
 
@@ -54,6 +60,7 @@ Each component follows this standard format:
 }
 
 ```text
+
   ],
   "nodes": {
 
@@ -68,6 +75,7 @@ Each component follows this standard format:
 "param1": "value1"
 
 ```text
+
   }
 },
 "2": {
@@ -79,10 +87,12 @@ Each component follows this standard format:
 "param1": ["1", 0]
 
 ```text
+
   }
 }
 
 ```text
+
   },
   "inputMappings": {
 
@@ -94,6 +104,7 @@ Each component follows this standard format:
 }
 
 ```text
+
   },
   "outputMappings": {
 
@@ -105,6 +116,7 @@ Each component follows this standard format:
 }
 
 ```text
+
   }
 }
 
@@ -123,9 +135,17 @@ Each component follows this standard format:
 To create a new component:
 
 1. Identify a reusable pattern in your workflows
+
+
 1. Extract the relevant nodes and connections
+
+
 1. Define clear inputs and outputs
+
+
 1. Add appropriate documentation
+
+
 1. Save it in this directory with a descriptive filename
 
 ## Best Practices

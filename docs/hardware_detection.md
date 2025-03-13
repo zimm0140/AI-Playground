@@ -1,3 +1,4 @@
+
 # Hardware Detection Module
 
 The hardware detection module provides a standardized way to detect and utilize available hardware accelerators
@@ -80,9 +81,10 @@ Detect the available hardware type.
   - `"lnl"`: Intel Lunar Lake
   - `"ovino"`: OpenVINO-compatible
 
-__Example:__
+**Example:**
 
 ```python
+
 from hardware_detection import detect_hardware_type
 hardware = detect_hardware_type()
 print(f"Detected hardware: {hardware}")
@@ -93,13 +95,14 @@ print(f"Detected hardware: {hardware}")
 
 Get information about available GPUs.
 
-__Returns:__
+**Returns:**
 
 - A list of strings describing the detected GPUs, or an empty list if no GPUs are found.
 
-__Example:__
+**Example:**
 
 ```python
+
 from hardware_detection import get_gpu_info
 gpus = get_gpu_info()
 print(f"Available GPUs: {gpus}")
@@ -110,7 +113,7 @@ print(f"Available GPUs: {gpus}")
 
 Get information about the CPU.
 
-__Returns:__
+**Returns:**
 
 - A dictionary containing CPU information:
   - `vendor`: CPU manufacturer
@@ -118,9 +121,10 @@ __Returns:__
   - `cores`: Number of CPU cores
   - `features`: (Optional) List of CPU features
 
-__Example:__
+**Example:**
 
 ```python
+
 from hardware_detection import get_cpu_info
 cpu = get_cpu_info()
 print(f"CPU: {cpu['name']} with {cpu['cores']} cores")
@@ -131,7 +135,7 @@ print(f"CPU: {cpu['name']} with {cpu['cores']} cores")
 
 Get comprehensive information about the system hardware.
 
-__Returns:__
+**Returns:**
 
 - A dictionary with hardware information:
   - `system`: Operating system
@@ -141,9 +145,10 @@ __Returns:__
   - `detected_hardware`: Detected hardware type
   - `openvino_available`: Whether OpenVINO is available
 
-__Example:__
+**Example:**
 
 ```python
+
 from hardware_detection import get_hardware_info
 info = get_hardware_info()
 print(json.dumps(info, indent=2))
@@ -154,13 +159,14 @@ print(json.dumps(info, indent=2))
 
 Print information about the system hardware.
 
-__Arguments:__
+**Arguments:**
 
 - `verbose`: Whether to show additional details
 
 __Example:_*
 
 ```python
+
 from hardware_detection import print_hardware_info
 print_hardware_info(verbose=True)
 
@@ -183,16 +189,26 @@ still supported but will display deprecation warnings.
 The new package structure provides:
 
 1. Better dependency management
-2. Proper namespacing
-3. Type hints and documentation
-4. Easier testing
-5. Future extensibility
+
+
+1. Proper namespacing
+
+
+1. Type hints and documentation
+
+
+1. Easier testing
+
+
+1. Future extensibility
 
 ### Steps to Migrate
 
 1. Replace import statements:
 
    ```python
+
+
    ## Old
 
    from tools.hardware import hardware_detection
@@ -200,11 +216,14 @@ The new package structure provides:
    ## New
 
    from hardware_detection import detect_hardware_type, get_gpu_info
+
    ```text
 
 1. Update function calls:
 
    ```python
+
+
    ## Old
 
    hardware_type = hardware_detection.detect_hardware_type()
@@ -212,6 +231,7 @@ The new package structure provides:
    ## New
 
    hardware_type = detect_hardware_type()
+
    ```text
 
 ```text`

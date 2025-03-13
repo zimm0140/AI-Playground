@@ -1,3 +1,4 @@
+
 # Migration Guide
 
 This guide helps users migrate from previous versions of AI-Playground to the current version, highlighting important changes and providing step-by-step instructions for a smooth
@@ -37,6 +38,7 @@ Configuration files have changed format in v2.x. If you have custom configuratio
 1. Update `uvfast.json` to the new schema:
 
    ```json
+
    {
 
 ```text
@@ -56,19 +58,25 @@ Configuration files have changed format in v2.x. If you have custom configuratio
  "acm": "requirements-hardware-acm.txt"
 
 ```text
+
    }
  }
 
 ```text
+
    }
+
    ```text
 
 1. Workflows now use the new format in `v2.x`. To migrate existing workflows:
 
    ```bash
+
+
    ## Convert old workflow to new format
 
    python service/tools/convert_workflow.py --input old_workflow.json --output new_workflow.json
+
    ```text
 
 ### Step 4: API Changes
@@ -76,8 +84,12 @@ Configuration files have changed format in v2.x. If you have custom configuratio
 If you're using the API, note these changes:
 
 1. The base URL has changed from `/api/v1` to `/api/v2`
-2. The workflow submission format has been updated
-3. Authentication now requires an API key
+
+
+1. The workflow submission format has been updated
+
+
+1. Authentication now requires an API key
 
 Example of updated API calls:
 
@@ -99,12 +111,17 @@ response = requests.post("<http://localhost:8000/api/v2/workflow",> headers=head
 Hardware detection is now more advanced:
 
 1. The system now auto-detects Intel Arc, Battlemage, Meteor Lake, and Lunar Lake devices
-2. Optimized packages are installed based on your hardware
-3. OpenVINO integration is improved
+
+
+1. Optimized packages are installed based on your hardware
+
+
+1. OpenVINO integration is improved
 
 To manually set hardware type:
 
 ```bash
+
 python setup_hardware_env.py --hardware acm
 
 ```text
@@ -114,23 +131,35 @@ python setup_hardware_env.py --hardware acm
 Be aware of these breaking changes in v2.x:
 
 1. Python 3.9 is no longer supported; minimum requirement is Python 3.10
-2. Config file format has changed and is not backward compatible
-3. The CLI interface has been redesigned with new command syntax
-4. Workflow format has been updated for better performance and flexibility
-5. Hardware detection now uses a different approach
+
+
+1. Config file format has changed and is not backward compatible
+
+
+1. The CLI interface has been redesigned with new command syntax
+
+
+1. Workflow format has been updated for better performance and flexibility
+
+
+1. Hardware detection now uses a different approach
 
 ## Troubleshooting Migration Issues
 
 If you encounter issues during migration:
 
 1. *_Missing dependencies__: Run `python setup_hardware_env.py --dev` to install all dependencies
-2. __Configuration errors__: Delete your `uvfast.json` file to regenerate the default configuration
-3. __Workflow compatibility__: Use the provided conversion tool for workflows
+
+
+1. **Configuration errors**: Delete your `uvfast.json` file to regenerate the default configuration
+
+
+1. **Workflow compatibility**: Use the provided conversion tool for workflows
 
 For further assistance, please [open an issue](https://github.com/intel/AI-Playground/issues) with details about your environment and the problems you're experiencing.
 
 ---
-__Previous__: [Installation Guide](installation.md) | __Next__: [Hardware Overview](../hardware/overview.md) | __See also_*: [Troubleshooting](../reference/troubleshooting.md)
+**Previous**: [Installation Guide](installation.md) | **Next**: [Hardware Overview](../hardware/overview.md) | __See also_*: [Troubleshooting](../reference/troubleshooting.md)
 
 
 ```text`

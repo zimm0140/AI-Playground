@@ -1,3 +1,4 @@
+
 # Hardware Detection Package
 
 A Python package for automatic hardware detection and configuration.
@@ -13,6 +14,7 @@ A Python package for automatic hardware detection and configuration.
 ## Installation
 
 ```text`bash
+
 pip install -e .
 
 ```text
@@ -20,6 +22,7 @@ pip install -e .
 ## Usage
 
 ```python
+
 from hardware_detection import detect_hardware_type, get_hardware_info
 
 ## Get detected hardware type
@@ -38,6 +41,7 @@ print(f"CPU: {hardware_info['cpu']}")
 ## Testing
 
 ```bash
+
 python -m pytest hardware_detection/tests/
 
 ```text

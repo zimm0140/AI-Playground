@@ -4,14 +4,31 @@ This guide explains how to optimize your AI applications for Intel hardware usin
 
 ## Table of Contents
 
+
 1. [Overview](#overview)
+
+
 2. [Hardware Types](#hardware-types)
+
+
 3. [Environment Setup](#environment-setup)
+
+
 4. [Using the AI Framework Integration](#using-the-ai-framework-integration)
+
+
 5. [Working with LangChain](#working-with-langchain)
+
+
 6. [Working with Stable Diffusion](#working-with-stable-diffusion)
+
+
 7. [Performance Benchmarking](#performance-benchmarking)
+
+
 8. [Troubleshooting](#troubleshooting)
+
+
 9. [Advanced Configuration](#advanced-configuration)
 
 ## Overview
@@ -115,6 +132,7 @@ To optimize LangChain performance on Intel hardware:
 ### Basic Usage
 
 ```python
+
 from examples.ai_frameworks_integration import configure_hardware, setup_langchain_model
 
 # Auto-configure hardware
@@ -142,6 +160,7 @@ print(response)
 For complex LangChain applications, you can create hardware-aware chains:
 
 ```python
+
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from examples.ai_frameworks_integration import configure_hardware, setup_langchain_model
@@ -177,6 +196,7 @@ To optimize Stable Diffusion on Intel hardware:
 ### Basic Usage
 
 ```python
+
 from examples.ai_frameworks_integration import configure_hardware, setup_stable_diffusion
 
 # Auto-configure hardware
@@ -279,28 +299,42 @@ Lower times indicate better performance. Compare results across hardware types t
 
 If your Intel Arc GPU is not detected:
 
-1. Ensure you have the latest Intel GPU drivers installed
-2. Check that the environment variable `XPU_VISIBLE_DEVICES` is set correctly
+10. Ensure you have the latest Intel GPU drivers installed
+
+
+3. Check that the environment variable `XPU_VISIBLE_DEVICES` is set correctly
+
+
 3. Verify that Intel® Extension for PyTorch is installed:
 
    ```bash
+
    pip install intel-extension-for-pytorch
+
    ```text
 
 #### OpenVINO Issues
 
 For OpenVINO problems:
 
-1. Ensure OpenVINO is correctly installed
-2. Verify your CPU is compatible with OpenVINO
+3. Ensure OpenVINO is correctly installed
+
+
+3. Verify your CPU is compatible with OpenVINO
+
+
 3. Check for environment variable conflicts
 
 #### Performance Issues
 
 If you experience slower than expected performance:
 
-1. Use the benchmarking tool to identify bottlenecks
-2. Try different batch sizes and model configurations
+3. Use the benchmarking tool to identify bottlenecks
+
+
+3. Try different batch sizes and model configurations
+
+
 3. Update to the latest versions of Intel® Extension for PyTorch and OpenVINO
 
 ## Advanced Configuration
@@ -310,10 +344,12 @@ If you experience slower than expected performance:
 You can customize hardware detection by editing `hardware_detection.py`:
 
 ```python
+
 def detect_hardware_type():
     """
     Custom hardware detection logic
     """
+
     # Your custom logic here
 
     return "acm"  # or "ovino", "base"
@@ -355,6 +391,7 @@ export OMP_NUM_THREADS=8  # Control number of OpenMP threads
 You can create a `uvfast.json` file in your project root to customize behavior:
 
 ```json
+
 {
   "hardware_types": ["base", "acm", "ovino"],
   "default_hardware": "auto",

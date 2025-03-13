@@ -1,3 +1,4 @@
+
 # uvfast: Modern Python Environment Management
 
 This document provides a step-by-step guide for implementing and using the `uvfast` system in your Python projects.
@@ -11,28 +12,28 @@ This document provides a step-by-step guide for implementing and using the `uvfa
    - Copy the `uvfast.py` script to your project root
    - Make it executable: `chmod +x uvfast.py` (on Unix/Linux/macOS)
 
-1. __Create convenience wrappers__:
+1. **Create convenience wrappers**:
 
    - For Unix/Linux/macOS: Create `scripts/uvfast.sh`
    - For Windows: Create `scripts/uvfast.ps1`
    - Make them executable: `git update-index --chmod=+x scripts/uvfast.sh scripts/uvfast.ps1`
 
-1. __Create the configuration file__:
+1. **Create the configuration file**:
 
    - Create `uvfast.json` in your project root with your project-specific settings
 
 ### 2. Requirements Files
 
-1. __Base requirements__:
+1. **Base requirements**:
 
    - Ensure you have a `requirements.txt` file with core dependencies
 
-1. __Development requirements__:
+1. **Development requirements**:
 
    - Create `requirements-dev.txt` with development dependencies
    - Include testing, linting, and type checking packages
 
-1. __Hardware-specific requirements__ (optional):
+1. **Hardware-specific requirements** (optional):
 
    - Create separate files for different hardware configurations:
 
@@ -47,20 +48,24 @@ This document provides a step-by-step guide for implementing and using the `uvfa
 
 ### 3. Documentation
 
-1. __Update your README.md__:
+1. **Update your README.md**:
+
    - Add installation instructions
    - Explain the dual approach (traditional pip vs. uvfast)
 
-1. __Add a QUICKSTART.md__:
+1. **Add a QUICKSTART.md**:
+
    - Include basic usage examples
    - List common commands
 
-1. __Add a cheatsheet__:
+1. **Add a cheatsheet**:
+
    - Create `UVFAST_CHEATSHEET.md` with common commands
 
 ### 4. CI/CD Integration
 
-1. __GitHub Actions__:
+1. **GitHub Actions**:
+
    - Create or update `.github/workflows/ci.yml`
    - Use the uvfast script to set up environments
    - Run tests and linting
@@ -130,6 +135,7 @@ python uvfast.py setup --hardware ovino --dev
 ### uvfast.json
 
 ```json
+
 {
   "project_name": "my-project",
   "python_version": "3.10",
@@ -148,6 +154,7 @@ python uvfast.py setup --hardware ovino --dev
 }
 
 ```text
+
   },
   "lockfiles": {
 
@@ -161,6 +168,7 @@ python uvfast.py setup --hardware ovino --dev
 }
 
 ```text
+
   }
 }
 
@@ -168,34 +176,54 @@ python uvfast.py setup --hardware ovino --dev
 
 ## Benefits of Using uvfast
 
-1. __Modern tooling__: Leverages `uv` for faster package installation
-2. __Reproducible environments__: Uses lockfiles for consistent dependencies
-3. __Hardware-specific setups__: Easily manage different hardware configurations
-4. __CI/CD integration__: Streamlined testing across platforms
-5. __Developer convenience__: Simple commands for common tasks
+1. **Modern tooling**: Leverages `uv` for faster package installation
+
+
+1. **Reproducible environments**: Uses lockfiles for consistent dependencies
+
+
+1. **Hardware-specific setups**: Easily manage different hardware configurations
+
+
+1. **CI/CD integration**: Streamlined testing across platforms
+
+
+1. **Developer convenience**: Simple commands for common tasks
 
 ## Best Practices
 
-1. __Keep configuration up to date__: Update `uvfast.json` when adding new hardware configurations
-2. __Generate lockfiles after requirements changes__: Run `uvfast.py lock` after updating any requirements files
-3. __Use wrappers for consistency__: Encourage team members to use the wrapper scripts
-4. __Include in CI__: Integrate with your CI/CD pipeline for consistent testing
-5. __Document hardware-specific needs__: Make sure to document any hardware-specific considerations
+1. **Keep configuration up to date**: Update `uvfast.json` when adding new hardware configurations
+
+
+1. **Generate lockfiles after requirements changes**: Run `uvfast.py lock` after updating any requirements files
+
+
+1. **Use wrappers for consistency**: Encourage team members to use the wrapper scripts
+
+
+1. **Include in CI**: Integrate with your CI/CD pipeline for consistent testing
+
+
+1. **Document hardware-specific needs**: Make sure to document any hardware-specific considerations
 
 ## Troubleshooting
 
-1. __Environment issues__:
+1. **Environment issues**:
+
    - Try recreating the environment: `uvfast.py setup --clean`
    - Check if all requirements files exist
 
-1. __Lockfile conflicts__:
+1. **Lockfile conflicts**:
+
    - Resolve conflicts in requirements files
    - Regenerate lockfiles
 
-1. __Script permissions__:
+1. **Script permissions**:
+
    - Ensure scripts are executable
 
 1. __Missing dependencies_*:
+
    - Check hardware-specific requirements
    - Verify lockfiles are up to date
 

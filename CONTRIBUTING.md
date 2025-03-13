@@ -1,3 +1,4 @@
+
 # Contributing to AI Playground
 
 Thank you for your interest in contributing to AI Playground! This guide will help you get started with our development workflow using modern Python tools.
@@ -11,6 +12,8 @@ We use `uv`, an extremely fast Python package manager, for dependency management
 1. **Install uv**:
 
    ```text`bash
+
+
    ## Unix/Linux/macOS
 
    curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -18,6 +21,7 @@ We use `uv`, an extremely fast Python package manager, for dependency management
    ## Windows
 
    powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+
    ```text
 
    ```text`
@@ -25,6 +29,7 @@ We use `uv`, an extremely fast Python package manager, for dependency management
 1. **Clone and Setup**:
 
    ```text`bash
+
    git clone https://github.com/zimm0140/AI-Playground.git
    cd AI-Playground
 
@@ -42,6 +47,7 @@ We use `uv`, an extremely fast Python package manager, for dependency management
    ## Install pre-commit hooks
 
    pre-commit install
+
    ```text
 
    ```text`
@@ -75,26 +81,34 @@ We provide convenient scripts for common development tasks:
 1. **Ensure all tests pass**:
 
    ```bash
+
    ./scripts/run_with_uv.sh test
+
    ```text
 
 1. **Check code quality**:
 
    ```bash
+
    ./scripts/run_with_uv.sh lint
+
    ```text
 
 1. **Format your code**:
 
    ```bash
+
    ./scripts/run_with_uv.sh format
+
    ```text
 
 1. **Update lockfiles if you've changed dependencies**:
 
    ```bash
+
    uv pip compile requirements.txt --output-file requirements.lock
    uv pip compile requirements-dev.txt --output-file requirements-dev.lock
+
    ```text
 
 ## Type Annotations
@@ -102,7 +116,11 @@ We provide convenient scripts for common development tasks:
 We use Python type annotations and verify them with mypy. For Python 3.10+ compatibility:
 
 1. Use `Union` and `Optional` from the `typing` module
+
+
 1. For Python 3.10+, you can use the `|` operator for union types, but be consistent
+
+
 1. Use `TypeVar` for generic type annotations
 
 ## Commit Messages
@@ -134,7 +152,11 @@ CI: Add uv support to GitHub Actions
 If you have questions about the development process or need help with your contribution, please:
 
 1. Check the documentation in QUICKSTART.md and MIGRATION.md
+
+
 1. Open an issue with the "question" label
+
+
 1. Ask for help in pull request comments
 
 Thank you for contributing to AI Playground!

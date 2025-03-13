@@ -207,7 +207,7 @@ jobs:
       - name: Run markdown fixer
         run: python fix_markdown_advanced.py
       - name: Check for markdown linting issues
-        run: markdownlint-cli2 "**/*.md" --config .markdownlint.yaml || true
+        run: markdownlint-cli2 "**/*.md" "!node_modules/**/*.md" "!WebUI/node_modules/**/*.md" --config .markdownlint.yaml || true
       - name: Commit changes if any
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"

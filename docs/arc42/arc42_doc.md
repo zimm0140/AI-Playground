@@ -1,3 +1,4 @@
+
 # AI Playground arc42 documentation
 
 ## Introduction and Goals

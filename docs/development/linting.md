@@ -1,3 +1,4 @@
+
 # Linting Guide
 
 This guide outlines the linting practices used in the AI-Playground project to maintain code quality and consistency.
@@ -7,8 +8,8 @@ This guide outlines the linting practices used in the AI-Playground project to m
 AI-Playground primarily uses the following linting tools:
 
 - *_[Ruff](https://github.com/astral-sh/ruff)__: A fast Python linter that combines multiple linting tools
-- __[mypy](https://mypy.readthedocs.io/)__: A static type checker for Python
-- __[markdownlint](https://github.com/DavidAnson/markdownlint)__: A linter for Markdown files
+- **[mypy](https://mypy.readthedocs.io/)**: A static type checker for Python
+- **[markdownlint](https://github.com/DavidAnson/markdownlint)**: A linter for Markdown files
 
 ## Python Linting Configuration
 
@@ -25,21 +26,21 @@ target-version = "py310"
 line-length = 100
 select = ["E", "F", "I", "W", "N", "B", "C4", "UP", "T20"]
 ignore = ["E501"]
-extend-exclude = \[".git", ".github", ".venv", "venv", "__pycache__", "build", "dist"\]
+extend-exclude = \[".git", ".github", ".venv", "venv", "**pycache**", "build", "dist"\]
 
 ```text`text
 
 #### Key Rules
 
-- __E__: Style errors (from pycodestyle)
-- __F__: Logical/syntax errors and undefined names (from Pyflakes)
-- __I__: Import sorting (from isort)
-- __W__: Warnings (from pycodestyle)
-- __N__: Naming conventions (from pep8-naming)
-- __B__: Bug detection (from flake8-bugbear)
-- __C4__: Comprehension complexity (from flake8-comprehensions)
-- __UP__: Python upgrade suggestions (from pyupgrade)
-- __T20__: Print statement detection (from flake8-print)
+- **E**: Style errors (from pycodestyle)
+- **F**: Logical/syntax errors and undefined names (from Pyflakes)
+- **I**: Import sorting (from isort)
+- **W**: Warnings (from pycodestyle)
+- **N**: Naming conventions (from pep8-naming)
+- **B**: Bug detection (from flake8-bugbear)
+- **C4**: Comprehension complexity (from flake8-comprehensions)
+- **UP**: Python upgrade suggestions (from pyupgrade)
+- **T20**: Print statement detection (from flake8-print)
 
 ### Type Checking with mypy
 
@@ -69,13 +70,17 @@ strict_optional = true
 1. For Windows users:
 
    ```powershell
+
    .\.github\workflows\scripts\fix_ruff_windows.ps1
+
    ```text
 
 1. For Linux/Mac users:
 
    ```bash
+
    python .github/workflows/scripts/fix_ruff_issues_local.py
+
    ```text
 
 ### Manual Linting
@@ -133,6 +138,7 @@ markdownlint "__/_.md"
 An import that's not used in the file:
 
 ```python
+
 import os  # Unused import
 
 ```text
@@ -140,6 +146,7 @@ import os  # Unused import
 *_Fix__: Either remove the import or add a `# noqa: F401` comment if it's needed for side effects:
 
 ```python
+
 import os  # noqa: F401
 
 ```text
@@ -149,15 +156,17 @@ import os  # noqa: F401
 Missing spaces around operators or after commas:
 
 ```python
+
 x=1+2  # Missing spaces
 
 def func(a,b):  # Missing space after comma
 
 ```text
 
-__Fix__: Add appropriate spacing:
+**Fix**: Add appropriate spacing:
 
 ```python
+
 x = 1 + 2  # Correct spacing
 
 def func(a, b):  # Space after comma
@@ -169,6 +178,7 @@ def func(a, b):  # Space after comma
 Missing or incorrect type annotations:
 
 ```python
+
 def process_data(data):  # Missing type annotations
 
 ```text
@@ -179,9 +189,10 @@ return data + 1
 
 ```text
 
-__Fix__: Add proper type annotations:
+**Fix**: Add proper type annotations:
 
 ```python
+
 def process_data(data: int) -> int:
 
 ```text
@@ -197,13 +208,15 @@ return data + 1
 Importing hardware-specific modules that might not be available:
 
 ```python
+
 import intel_extension_for_pytorch  # May not be available on all systems
 
 ```text
 
-__Fix__: Use conditional imports:
+**Fix**: Use conditional imports:
 
 ```python
+
 try:
 
 ```text
@@ -212,6 +225,7 @@ import intel_extension_for_pytorch
 HAS_INTEL_EXTENSION = True
 
 ```text
+
 except ImportError:
 
 ```text
@@ -233,9 +247,15 @@ The project's CI system uses GitHub Actions to run linters on all files. The con
 The CI will:
 
 1. Check for linting issues
-2. Generate a report
-3. Comment on PRs if issues are found
-4. Provide instructions for fixing the issues
+
+
+1. Generate a report
+
+
+1. Comment on PRs if issues are found
+
+
+1. Provide instructions for fixing the issues
 
 ## Pre-commit Hooks
 
@@ -284,11 +304,18 @@ Use `# noqa:` comments sparingly and only when necessary.
 When writing hardware-specific code:
 
 1. Use conditional imports for hardware-specific dependencies
-2. Consider using feature checking rather than relying on specific hardware
-3. Add appropriate comments where hardware specifics affect code structure
-4. Use type annotations that reflect hardware-specific considerations
+
+
+1. Consider using feature checking rather than relying on specific hardware
+
+
+1. Add appropriate comments where hardware specifics affect code structure
+
+
+1. Use type annotations that reflect hardware-specific considerations
 
 ```python
+
 def optimize_for_hardware(model: torch.nn.Module, hardware_type: str) -> torch.nn.Module:
 
 ```text
@@ -320,6 +347,7 @@ Returns:
 Optimized model
 
 ```text
+
 """
 if hardware_type == "acm":
 
@@ -346,6 +374,7 @@ import intel_extension_for_pytorch as ipex  # noqa: F401
 model = ipex.optimize(model)
 
 ```text
+
 except ImportError:
 
 ```text
@@ -375,7 +404,7 @@ return model
 - [Code Quality Standards](code-quality.md)
 
 ---
-__Previous__: [Testing Guide](testing.md) | __Next__: [Project Architecture](../architecture/overview.md) | __See also_*: [Code Quality Standards](code-quality.md)
+**Previous**: [Testing Guide](testing.md) | **Next**: [Project Architecture](../architecture/overview.md) | __See also_*: [Code Quality Standards](code-quality.md)
 
 
 ```text`

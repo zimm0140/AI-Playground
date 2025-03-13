@@ -1,3 +1,4 @@
+
 # Type Compatibility Guide
 
 This guide helps address common type compatibility issues when migrating to Python 3.10+.
@@ -26,6 +27,7 @@ def process_data(data: Union[dict, list]) -> Union\[str, None\]:
 #### After (Python 3.10+)
 
 ```python
+
 def process_data(data: dict | list) -> str | None:
 
 
@@ -42,6 +44,7 @@ def process_data(data: dict | list) -> str | None:
 For compatibility with both Python 3.9 and Python 3.10+, continue using `Union` from the typing module:
 
 ```python
+
 from typing import Union
 
 def process_data(data: Union[dict, list]) -> Union[str, None]:
@@ -61,6 +64,7 @@ def process_data(data: Union[dict, list]) -> Union[str, None]:
 #### Before
 
 ```python
+
 from typing import Optional
 
 def get_user(user_id: Optional[int] = None) -> Optional[dict]:
@@ -76,6 +80,7 @@ def get_user(user_id: Optional[int] = None) -> Optional[dict]:
 #### After (Python 3.10+)
 
 ```python
+
 def get_user(user_id: int | None = None) -> dict | None:
 
 
@@ -92,6 +97,7 @@ def get_user(user_id: int | None = None) -> dict | None:
 For backward compatibility, continue using `Optional` from the typing module:
 
 ```python
+
 from typing import Optional
 
 def get_user(user_id: Optional[int] = None) -> Optional[dict]:
@@ -111,6 +117,7 @@ Python 3.10 introduces the ability to use `TypeAlias` for explicit type aliases.
 #### Before
 
 ```python
+
 from typing import Dict, List, Union
 
 JSONValue = Union[str, int, float, bool, None, Dict[str, 'JSONValue'], List['JSONValue']]
@@ -120,6 +127,7 @@ JSONValue = Union[str, int, float, bool, None, Dict[str, 'JSONValue'], List['JSO
 #### After (Python 3.10+)
 
 ```python
+
 from typing import TypeAlias
 
 JSONValue: TypeAlias = str | int | float | bool | None | dict[str, 'JSONValue'] | list['JSONValue']
@@ -132,6 +140,7 @@ JSONValue: TypeAlias = str | int | float | bool | None | dict[str, 'JSONValue'] 
 For backward compatibility:
 
 ```python
+
 from typing import Dict, List, Union
 
 ## For Python 3.9 and earlier
@@ -147,6 +156,7 @@ Python 3.9 allows using built-in collection types as generic types, but Python 3
 #### Before (Python 3.8)
 
 ```python
+
 from typing import Dict, List
 
 def process_data(data: Dict[str, List[int]]) -> None:
@@ -162,6 +172,7 @@ def process_data(data: Dict[str, List[int]]) -> None:
 #### After (Python 3.9+)
 
 ```python
+
 def process_data(data: dict[str, list[int]]) -> None:
 
 ```text
@@ -177,6 +188,7 @@ def process_data(data: dict[str, list[int]]) -> None:
 For backward compatibility:
 
 ```python
+
 from typing import Dict, List
 
 def process_data(data: Dict[str, List[int]]) -> None:
@@ -244,6 +256,7 @@ if path is None:
 path = ""
 
 ```text
+
 return os.path.join(path, "subdir")
 
 ```text

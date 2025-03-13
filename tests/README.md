@@ -1,3 +1,4 @@
+
 # Tests for AI-Playground
 
 This directory contains tests for the AI-Playground project. The tests are designed to verify the functionality of the core modules without modifying the functional code.
@@ -29,6 +30,7 @@ pytest
 To run tests with detailed output:
 
 ```bash
+
 pytest -v
 
 ```text
@@ -38,6 +40,7 @@ pytest -v
 To run tests from a specific file:
 
 ```bash
+
 pytest tests/test_hardware_detection.py
 
 ```text
@@ -47,6 +50,7 @@ pytest tests/test_hardware_detection.py
 To run a specific test function:
 
 ```bash
+
 pytest tests/test_hardware_detection.py::TestHardwareDetection::test_detect_arc_gpu
 
 ```text
@@ -56,6 +60,7 @@ pytest tests/test_hardware_detection.py::TestHardwareDetection::test_detect_arc_
 To run tests with a coverage report:
 
 ```bash
+
 pytest --cov=. tests/
 
 ```text
@@ -63,6 +68,7 @@ pytest --cov=. tests/
 For a more detailed coverage report:
 
 ```bash
+
 pytest --cov=. --cov-report=html tests/
 
 ```text
@@ -77,6 +83,7 @@ whether the functions in core modules have corresponding test functions.
 To run the coverage assessment:
 
 ```bash
+
 pytest tests/test_coverage.py -v
 
 ```text
@@ -88,9 +95,17 @@ The output will show which core modules have tests and which functions might lac
 When adding tests:
 
 1. Create a file named `test_<module_name>.py` for the module you want to test
+
+
 1. Use appropriate fixtures from `conftest.py` to set up test conditions
+
+
 1. Follow the unittest or pytest patterns as shown in existing tests
+
+
 1. Focus on testing functionality without modifying the implementation
+
+
 1. Use the mock library to isolate tests from external dependencies
 
 ## Test Guidelines

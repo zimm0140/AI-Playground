@@ -1,3 +1,4 @@
+
 # Installation Guide
 
 This guide provides detailed instructions for installing and configuring AI-Playground for different environments and hardware configurations.
@@ -69,6 +70,8 @@ If you prefer to set up the environment manually:
 1. Create a virtual environment:
 
    ```bash
+
+
    ## Using venv
 
    python -m venv .venv
@@ -78,14 +81,18 @@ If you prefer to set up the environment manually:
    ## On Windows
 
    .venv\Scripts\activate
+
    ## On Linux/macOS
 
    source .venv/bin/activate
+
    ```text
 
 1. Install dependencies based on your hardware:
 
    ```bash
+
+
    ## For basic CPU setup
 
    pip install -r requirements.txt
@@ -97,6 +104,7 @@ If you prefer to set up the environment manually:
    ## For development
 
    pip install -r requirements-dev.txt
+
    ```text
 
 ## Docker Installation
@@ -124,14 +132,16 @@ docker run -p 8000:8000 ai-playground
    Try updating pip and setuptools:
 
    ```bash
+
    pip install --upgrade pip setuptools wheel
+
    ```text
 
-1. __GPU not detected__
+1. **GPU not detected**
 
    Ensure you have the latest GPU drivers installed for your hardware.
 
-1. __Python version compatibility__
+1. **Python version compatibility**
 
    If you encounter compatibility issues, we strongly recommend using Python 3.10.
 
@@ -162,7 +172,7 @@ python test_venv.py
 This will check that all required dependencies are installed and that your hardware is properly detected.
 
 ---
-__Previous__: [Quick Start Guide](quickstart.md) | __Next__: [Migration Guide](migration.md) | __See also_*: [Hardware Compatibility](../hardware/compatibility.md)
+**Previous**: [Quick Start Guide](quickstart.md) | **Next**: [Migration Guide](migration.md) | __See also_*: [Hardware Compatibility](../hardware/compatibility.md)
 
 
 ```text`

@@ -1,3 +1,4 @@
+
 # Hardware Tools
 
 This directory contains scripts for hardware detection and configuration in the AI Playground project.
@@ -60,8 +61,14 @@ performance.
 The hardware detection module is designed to:
 
 1. Detect available hardware (GPUs, CPUs)
+
+
 1. Identify specific hardware types (Intel Arc GPUs, OpenVINO-compatible devices, etc.)
+
+
 1. Provide information about hardware capabilities
+
+
 1. Support CI/CD testing with simulated hardware environments
 
 ## Usage
@@ -69,6 +76,7 @@ The hardware detection module is designed to:
 ### Basic Usage
 
 ```python
+
 from tools.hardware.hardware_detection import detect_hardware_type, get_hardware_info
 
 ## Get the detected hardware type
@@ -92,6 +100,7 @@ print(f"OpenVINO available: {info['openvino_available']}")
 You can also run the module directly to print hardware information:
 
 ```bash
+
 python tools/hardware/hardware_detection.py
 
 ```text
@@ -99,6 +108,7 @@ python tools/hardware/hardware_detection.py
 Add the `--verbose` or `-v` flag to see more detailed information:
 
 ```bash
+
 python tools/hardware/hardware_detection.py --verbose
 
 ```text
@@ -124,6 +134,7 @@ The module supports CI/CD testing with simulated hardware environments. This all
 To simulate specific hardware in CI, set the `SIMULATED_HARDWARE` environment variable:
 
 ```bash
+
 export SIMULATED_HARDWARE=acm
 python tools/hardware/hardware_detection.py
 
@@ -132,6 +143,7 @@ python tools/hardware/hardware_detection.py
 You can also use the provided setup script:
 
 ```bash
+
 python .github/workflows/scripts/hardware_env_setup.py acm
 
 ```text
@@ -151,6 +163,7 @@ The module can also use mock files to simulate hardware. Create a directory with
 Then set the `UVFAST_MOCK_DIR` environment variable:
 
 ```bash
+
 export UVFAST_MOCK_DIR=.uvfast/mock
 
 ```text
@@ -162,6 +175,7 @@ The module uses a configuration file (`uvfast.json`) to customize hardware detec
 Example configuration:
 
 ```json
+
 {
   "hardware_types": ["base", "acm", "bmg", "mtl", "lnl", "ovino", "arl_h"],
   "default_hardware": "base",

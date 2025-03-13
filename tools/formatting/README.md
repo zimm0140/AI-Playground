@@ -1,3 +1,4 @@
+
 # Formatting Tools
 
 This directory contains scripts for formatting code and documentation in the AI Playground project.

@@ -1,3 +1,4 @@
+
 # Legal Documentation
 
 This directory contains legal documentation for the AI Playground project.

@@ -1,3 +1,4 @@
+
 # Hardware Optimization Guide
 
 This guide provides detailed information on optimizing AI-Playground for different hardware configurations to achieve the best performance.
@@ -7,11 +8,21 @@ This guide provides detailed information on optimizing AI-Playground for differe
 These optimization principles apply to all hardware configurations:
 
 1. *_Use the right environment__: Let the automatic hardware detection choose the optimal configuration
-2. __Update drivers__: Always use the latest drivers for your hardware
-3. __Close background applications__: Minimize resource competition
-4. __Monitor resource usage__: Use monitoring tools to identify bottlenecks
-5. __Batch processing__: Use appropriate batch sizes for your hardware
-6. __Mixed precision__: Enable mixed precision where appropriate
+
+
+1. **Update drivers**: Always use the latest drivers for your hardware
+
+
+1. **Close background applications**: Minimize resource competition
+
+
+1. **Monitor resource usage**: Use monitoring tools to identify bottlenecks
+
+
+1. **Batch processing**: Use appropriate batch sizes for your hardware
+
+
+1. **Mixed precision**: Enable mixed precision where appropriate
 
 ## Intel Arc GPUs Optimization
 
@@ -29,36 +40,47 @@ python setup_hardware_env.py --hardware acm
 
 ### Performance Tuning
 
-1. __Enable Intel XPU backend__:
+1. **Enable Intel XPU backend**:
 
    ```python
+
+
    ## In your Python code
 
    import intel_extension_for_pytorch as ipex
    model = model.to("xpu")
+
    ```text
 
-1. __Use XPU-specific thread count__:
+1. **Use XPU-specific thread count**:
 
    ```python
+
    import os
+
    ## For Arc A770
 
    os.environ["ZE_AFFINITY_MASK"] = "0.0"
+
    ```text
 
-1. __Optimize memory usage__:
+1. **Optimize memory usage**:
 
    ```python
+
+
    ## Clear cache between processing
 
    import torch
    torch.xpu.empty_cache()
+
    ```text
 
-1. __Enable mixed precision__:
+1. **Enable mixed precision**:
 
    ```python
+
+
    ## Use BF16 for Arc GPUs
 
    import torch
@@ -75,6 +97,8 @@ python setup_hardware_env.py --hardware acm
    output = model(input)
 
 ```text
+
+
    ```text
 
 ### Arc-Specific Settings
@@ -189,9 +213,15 @@ offload_config = {"offload_buffers": True}
 For systems with limited GPU memory:
 
 1. Use smaller batch sizes
-2. Use 16-bit precision where possible
-3. Consider model pruning for inference
-4. Use model splitting techniques for large models
+
+
+1. Use 16-bit precision where possible
+
+
+1. Consider model pruning for inference
+
+
+1. Use model splitting techniques for large models
 
 ## Benchmarking and Performance Measurement
 
@@ -229,6 +259,7 @@ The tool will report:
 For advanced users, edit `/uvfast.json` to fine-tune hardware configurations:
 
 ```json
+
 {
   "hardware_optimizations": {
 
@@ -241,13 +272,14 @@ For advanced users, edit `/uvfast.json` to fine-tune hardware configurations:
 }
 
 ```text
+
   }
 }
 
 ```text
 
 ---
-__Previous__: [Hardware Compatibility](compatibility.md) | __Next__: [Intel Arc Guide](device-specific/intel-arc.md) | __See also_*: [Performance
+**Previous**: [Hardware Compatibility](compatibility.md) | **Next**: [Intel Arc Guide](device-specific/intel-arc.md) | __See also_*: [Performance
 Troubleshooting](../reference/troubleshooting.md)
 
 ```text`

@@ -1,3 +1,4 @@
+
 # Quick Start Guide
 
 This guide will help you quickly set up and start using AI-Playground.
@@ -90,6 +91,6 @@ AI-Playground automatically detects and optimizes for your hardware:
 - [Hardware Optimization](../hardware/optimization.md) - Learn how to optimize for your specific hardware
 - [Example Workflows](../reference/examples.md) - Explore example workflows and use cases
 
-*___**___**___**___**___**___**___**___**___**___**___**___**___**____
+***_****_****_****_****_****_****_****_****_****_****_****_****_****__
 
-__Next__: [Installation Guide](installation.md) | __See also_*: [Hardware Overview](../hardware/overview.md)
+**Next**: [Installation Guide](installation.md) | __See also_*: [Hardware Overview](../hardware/overview.md)

@@ -1,3 +1,4 @@
+
 # Hardware Compatibility
 
 This guide provides detailed information about hardware compatibility in AI-Playground, including recommended configurations, driver requirements, and known limitations.
@@ -136,7 +137,7 @@ python service/tools/hardware_compatibility_check.py
 This will generate a report about your hardware configuration and any potential compatibility issues.
 
 ---
-*_Previous__: [Hardware Overview](overview.md) | __Next__: [Hardware Optimization](optimization.md) | __See also_*: [Intel Arc Guide](device-specific/intel-arc.md)
+*_Previous**: [Hardware Overview](overview.md) | **Next**: [Hardware Optimization](optimization.md) | **See also_*: [Intel Arc Guide](device-specific/intel-arc.md)
 
 
 ```text`

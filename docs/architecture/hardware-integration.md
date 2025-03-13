@@ -1,3 +1,4 @@
+
 # Hardware Integration Architecture
 
 This document explains how AI-Playground integrates with different hardware platforms to provide optimized performance across various devices.
@@ -7,10 +8,18 @@ This document explains how AI-Playground integrates with different hardware plat
 AI-Playground's hardware integration architecture is designed to:
 
 1. *_Abstract hardware differences__: Shield users from hardware-specific implementation details
-2. __Maximize performance__: Leverage hardware-specific optimizations when available
-3. __Provide graceful fallbacks__: Work even when optimal hardware is unavailable
-4. __Support seamless transitions__: Allow easy switching between hardware options
-5. __Enable extensibility__: Make it easy to add support for new hardware
+
+
+1. **Maximize performance**: Leverage hardware-specific optimizations when available
+
+
+1. **Provide graceful fallbacks**: Work even when optimal hardware is unavailable
+
+
+1. **Support seamless transitions**: Allow easy switching between hardware options
+
+
+1. **Enable extensibility**: Make it easy to add support for new hardware
 
 ## Hardware Support Layers
 
@@ -39,6 +48,7 @@ The hardware integration consists of several layers:
 ```text
 
 ```text
+
 ┌────────────────────────────────────────────────────────────────┐
 │                       Device Selector                          │
 └────────────────────────────────────────────────────────────────┘
@@ -61,6 +71,7 @@ The hardware integration consists of several layers:
 ```text
 
 ```text
+
 ┌────────────────────────────────────────────────────────────────┐
 │                    Hardware Abstraction Layer                  │
 └────────────────────────────────────────────────────────────────┘
@@ -75,6 +86,7 @@ The hardware integration consists of several layers:
 ```text
 
 ```text
+
 ┌──────────────┐ ┌──────────┐ ┌────────────┐ ┌────────────────┐
 │ Intel XPU    │ │ Intel NPU│ │ NVIDIA CUDA│ │ CPU Fallback   │
 │ Backend      │ │ Backend  │ │ Backend    │ │ Backend        │
@@ -90,6 +102,7 @@ The hardware integration consists of several layers:
 ```text
 
 ```text
+
 ┌──────────────┐ ┌──────────┐ ┌────────────┐ ┌────────────────┐
 │ Intel        │ │ Intel    │ │ NVIDIA     │ │ CPU Only       │
 │ Arc GPUs     │ │ NPU      │ │ GPUs       │ │ Systems        │
@@ -132,15 +145,24 @@ Implements hardware-specific optimizations:
 
 The hardware detection process consists of the following steps:
 
-1. __System Probing__: Query the system for available hardware
-2. __Capability Assessment__: Determine the capabilities of detected hardware
-3. __Driver Validation__: Check for required drivers and their versions
-4. __Feature Verification__: Test for specific hardware features
-5. __Priority Assignment__: Assign priorities to available hardware options
+1. **System Probing**: Query the system for available hardware
+
+
+1. **Capability Assessment**: Determine the capabilities of detected hardware
+
+
+1. **Driver Validation**: Check for required drivers and their versions
+
+
+1. **Feature Verification**: Test for specific hardware features
+
+
+1. **Priority Assignment**: Assign priorities to available hardware options
 
 ### Detection Implementation
 
 ```python
+
 def detect_hardware():
 
 ```text
@@ -179,9 +201,11 @@ available_devices.append({
 "backend": "xpu"
 
 ```text
+
 })
 
 ```text
+
 elif "Intel(R) Battlemage(TM)" in gpu:
 
 ```text
@@ -196,6 +220,7 @@ available_devices.append({
 "backend": "xpu"
 
 ```text
+
 })
 
 ```text
@@ -230,6 +255,7 @@ available_devices.append({
 "backend": "cuda"
 
 ```text
+
 })
 
 ```text
@@ -260,6 +286,7 @@ available_devices.append({
 "backend": "npu"
 
 ```text
+
 })
 
 ```text
@@ -284,6 +311,7 @@ available_devices.append({
 "backend": "cpu"
 
 ```text
+
 })
 
 ```text
@@ -309,6 +337,7 @@ Once the hardware is detected, the appropriate environment is set up:
 ### Intel Arc GPU (XPU) Environment
 
 ```python
+
 def setup_arc_environment():
 
 ```text
@@ -332,6 +361,7 @@ torch.xpu.set_device(0)
 print("Intel Extension for PyTorch and XPU backend enabled")
 
 ```text
+
 except ImportError:
 
 ```text
@@ -347,6 +377,7 @@ print("Intel Extension for PyTorch not found, running with limited optimizations
 ### Intel NPU Environment
 
 ```python
+
 def setup_npu_environment():
 
 ```text
@@ -367,6 +398,7 @@ import neural_compressor
 print("Neural Compressor found, NPU optimizations enabled")
 
 ```text
+
 except ImportError:
 
 ```text
@@ -382,6 +414,7 @@ print("Neural Compressor not found, running with limited NPU optimizations")
 ### NVIDIA GPU Environment
 
 ```python
+
 def setup_nvidia_environment():
 
 ```text
@@ -409,6 +442,7 @@ print(f"CUDA enabled: {torch.cuda.get_device_name(0)}")
 ```text
 
 ```text
+
 except ImportError:
 
 ```text
@@ -428,6 +462,7 @@ The hardware integration includes model optimization for each backend:
 ### XPU Optimization
 
 ```python
+
 def optimize_model_for_xpu(model):
 
 ```text
@@ -479,6 +514,7 @@ model = torch.jit.trace(model, example_input)
 model = torch.jit.freeze(model)
 
 ```text
+
 except Exception as e:
 
 ```text
@@ -500,6 +536,7 @@ return model
 ### NPU Optimization
 
 ```python
+
 def optimize_model_for_npu(model):
 
 ```text
@@ -558,6 +595,7 @@ return quantized_model
 ### CUDA Optimization
 
 ```python
+
 def optimize_model_for_cuda(model):
 
 ```text
@@ -614,6 +652,7 @@ model = torch.jit.trace(model, example_input)
 model = torch.jit.freeze(model)
 
 ```text
+
 except Exception as e:
 
 ```text
@@ -639,6 +678,7 @@ Each hardware backend has its own memory management strategy:
 ### XPU Memory Management
 
 ```python
+
 def manage_xpu_memory(batch_size, model_size):
 
 ```text
@@ -705,6 +745,7 @@ return optimal_batch_size
 ### CUDA Memory Management
 
 ```python
+
 def manage_cuda_memory(batch_size, model_size):
 
 ```text
@@ -774,6 +815,7 @@ Each hardware type has specific configurations to optimize performance:
 ### Intel Arc Configuration
 
 ```json
+
 {
   "hardware": "arc",
   "memory": {
@@ -785,6 +827,7 @@ Each hardware type has specific configurations to optimize performance:
 "offload_to_host": true
 
 ```text
+
   },
   "execution": {
 
@@ -796,6 +839,7 @@ Each hardware type has specific configurations to optimize performance:
 "max_compile_time_seconds": 60
 
 ```text
+
   },
   "optimizations": {
 
@@ -806,6 +850,7 @@ Each hardware type has specific configurations to optimize performance:
 "enable_kernel_caching": true
 
 ```text
+
   },
   "environment_variables": {
 
@@ -815,6 +860,7 @@ Each hardware type has specific configurations to optimize performance:
 "ONEAPI_DEVICE_SELECTOR": "level_zero:gpu"
 
 ```text
+
   }
 }
 
@@ -823,6 +869,7 @@ Each hardware type has specific configurations to optimize performance:
 ### NPU Configuration
 
 ```json
+
 {
   "hardware": "npu",
   "memory": {
@@ -833,6 +880,7 @@ Each hardware type has specific configurations to optimize performance:
 "preallocate": false
 
 ```text
+
   },
   "execution": {
 
@@ -843,6 +891,7 @@ Each hardware type has specific configurations to optimize performance:
 "optimize_for_inference": true
 
 ```text
+
   },
   "optimizations": {
 
@@ -852,6 +901,7 @@ Each hardware type has specific configurations to optimize performance:
 "enable_layer_fusion": true
 
 ```text
+
   },
   "environment_variables": {
 
@@ -861,6 +911,7 @@ Each hardware type has specific configurations to optimize performance:
 "ONEDNN_MAX_CPU_ISA": "AVX512_CORE_AMX"
 
 ```text
+
   }
 }
 
@@ -871,6 +922,7 @@ Each hardware type has specific configurations to optimize performance:
 The Hardware Abstraction Layer provides a unified interface for all backends:
 
 ```python
+
 class HardwareBackend:
 
 ```text
@@ -881,7 +933,7 @@ class HardwareBackend:
 
 ```text
 
-def __init__(self, config=None):
+def **init**(self, config=None):
 
 ```text
 
@@ -978,6 +1030,7 @@ raise NotImplementedError
 Here's an example of implementing the XPU backend:
 
 ```python
+
 class XPUBackend(HardwareBackend):
 
 ```text
@@ -988,12 +1041,12 @@ class XPUBackend(HardwareBackend):
 
 ```text
 
-def __init__(self, config=None):
+def **init**(self, config=None):
 
 ```text
 
 """Initialize the XPU backend."""
-super().__init__(config)
+super().**init**(config)
 self.device_type = "xpu"
 
 ```text
@@ -1050,6 +1103,7 @@ self.ipex = ipex
 return True
 
 ```text
+
 except ImportError:
 
 ```text
@@ -1079,6 +1133,7 @@ import torch
 return hasattr(torch, "xpu") and torch.xpu.is_available()
 
 ```text
+
 except ImportError:
 
 ```text
@@ -1152,6 +1207,7 @@ if precision == "mixed" or precision == "fp16":
 model = self.ipex.optimize(model, dtype=self.torch.float16)
 
 ```text
+
 else:
 
 ```text
@@ -1210,6 +1266,7 @@ inputs = {k: v.to("xpu") if hasattr(v, "to") else v
 ```text
 
 ```text
+
 with self.torch.no_grad():
 
 ```text
@@ -1219,6 +1276,7 @@ outputs = model(__inputs)
 ```text
 
 ```text
+
 else:
 
 ```text
@@ -1244,6 +1302,7 @@ if hasattr(inputs, "to"):
 inputs = inputs.to("xpu")
 
 ```text
+
 with self.torch.no_grad():
 
 ```text
@@ -1293,6 +1352,7 @@ outputs = {k: v.to("cpu") if hasattr(v, "to") else v
 ```text
 
 ```text
+
 elif hasattr(outputs, "to"):
 
 ```text
@@ -1364,6 +1424,7 @@ return {
 "free": free_mem
 
 ```text
+
 }
 
 ```text
@@ -1395,11 +1456,19 @@ self.torch.xpu.empty_cache()
 
 To add support for a new hardware platform:
 
-1. __Create a new backend class__ inheriting from `HardwareBackend`
-2. __Implement required methods__ for the new hardware
-3. __Add detection logic__ to identify the new hardware
-4. __Create optimization profiles__ for the new hardware
-5. __Register the backend__ with the hardware abstraction layer
+1. **Create a new backend class** inheriting from `HardwareBackend`
+
+
+1. **Implement required methods** for the new hardware
+
+
+1. **Add detection logic** to identify the new hardware
+
+
+1. **Create optimization profiles** for the new hardware
+
+
+1. **Register the backend** with the hardware abstraction layer
 
 ```python
 
@@ -1417,11 +1486,11 @@ class NewHardwareBackend(HardwareBackend):
 
 ```text
 
-def __init__(self, config=None):
+def **init**(self, config=None):
 
 ```text
 
-super().__init__(config)
+super().**init**(config)
 self.device_type = "new_hardware"
 
 ```text
@@ -1524,6 +1593,7 @@ backend_registry.register("new_hardware", NewHardwareBackend)
 The hardware integration includes performance monitoring capabilities:
 
 ```python
+
 def monitor_hardware_performance(backend, model, inputs, iterations=10):
 
 ```text
@@ -1557,6 +1627,7 @@ Returns:
 Performance metrics
 
 ```text
+
 """
 
 ## Warm-up run
@@ -1585,6 +1656,7 @@ for _ in range(iterations):
 backend.run_inference(model, inputs)
 
 ```text
+
 end_time = time.time()
 
 ```text
@@ -1628,6 +1700,7 @@ return {
 "memory": memory_info
 
 ```text
+
 }
 
 ```text
@@ -1643,7 +1716,7 @@ return {
 - [NVIDIA GPU Guide](../hardware/device-specific/nvidia.md)
 
 ---
-*_Previous__: [API Design](api-design.md) | __Next__: [Data Flow](data-flow.md) | __See also_*: [Architecture Overview](overview.md)
+*_Previous**: [API Design](api-design.md) | **Next**: [Data Flow](data-flow.md) | **See also_*: [Architecture Overview](overview.md)
 
 
 ```text`

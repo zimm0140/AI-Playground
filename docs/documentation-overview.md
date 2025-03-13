@@ -1,3 +1,4 @@
+
 # Documentation Overview
 
 This page provides a comprehensive overview of the AI-Playground documentation, organized by category. Use this as a starting point to find the information you need.
@@ -100,25 +101,37 @@ Information about maintaining the documentation:
 If you're new to AI-Playground, we recommend starting with:
 
 1. [Quick Start Guide](getting-started/quickstart.md)
-2. [Hardware Overview](hardware/overview.md)
-3. [Python Client Examples](examples/python-client.md)
+
+
+1. [Hardware Overview](hardware/overview.md)
+
+
+1. [Python Client Examples](examples/python-client.md)
 
 ### For Developers
 
 If you're developing with AI-Playground, focus on:
 
 1. [API Reference](reference/api.md)
-2. [Architecture Overview](architecture/overview.md)
-3. [Hardware Integration](architecture/hardware-integration.md)
+
+
+1. [Architecture Overview](architecture/overview.md)
+
+
+1. [Hardware Integration](architecture/hardware-integration.md)
 
 ### For Contributors
 
 If you want to contribute to AI-Playground, check out:
 
 1. [Contributing Guide](development/contributing.md)
-2. [Code Quality Standards](development/code-quality.md)
-3. [Testing Guide](development/testing.md)
 
-*___**___**___**___**___**___**___**___**___**___**___**___**___**____
+
+1. [Code Quality Standards](development/code-quality.md)
+
+
+1. [Testing Guide](development/testing.md)
+
+***_****_****_****_****_****_****_****_****_****_****_****_****_****__
 
 __See also_*: [Index](index.md) | [GitHub Repository](https://github.com/example/ai-playground)
