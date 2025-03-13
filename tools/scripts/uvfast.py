@@ -260,6 +260,11 @@ class UVFast:
         if not self._create_venv(args.clean):
             return 1
 
+        # Install dependencies
+        return self._install_dependencies(hardware_type, args)
+
+    def _install_dependencies(self, hardware_type: str, args: argparse.Namespace) -> int:
+        """Install dependencies based on the hardware type and arguments."""
         # Get requirements files
         req_files = self._get_requirements_files(hardware_type, args.dev)
         if not req_files:
@@ -269,32 +274,21 @@ class UVFast:
         # Get Python executable
         python_executable = self._get_python_executable()
 
-        # Install dependencies
+        # Install dependencies from each requirements file
+        return self._process_requirements_files(req_files, python_executable, hardware_type, args)
+
+    def _process_requirements_files(
+        self, req_files: list[str], python_executable: Path, hardware_type: str, args: argparse.Namespace
+    ) -> int:
+        """Process each requirements file and install dependencies."""
         for req_file in req_files:
             logging.info(f"Installing dependencies from {req_file}")
 
             try:
                 if args.use_lockfile:
-                    # Use lockfile if available
-                    lockfile = self._get_lockfile_path(hardware_type, args.dev)
-                    if Path(lockfile).exists():
-                        logging.info(f"Using lockfile: {lockfile}")
-                        if self._ensure_uv_installed():
-                            subprocess.run(["uv", "pip", "sync", lockfile], check=True)
-                        else:
-                            subprocess.run(
-                                [str(python_executable), "-m", "pip", "install", "-r", lockfile],
-                                check=True,
-                            )
-                    else:
-                        logging.info(f"Lockfile not found: {lockfile}")
-                        if self._ensure_uv_installed():
-                            subprocess.run(["uv", "pip", "install", "-r", req_file], check=True)
-                        else:
-                            subprocess.run(
-                                [str(python_executable), "-m", "pip", "install", "-r", req_file],
-                                check=True,
-                            )
+                    success = self._install_from_lockfile(hardware_type, req_file, python_executable, args)
+                    if not success:
+                        return 1
                 # Install from requirements file
                 elif self._ensure_uv_installed():
                     subprocess.run(["uv", "pip", "install", "-r", req_file], check=True)
@@ -308,13 +302,42 @@ class UVFast:
                 return 1
 
         logging.info("\nEnvironment setup complete!")
+        self._display_activation_info()
+        return 0
+
+    def _install_from_lockfile(
+        self, hardware_type: str, req_file: str, python_executable: Path, args: argparse.Namespace
+    ) -> bool:
+        """Install dependencies using a lockfile if available."""
+        # Use lockfile if available
+        lockfile = self._get_lockfile_path(hardware_type, args.dev)
+        if Path(lockfile).exists():
+            logging.info(f"Using lockfile: {lockfile}")
+            if self._ensure_uv_installed():
+                subprocess.run(["uv", "pip", "sync", lockfile], check=True)
+            else:
+                subprocess.run(
+                    [str(python_executable), "-m", "pip", "install", "-r", lockfile],
+                    check=True,
+                )
+        else:
+            logging.info(f"Lockfile not found: {lockfile}")
+            if self._ensure_uv_installed():
+                subprocess.run(["uv", "pip", "install", "-r", req_file], check=True)
+            else:
+                subprocess.run(
+                    [str(python_executable), "-m", "pip", "install", "-r", req_file],
+                    check=True,
+                )
+        return True
+
+    def _display_activation_info(self) -> None:
+        """Display information about activating the virtual environment."""
         logging.info("To activate the environment:")
         if platform.system() == "Windows":
             logging.info(f"    {self._get_venv_path()}\\Scripts\\activate")
         else:
             logging.info(f"    source {self._get_venv_path()}/bin/activate")
-
-        return 0
 
     def run(self, args: argparse.Namespace) -> int:
         """Run a command in the configured environment."""
@@ -375,8 +398,15 @@ class UVFast:
 
     def info(self, args: argparse.Namespace) -> int:
         """Display information about the environment."""
+        self._display_hardware_info(args.verbose)
+        self._display_environment_info(args)
+        self._display_config_info()
+        return 0
+
+    def _display_hardware_info(self, verbose: bool) -> None:
+        """Display hardware information."""
         # Show hardware information
-        if hardware_detection:
+        if "hardware_detection" in sys.modules:
             logging.info("Hardware Information:")
             detected_type = hardware_detection.detect_hardware_type()
             logging.info(f"  Detected hardware type: {detected_type}")
@@ -386,22 +416,8 @@ class UVFast:
             is_igpu_capable = hardware_detection.is_igpu_capable()
 
             # Display detailed hardware info
-            if args.verbose:
-                if platform.system() == "Windows":
-                    logging.info("\nGPU Details (Windows):")
-                    gpu_info = hardware_detection.get_windows_gpu_info()
-                    for gpu in gpu_info:
-                        logging.info(f"  {gpu}")
-                elif platform.system() == "Linux":
-                    logging.info("\nGPU Details (Linux):")
-                    gpu_info = hardware_detection.get_linux_gpu_info()
-                    for line in gpu_info:
-                        logging.info(f"  {line}")
-                else:
-                    logging.info("\nGPU Details (macOS):")
-                    gpu_info = hardware_detection.get_mac_gpu_info()
-                    for line in gpu_info:
-                        logging.info(f"  {line}")
+            if verbose:
+                self._display_detailed_gpu_info()
 
             logging.info("\nIntel GPU Capabilities:")
             logging.info(f"  Has Intel Arc GPU: {is_intel_arc}")
@@ -410,6 +426,26 @@ class UVFast:
         else:
             logging.warning("Hardware detection module not available")
 
+    def _display_detailed_gpu_info(self) -> None:
+        """Display detailed GPU information based on the platform."""
+        if platform.system() == "Windows":
+            logging.info("\nGPU Details (Windows):")
+            gpu_info = hardware_detection.get_windows_gpu_info()
+            for gpu in gpu_info:
+                logging.info(f"  {gpu}")
+        elif platform.system() == "Linux":
+            logging.info("\nGPU Details (Linux):")
+            gpu_info = hardware_detection.get_linux_gpu_info()
+            for line in gpu_info:
+                logging.info(f"  {line}")
+        else:
+            logging.info("\nGPU Details (macOS):")
+            gpu_info = hardware_detection.get_mac_gpu_info()
+            for line in gpu_info:
+                logging.info(f"  {line}")
+
+    def _display_environment_info(self, args: argparse.Namespace) -> None:
+        """Display environment information."""
         # Show environment information
         venv_path = self._get_venv_path()
         python_executable = self._get_python_executable()
@@ -419,33 +455,38 @@ class UVFast:
         logging.info(f"  Python executable: {python_executable}")
 
         if python_executable.exists():
-            try:
-                # Get Python version
+            self._display_python_info(python_executable, args.packages)
+        else:
+            logging.warning(f"Python executable not found at {python_executable}")
+
+    def _display_python_info(self, python_executable: Path, show_packages: bool) -> None:
+        """Display Python version and installed packages."""
+        try:
+            # Get Python version
+            result = subprocess.run(
+                [str(python_executable), "--version"],
+                capture_output=True,
+                text=True,
+                check=True,
+            )
+            logging.info(f"  Python version: {result.stdout.strip()}")
+
+            # Get package list
+            if show_packages:
+                logging.info("\nInstalled Packages:")
                 result = subprocess.run(
-                    [str(python_executable), "--version"],
+                    [str(python_executable), "-m", "pip", "list"],
                     capture_output=True,
                     text=True,
                     check=True,
                 )
-                logging.info(f"  Python version: {result.stdout.strip()}")
+                for line in result.stdout.strip().split("\n"):
+                    logging.info(f"  {line}")
+        except subprocess.SubprocessError as e:
+            logging.error(f"Error getting Python information: {e}")
 
-                # Get package list
-                if args.packages:
-                    logging.info("\nInstalled Packages:")
-                    result = subprocess.run(
-                        [str(python_executable), "-m", "pip", "list"],
-                        capture_output=True,
-                        text=True,
-                        check=True,
-                    )
-                    for line in result.stdout.strip().split("\n"):
-                        logging.info(f"  {line}")
-            except subprocess.SubprocessError as e:
-                logging.error(f"Error getting Python information: {e}")
-        else:
-            logging.warning(f"Python executable not found at {python_executable}")
-
-        # Show configuration information
+    def _display_config_info(self) -> None:
+        """Display configuration information."""
         logging.info("\nConfiguration:")
         for key, value in self.config.items():
             if isinstance(value, dict):
@@ -454,8 +495,6 @@ class UVFast:
                     logging.info(f"    {k}: {v}")
             else:
                 logging.info(f"  {key}: {value}")
-
-        return 0
 
     def legacy_install(self, args: argparse.Namespace) -> int:
         """Install dependencies using traditional pip (but accelerated with uv)."""
@@ -572,24 +611,33 @@ class UVFast:
 
         args = parser.parse_args()
 
+        # Initialize return code as success
+        return_code = 0
+
         # Default to info if no command specified
         if not args.command:
             logging.info("No command specified, showing environment information\n")
-            return self.info(argparse.Namespace(verbose=False, packages=False))
+            return_code = self.info(argparse.Namespace(verbose=False, packages=False))
+        else:
+            # Dispatch to appropriate command
+            return_code = self._dispatch_command(args)
 
-        # Dispatch to appropriate command
-        if args.command == "setup":
-            return self.setup(args)
-        elif args.command == "run":
-            return self.run(args)
-        elif args.command == "lock":
-            return self.lock(args)
-        elif args.command == "info":
-            return self.info(args)
-        elif args.command == "legacy-install":
-            return self.legacy_install(args)
-        elif args.command == "hardware-check":
-            return self.hardware_check(args)
+        return return_code
+
+    def _dispatch_command(self, args: argparse.Namespace) -> int:
+        """Dispatch to the appropriate command method based on the command argument."""
+        command_handlers = {
+            "setup": self.setup,
+            "run": self.run,
+            "lock": self.lock,
+            "info": self.info,
+            "legacy-install": self.legacy_install,
+            "hardware-check": self.hardware_check,
+        }
+
+        handler = command_handlers.get(args.command)
+        if handler:
+            return handler(args)
         else:
             logging.error(f"Unknown command: {args.command}")
             return 1
