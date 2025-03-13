@@ -10,19 +10,19 @@ These optimization principles apply to all hardware configurations:
 1. *_Use the right environment__: Let the automatic hardware detection choose the optimal configuration
 
 
-2. **Update drivers**: Always use the latest drivers for your hardware
+1. **Update drivers**: Always use the latest drivers for your hardware
 
 
-2. **Close background applications**: Minimize resource competition
+1. **Close background applications**: Minimize resource competition
 
 
-2. **Monitor resource usage**: Use monitoring tools to identify bottlenecks
+1. **Monitor resource usage**: Use monitoring tools to identify bottlenecks
 
 
-2. **Batch processing**: Use appropriate batch sizes for your hardware
+1. **Batch processing**: Use appropriate batch sizes for your hardware
 
 
-2. **Mixed precision**: Enable mixed precision where appropriate
+1. **Mixed precision**: Enable mixed precision where appropriate
 
 ## Intel Arc GPUs Optimization
 
@@ -40,7 +40,7 @@ python setup_hardware_env.py --hardware acm
 
 ### Performance Tuning
 
-2. **Enable Intel XPU backend**:
+1. **Enable Intel XPU backend**:
 
    ```python
 
@@ -52,7 +52,7 @@ python setup_hardware_env.py --hardware acm
 
    ```text
 
-2. **Use XPU-specific thread count**:
+1. **Use XPU-specific thread count**:
 
    ```python
 
@@ -64,7 +64,7 @@ python setup_hardware_env.py --hardware acm
 
    ```text
 
-2. **Optimize memory usage**:
+1. **Optimize memory usage**:
 
    ```python
 
@@ -76,7 +76,7 @@ python setup_hardware_env.py --hardware acm
 
    ```text
 
-2. **Enable mixed precision**:
+1. **Enable mixed precision**:
 
    ```python
 
@@ -212,16 +212,16 @@ offload_config = {"offload_buffers": True}
 
 For systems with limited GPU memory:
 
-2. Use smaller batch sizes
+1. Use smaller batch sizes
 
 
-2. Use 16-bit precision where possible
+1. Use 16-bit precision where possible
 
 
-2. Consider model pruning for inference
+1. Consider model pruning for inference
 
 
-2. Use model splitting techniques for large models
+1. Use model splitting techniques for large models
 
 ## Benchmarking and Performance Measurement
 

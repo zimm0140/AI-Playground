@@ -16,7 +16,7 @@ Thank you for your interest in contributing to AI-Playground! This document outl
 
    - Download and install [Miniconda](https://docs.conda.io/en/latest/miniconda.html) or [Anaconda](https://www.anaconda.com/products/distribution)
 
-2. **Create and activate the environment**:
+1. **Create and activate the environment**:
 
 \`\`\`text\`bash
 
@@ -35,7 +35,7 @@ pip install -r requirements.txt
 ```text`text
 
 
-2. **Verify the environment**:
+1. **Verify the environment**:
 
 ```bash
 
@@ -51,7 +51,7 @@ python -c "import jsonschema; print(f'jsonschema version: {jsonschema.**version*
 
 ### Option 2: Using venv
 
-2. **Create and activate the environment**:
+1. **Create and activate the environment**:
 
 ```bash
 
@@ -73,7 +73,7 @@ pip install -r requirements.txt
 
 ## Environment Management Best Practices
 
-2. **Always activate your environment before working on the project**:
+1. **Always activate your environment before working on the project**:
 
 ```bash
 
@@ -92,7 +92,7 @@ source .venv/bin/activate
 ```text
 
 
-2. **Add new dependencies to requirements.txt**:
+1. **Add new dependencies to requirements.txt**:
 
 When adding a new package, update the requirements.txt file:
 
@@ -109,7 +109,7 @@ echo "package-name==1.2.3" >> requirements.txt
 ```text
 
 
-2. __Never commit environment directories_*:
+1. __Never commit environment directories_*:
 
 The .gitignore file is set up to exclude environment directories (.venv/, env/, etc.).
 Do not manually commit these directories.
@@ -170,17 +170,17 @@ The process described here has several goals:
 
 Please follow these steps to have your contribution considered by the maintainers:
 
-2. Always set base branch to [dev](https://github.com/intel/AI-Playground/tree/dev), do NOT make pull requests to the main branch without a strong reason.
+1. Always set base branch to [dev](https://github.com/intel/AI-Playground/tree/dev), do NOT make pull requests to the main branch without a strong reason.
 
 
-2. Follow all instructions in [the template](/.github/pull_request_template.md).
+1. Follow all instructions in [the template](/.github/pull_request_template.md).
 
 
-2. After you submit your pull request, verify that all [status checks](https://docs.github.
+1. After you submit your pull request, verify that all [status checks](https://docs.github.
 
 com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/about-status-checks) are passing.
 
-2. [Sign your work](/CONTRIBUTING.md#sign-your-work).
+1. [Sign your work](/CONTRIBUTING.md#sign-your-work).
 
 While the prerequisites above must be satifisfied prior to have your pull request reviewed, the reviewer(s) may ask you to complete additional design work, tests, or other changes
 before your pull request can be ultimately accepted.

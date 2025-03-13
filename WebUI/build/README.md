@@ -6,7 +6,7 @@
 1. run `npm install`
 
 
-2. aquire windows libuv dlls, e.g. via miniforge:
+1. aquire windows libuv dlls, e.g. via miniforge:
 
    - Install miniforge: <https://github.com/conda-forge/miniforge>
    - Create a reference conda environment with libuv installed
@@ -21,7 +21,7 @@
 
    ```text
 
-2. run `npm run fetch-build-resources -- --conda_env_dir=$PATH_TO_CONDA_ENV`
+1. run `npm run fetch-build-resources -- --conda_env_dir=$PATH_TO_CONDA_ENV`
 
 ## decide for offline or online installer
 

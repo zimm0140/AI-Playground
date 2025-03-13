@@ -97,16 +97,16 @@ When adding tests:
 1. Create a file named `test_<module_name>.py` for the module you want to test
 
 
-2. Use appropriate fixtures from `conftest.py` to set up test conditions
+1. Use appropriate fixtures from `conftest.py` to set up test conditions
 
 
-2. Follow the unittest or pytest patterns as shown in existing tests
+1. Follow the unittest or pytest patterns as shown in existing tests
 
 
-2. Focus on testing functionality without modifying the implementation
+1. Focus on testing functionality without modifying the implementation
 
 
-2. Use the mock library to isolate tests from external dependencies
+1. Use the mock library to isolate tests from external dependencies
 
 ## Test Guidelines
 

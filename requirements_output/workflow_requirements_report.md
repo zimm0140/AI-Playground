@@ -92,16 +92,16 @@ Generated on: 2025-03-10 01:28:25
 1. **Ensure Required Models Availability**: Pre-download the most commonly used models to avoid runtime downloads.
 
 
-2. **Install Custom Node Extensions**: The custom node extensions listed should be installed before running the workflows.
+1. **Install Custom Node Extensions**: The custom node extensions listed should be installed before running the workflows.
 
 
-2. **Install Python Dependencies**: Add required Python packages to your CI environment.
+1. **Install Python Dependencies**: Add required Python packages to your CI environment.
 
 
-2. **GPU Memory Considerations**: Ensure sufficient GPU memory is available for the workflows you plan to test.
+1. **GPU Memory Considerations**: Ensure sufficient GPU memory is available for the workflows you plan to test.
 
 
-2. **Base Configuration**: Set up a baseline test environment that can run at least the simplest workflows.
+1. **Base Configuration**: Set up a baseline test environment that can run at least the simplest workflows.
 
 **_****_****_****_****_****_****_****_****_****_****_****_****_****_**
 

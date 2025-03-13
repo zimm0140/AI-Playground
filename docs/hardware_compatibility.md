@@ -47,13 +47,13 @@ The system generates the following artifacts:
 1. **Compatibility Matrix** - A matrix showing compatibility scores between different hardware platforms
 
 
-2. **Conflict Reports** - Detailed information about package conflicts, categorized by severity
+1. **Conflict Reports** - Detailed information about package conflicts, categorized by severity
 
 
-2. **Recommendations** - Suggested fixes for detected compatibility issues
+1. **Recommendations** - Suggested fixes for detected compatibility issues
 
 
-2. **JSON Data** - Machine-readable data for further analysis or integration
+1. **JSON Data** - Machine-readable data for further analysis or integration
 
 ## Example Compatibility Matrix
 
@@ -82,25 +82,25 @@ Conflicts are categorized by severity level:
 
 These should be addressed immediately:
 
-2. **Standardize version pinning** - Use the same exact version across all platforms when possible
+1. **Standardize version pinning** - Use the same exact version across all platforms when possible
 
 
-2. **Test with all versions** - If different versions are required, explicitly test compatibility
+1. **Test with all versions** - If different versions are required, explicitly test compatibility
 
 
-2. **Create compatibility shims** - Add code to handle different package versions
+1. **Create compatibility shims** - Add code to handle different package versions
 
 ### Medium Priority Issues
 
 These should be reviewed in a scheduled manner:
 
-2. **Align version constraints** - Try to make constraints more consistent
+1. **Align version constraints** - Try to make constraints more consistent
 
 
-2. **Document known differences** - Explain why different constraints exist
+1. **Document known differences** - Explain why different constraints exist
 
 
-2. **Consider future compatibility** - Plan for future alignment
+1. **Consider future compatibility** - Plan for future alignment
 
 ## Integration with Other CI Features
 
@@ -135,16 +135,16 @@ To run the Hardware Compatibility Advisor:
 
 This script will:
 
-2. Run the hardware compatibility tester
+1. Run the hardware compatibility tester
 
 
-2. Analyze the results and generate recommendations
+1. Analyze the results and generate recommendations
 
 
-2. Create a combined report with test results and recommendations
+1. Create a combined report with test results and recommendations
 
 
-2. Offer to run the auto-fix tool to apply recommendations
+1. Offer to run the auto-fix tool to apply recommendations
 
 ### Recommendations Prioritization
 
@@ -203,64 +203,64 @@ Options:
 
 The auto-fix functionality is integrated with the PR workflow:
 
-2. **Simulation in PR Checks** - When a PR modifies requirements files, auto-fix will run in simulation mode
+1. **Simulation in PR Checks** - When a PR modifies requirements files, auto-fix will run in simulation mode
 
 
-2. **Results in PR Comments** - The PR comments will include what would be changed if auto-fix is applied
+1. **Results in PR Comments** - The PR comments will include what would be changed if auto-fix is applied
 
 
-2. **On-demand Application** - Add a comment with `/auto-fix` to apply the changes automatically
+1. **On-demand Application** - Add a comment with `/auto-fix` to apply the changes automatically
 
 
-2. **Automated Commits** - Changes are committed to the PR branch with detailed commit messages
+1. **Automated Commits** - Changes are committed to the PR branch with detailed commit messages
 
 ### Auto-fix Report
 
 The auto-fix tool generates a comprehensive report that includes:
 
-2. **Changes Applied** - List of changes that were applied with package details
+1. **Changes Applied** - List of changes that were applied with package details
 
 
-2. **Skipped Changes** - List of recommendations that couldn't be applied automatically
+1. **Skipped Changes** - List of recommendations that couldn't be applied automatically
 
 
-2. **Next Steps** - Recommendations for manual intervention if needed
+1. **Next Steps** - Recommendations for manual intervention if needed
 
 
-2. **Backup Information** - Details about backup files created during the process
+1. **Backup Information** - Details about backup files created during the process
 
 ## Future Improvements
 
 Planned enhancements to the hardware compatibility testing system:
 
-2. **Automated conflict resolution** suggestions based on historical data
+1. **Automated conflict resolution** suggestions based on historical data
 
 
-2. **Real-world performance impact** analysis of different package versions
+1. **Real-world performance impact** analysis of different package versions
 
 
-2. **Dependency graph visualization** showing connections between packages
+1. **Dependency graph visualization** showing connections between packages
 
 
-2. **Predictive compatibility analysis** for upcoming hardware platforms
+1. **Predictive compatibility analysis** for upcoming hardware platforms
 
 
-2. **Integration with package management systems** for automated updates
+1. **Integration with package management systems** for automated updates
 
 ## Troubleshooting
 
 If you encounter issues with the hardware compatibility testing:
 
-2. **Check hardware patterns** - Make sure your requirements file follows the naming conventions
+1. **Check hardware patterns** - Make sure your requirements file follows the naming conventions
 
 
-2. **Review the raw JSON data** - Examine the detailed data for insights
+1. **Review the raw JSON data** - Examine the detailed data for insights
 
 
-2. **Run the script manually** with debug flags for more information
+1. **Run the script manually** with debug flags for more information
 
 
-2. __Check for recent changes_* to dependency structures
+1. __Check for recent changes_* to dependency structures
 
 ```text`
 

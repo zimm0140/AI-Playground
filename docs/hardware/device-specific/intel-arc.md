@@ -41,11 +41,11 @@ AI-Playground supports all Intel Arc GPU models:
 
 1. Download the latest driver from [Intel's download center](https://downloadcenter.intel.com/product/226793/Intel-Arc-A-series-Graphics)
 
-2. Install the driver package
+1. Install the driver package
 
-2. Restart your system
+1. Restart your system
 
-2. Verify installation with:
+1. Verify installation with:
 
    ```bash
 
@@ -58,7 +58,7 @@ AI-Playground supports all Intel Arc GPU models:
 
 #### Linux
 
-2. Update your system:
+1. Update your system:
 
    ```bash
 
@@ -66,7 +66,7 @@ AI-Playground supports all Intel Arc GPU models:
 
    ```text
 
-2. Install required packages:
+1. Install required packages:
 
    ```bash
 
@@ -74,7 +74,7 @@ AI-Playground supports all Intel Arc GPU models:
 
    ```text
 
-2. Verify installation:
+1. Verify installation:
 
    ```bash
 
@@ -192,7 +192,7 @@ python service/tools/intel_gpu_diagnostics.py
 
 ### Model Optimization
 
-2. **Quantization**:
+1. **Quantization**:
 
    ```python
 
@@ -209,7 +209,7 @@ python service/tools/intel_gpu_diagnostics.py
 
    ```text
 
-2. **BF16 Mixed Precision**:
+1. **BF16 Mixed Precision**:
 
    ```python
 

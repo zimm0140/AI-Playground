@@ -1,3 +1,4 @@
+
 # Hardware Optimization Guide for AI Applications {#hardware-optimization-guide-for-ai-applications}
 
 This guide explains how to optimize your AI applications for Intel hardware using our hardware-aware environment management system.
@@ -5,14 +6,30 @@ This guide explains how to optimize your AI applications for Intel hardware usin
 ## Table of Contents {#table-of-contents}
 
 1. [Overview](#overview)
-2. [Hardware Types](#hardware-types)
-3. [Environment Setup](#environment-setup)
-4. [Using the AI Framework Integration](#using-the-ai-framework-integration)
-5. [Working with LangChain](#working-with-langchain)
-6. [Working with Stable Diffusion](#working-with-stable-diffusion)
-7. [Performance Benchmarking](#performance-benchmarking)
-8. [Troubleshooting](#troubleshooting)
-9. [Advanced Configuration](#advanced-configuration)
+
+
+1. [Hardware Types](#hardware-types)
+
+
+1. [Environment Setup](#environment-setup)
+
+
+1. [Using the AI Framework Integration](#using-the-ai-framework-integration)
+
+
+1. [Working with LangChain](#working-with-langchain)
+
+
+1. [Working with Stable Diffusion](#working-with-stable-diffusion)
+
+
+1. [Performance Benchmarking](#performance-benchmarking)
+
+
+1. [Troubleshooting](#troubleshooting)
+
+
+1. [Advanced Configuration](#advanced-configuration)
 
 ## Overview {#overview}
 
@@ -284,13 +301,15 @@ If your Intel Arc GPU is not detected:
 
 1. Ensure you have the latest Intel GPU drivers installed
 
-2. Check that the environment variable `XPU_VISIBLE_DEVICES` is set correctly
+1. Check that the environment variable `XPU_VISIBLE_DEVICES` is set correctly
 
-3. Verify that Intel® Extension for PyTorch is installed:
+1. Verify that Intel® Extension for PyTorch is installed:
 
    ```bash
+
    pip install intel-extension-for-pytorch
-   ```
+
+   ```text
 
 #### OpenVINO Issues {#openvino-issues}
 
@@ -298,9 +317,9 @@ For OpenVINO problems:
 
 1. Ensure OpenVINO is correctly installed
 
-2. Verify your CPU is compatible with OpenVINO
+1. Verify your CPU is compatible with OpenVINO
 
-3. Check for environment variable conflicts
+1. Check for environment variable conflicts
 
 #### Performance Issues {#performance-issues}
 
@@ -308,9 +327,9 @@ If you experience slower than expected performance:
 
 1. Use the benchmarking tool to identify bottlenecks
 
-2. Try different batch sizes and model configurations
+1. Try different batch sizes and model configurations
 
-3. Update to the latest versions of Intel® Extension for PyTorch and OpenVINO
+1. Update to the latest versions of Intel® Extension for PyTorch and OpenVINO
 
 ## Advanced Configuration {#advanced-configuration}
 

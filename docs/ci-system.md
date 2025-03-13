@@ -20,16 +20,16 @@ The AI-Playground CI system is designed to:
 1. *_Validate Code Quality__: Ensure code meets quality standards before merging.
 
 
-2. **Run Tests**: Verify that the codebase functions correctly on various platforms.
+1. **Run Tests**: Verify that the codebase functions correctly on various platforms.
 
 
-2. **Generate Documentation**: Keep documentation up-to-date with code changes.
+1. **Generate Documentation**: Keep documentation up-to-date with code changes.
 
 
-2. **Create Artifacts**: Build and package artifacts for distribution.
+1. **Create Artifacts**: Build and package artifacts for distribution.
 
 
-2. **Validate ComfyUI Workflows**: Test and validate workflows for compatibility.
+1. **Validate ComfyUI Workflows**: Test and validate workflows for compatibility.
 
 The CI system uses GitHub Actions for automation and includes pre-commit hooks for catching issues early in the development process.
 
@@ -100,22 +100,22 @@ The CI system includes several utility scripts that help maintain code quality a
 
 To ensure smooth CI operation:
 
-2. **Keep workflow files organized**: Each workflow should have a single responsibility
+1. **Keep workflow files organized**: Each workflow should have a single responsibility
 
 
-2. **Use unique artifact names**: Append job name or matrix variables to artifact names
+1. **Use unique artifact names**: Append job name or matrix variables to artifact names
 
 
-2. **Include conditionals**: Use `if: always()` for artifact uploads to ensure they run even if tests fail
+1. **Include conditionals**: Use `if: always()` for artifact uploads to ensure they run even if tests fail
 
 
-2. **Optimize cache usage**: Use dependency hashing and OS-specific cache paths
+1. **Optimize cache usage**: Use dependency hashing and OS-specific cache paths
 
 
-2. **Keep workflows lean**: Combine similar steps and use job dependencies
+1. **Keep workflows lean**: Combine similar steps and use job dependencies
 
 
-2. **Run pre-commit hooks locally**: Catch issues before pushing to remote
+1. **Run pre-commit hooks locally**: Catch issues before pushing to remote
 
 ## Troubleshooting
 
@@ -169,38 +169,38 @@ __Solution_*: Always use raw strings (`r"pattern"`) for regex patterns and doubl
 
 When contributing to the CI system:
 
-2. Test changes locally before pushing
+1. Test changes locally before pushing
 
 
-2. Document any new workflows or scripts
+1. Document any new workflows or scripts
 
 
-2. Update this documentation if you add/modify CI capabilities
+1. Update this documentation if you add/modify CI capabilities
 
 
-2. Keep backwards compatibility in mind
+1. Keep backwards compatibility in mind
 
 
-2. Consider cross-platform compatibility (Windows, Linux, macOS)
+1. Consider cross-platform compatibility (Windows, Linux, macOS)
 
 ### Adding a New Workflow
 
-2. Use existing workflows as templates
+1. Use existing workflows as templates
 
 
-2. Ensure proper error handling
+1. Ensure proper error handling
 
 
-2. Use conditionals to control when jobs run
+1. Use conditionals to control when jobs run
 
 
-2. Provide clear job and step names
+1. Provide clear job and step names
 
 
-2. Optimize for performance (use caching, fetch-depth: 1, etc.)
+1. Optimize for performance (use caching, fetch-depth: 1, etc.)
 
 
-2. Add status badges for visibility
+1. Add status badges for visibility
 
 ## CI Performance Metrics
 

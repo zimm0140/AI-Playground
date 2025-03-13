@@ -21,10 +21,10 @@ To use a component in your workflow:
 1. Reference it in your workflow file's `components` array with the appropriate `componentId`
 
 
-2. Import the component nodes into your workflow by using the component loader
+1. Import the component nodes into your workflow by using the component loader
 
 
-2. Connect the component's inputs and outputs to other parts of your workflow
+1. Connect the component's inputs and outputs to other parts of your workflow
 
 ## Component Structure
 
@@ -134,19 +134,19 @@ Each component follows this standard format:
 
 To create a new component:
 
-2. Identify a reusable pattern in your workflows
+1. Identify a reusable pattern in your workflows
 
 
-2. Extract the relevant nodes and connections
+1. Extract the relevant nodes and connections
 
 
-2. Define clear inputs and outputs
+1. Define clear inputs and outputs
 
 
-2. Add appropriate documentation
+1. Add appropriate documentation
 
 
-2. Save it in this directory with a descriptive filename
+1. Save it in this directory with a descriptive filename
 
 ## Best Practices
 

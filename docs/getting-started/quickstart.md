@@ -24,7 +24,7 @@ This guide will help you quickly set up and start using AI-Playground.
 
    ```text`
 
-2. Set up the environment:
+1. Set up the environment:
 
    \`\`\`text\`bash
 
@@ -45,7 +45,7 @@ This guide will help you quickly set up and start using AI-Playground.
 
 ## Basic Usage
 
-2. Activate the virtual environment:
+1. Activate the virtual environment:
 
    \`\`\`text\`bash
 
@@ -63,7 +63,7 @@ This guide will help you quickly set up and start using AI-Playground.
 
    ```text`
 
-2. Run the service:
+1. Run the service:
 
    \`\`\`text\`bash
    python service/main.py
@@ -74,7 +74,7 @@ This guide will help you quickly set up and start using AI-Playground.
 
    ```text`
 
-2. Access the web interface by opening `<http://localhost:8000`> in your browser.
+1. Access the web interface by opening `<http://localhost:8000`> in your browser.
 
 ## Hardware-specific Optimizations
 

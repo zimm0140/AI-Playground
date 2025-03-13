@@ -191,20 +191,20 @@ The new package structure provides:
 1. Better dependency management
 
 
-2. Proper namespacing
+1. Proper namespacing
 
 
-2. Type hints and documentation
+1. Type hints and documentation
 
 
-2. Easier testing
+1. Easier testing
 
 
-2. Future extensibility
+1. Future extensibility
 
 ### Steps to Migrate
 
-2. Replace import statements:
+1. Replace import statements:
 
    ```python
 
@@ -219,7 +219,7 @@ The new package structure provides:
 
    ```text
 
-2. Update function calls:
+1. Update function calls:
 
    ```python
 

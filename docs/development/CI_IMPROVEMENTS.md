@@ -101,22 +101,22 @@ Potential future improvements for the CI workflow:
 1. **Docker Integration**: Add container-based testing to ensure more consistent environments
 
 
-2. **Performance Optimization**: Benchmark test execution times and optimize slow steps
+1. **Performance Optimization**: Benchmark test execution times and optimize slow steps
 
 
-2. **Release Automation**: Extend CI to automate release processes
+1. **Release Automation**: Extend CI to automate release processes
 
 
-2. **Automated Dependency Updates**: Integrate Dependabot or similar to keep dependencies up-to-date
+1. **Automated Dependency Updates**: Integrate Dependabot or similar to keep dependencies up-to-date
 
 
-2. **MacOS Testing**: Add MacOS job for complete platform coverage
+1. **MacOS Testing**: Add MacOS job for complete platform coverage
 
 
-2. **UI Testing**: Add browser-based testing if the project has a web interface
+1. **UI Testing**: Add browser-based testing if the project has a web interface
 
 
-2. __Deployment Testing_*: Add tests to verify deployment works correctly
+1. __Deployment Testing_*: Add tests to verify deployment works correctly
 
 ```text`
 
