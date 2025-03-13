@@ -19,6 +19,7 @@
 | "modifiableSettings" | **Required**: Yes, if no default values need leave as empty brackets [ ] <br>**Description**: Input types you'd like the user to adjust: "resolution", "seed", prompt" "inferenceSteps", "batchSize, "cfg", "negativePrompt" <br>**Syntax**: "inputField" ie "inferenceSteps", "seed" |
 | "comfyUiApiWorkflow" | **Required**: Yes <br>**Description**: This section should be a copy and paste of the API export of the workflow created in ComfyUI. |
 
+
 ## Instructions
 
 ### Creating a New An AI Playground Workflow
