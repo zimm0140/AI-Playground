@@ -9,25 +9,43 @@ This guide helps you migrate to the modern Python development workflow using uv 
 s}
 
 - [Migration Guide for AI Playground {#migration-guide-for-ai-playground}](#migration-guide-for-ai-playground-migration-guide-for-ai-playground)
+
   - [Table of Contents {#table-of-content {#table-of-contents-table-of-content}](#table-of-contents-table-of-content-table-of-contents-table-of-content)
+
   - [Migrating from pip to uv {#migrating-from-pip-to {#migrating-from-pip-to-uv-migrating-from-pip-to}](#migrating-from-pip-to-uv-migrating-from-pip-to-migrating-from-pip-to-uv-migrating-from-pip-to)
+
     - [Why Migrate to uv? {#why-migrate- {#why-migrate-to-uv-why-migrate-}](#why-migrate-to-uv-why-migrate--why-migrate-to-uv-why-migrate-)
+
     - [Step-by-Step Migration {#step-by-step-mi {#step-by-step-migration-step-by-step-mi}](#step-by-step-migration-step-by-step-mi-step-by-step-migration-step-by-step-mi)
+
   - [Updating Type Annotations for Python 3.10+ {#updating-type-annotations-for-p {#updating-type-annotations-for-python-310-updating-type-annotations-for-p}](#updating-type-annotations-for-python-310-updating-type-annotations-for-p-updating-type-annotations-for-python-310-updating-type-annotations-for-p)
+
   - [Scan the entire project {#scan-the-ent {#scan-the-entire-project-scan-the-ent}](#scan-the-entire-project-scan-the-ent-scan-the-entire-project-scan-the-ent)
+
   - [Scan a specific file {#scan-a- {#scan-a-specific-file-scan-a-}](#scan-a-specific-file-scan-a--scan-a-specific-file-scan-a-)
+
   - [Working with Docker {# {#working-with-docker-}](#working-with-docker--working-with-docker-)
 
   - [Build and run the development image {#build-and-run- {#build-and-run-the-development-image-build-and-run-}](#build-and-run-the-development-image-build-and-run--build-and-run-the-development-image-build-and-run-)
+
   - [Build and run the production image {#build-and-r {#build-and-run-the-production-image-build-and-r}](#build-and-run-the-production-image-build-and-r-build-and-run-the-production-image-build-and-r)
+
     - [Benefits of the uv-based Dockerfile {#benefits-o {#benefits-of-the-uv-based-dockerfile-benefits-o}](#benefits-of-the-uv-based-dockerfile-benefits-o-benefits-of-the-uv-based-dockerfile-benefits-o)
+
   - [CI/CD Pipeline Upda {#cicd-pipeline-upda}](#cicd-pipeline-upda-cicd-pipeline-upda)
+
   - [Mi {#mi}](#mi-mi)
+
     - [Q: Do I need to uninstall pip?](#q-do-i-need-to-uninstall-pip)
+
     - [Q: Will my existing scripts still work? {#q-wi {#q-will-my-existing-scripts-still-work-q-wi}](#q-will-my-existing-scripts-still-work-q-wi-q-will-my-existing-scripts-still-work-q-wi)
+
     - [Q: How do I add a new dependency {#q-how-do-i-add-a-new-dependency}](#q-how-do-i-add-a-new-dependency-q-how-do-i-add-a-new-dependency)
+
     - [Q: Can I still use requirements.txt {#q-can-i-still-use-requirementstxt}](#q-can-i-still-use-requirementstxt-q-can-i-still-use-requirementstxt)
+
     - [Q: Will these changes affect existing installations? {#q-will-thes {#q-will-these-changes-affect-existing-installations-q-will-thes}](#q-will-these-changes-affect-existing-installations-q-will-thes-q-will-these-changes-affect-existing-installations-q-will-thes)
+
     - [Q: What if I encounter type checking errors after migration? {#q-what-if-i-encou {#q-what-if-i-encounter-type-checking-errors-after-migration-q-what-if-i-encou}](#q-what-if-i-encounter-type-checking-errors-after-migration-q-what-if-i-encou-q-what-if-i-encounter-type-checking-errors-after-migration-q-what-if-i-encou)
 
 n)
@@ -69,7 +87,6 @@ gration}
    ## Windows
 
    powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
-
 
    ```
 
@@ -169,7 +186,6 @@ s}
 
    def func(x: int | str) -> float | None:
 
-
    ```bash
 
    ...
@@ -203,7 +219,6 @@ sh
    ```python
 
    def func(x: int | None = None) -> str | None:
-
 
    ```bash
 
@@ -336,6 +351,7 @@ le offering improved alternatives.
 ### Q: How do I add a new dependency {#q-how-do-i-add-a-new-dependency}
 
 ? {#q-how-do-i-add-a-new-dependency}
+
 A: Add it to `requirements.txt` or `requirements-dev.txt`, then run:
 
    ```bash
@@ -348,6 +364,7 @@ t-file requirements.lock
 ### Q: Can I still use requirements.txt {#q-can-i-still-use-requirementstxt}
 
 ? {#q-can-i-still-use-requirementstxt}
+
 A: Yes. We maintain compatibility with requirements.txt wh
 ile leveraging uv's improved handling.
 
@@ -364,5 +381,5 @@ A: Use the `scripts/fix_type_annotations.py` script to help identify and fix typ
 
 ```bash
 
-```text
+```
 bash

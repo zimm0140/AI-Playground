@@ -13,13 +13,14 @@ Version 2.x introduces significant changes to hardware detection, environment ma
 \`\`\`text\`bash
 git pull origin main
 
-```text`text
+````text
 
 ### Step 2: Clean Your Environment {#step-2-clean-your-environment}
 
 It's recommended to create a fresh environment for v2.x:
 
-```bash
+```ba
+sh
 
 ## Remove old environment {#remove-old-environment}
 
@@ -29,9 +30,11 @@ rm -rf .venv
 
 python setup_hardware_env.py --clean
 
-```text
+```
 
-### Ste
+###
+
+Ste {#ste}
 
 p 3: Update Configuration Files {#step-3-update-configuration-files}
 
@@ -43,7 +46,7 @@ Configuration files have changed format in v2.x. If you have custom configuratio
 
    {
 
-```text
+```
  "
 project_name": "ai-playground",
  "python_version": "3.10",
@@ -54,16 +57,18 @@ project_name": "ai-playground",
    "dev": "requirements-dev.txt",
    "hardware": {
 
-```text
- "bas
+```
+ "
+bas
 e": "requirements-hardware-base.txt",
  "acm": "requirements-hardware-acm.txt"
 
-```text
+``
+`
    }
  }
 
-```text
+```
 }
 
    ```
@@ -102,7 +107,8 @@ response = requests.post("<http://localhost:8000/api/v1/workflow",> json=workflo
 headers = {"X-API-Key": "your_api_key"}
 response = requests.post("<http://localhost:8000/api/v2/workflow",> headers=headers, json=workflow_data)
 
-```text
+```
+
 #
 
 ## Step 5: Hardware Optimization Changes {#step-5-hardware-optimization-changes}
@@ -121,7 +127,7 @@ To manually set hardware type:
 
 python setup_hardware_env.py --hardware acm
 
-```text
+```
 
 ## Breaking Changes {#breaking-changes}
 
@@ -152,7 +158,6 @@ For further assistance, please [open an issue](https://github.com/intel/AI-Playg
 ---
 **Previous**: [Installation Guide](installation.md) | **Next**: [Hardware Overview](../hardware/overview.md) | __See also_*: [Troubleshooting](../reference/troubleshooting.md)
 
+````
 
-```text`
-
-```text`
+````

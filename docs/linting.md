@@ -13,7 +13,7 @@ The project uses [Ruff](https://github.com/astral-sh/ruff) for Python code linti
 
 ruff check --select=E,F --ignore=E501 --extend-exclude=.git,.github,.venv,venv,*_pycache__,build,dist --line-length=100 ./service
 
-```text`text
+````text
 
 ### Key Rules {#key-rules}
 
@@ -31,16 +31,18 @@ ruff check --select=E,F --ignore=E501 --extend-exclude=.git,.github,.venv,venv,*
 
 1. For Windows users:
 
-```text
-   .\.gi
+```
+   .\.
+gi
 thub\workflows\scripts\fix_ruff_windows.ps1
 
    ```
 
 1. For Linux/Mac users:
 
-```text
-   python .
+```
+   python
+ .
 github/workflows/scripts/fix_ruff_issues_local.py
 
    ```
@@ -63,9 +65,11 @@ ruff check --select=E,F --ignore=E501 --line-length=100 ./service
 
 ruff check --select=E,F --ignore=E501 --line-length=100 --fix ./service
 
-```text
+```
 
-## Common
+## Comm
+
+on {#common}
 
  Issues and Fixes {#common-issues-and-fixes}
 
@@ -73,37 +77,44 @@ ruff check --select=E,F --ignore=E501 --line-length=100 --fix ./service
 
 An import that's not used in the file:
 
-```pytho
+```pyt
+ho
 n
 
 import os  # Unused import
 
-```text
-**Fix**
+```
+**Fix
+**
 : Either remove the import or add a `# noqa: F401` comment if it's needed for side effects:
 
-```pyt
+```p
+yt
 hon
 
 import os  # noqa: F401
 
-```text
+```
 
-### M
+###
+
+ M {#m}
 
 issing Whitespace (E2xx) {#missing-whitespace-e2xx}
 
 Missing spaces around operators or after commas:
 
-```p
+``
+`p
 ython
 
 x=1+2  # Missing spaces
 
 def func(a,b):  # Missing space after comma
 
-```text
-__F
+```
+_
+_F
 ix_*: Add appropriate spacing:
 
 ``
@@ -113,7 +124,8 @@ x = 1 + 2  # Correct spacing
 
 def func(a, b):  # Space after comma
 
-```text
+```
+
 #
 
 # CI Integration {#ci-integration}
@@ -144,9 +156,9 @@ To ensure code quality before committing, you can set up pre-commit hooks locall
 
 .\.github\setup-hooks.ps1
 
-```text
+```
 This will check your Python code for linting issues before each commit.
 
-```text`
+````
 
-```text`
+````

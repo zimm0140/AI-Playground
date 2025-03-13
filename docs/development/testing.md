@@ -42,7 +42,7 @@ To run all tests:
 \`\`\`text\`bash
 pytest
 
-```text`text
+````text
 
 ### Running Tests with Detailed Output {#running-tests-with-detailed-output}
 
@@ -52,9 +52,13 @@ To run tests with detailed output:
 
 pytest -v
 
-```text
+```
 
-### Running a Specific Test File {#ru
+### Running a Specific Test File {#
+
+ru {#running-a-specific-
+
+test-file-ru}
 
 nning-a-specific-test-fi
 le}
@@ -65,23 +69,30 @@ To run tests from a specific file:
 
 pytest tests/test_hardware_detection.py
 
-```text
+```
 
-### R
+###
 
-unning a Specific Test Function {#running-a-specific-t
+ R {#r}
+
+unning a Specific Test Function {#running-a-s
+
+pecific-t
 est-function}
 
 To run a specific test function:
 
 ```bash
 
-pytest tests/test_hardware_detection.py::TestHard
+pytest tests/test_hardware_detection.py::TestHa
+rd
 wareDetection::test_detect_arc_gpu
 
-```text
+```
 
-### Running Tests with Coverage Report {#running-tests-wi
+### Running Tests with Coverage Report {#running-tests-
+
+wi {#running-tests-with-coverage-report-running-tests-wi}
 
 th-coverage-report}
 
@@ -91,17 +102,21 @@ To run tests with a coverage report:
 
 pytest --cov=. tests/
 
-```text
-For a more detailed
+```
+For a more detaile
+d
 coverage report:
 
 ```bash
 
-pytest -
+pytest
+ -
 -cov=. --cov-report=html tests/
 
-```text
-This will generate an HTML coverage report in the `ht
+`
+``
+This will generate an HTML coverage report in the `
+ht
 mlcov` directory.
 
 ## Writing Tests {#writing-tests}
@@ -130,59 +145,75 @@ Example:
 
 def test_detect_arc_gpu():
 
-```text
+```
 
-## Arran
+## Arr
+
+an {#arran}
 
 ge {#arrange}
 
-```text
+```
 
-```text
-mock_gpu_info =
- ["Intel(R) Arc(TM) A77
-0 Graphics"]
+```
+mo
+ck_gpu_info =
+ ["Intel(R) Arc(TM)
+ A77
+0 Graph
+ics"]
 
-```text
+```
 
-```text
+```
 
 ## Act {#act}
 
-```text
+```
 
-```text
-with pa
-tch("hardware
-_detection.get
-_gpu_info",
+```
+with
+ pa
+tch("hard
+ware
+_detectio
+n.get
+_gpu_i
+nfo",
 return_value=mock_gpu_info):
 
-```text
-result = hardware_detection.detect_hardwa
+```
+result = hardware_detection.detect_har
+dwa
 re_type()
 
-```text
+```
 
-```text
-
-```text
+```
+```
 
 ## Assert {#assert}
 
-```text
+```
 
-```text
-assert r
+`
+
+``
+asser
+t r
 esult == "acm"
 
-```t
+`
+``t
 ext
 
-```text
-##
+```
 
-# Using Fixtures {#usin
+## # Using Fixtures {#
+
+usin {#-using-
+
+fixtures-usin}
 
 g-fixtures}
 
@@ -191,64 +222,83 @@ Fixtures are a powerful way to reuse test setup code:
 ```python
 
 @pytest.fixture
-def sample
+def samp
+le
 _config():
 
-```text
-"""Fixture providing a sample config
+```
+"""Fixture providing a sample conf
+ig
 uration."""
 return {
 
-```text
-"hardware_types": ["base", "acm
+```
+"hardware_types": ["base", "a
+cm
 "],
 "default_hardware": "base",
 
-```text
+```
 }
 
-```text
-def test_hardware_detection
+```
+def test_hardware_detecti
+on
+
 (s
 ample_config):
 
-```text
+```
 
-## Use the sample_config fixture
+## Use the sample_config fixtu
+
+re
 
  {#use-the-sample_config-fixture}
 
-```text
+```
 
-```text
-with patch("hardwa
-re_detection
+```
+with patch("hard
+wa
+re_detect
+ion
 .load_config", return_value=sample_config):
 
-```text
+```
 
-## Test code here {#test
+## Test code here {#te
+
+st {#test-code-here-test}
 
 -code-here}
 
-```text
+```
 
-```text
+```
+```
 
-```text
-
-```text
+```
 pass
 
-```te
+``
+
+`te
 
 xt
 
-```text
+``
 
-```text
+`text
 
-### Mocking {#m
+```
+
+###
+
+Moc
+king {#m {#mo
+
+cking-m}
 
 ocking}
 
@@ -256,59 +306,71 @@ Use mocking to isolate the code being tested:
 
 ```python
 
-@patch("har
+@patch("
+har
 dware_detection.get_gpu_info")
 def test_gpu_detection(mock_get_gpu_info):
 
-```text
+```
 
-## Configure the mock
+## Configure the m
+
+ock
 
  {#configure-the-mock}
 
-```text
+```
 
-```text
-mock_ge
-t_gpu_info.r
+```
+mock
+_ge
+t_gpu_in
+fo.r
 eturn_value = ["Intel(R) Arc(TM) A770 Graphics"]
 
-```text
+```
 
-```text
+```
 
-## T
+#
+# T {#t}
 
-est code that
+est
+ code that
  uses get_gpu_info {#test-code-that-uses-get_gpu_info}
 
-```text
+```
 
-```text
+```
 res
-ult = hardwa
+ult = ha
+rdwa
 re_detection.detect_hardware_type()
 
-```text
+```
 
-```text
+``
+`
 
-## Verify res
+## Verify
+
+res {#verify-res}
 
 ults {#verify-results}
 
-```text
+```
 
-```text
-assert resu
+```
+assert r
+esu
 lt == "acm"
 
-```text
-
+```
 `
-``
+`
+`
 
-### Testi
+### Testi {#testi}
 
 ng Hardware-Specific Code {#testing-hardware-specific-code}
 
@@ -327,34 +389,38 @@ Example:
 ```pytho
 n
 
-@pytest.mark.parametrize("gpu_info,expected_type", [
+@py
+test.mark.parametrize("gpu_info,expected_type", [
 
-```text
-(["Inte
+```
+(
+["Inte
 l(R) Arc(TM) A770 Graphics"], "acm"),
 (["Intel(R) Battlemage(TM) B770 Graphics"], "bmg"),
 (["NVIDIA GeForce RTX 3080"], "base"),
 
-```text
+```
 ])
 
 def test_multiple_hardware_types(gpu_info, expected_type):
 
-```text
+```
 with
 patch("hardware_detection.get_gpu_info", return_value=gpu_info):
 
-```text
-result = hardware_detection.detect_hardware_type()
+```
+re
+sult = hardware_detection.detect_hardware_type()
 assert result == expected_type
 
-```text
-
+``
+`
 ``
 
 `
 
-```text
+```
+
 #
 
 # Testing Best Practices {#testing-best-practices}
@@ -381,7 +447,7 @@ The `test_coverage.py` file provides utilities to assess test coverage without a
 
 pytest tests/test_coverage.py -v
 
-```text
+```
 This will show which core modules have tests and which functions might lack coverage, helping you identify areas that need more testing.
 
 ## Testing Strategies for Different Types of Code {#testing-strategies-for-different-types-of-code}
@@ -421,7 +487,6 @@ This will show which core modules have tests and which functions might lack cove
 ---
 **Previous**: [Code Quality Standards](code-quality.md) | **Next**: [Linting](linting.md) | __See also_*: [Contributing Guide](contributing.md)
 
+````
 
-```text`
-
-```text`
+````

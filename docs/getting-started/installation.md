@@ -48,11 +48,12 @@ cd AI-Playground
 
 python setup_hardware_env.py
 
-```text`text
+````text
 
 #### Additional Options {#additional-options}
 
-```b
+``
+`b
 ash
 
 ## Include development dependencies {#include-development-dependencies}
@@ -69,8 +70,11 @@ python setup_hardware_env.py --hardware mtl  # For Intel Meteor Lake CPUs
 
 python setup_hardware_env.py --clean
 
-```text
-###
+```
+
+#
+##
+
  Method 2: Manual Setup {#method-2-manual-setup}
 
 If you prefer to set up the environment manually:
@@ -128,7 +132,8 @@ docker build -t ai-playground .
 
 docker run -p 8000:8000 ai-playground
 
-```text
+```
+
 #
 
 # Troubleshooting Installation {#troubleshooting-installation}
@@ -175,13 +180,12 @@ source .venv/bin/activate
 
 python test_venv.py
 
-```text
+```
 This will check that all required dependencies are installed and that your hardware is properly detected.
 
 ---
 **Previous**: [Quick Start Guide](quickstart.md) | **Next**: [Migration Guide](migration.md) | __See also_*: [Hardware Compatibility](../hardware/compatibility.md)
 
+````
 
-```text`
-
-```text`
+````

@@ -47,7 +47,7 @@ This document provides a step-by-step guide for implementing and using the `uvfa
 
 - Add any other hardware-specific configurations
 
-```text`text
+````text
 
 ### 3. Documentation {#documentation}
 
@@ -103,13 +103,16 @@ python uvfast.py run ruff check .
 
 python uvfast.py run mypy .
 
-```text
+```
 
-### Using
+### Usi
+
+ng {#using}
 
  Wrapper Scripts {#using-wrapper-scripts}
 
-```bash
+```bas
+h
 
 ## Unix/Linux/macOS {#unixlinuxmacos}
 
@@ -119,13 +122,16 @@ python uvfast.py run mypy .
 
 .\scripts\uvfast.ps1 setup --dev
 
-```text
+```
 
-### Har
+### H
+
+ar {#har}
 
 dware-Specific Setup {#hardware-specific-setup}
 
-```bas
+```b
+as
 h
 
 ## Setup for Intel Arc GPUs {#setup-for-intel-arc-gpus}
@@ -136,15 +142,18 @@ python uvfast.py setup --hardware acm --dev
 
 python uvfast.py setup --hardware ovino --dev
 
-```text
+```
 
-## Im
+##
+
+Im {#im}
 
 plementation Example {#implementation-example}
 
 ### uvfast.json {#uvfastjson}
 
-```j
+``
+`j
 son
 
 {
@@ -154,8 +163,9 @@ son
   "default_hardware": "base",
   "requirements": {
 
-```text
-"ba
+```
+"
+ba
 se": "requirements.txt",
 "dev": "requirements-dev.txt",
 "hardware": {
@@ -169,7 +179,7 @@ se": "requirements.txt",
   },
   "lockfiles": {
 
-```text
+```
 "
 base": "requirements.lock",
 "hardware": {
@@ -178,11 +188,11 @@ base": "requirements.lock",
   "ovino": "requirements-hardware-ovino.lock"
 }
 
-```text
+```
   }
 }
 
-```text
+```
 
 ## Benefits of Using uvfast {#benefits-of-using-uvfast}
 
@@ -229,6 +239,6 @@ base": "requirements.lock",
    - Check hardware-specific requirements
    - Verify lockfiles are up to date
 
-```text`
+````
 
-```text`
+````

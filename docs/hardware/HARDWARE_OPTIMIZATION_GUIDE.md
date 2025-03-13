@@ -102,7 +102,6 @@ The system recognizes the following hardware types:
 | `ovino` | Intel CPUs with OpenVINO | OpenVINO runtime optimizations |
 | `base` | Standard hardware | Standard PyTorch CPU operations |
 
-
 ## Environment Setup {#environmen {#environment-setup-environmen}
 
 t-setup}
@@ -115,7 +114,9 @@ To set up your environment for the detected hardware
 
 ```bash
 
-# Set up for
+# Set up fo
+
+r
 
 {#set-up-for}
 
@@ -140,9 +141,11 @@ nt-dependencies}
 python uvfast.py
 setup --dev
 
-```text
+```
 
-### Using Lockf {#usin
+### Using Lockf {#us
+
+in
 
  {#using-lockf-usin}
 
@@ -151,13 +154,16 @@ g
 -lockf}
 
 iles for Reproducible Environments {#using-lockfiles-for-reproduc
+
 ible-environments}
 To ensure reproducible environments, use l
 ockfiles:
 
 ```bash
 
-# Generate
+# Generat
+
+e
 
 {#generate}
 
@@ -185,11 +191,12 @@ hon uvfast.py lock --all
 
 environment-from-lockfile}
 
-python uvfast.py syn```text``
+python uvfast.py syn`````
 
 ## Using the A {#using-the-a}
 
 I Framework Integration {#using-t
+
 he-ai-framework-integration}
 
 Our framework integrates with popular AI libraries to provide optim
@@ -197,7 +204,9 @@ ized performance:
 
 ```python
 
-# Example of hardwar
+# Example of hardw
+
+ar
 
  {#example-of-hardwar}
 
@@ -226,11 +235,13 @@ e)
 
 response = llm("Explain quantum computing in
 simple terms.")
-print(respo```text
+print(respo```
 
-```text
+```
 
-## Work {# {#w
+## Work {# {
+
+#w {#work-w}
 
 ork-}
 
@@ -248,7 +259,8 @@ ardware:
 
 ```python
 
-from examples.ai_f
+from examples.ai
+_f
 
 r
 ameworks_integration import c
@@ -257,6 +269,7 @@ onfigure_hardware, setup_langchain_model
 # Auto-con {#auto-con}
 
 figure hardware {#auto-configure-hardwa
+
 re}
 device, hw_type = configure_hardware()
 
@@ -274,13 +287,16 @@ struct"  # Change to your preferred model
 # Use {#use}
 
 the optimized model {#use-the-optimized-model}
+
 response = llm("Explain the theory of rela
 tivity in simple terms.")
-print(re```textse)
+print(re```se)
 
-```text
+```
 
-### Adva {#a
+### Adva {
+
+#a {#adva-a}
 
 dva}
 
@@ -294,7 +310,8 @@ For complex LangChain applications, you can create hardware-aware chains:
 
 ```python
 
-from langchain.p
+from langchain
+.p
 
 r
 ompts import PromptTemplate
@@ -330,11 +347,13 @@ lm=llm, prompt=prompt)
 # Run the chain {#run-the-chain}
 
 response = chain.run(topic="quantum co
-mputing", question="What is quantum entan```textent?")
+mputing", question="What is quantum entan```ent?")
 
-```text
+```
 
-## Wor {#w
+## Wor {
+
+#w {#wor-w}
 
 or}
 
@@ -344,6 +363,7 @@ work}
 
 in
 g with Stable Diffusion {#working-with-stable-d
+
 iffusion}
 
 To optimize Stable
@@ -353,7 +373,8 @@ Diffusion on Intel hardware:
 
 ```python
 
-from examples.
+from example
+s.
 
 a
 i_frameworks_i
@@ -368,6 +389,7 @@ device, hw_type = configure_hardware()
 # Set up Stable Diffusion with hardware opti {#set-up-stable-diffusion-with-hardware-opti}
 
 mizations {#set-up-stable-diffusion-with-hardware-optimizat
+
 ions}
 pipeline, compel = setup_stable_di
 ffusion(device, hw_type)
@@ -380,15 +402,18 @@ image = pipeline(prompt_embeds=cond
 itioned_prompt).images[0]
 image.save("astronaut_
 
-```textars.png")
+```ars.png")
 
-```text
+```
+
 ###
+
 Opt
 
 {#opt}i {#opti}
 
 mizing for Speed {#optimiz
+
 ing-for-speed}
 For faster inference with reduced quality:
 
@@ -407,6 +432,7 @@ on for PyTorch {#for-intel-arc-gpus-using-intel-extension-for-pytorch}
 # Lower precision and fewer steps for fa {#lower-precision-and-fewer-steps-for-fa}
 
 ster generation {#lower-precision-and-fewer-steps-for-faster-generation}
+
 pipeline.set_progress_bar_config(disable=True)
 image = pipeline(
     prompt="a photo of an astronaut riding a horse on mars",
@@ -420,22 +446,27 @@ ault 50
 
 ).images[0]
 
-```text
+```
 
-## # O
+## #
+
+O {#-o}
 
 p {#-op}
 
 t {#opt}
 
 imizing for Quality {#optimizing-for-
+
 quality}
 For higher quality images with longer gener
 ation time:
 
 ```python
 
-# Higher q
+# Higher
+
+q
 
  {#higher-q}
 
@@ -449,18 +480,21 @@ image = pipeline(
 s=50,
     guidance_scale=8.5,
     height=768,
-    wid```text768
+    wid```768
 ).images[0]
 
-```text
+```
 
-## P
+##
+
+P
 
  {#p}
 
 er {#per}
 
 formance Benchmarking {#performance-ben
+
 chmarking}
 
 To benchmark your hardware and
@@ -468,7 +502,9 @@ To benchmark your hardware and
 
 ```bash
 
-# Run al
+# Run a
+
+l
 
  {#run-al}
 
@@ -493,15 +529,18 @@ ion only
 
 # Specify iterations and output file {#specify-iterations-and-output-file-specify-iterations-and-output-file}
 
-python benchmarks/hardware_benchmark.py --iterations 10 ```texttput r
+python benchmarks/hardware_benchmark.py --iterations 10 ```tput r
 esults.json
 
-```text
-##
+```
+
+#
+#
 
 # I {#i}
 
 nterpreting Benchmark Results {#interpreting-benchmark-results}
+
 The benchmark tool measures:
 
 - **Matrix multiplication**: Fundamental operation for linear algebra in ML models
@@ -522,6 +561,7 @@ termine the best configuration for
 ## Troubleshooting {#troubleshooting}
 
 ###
+
 Common Issues {#common-issues}
 
 #### I {#i}ntel Arc GPU Not Detected {#intel-arc-gpu-not-detected}
@@ -593,7 +633,8 @@ You can customize hardware detection by editing `hardware_detection.py`:
 
 ```python
 
-def de
+def d
+e
 
 t
 ect_hardware_type():
@@ -606,22 +647,26 @@ e detection logic
 
  here
 
-    return "ac```text# or "ovino", "base
+    return "ac```# or "ovino", "base
 
 "
 
-```te
+```t
+e
 
 xt
 
 ###
+
 Environment Variables {#environment-variables}
 
 #### For Intel Arc GPUs {#for-intel-arc-gpus}
 
 ```bash
 
-# Im
+# I
+
+m
 
  {#im}
 
@@ -639,7 +684,8 @@ ptimize memory layout
 
 export SYCL_PI_LEVEL_ZERO_USE_IMMEDIATE_COMMANDLISTS=1  # Improve performance
 
-```text
+``
+`
 text
 
 ## ## For OpenVINO {#for-openvino}
@@ -647,6 +693,7 @@ text
 ```bash
 
 #
+
 Important environment variables for OpenVINO {#important-environment-variables-for-openvino}
 
 export OPENVINO_THREADING=TBB  # Use TBB threading
@@ -686,15 +733,15 @@ You can create a `uvfast.json` file in your project root to customize behavior:
         "OPENVINO_THREADING": "TBB"
       },
       "extra_packages": [
-     ```textpenvino"
+     ```penvino"
       ]
     }
   }
 }
 
-```text
-This configuration allows for customized settings per hardware type, including environment```te```textbles and additional packages.
+```
+This configuration allows for customized settings per hardware type, including environment```te```bles and additional packages.
 
-```text
+```
 
-```text
+```

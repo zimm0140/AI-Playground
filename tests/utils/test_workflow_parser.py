@@ -15,8 +15,8 @@ script_dir = Path(__file__).resolve().parent.parent.parent
 sys.path.append(str(script_dir / ".github" / "workflows" / "scripts"))
 
 # Import the workflow parser functions after modifying the path
-from utils.workflow_parser import build_link_map  # noqa: E402
 from utils.workflow_parser import (  # noqa: E402
+    build_link_map,  # noqa: E402
     get_node_class_type,
     get_node_inputs,
     get_workflow_attribute,

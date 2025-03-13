@@ -28,29 +28,32 @@ these key principles:
 │ └─────────────┘ └─────────────┘ └─────────────┘ └──────────┘ │
 └────────────────────────────────────────────────────────────────┘
 
-```text`text
+````text
 
-```text
+```
 
-```text
-
-```text
+```
+```
 │                 │
 ▼                 ▼
 
-```text
+```
 
-```text
-
-```text
+```
+```
 text
 
-```text
+`
+
+``
 ┌
 
-────────────────────────────────────────────────────
+──────────────────────────────────────────────
 
-───────────
+──────
+
+────
+───────
 
 ─┐
 │                      Core Services                             │
@@ -60,26 +63,31 @@ text
 │  └─────────────┘ └─────────────┘ └─────────────┘              │
 └────────────────────────────────────────────────────────────────┘
 
-```text
+```
 
-```text
+```
+```
 
-```text
-
-```text
+```
 │                 │
 ▼                 ▼
 
-```text
+```te
 
-```text
+xt
 
-```text
+```
+```
+text
 
-```text
-┌─────────────────────────────────────────────
+```
+┌─────────────────────────────────────────
 
-───────────
+────
+
+─────
+
+──────
 
 ────────┐
 │                  Hardware Abstraction Layer                    │
@@ -89,28 +97,33 @@ text
 │  └─────────────┘ └─────────────┘ └─────────────┘              │
 └────────────────────────────────────────────────────────────────┘
 
-```text
+```
 
-```text
+```
+```
 
-```text
-
-```text
+```
 │                 │
-▼                 ▼
+▼
+
+▼
 
 `
 
-``text
+``tex
 
-```text
+t
 
-```text
+```
 
-```text
+```
+```
 ┌─────────────────────────────────────
 
-───────────
+───
+
+───────
+─
 
 ────────────────┐
 │                   Hardware-Specific Backends                   │
@@ -120,11 +133,13 @@ text
 │  └─────────────┘ └─────────────┘ └─────────────┘ └──────────┘ │
 └────────────────────────────────────────────────────────────────┘
 
-```text
+```
 
 ## Key Components {#key-components}
 
-### API Layer {
+### AP
+
+I Layer { {#api-layer-}
 
 #api-layer}
 
@@ -206,52 +221,66 @@ def get_optimal_backend(model_type):
 
 ``
 `
-"""Example of hardware abstraction logic"""
+"""Ex
+ample of hardware abstraction logic"""
 hardwa
 re_type = detect_hardware_type()
 
-```text
+```
 
-```text
-if hardware_type == "acm" and model_
-type == "tra
+```
+if hardware_type == "acm" and mode
+l_
+type == "
+tra
 nsformer":
 
-```text
+```
 return "xpu"
 
-```text
-elif hardware_type == "np
-u" and model_type ==
+```
+elif hardware_type == "
+np
+u" and model_type
+==
 "transformer":
 
-```text
+```
 return "npu"
 
-```text
-elif hardware_type == "
+```
+elif hardware_type ==
+ "
 nvidia":
 
-```text
-return
+```
+retu
+rn
 "cuda"
 
-```text
+```
 else:
 
-```text
-return "c
+```
+return
+"c
 pu"
 
-```text
+```
 
-```text
+```
+`
+``
 
-```text
+##
 
-### M
+# M {#m}
 
-odule Structure {#module-
+odule Structure
+
+{#module
+
+-
 
 structur
 e}
@@ -285,30 +314,37 @@ Configuration is handled through a layered approach:
 {
   "hardware": {
 
-```text
-"dete
+```
+"de
+te
 ction": "auto",
-"preferred": ["
+"preferred":
+ ["
 acm", "nvidia", "cpu"]
 
-```text
+```
   },
   "optimization": {
 
-```text
+```
 "
 precision": "mixed",
-"batch_size"
+"batch_si
+ze"
 : "auto",
 "threads": 4
 
-```text
+```
   }
 }
 
-```text
+```
 
-## Code Examples {
+## Code Example
+
+s { {#code-exam
+
+ples-}
 
 #code-examples}
 
@@ -316,118 +352,139 @@ precision": "mixed",
 
 ```python
 
-def detect_hardware_t
+def detect_hardwar
+e_t
 ype():
 
-```text
-"""Detect available hardware an
+```
+"""Detect available hardware
+ an
 d return the hardware type."""
 gpu_info = get_gpu_info()
 
-```text
+```
 
-```text
-for gpu in gpu_in
+```
+for gpu in gpu
+_in
 fo:
 
-```text
+```
 if
-"Intel(R) Arc(TM)" in
+"Intel(R) Arc(TM)"
+ in
  gpu:
 
-```text
+```
 return "acm"
 
-```text
-elif "Int
-el(R) Battlem
+```
+elif "
+Int
+el(R) Bat
+tlem
 age(TM)" in gpu:
 
-```text
+```
 return "bmg"
 
-```text
-elif "N
-VIDIA" in gpu
+```
+elif
+ "N
+VIDIA" in
+ gpu
 :
 
-```text
+```
 return "nvidia"
 
-```tex
+```
+tex
 t
 
-```text
+```
 
-```text
+```
+```
 
-```text
+## Che {
 
-## Che
+#che}
 
-ck for NPU {#
+c
+k for NPU {#
 check-for-npu}
 
-```text
+```
 
-```text
-if ha
-s_dptf_drive
+```
+if
+ ha
+s_dptf_d
+rive
 r():
 
-```text
-return "npu"
+```
+return "n
+pu"
 
-```text
+```
 
-```text
+```
+```
 
-```text
+##
 
-## De
+De {#de}
 
 fault to
  base CPU implementation {#default-to-base-cpu-implementation}
 
-```text
-
-```text
-return "bas
-e"
-
-```text
+```
 
 `
 ``
+return "b
+as
+e"
 
-### Envir
+```
+`
+``
+
+### Envir {#envir}
 
 onment Setup {#environment-setup}
 
 ```pytho
 n
 
-def setup_environment(hardware_type):
+def
+setup_environment(hardware_type):
 
-```text
-"""Set
+```
+""
+"Set
 up environment variables for specific hardware."""
 if hardware_type == "acm":
 
-```text
+```
 os
-.environ["SYCL_CACHE_PERSISTENT"] = "1"
+.e
+nviron["SYCL_CACHE_PERSISTENT"] = "1"
 os.environ["SYCL_PI_LEVEL_ZERO_USE_IMMEDIATE_COMMANDLISTS"] = "1"
 
-```text
+```
 elif
 hardware_type == "npu":
 
-```text
-os.environ["DNNL_DEFAULT_FPMATH_MODE"] = "BF16"
+```
+os.
+environ["DNNL_DEFAULT_FPMATH_MODE"] = "BF16"
 os.environ["ONEDNN_MAX_CPU_ISA"] = "AVX512_CORE_AMX"
 
-```text
+``
+`
 eli
 f hardware_type == "nvidia":
 
@@ -435,11 +492,10 @@ f hardware_type == "nvidia":
 `
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
-```text
+```
 
-```text
-
-```text
+```
+```
 
 ## Performance Considerations {#performance-considerations}
 
@@ -492,7 +548,6 @@ Planned architectural improvements include:
 ---
 **Previous**: [Linting Guide](../development/linting.md) | **Next**: [API Design](api-design.md) | __See also_*: [Hardware Overview](../hardware/overview.md)
 
+````
 
-```text`
-
-```text`
+````

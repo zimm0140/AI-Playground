@@ -27,27 +27,33 @@ python uvfast.py setup --hardware mtl
 
 python uvfast.py setup --no-lockfile
 
-```text`text
+````text
 
 ### Show Environment Information {#show-environment-information}
 
 ```bash
 
-## Dis
+## Di
+
+s {#dis}
 
 play hardware detection and environment info {#display-hardware-detection-and-environment-info}
 
 python uvfast.py info
 
-```text
+```
 
-### Generate Lo
+### Generate L
+
+o {#generate-lo}
 
 ckfiles {#generate-lockfiles}
 
 ```bash
 
-## G
+##
+
+G {#g}
 
 enerate lockfiles for all hardware types {#generate-lockfiles-for-all-hardware-types}
 
@@ -58,15 +64,19 @@ python uvfast.py lockfiles --all
 python uvfast.py lockfiles --hardware acm
 python uvfast.py lockfiles --hardware acm --dev
 
-```text
+```
 
-### Run Comma
+### Run Comm
+
+a {#run-comma}
 
 nds {#run-commands}
 
 ```bash
 
-##
+#
+
+#
  Run pytest {#run-pytest}
 
 python uvfast.py run pytest
@@ -88,9 +98,11 @@ python uvfast.py run mypy
 
 python uvfast.py run python -m your_module
 
-```text
+```
 
 ### Legacy
+
+ {#legacy}
 
 Installation {#legacy-installation}
 
@@ -100,9 +112,11 @@ Installation {#legacy-installation}
 
 python uvfast.py legacy-install --dev
 
-```text
+```
 
 ## Using
+
+ {#using}
 
 Wrapper Scripts {#using-wrapper-scripts}
 
@@ -119,13 +133,16 @@ chmod +x scripts/uvfast.sh
 ./scripts/uvfast.sh setup --dev
 ./scripts/uvfast.sh run pytest
 
-```text
+```
 
-### Win
+### Wi
+
+n {#win}
 
 dows {#windows}
 
-```pow
+```po
+w
 ershell
 
 ## Run commands through the PowerShell wrapper {#run-commands-through-the-powershell-wrapper}
@@ -133,15 +150,18 @@ ershell
 .\scripts\uvfast.ps1 setup --dev
 .\scripts\uvfast.ps1 run pytest
 
-```text
+```
 
-## Ha
+## H
+
+a {#ha}
 
 rdware-Specific Tips {#hardware-specific-tips}
 
 ### Intel Arc GPUs (acm) {#intel-arc-gpus-acm}
 
-```b
+```
+b
 ash
 
 ## Set up for Arc GPUs {#set-up-for-arc-gpus}
@@ -152,8 +172,11 @@ python uvfast.py setup --hardware acm --dev
 
 python uvfast.py run pytest tests/hardware/test_gpu.py
 
-```text
-###
+```
+
+##
+
+#
  OpenVINO (ovino) {#openvino-ovino}
 
 ``
@@ -167,7 +190,9 @@ python uvfast.py setup --hardware ovino --dev
 
 python uvfast.py run pytest tests/openvino/
 
-```text
+``
+`
+
 #
 
 # Configuration {#configuration}
@@ -178,16 +203,16 @@ Edit `uvfast.json` to customize settings:
 
 {
 
-```text
+```
 "hardware_types": ["base", "acm", "bmg", "mtl", "lnl", "ovino"],
 "lockfiles_dir": ".lockfiles",
 "venv_dir": ".venv",
 "cache_dir": ".uvcache",
 "parallel_jobs": 4
 
-```text
+```
 }
 
-```text`
+````
 
-```text`
+````

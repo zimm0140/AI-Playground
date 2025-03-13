@@ -30,7 +30,7 @@ select = ["E", "F", "I", "W", "N", "B", "C4", "UP", "T20"]
 ignore = ["E501"]
 extend-exclude = \[".git", ".github", ".venv", "venv", "**pycache**", "build", "dist"\]
 
-```text`text
+````text
 
 #### Key Rules {#key-rules}
 
@@ -60,7 +60,8 @@ For static type checking, we use mypy with these settings:
 
 ## in pyproject.toml {#in-pyprojecttoml}
 
-[tool.mypy
+[too
+l.mypy
 ]
 python_version = "3.10"
 warn_return_any = true
@@ -72,11 +73,11 @@ disallow_untyped_decorators = true
 no_implicit_optional = true
 strict_optional = true
 
-```text
+```
 
 ## Running Linters Locally {#running-linters-locally}
 
-### Us
+### Us {#us}
 
 ing the Provided Scripts {#using-the-provided-scripts}
 
@@ -104,7 +105,8 @@ To run Ruff manually:
 
 ## Install Ruff {#install-ruff}
 
-pip install ruff
+pip install
+ ruff
 
 ## Check for issues {#check-for-issues}
 
@@ -114,29 +116,36 @@ ruff check .
 
 ruff check --fix .
 
-```text
+```
 To run mypy:
 
 ```bash
 
-## Install mypy {#install-mypy}
+## Install mypy {#install-myp
+
+y}
 
 pi
-p install myp
+p inst
+all myp
 y
 
 ## Run type checking {#run-type-checking}
 
 mypy .
 
-```text
+```
 To run markdownlint on Markdown files:
 
 ```bash
 
-## Inst
+#
 
-all markdownlint (requires Node.js) {#i
+# Inst {#inst}
+
+all markdownlint (requi
+res Node.js) {#i
+
 nstall-markdownlint-requires-nodejs}
 
 npm install -g markdownlint-cli
@@ -145,9 +154,11 @@ npm install -g markdownlint-cli
 
 markdownlint "__/_.md"
 
-```text
+```
 
-## Common Linting Issues and Fixes {#common-linting-iss
+## Common Linting Issues and Fixes {#common-linti
+
+ng-iss {#common-linting-issues-and-fixes-common-linting-iss}
 
 ues-and-fixes}
 
@@ -159,9 +170,11 @@ An import that's not used in the file:
 
 import os  # Unused import
 
-```text
-*_Fix__: Ei
-ther remove the import or add a `# noqa: F
+```
+*_Fix
+__: Ei
+ther remove the import or add a `#
+noqa: F
 
 401` comment if it's needed for side effects:
 
@@ -169,11 +182,14 @@ ther remove the import or add a `# noqa: F
 
 import os  # noqa: F401
 
-```text
+```
 
-### Missing
+### M
 
- Whitespace (E2xx) {#missing-whitespace-
+issing {#missing}
+
+ Whitespace (E2xx) {#
+missing-whitespace-
 e2xx}
 
 Missing spaces around operators or after commas:
@@ -182,10 +198,11 @@ Missing spaces around operators or after commas:
 
 x=1+2  # Missing spaces
 
-def func(a,b):
+def func(
+a,b):
   # Missing space after comma
 
-```text
+```
 **Fix**: Add appropriate spacing:
 
 ```python
@@ -193,12 +210,15 @@ def func(a,b):
 x =
  1 + 2  # Correct spacing
 
-def fun
+d
+ef fun
 c(a, b):  # Space after comma
 
-```text
+```
 
-### Type Annotation Issues {#type-annotation-is
+### Type Annotation Issues {#type-annotati
+
+on-is {#type-annotation-issues-type-annotation-is}
 
 sues}
 
@@ -206,75 +226,95 @@ Missing or incorrect type annotations:
 
 ```python
 
-def process_data(data):  # Missing
+def process_data(data):  # Mis
+
+sing
 
 type annotations
 
-```text
+```
 return data + 1
 
-```text
+```
 
-```text
-**Fix**: Add pr
-oper type annota
-tions:
+```
+**Fix**: A
+dd pr
+oper type
+annota
+tions
+:
 
 ```p
 ython
 
-def process_data(data: int) ->
+def process_data(data: in
+t) ->
 int:
 
-```text
+```
 return data + 1
 
-```text
+```
 
-```text
+```
 
-### Hardwa
+### H
 
-re-Specific Impo
+ardwa {#hardwa}
+
+re-Specific
+Impo
 rt Issues {#h
+
 ardware-specific-import-issues}
 
 Importing hardware-specific modules that might not be available:
 
 ```python
 
-import intel_extension_for_
+import intel_extension
+_for_
 pytorch  # May not be available on all systems
 
-```text
-**Fix**: Use conditional imports:
+```
+**Fix**: Use conditional imports
+:
 
 ``
 `python
 
 try:
 
-```text
+```
 import intel_ex
-tension_for_pytorch
+tension_for
+_pytorch
 
 HAS_INTEL_EXTENSION = True
 
-```text
+```
 except ImportError:
 
-```text
+```
 HAS_I
-NTEL_EXTENSION = False
+
+NTEL_EXTENSION = Fa
+lse
 
 ```t
 ext
 
-```text
+```
 
 ## CI Integration
 
+{#ci
+
+-integration}
+
 {#ci-integrat
+
 ion}
 
 The project's CI system uses GitHub Actions to run linters on all files. The configuration is maintained in the following files:
@@ -301,7 +341,9 @@ To ensure code quality before committing, you can set up pre-commit hooks locall
 
 ```bash
 
-## On Linux/macOS/Gi
+## On Linux/macOS/Gi {#on-
+
+linuxmacosgi}
 
 t Bash {#on-linuxmacosgit-bash}
 
@@ -311,8 +353,9 @@ t Bash {#on-linuxmacosgit-bash}
 
 .\.github\setup-hooks.ps1
 
-```text
-This will check your code for
+```
+This will check your
+code for
  linting issues before each commit.
 
 ## Temporary Disabling of Linter Rules {#temporary-disabling-of-linter-rules}
@@ -321,7 +364,9 @@ There are cases where linter rules need to be temporarily disabled:
 
 ```python
 
-## In situations
+## In situations {#in-si
+
+tuations}
 
  where a line is necessarily long {#in-situations-where-a-line-is-necessarily-long}
 
@@ -331,16 +376,17 @@ long_url = "<https://very-long-url-that-cannot-be-split.com/path/to/resource">  
 
 def connect_to_API():  # noqa: N802
 
-```text
+```
 pass
 
-```text
+```
 
-```text
+```
 Use `# n
 
 oqa:`
- comments sp
+
+comments sp
 aringly and only when necessary.
 
 ## Hardware-Specific Linting Considerations {#hardware-specific-linting-considerations}
@@ -358,88 +404,100 @@ When writing hardware-specific code:
 ```python
 
 def optimize_
-for_hardware(model: torch.nn.Module, hardware_type: str) -> torch.nn.Module:
+for_ha
+rdware(model: torch.nn.Module, hardware_type: str) -> torch.nn.Module:
 
-```text
+```
 """
-Optimize model for
+Optimize mo
+del for
 specific hardware.
 
-```text
+```
 
-```text
+```
 Args:
 
 ``
 `
-model: The
+m
+
+odel: The
  PyTor
 ch model
 hardware_type: One of "acm", "bmg", or "base"
 
-```text
+```
 
-```text
+```
+```
+Returns
 
-```text
-Returns:
+:
 
-```text
+```
 Opt
-imized mo
+imize
+d mo
 del
 
-```text
+```
 """
-if hardware
+if hardw
+are
 _type == "acm":
 
-```text
+```
 try:
 
-```text
-import intel_
+`
+``
+import int
+el_
 extension_for_pytorch as ipex  # noqa: F401
 
-```text
+```
 
-```text
-
-```text
-
+```
+```
 `
 
 ``
 
-```text
+```
 
-```text
-model =
+```
+m
+
+odel =
  ipex.optimize(model)
 
-```text
+```
 ex
-cept ImportError:
+c
+ept ImportError:
 
-```text
+```
 pass
  # Fall back to unoptimized model
 
 ```t
 ext
 
-```text
+``
+`
 ``
 
 `text
 
-```text
+```
 r
+
 eturn model
 
-```text
+```
 
-```text
+```
 
 ## Additional Resources {#additional-resources}
 
@@ -456,7 +514,6 @@ eturn model
 ---
 **Previous**: [Testing Guide](testing.md) | **Next**: [Project Architecture](../architecture/overview.md) | __See also_*: [Code Quality Standards](code-quality.md)
 
+````
 
-```text`
-
-```text`
+````

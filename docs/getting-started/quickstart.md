@@ -21,11 +21,11 @@ This guide will help you quickly set up and start using AI-Playground.
    git clone <https://github.com/intel/AI-Playground.git>
    cd AI-Playground
 
-   ```text`text
+   ````text
 
-   ```text`
+   ````
 
-   ```text`
+   ````
 
 1. Set up the environment:
 
@@ -35,16 +35,16 @@ This guide will help you quickly set up and start using AI-Playground.
 
    python setup_hardware_env.py
 
-   ```text`text
+   ````text
 
    This will:
    - Detect your hardware configuration
    - Create a Python virtual environment
    - Install the appropriate dependencies for your hardware
 
-   ```text`
+   ````
 
-   ```text`
+   ````
 
 ## Basic Usage {#basic-usage}
 
@@ -60,22 +60,22 @@ This guide will help you quickly set up and start using AI-Playground.
 
    source .venv/bin/activate
 
-   ```text`text
+   ````text
 
-   ```text`
+   ````
 
-   ```text`
+   ````
 
 1. Run the service:
 
    \`\`\`text\`bash
    python service/main.py
 
-   ```text`text
+   ````text
 
-   ```text`
+   ````
 
-   ```text`
+   ````
 
 1. Access the web interface by opening `<http://localhost:8000`> in your browser.
 

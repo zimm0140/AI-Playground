@@ -75,7 +75,7 @@ To set up pre-commit hooks:
 pip install pre-commit
 pre-commit install
 
-```text`text
+````text
 
 ## Troubleshooting Common Issues {#troubleshooting-common-issues}
 
@@ -101,6 +101,6 @@ Common issues and solutions:
 
 For questions about code quality standards or help with resolving issues, please open an issue on GitHub or contact the project maintainers.
 
-```text`
+````
 
-```text`
+````

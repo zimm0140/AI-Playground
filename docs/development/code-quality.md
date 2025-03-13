@@ -47,7 +47,7 @@ All Python code should adhere to [PEP 8](https://peps.python.org/pep-0008/), wit
 
 - `UPPER_CASE` for constants
 
-```text`text
+````text
 
 ### Type Hints {#type-hints}
 
@@ -55,19 +55,25 @@ Use type hints for all function parameters and return values:
 
 ```python
 
-def process_data(input_data:
+def process_data(input_da
+ta:
 list[str], max_items: int = 10) -> dict[str, any]:
 
-```text
-"""Process the input data and return re
+```
+"""Process the input data and retur
+n re
 sults."""
 ...
 
-```text
+```
 
-```text
+```
 
-### Docstrings {#docstri
+### Docstrings {#doc
+
+stri {#docstr
+
+ings-docstri}
 
 ngs}
 
@@ -76,62 +82,76 @@ ules, classes, and functions should have docstrings:
 
 ```python
 
-def validate_config(confi
+def validate_config(c
+onfi
 g: dict) -> bool:
 
-```text
+```
 """
-Validate the configuration dict
+Validate the configuration
+dict
 ionary.
 
-```text
+```
 
-```text
+```
 Args:
 
-```text
-config: Th
-e configurat
+```
+config
+: Th
+e confi
+gurat
+
 ion di
 ctionary to validate
 
-```text
+```
 
-```text
-
-```text
+```
+```
 Returns:
 
-```text
-True if
+```
+True
 
-the con
-figuratio
+ if
+
+th
+e con
+fig
+uratio
 n is valid, False otherwise
 
-```text
+```
 
-```text
-
-```text
+```
+```
 Raises:
 
-```text
-Value
+```
+V
 
-Error:
-If the c
+alue
+
+E
+rror:
+If
+ the c
 onfiguration is missing required fields
 
-```text
+```
 """
 ...
 
-```text
+```
 
-```text
+`
+``
 
-## Code
+## C
+
+ode {#code}
 
 Organization
 {#code-organization}
@@ -180,21 +200,24 @@ Organization
 
 ```python
 
-class Con
+class
+ Con
 figurationError(Exception):
 
-```text
-"""Raised when ther
+```
+"""Raised when
+ther
 e is an error in the configuration."""
 pass
 
-```text
+```
 
-```text
+```
 
-## T
+## T {#t}
 
-esting Standa
+es
+ting Standa
 rds {#testing-standards}
 
 ### Test Coverage {#test-coverage}
@@ -219,63 +242,75 @@ rds {#testing-standards}
 
 ```python
 
-def t
+d
+ef t
 est_hardware_detection_with_arc_gpu():
 
-```text
+```
 
-## Arrange {#ar
+## Arrange
+
+{#ar {#arrange-ar}
 
 range}
 
-```text
+```
 
-```text
+`
+``
 m
-ock_gpu_info
+ock_gpu
+_info
  = ["Intel(R) Arc(TM) A770 Graphics"]
 
-```text
+```
 
-```text
+```
 
-## Act {#ac
+## Act
+
+{#ac {#act-ac}
 
 t}
 
-```text
-
+```
 `
+
 ``
 with patc
 h("hardware_detection.get_gpu_info", return_value=mock_gpu_info):
 
-```text
+```
 resu
+
 lt = hardware_detection.detect_hardware_type()
-
-```text
-
-```text
-``
-
-`
-
-## As
-
-sert {#assert}
 
 ```t
 ext
 
-```text
-ass
+```
+``
+
+`
+
+## As {#as}
+
+sert {#assert}
+
+``
+`t
+ext
+
+```
+a
+ss
 ert result == "acm"
 
 ``
 `text
 
-```text
+```
+
 #
 
 # Code Quality Tools {#code-quality-tools}
@@ -341,7 +376,7 @@ warn_unused_configs = true
 disallow_untyped_defs = true
 disallow_incomplete_defs = true
 
-```text
+```
 
 ## Continuous Integration {#continuous-integration}
 
@@ -382,7 +417,6 @@ Documentation should be:
 ---
 **Previous**: [Contributing Guide](contributing.md) | **Next**: [Testing Guide](testing.md) | __See also_*: [Linting](linting.md)
 
+````
 
-```text`
-
-```text`
+````

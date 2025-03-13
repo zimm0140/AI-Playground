@@ -83,14 +83,14 @@ The updated CI workflow now follows this structure:
 
 └── scripts/
 
-```text`text
+````text
 
 ├── README.md           # Scripts documentation
 
 ``
 `text
 
-```text
+```
 ├
 ── analyze_test_coverage.sh
 ├── catalog_hardware.sh
@@ -106,9 +106,9 @@ The updated CI workflow now follows this structure:
 ├── scan_dependencies.sh
 └── verify_environment.sh
 
-```text
+```
 
-```text
+```
 
 ## Future Recommendations {#future-recommendations}
 
@@ -128,6 +128,6 @@ Potential future improvements for the CI workflow:
 
 1. __Deployment Testing_*: Add tests to verify deployment works correctly
 
-```text`
+````
 
-```text`
+````

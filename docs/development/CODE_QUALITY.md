@@ -37,17 +37,19 @@ We use [pre-commit](https://pre-commit.com/) to run checks before each commit. T
 \`\`\`text\`bash
 pip install pre-commit
 
-```text`text
+````text
 
 1. Install the hooks:
 
-```b
+``
+`b
 ash
 
 pre-commit install
 
-```text
-1.
+```
+1
+.
 Run against all files:
 
 ``
@@ -55,7 +57,8 @@ Run against all files:
 
 pre-commit run --all-files
 
-```text
+```
+
 #
 
 # CI/CD Checks {#cicd-checks}
@@ -85,7 +88,7 @@ Run these scripts to quickly identify and fix issues:
 python check_linting.py
 python fix_unused_variables.py
 
-```text
+```
 
 ## Best Practices {#best-practices}
 
@@ -111,6 +114,6 @@ If you encounter CI failures:
 
 1. Run pre-commit to verify your fixes before pushing again.
 
-```text`
+````
 
-```text`
+````

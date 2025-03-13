@@ -16,35 +16,39 @@ from typing import Union
 
 def process_data(data: Union[dict, list]) -> Union\[str, None\]:
 
-```text`text
+````text
 
 ...
 
-```text
+```
 
-```text
+```
 
 #### After (Python 3.10+) {#after-python-310}
 
 ```python
 
 def process_d
+
 ata(data: dict | list) -> str | None:
 
-
-```text
-..
+```
+.
+.
 .
 
-```text
+```
 
-```text
+```
 
 #### Migration Approach {#migration-approach}
 
-For
- com
-patibility wi
+Fo
+r
+ co
+m
+patibility
+wi
 th both Python 3.9 and Python 3.10+, continue using `Union` from the typing module:
 
 ```python
@@ -52,20 +56,24 @@ th both Python 3.9 and Python 3.10+, continue using `Union` from the typing modu
 from typing import Union
 
 def process_data(data: Union[
+
 dict, list]) -> Union[str, None]:
 
-```text
+```
 ...
 
-```text
+```
 
-```text
+```
 
 ### 2. Optional Types {#optional-types}
 
 `Opti
-onal
-[T]` is equiv
+
+ona
+l
+[T]` is equ
+iv
 alent to `Union[T, None]` or `T | None` in Python 3.10+.
 
 #### Before {#before}
@@ -75,34 +83,45 @@ alent to `Union[T, None]` or `T | None` in Python 3.10+.
 from typing import Optional
 
 def get_user(user_id:
+
 Optional[int] = None) -> Optional[dict]:
 
-```text
+```
 ...
 
-```text
+```
 
-```text
+```
 
 #### After (Python 3.10+) {#after-python-3
+
+ {#a
+
+fter-python-3
+10-after-python-3}
 
 10}
 
 ```python
 
 d
-ef get_user(user_id: int | None = None) -> dic
+ef get_user(user_id: int | None = None) -> di
+c
 t | None:
 
-
-```text
+```
 ...
 
-```text
+```
 
-```text
+```
 
 #### Migration Approach {#migration-ap
+
+ {#m
+
+igration-appr
+oach-migration-ap}
 
 proa
 ch}
@@ -114,20 +133,25 @@ ward compatibility, continue using `Optional` from the typing module:
 
 from typing import Optional
 
-def get_user(us
+def get_user(u
+s
 er_id: Optional[int] = None) -> Optional[dict]:
 
-```text
+```
 ...
 
-```text
+```
 
-```text
+```
 
-### 3. Type Aliases {#type-aliases}
+### 3. Type Aliases {#type-aliases
 
-Py
-thon 3.10 int
+}
+
+P
+y
+thon 3.10 i
+nt
 roduces the ability to use `TypeAlias` for explicit type aliases.
 
 #### Before {#before}
@@ -136,23 +160,25 @@ roduces the ability to use `TypeAlias` for explicit type aliases.
 
 from typing import Dict, List, Union
 
-JS
+J
+S
 ONValue = Union[str, int, float, bool, None, Dict[str, 'JSONValue'], List['JSONValue']]
 
-```text
+```
 
 #### After (Python 3.10+) {#after-python-310}
 
-```text
+``
+`
 python
 
 from typing import TypeAlias
 
-JSONValu
+JSONVa
+lu
 e: TypeAlias = str | int | float | bool | None | dict[str, 'JSONValue'] | list['JSONValue']
 
-
-```text
+```
 
 #### Migration Approach {#migration-approach}
 
@@ -161,17 +187,19 @@ or backward compatibility:
 
 ```python
 
-from typing import Dict, List, Union
+from typing import Dict, List, Unio
+n
 
 ## For Python 3.9 and earlier {#for-python-39-and-earlier}
 
 JSONValue = Union[str, int, float, bool, None, Dict[str, 'JSONValue'], List['JSONValue']]
 
-```text
+```
 
 ### 4. Generic Types {#generic-types}
 
 Python
+
 3.9 allows using built-in collection types as generic types, but Python 3.8 requires importing from typing.
 
 #### Before (Python 3.8) {#before-python-38}
@@ -180,34 +208,47 @@ Python
 
 from typing import Dict, List
 
-def
+de
+f
  process_data(data: Dict[str, List[int]]) -> None:
 
-```text
+```
 ...
 
-```text
+```
 
-```text
+```
 
 #### After (Python 3.9+)
 
+ {#a
+
+fter-python-3
+9}
+
 {#aft
+
 er-python-39}
 
 ```python
 
-def process_data(data: dict[str
+def process_data(data: dict[s
+tr
 , list[int]]) -> None:
 
-```text
+```
 ...
 
-```text
+```
 
-```text
+```
 
-#### Migration Approac
+#### Migration Appro
+
+ac {
+#migration-ap
+
+proac}
 
 h {#
 migration-app
@@ -217,19 +258,24 @@ For backward compatibility:
 
 ```python
 
-from typing import Dict, Li
+from typing import Dict,
+Li
 st
 
 def process_data(data: Dict[str, List[int]]) -> None:
 
-```text
+```
 ...
 
-```text
+```
 
-```text
+```
 
-## Using the Type
+## Using the Typ
+
+e {#
+using-the-typ
+e}
 
 Anno
 tation Fix To
@@ -239,7 +285,9 @@ We've provided a tool to help identify type annotation issues:
 
 ```bash
 
-## Scan the entire proje
+## Scan the entire pro
+
+je {#scan-the-entire-proje}
 
 ct {#scan-the-entire-project}
 
@@ -257,9 +305,11 @@ python scripts/fix_type_annotations.py --dry-run .
 
 python scripts/fix_type_annotations.py --verbose .
 
-```text
+```
 
-## Common Runtime Type Errors {#c
+## Common Runtime Type Errors {
+
+#c {#common-runtime-type-errors-c}
 
 ommon-runtime-type-errors}
 
@@ -269,40 +319,49 @@ When dealing with potentially `None` values, always add explicit checks:
 
 ```python
 
-## Problematic {#pro
+## Problematic {#p
+
+ro {#problematic-pro}
 
 blematic}
 
 def process_path(path: Optional[str]) -> str:
 
-```text
-return os.path.join(path, "subd
+```
+return os.path.join(path, "su
+bd
 ir")  # TypeError if path is None
 
-```text
+```
 
 ## Fixed {#fixed}
 
-def pr
+def
+pr
 ocess_path(path: Optional[str]) -> str:
 
-```text
+```
 if path is None:
 
-```text
-path =
+```
+path
+=
 ""
 
-```text
-return os
-.path.join(path, "
+```
+return
+os
+.path.join(path
+, "
 subdir")
 
-```text
+```
 
-```text
+```
 
-### 2. Colle
+### 2. Col
+
+le {#colle}
 
 ction Type Ch
 ecking {#collection-type-checking}
@@ -311,90 +370,109 @@ When checking collection types:
 
 ```python
 
-## Problemat
+## Problem
+
+at {#problemat}
 
 ic {#problematic}
 
 def process_data(data: Union[dict, list]) -> None:
 
-```text
-if isinstance(data, dic
+```
+if isinstance(data, d
+ic
 t):
 
-```text
+```
 
-## dict processin
+## dict process
+
+in {#dict-processin}
 
 g {#dict-processing}
 
-```text
+```
 
-```text
+```
+```
+elif isins
 
-```text
-elif isinsta
+ta
 
-nce(dat
+nce
+(dat
 a, list):
 
-```text
+```
 
-## list proce
+## list pro
+
+ce {#list-proce}
 
 ssing {#list-processing}
 
-```text
+```
 
-```text
-
-```text
+```
+```
 else:
 
 `
 
 ``
+
 rais
 e Valu
 eError(f"Expected dict or list, got {type(data)}")
 
-```text
+```
 
-```text
+```
 
-## Bett
+## Bett {#b
+
+ett}
 
 er {#better}
 
 def process_data(data: Union[dict, list]) -> None:
 
-```text
-if isinstan
+```
+if isi
+nstan
 ce(data, dict):
 
-```text
+```
 
-## di
+## di {#d
+
+i}
 
 ct processing {#dict-processing}
 
-```text
+```
 
-```text
+```
+```
+el
 
-```text
-elif is
+if is
 instance(data, list):
 
-```text
+```
+
 #
 
-# list processing {#list-processing}
+#
+list processing {#list-processing}
 
-```text
+```t
+ext
 
-```text
+```
+``
 
-```text
+`
 els
 e:
 
@@ -403,17 +481,16 @@ e:
 acceptable_types = (dict, list)
 raise ValueError(f"Expected one of {acceptable_types}, got {type(data)}")
 
-```text
+```
 
-```text
-
-```text
+```
+```
 
 ## IDE Support {#ide-support}
 
 Modern IDEs like VS Code with Pylance, PyCharm, or tools like mypy can help identify type annotation issues. Ensure your IDE is configured to check types with Python 3.10+
 compatibility.
 
-```text`
+````
 
-```text`
+````

@@ -32,13 +32,15 @@ conda activate ai-playground-env
 
 pip install -r requirements.txt
 
-```text`text
+````text
 
 1. **Verify the environment**:
 
 ```bash
 
-## Check w
+## Check
+
+ w {#check-w}
 
 hich Python is being used (should point to your conda environment) {#check-which-python-is-being-used-should-point-to-your-conda-environment}
 
@@ -48,9 +50,11 @@ python -c "import sys; print(sys.executable)"
 
 python -c "import jsonschema; print(f'jsonschema version: {jsonschema.**version**}')"
 
-```text
+```
 
-### Option 2: Using
+### Option 2: Usi
+
+ng {#option-2-using}
 
  venv {#option-2-using-venv}
 
@@ -58,7 +62,9 @@ python -c "import jsonschema; print(f'jsonschema version: {jsonschema.**version*
 
 ```bash
 
-## On Wi
+## On
+
+Wi {#on-wi}
 
 ndows {#on-windows}
 
@@ -74,9 +80,11 @@ source .venv/bin/activate
 
 pip install -r requirements.txt
 
-```text
+```
 
-## Environment Ma
+## Environment
+
+Ma {#environment-ma}
 
 nagement Best Practices {#environment-management-best-practices}
 
@@ -84,7 +92,9 @@ nagement Best Practices {#environment-management-best-practices}
 
 ```bash
 
-## For
+## F
+
+or {#for}
 
  Conda {#for-conda}
 
@@ -98,15 +108,19 @@ conda activate ai-playground-env
 
 source .venv/bin/activate
 
-```text
-1. **Add new de
+```
+1. **Add new
+de
+
 pendencies to requirements.txt**:
 
 When adding a new package, update the requirements.txt file:
 
 ```bash
 
-## A
+##
+
+ A {#a}
 
 fter installing a new package {#after-installing-a-new-package}
 
@@ -116,8 +130,10 @@ pip freeze > requirements.txt
 
 echo "package-name==1.2.3" >> requirements.txt
 
-```text
-1. __Never co
+```
+1. __Never
+co
+
 mmit environment directories_*:
 
 The .gitignore file is set up to exclude environment directories (.venv/, env/, etc.).
@@ -130,13 +146,16 @@ To validate JSON files against schemas:
 ```bash
 
 ##
+
  Ensure you're in your activated environment {#ensure-youre-in-your-activated-environment}
 
 python validate_colorize.py
 
-```text
+```
 
-## Addition
+## Additi
+
+on {#addition}
 
 al Guidelines {#additional-guidelines}
 
@@ -219,8 +238,9 @@ Please use the sign-off line at the end of the patch. Your signature certifies t
 rules are pretty simple: if you can certify
 the below (from [developercertificate.org](http://developercertificate.org/)):
 
-```text
-Develo
+```
+Deve
+lo
 per Certificate of Origin
 Version 1.1
 
@@ -237,17 +257,20 @@ By making a contribution to this project, I certify that:
 
 (a) The contribution was created in whole or in part by me and I
 
-```text
-have the
+```
+have th
+e
 right to submit it under the open source license
 indicated in the file; or
 
-```text
-(b)
+```
+(b
+)
 The contribution is based upon previous work that, to the best
 
-```text
-of my k
+```
+of my
+ k
 nowledge, is covered under an appropriate open source
 license and I have the right under that license to submit that
 work with modifications, whether created in whole or in part
@@ -255,20 +278,23 @@ by me, under the same open source license (unless I am
 permitted to submit under a different license), as indicated
 in the file; or
 
-```text
+```
 (c
 ) The contribution was provided directly to me by some other
 
-```text
-perso
+```
+per
+so
 n who certified (a), (b) or (c) and I have not modified
 it.
 
-```text
+``
+`
 (d) I understand and agree that this project and the contribution
 
-```text
-are
+```
+a
+re
  public and that a record of the contribution (including all
 personal information I submit with it, including my sign-off) is
 maintained indefinitely and may be redistributed consistent with
@@ -277,14 +303,14 @@ this project or the open source license(s) involved.
 ``
 `text
 
-```text
+```
 T
 hen you just add a line to every git commit message:
 
-```text
+```
 Signed-off-by: Joe Smith <joe.smith@email.com>
 
-```text
+```
 Use your real name (sorry, no pseudonyms or anonymous contributions.)
 
 If you set your `user.name` and `user.email` git configs, you can sign your
@@ -294,6 +320,6 @@ commit automatically with `git commit -s`.
 
 Again, thanks for your interest in contributing to this project. We appreciate your efforts to make our project even better!
 
-```text`
+````
 
-```text`
+````

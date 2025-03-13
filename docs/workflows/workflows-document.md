@@ -20,7 +20,6 @@
 | "modifiableSettings" | **Required**: Yes, if no default values need leave as empty brackets [ ] <br>**Description**: Input types you'd like the user to adjust: "resolution", "seed", prompt" "inferenceSteps", "batchSize, "cfg", "negativePrompt" <br>**Syntax**: "inputField" ie "inferenceSteps", "seed" |
 | "comfyUiApiWorkflow" | **Required**: Yes <br>**Description**: This section should be a copy and paste of the API export of the workflow created in ComfyUI. |
 
-
 ## Instructions {#instructions}
 
 ### Creating a New An AI Playground Workflow {#creating-a-new-an-ai-playground-workflow}
@@ -81,15 +80,15 @@
 `
   }
 
-```text
+```
  **Example Explanation:** the batch\_Size field determines how many images will be generated at the same time. In AI Playground this value is set to "1" by default. The code
 above adds a number slider to the settings menu with an input range from 1 to 4\. In the example image below, the batch\_size is set to 2 with a image generation number of 4,
 generating 8 total images.
 
-```text
+```
 ![image](https://github.com/user-attachments/assets/b5fb5c88-ca86-457d-8496-d182a4fcfea8)
 
-```text
+```
 **Allowed AI Playground Settings Names** for "displayedSettings" or "modifiableSettings"
 
     - "resolution",
@@ -780,6 +779,6 @@ AJCQAACAhAQAACQkAAEhIAABAQgIAABISAACQkAAAgIQEAAAkJAAAICEBAAAJCQAASEgAAEBCAgAAEhI
 gIQEAAAkJAAAICEBAAAJCQAASEgAAEBCAgAAEhIAAJCQAACAhAQAACQkAAAgIQEAAAkJAABISAAAQEICAAASEgAAkJAAAICEBAAAJCQAACAhAQAACQkAAEhIAABAQgIAABISAACQkAAAgIQEAAAkJAAAICEBAAAJ/T8r8gNH5WpNaAAAAABJ
 U5ErkJggg=="
 
-```text`
+````
 
-```text`
+````

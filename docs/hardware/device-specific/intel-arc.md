@@ -15,7 +15,6 @@ AI-Playground supports all Intel Arc GPU models:
 | A380 | 6GB | Small to medium models | Good |
 | A310 | 4GB | Small models only | Basic |
 
-
 ## Hardware Requirements {#hardware-requirements}
 
 ### Driver Requirements {#driver-requirements}
@@ -24,7 +23,6 @@ AI-Playground supports all Intel Arc GPU models:
 |----|------------------------|-------------------|
 | Windows | 31.0.101.4255 | Latest available |
 | Linux | Mesa 23.1 | Mesa 23.3+ |
-
 
 ### System Requirements {#system-requirements}
 
@@ -93,8 +91,9 @@ AI-Playground supports all Intel Arc GPU models:
 
 python setup_hardware_env.py --hardware acm
 
-```text
+```
 This will
+
 install the required dependencies including:
 
 - Intel Extension for PyTorch (IPEX)
@@ -111,7 +110,8 @@ install the required dependencies including:
 
 Use the "xpu" device in your code:
 
-```python
+```pytho
+n
 
 import torch
 import intel_extension_for_pytorch as ipex
@@ -129,15 +129,18 @@ input_tensor = input_tensor.to("xpu")
 with torch.xpu.amp.autocast(dtype=torch.bfloat16):
     output = model(input_tensor)
 
-```text
+```
 
-### Envi
+### Env
+
+i {#envi}
 
 ronment Variables {#environment-variables}
 
 Set these environment variables for optimal performance:
 
-```bash
+```bas
+h
 
 # Windows (PowerShell) {#windows-powershell}
 
@@ -151,15 +154,18 @@ export ZE_AFFINITY_MASK="0.0"
 export SYCL_CACHE_PERSISTENT="1"
 export IPEX_XPU_MAX_STREAMS="8"
 
-```text
+```
 
-### Me
+### M
+
+e {#me}
 
 mory Management {#memory-management}
 
 Arc GPUs benefit from careful memory management:
 
-```py
+```p
+y
 thon
 
 # Clear XPU cache when needed {#clear-xpu-cache-when-needed}
@@ -171,9 +177,11 @@ torch.xpu.empty_cache()
 print(f"Memory allocated: {torch.xpu.memory_allocated() / 1e9:.2f} GB")
 print(f"Memory reserved: {torch.xpu.memory_reserved() / 1e9:.2f} GB")
 
-```text
+```
 
-## T
+##
+
+T {#t}
 
 roubleshooting Arc-Specific Issues {#troubleshooting-arc-specific-issues}
 
@@ -186,10 +194,10 @@ roubleshooting Arc-Specific Issues {#troubleshooting-arc-specific-issues}
 | Performance lower than expected | Check power limits and thermal throttling |
 | System crash during inference | Update drivers and reduce workload size |
 
-
 ### Debugging Tools {#debugging-tools}
 
-```text
+``
+`
 bash
 
 # Check GPU information {#check-gpu-information}
@@ -200,8 +208,10 @@ python -c "import torch; import intel_extension_for_pytorch as ipex; print(torch
 
 python service/tools/intel_gpu_diagnostics.py
 
-```text
-##
+```
+
+#
+#
  Performance Tuning {#performance-tuning}
 
 ### Model Optimization {#model-optimization}
@@ -250,7 +260,7 @@ for bs in batch_sizes:
 
     # Record timing information
 
-```text
+```
 Typical optimal batch sizes:
 
 - A770: 8-16
@@ -267,7 +277,6 @@ Typical optimal batch sizes:
 | LoRA Training | ~0.9 it/s | ~1.2 it/s | Similar memory usage |
 | LLM Inference | ~22 tok/s | ~28 tok/s | Arc benefits from BF16 |
 
-
 ## Additional Resources {#additional-resources}
 
 - [Intel Developer Documentation](https://developer.intel.com/arctgpu)
@@ -281,4 +290,4 @@ Typical optimal batch sizes:
 
 ```markdown
 
-```text
+```

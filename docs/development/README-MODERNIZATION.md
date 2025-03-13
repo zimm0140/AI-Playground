@@ -54,11 +54,12 @@ pip install -e .
 
 pip install -r requirements-dev.txt
 
-```text`text
+````text
 
 ### Modern Installation with uvfast {#modern-installation-with-uvfast}
 
-```b
+``
+`b
 ash
 
 ## Setup environment with development dependencies {#setup-environment-with-development-dependencies}
@@ -73,8 +74,11 @@ python uvfast.py info
 
 python uvfast.py run pytest
 
-```text
-###
+```
+
+#
+##
+
  Using Wrapper Scripts {#using-wrapper-scripts}
 
 ``
@@ -88,7 +92,8 @@ python uvfast.py run pytest
 
 .\scripts\uvfast.ps1 setup --dev
 
-```text
+```
+
 #
 
 # Hardware-Specific Setup {#hardware-specific-setup}
@@ -103,7 +108,7 @@ python uvfast.py setup --hardware acm --dev
 
 python uvfast.py setup --hardware ovino --dev
 
-```text
+```
 
 ## Documentation {#documentation}
 
@@ -179,6 +184,6 @@ We welcome contributions to further improve this modernization effort. Please se
 
 This project is licensed under the same license as the original project. See the LICENSE file for details.
 
-```text`
+````
 
-```text`
+````

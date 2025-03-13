@@ -70,22 +70,27 @@ The implementation combines modern Python packaging practices with hardware dete
 git clone <repository-url>
 cd <project-directory>
 
-```text`text
+````text
 
 1. Run the setup command to create an environment for your hardware:
 
 ```bash
 
-python uvfast.py
+python uvfast.p
+y
 setup --dev
 
-```text
-1. Activate the virtual e
+```
+1. Activate the virtual
+ e
+
 nvironment:
 
 ```bash
 
-## On Windows
+## On Window
+
+s
 
 {#on-windows}
 
@@ -95,18 +100,23 @@ nvironment:
 
 source .venv/bin/activate
 
-```text
-1. Run commands in the
+```
+1. Run commands in th
+e
+
 optimized environment:
 
 ```bash
 
-python uvfast
+python uvfa
+st
 .py run pytest
 
-```text
+```
 
-### Manual Hardware S
+### Manual Hardware
+
+ S {#manual-hardware-s}
 
 election {#manual-hardware-selection}
 
@@ -114,11 +124,13 @@ If you want to specify a hardware type explicitly:
 
 ```bash
 
-python uvfa
+python uv
+fa
 st.py setup --hardware acm --dev
 
-```text
-Available hardware
+```
+Available hardwar
+e
 types:
 
 - `base`: Standard configuration
@@ -141,33 +153,40 @@ For traditional installation with pip (but accelerated with uv):
 
 ```bash
 
-python uv
+python
+uv
 fast.py legacy-install --dev
 
-```text
-Or for fully trad
+```
+Or for fully tr
+ad
 itional installation:
 
 ```bash
 
-pip ins
+pip i
+ns
 tall -e .
 pip install -e ".[dev]"
 
-```text
-For hardware-sp
+```
+For hardware-
+sp
 ecific dependencies:
 
 ```bash
 
-pip i
+pip
+ i
 nstall -e ".[acm]"  # For Intel Arc GPUs
 
 pip install -e ".[ovino]"  # For OpenVINO
 
-```text
+```
 
-## Lockfile M
+## Lockfile
+
+ M {#lockfile-m}
 
 anagement {#lockfile-management}
 
@@ -176,6 +195,7 @@ Generate lockfiles for reproducible environments:
 ```bash
 
 ##
+
  Generate lockfile for current hardware {#generate-lockfile-for-current-hardware}
 
 python uvfast.py lock
@@ -184,8 +204,9 @@ python uvfast.py lock
 
 python uvfast.py lock --all
 
-```text
-Install fro
+```
+Install f
+ro
 m lockfiles:
 
 ```bash
@@ -193,42 +214,51 @@ m lockfiles:
 p
 ython uvfast.py setup --use-lockfile
 
-```text
+```
 
-## Enviro
+## Envi
+
+ro {#enviro}
 
 nment Information {#environment-information}
 
 Display information about the current hardware and environment:
 
-```bash
+```bas
+h
 
 python uvfast.py info
 
-```text
-For mor
+```
+For m
+or
 e detailed information:
 
-```bas
+```b
+as
 h
 
 python uvfast.py info --verbose
 
-```text
+```
 
-## Ha
+##
+
+Ha {#ha}
 
 rdware-Specific Development {#hardware-specific-development}
 
 The examples directory contains a sample script demonstrating how to use hardware detection with PyTorch:
 
-```b
+``
+`b
 ash
 
 python examples/xpu_integration.py
 
-```text
-Thi
+```
+T
+hi
 s script automatically configures PyTorch for the appropriate backend (XPU for Intel GPUs, OpenVINO, or CPU) based on the detected hardware.
 
 ## CI/CD Integration {#cicd-integration}
@@ -258,7 +288,7 @@ docker build --target openvino -t my-project:openvino .  # For OpenVINO
 
 docker run -it my-project:acm
 
-```text
+```
 O
 r using Docker Compose with profiles:
 
@@ -267,7 +297,7 @@ r using Docker Compose with profiles:
 docker-compose --profile acm up
 docker-compose --profile openvino up
 
-```text
+```
 
 ## Advanced Configuration {#advanced-configuration}
 
@@ -281,6 +311,6 @@ You can customize the hardware detection and environment configuration by modify
 
 - Configure environment settings
 
-```text`
+````
 
-```text`
+````

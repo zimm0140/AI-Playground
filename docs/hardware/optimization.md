@@ -31,7 +31,7 @@ Intel Arc GPUs (Alchemist and newer) offer excellent performance with these opti
 
 python setup_hardware_env.py --hardware acm
 
-```text`text
+````text
 
 ### Performance Tuning {#performance-tuning}
 
@@ -78,23 +78,25 @@ python setup_hardware_env.py --hardware acm
    import torch
    with torch.xpu.amp.autocast(dtype=torch.bfloat16):
 
-```text
+```
    ## Your model i
 
 nference code
 
-```text
+```
 
-```text
+```
    output = mode
 
 l(input)
 
-```text
+```
 
-```text
+```
 
 ### Arc-Speci
+
+ {#arc-speci}
 
 fic Settings {#arc-specific-settings}
 
@@ -104,7 +106,6 @@ fic Settings {#arc-specific-settings}
 | `SYCL_CACHE_PERSISTENT` | "1" | Enable persistent SYCL cache |
 | `IPEX_XPU_MAX_STREAMS` | "8" | Maximum number of streams |
 | `DPCT_SYSTEM_MEMORY_GRANULARITY_LEVEL` | "fine" | Memory granularity |
-
 
 ## Intel Meteor Lake Optimization {#intel-meteor-lake-optimization}
 
@@ -116,13 +117,17 @@ Intel Meteor Lake CPUs with integrated GPUs benefit from these optimizations:
 
 ## Set up environ
 
+ {#set-up-environ}
+
 ment with Meteor Lake optimizations {#set-up-environment-with-meteor-lake-optimizations}
 
 python setup_hardware_env.py --hardware mtl
 
-```text
+```
 
 ### NPU Acc
+
+ {#npu-acc}
 
 eleration {#npu-acceleration}
 
@@ -130,13 +135,17 @@ eleration {#npu-acceleration}
 
 ## Use NPU for
 
+{#use-npu-for}
+
 compatible operations {#use-npu-for-compatible-operations}
 
 os.environ["PYTORCH_MTL_NPU_MODE"] = "1"
 
-```text
+```
 
 ### Power
+
+ {#power}
 
  Management {#power-management}
 
@@ -144,13 +153,17 @@ os.environ["PYTORCH_MTL_NPU_MODE"] = "1"
 
 ## Set high p
 
+ {#set-high-p}
+
 erformance power plan on Windows {#set-high-performance-power-plan-on-windows}
 
 powercfg /setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
 
-```text
+```
 
 ## NVID
+
+ {#nvid}
 
 IA GPUs Optimization {#nvidia-gpus-optimization}
 
@@ -162,6 +175,8 @@ For NVIDIA GPUs, consider these optimizations:
 
 ## Set memo
 
+ {#set-memo}
+
 ry allocation strategy {#set-memory-allocation-strategy}
 
 torch.cuda.set_per_process_memory_fraction(0.8)  # Use 80% of available VRAM
@@ -171,9 +186,11 @@ torch.cuda.set_per_process_memory_fraction(0.8)  # Use 80% of available VRAM
 torch.backends.cuda.matmul.allow_tf32 = True
 torch.backends.cudnn.allow_tf32 = True
 
-```text
+```
 
 ### M
+
+ {#m}
 
 ulti-GPU Setup {#multi-gpu-setup}
 
@@ -181,12 +198,16 @@ ulti-GPU Setup {#multi-gpu-setup}
 
 ## Use Da
 
+ {#use-da}
+
 taParallel for multiple GPUs {#use-dataparallel-for-multiple-gpus}
 
 model = torch.nn.DataParallel(model)
 
-```text
+```
+
 ##
+
 CPU-Only Optimization {#cpu-only-optimization}
 
 For systems without GPUs:
@@ -194,6 +215,8 @@ For systems without GPUs:
 ```python
 
 ## Set
+
+{#set}
 
 thread count to optimize for your CPU {#set-thread-count-to-optimize-for-your-cpu}
 
@@ -205,7 +228,8 @@ torch.set_num_threads(8)  # Adjust based on your CPU cores
 import os
 os.environ["MKL_NUM_THREADS"] = "8"
 
-```text
+```
+
 #
 
 # Memory Optimization {#memory-optimization}
@@ -216,6 +240,8 @@ os.environ["MKL_NUM_THREADS"] = "8"
 
 ## Us
 
+ {#us}
+
 e gradient checkpointing {#use-gradient-checkpointing}
 
 model.gradient_checkpointing_enable()
@@ -224,7 +250,7 @@ model.gradient_checkpointing_enable()
 
 offload_config = {"offload_buffers": True}
 
-```text
+```
 
 ### Optimize for Limited VRAM {#optimize-for-limited-vram}
 
@@ -245,6 +271,7 @@ To measure and optimize performance:
 ```bash
 
 ##
+
 Run benchmarking tool {#run-benchmarking-tool}
 
 python service/tools/benchmark.py --hardware acm --model sd_xl
@@ -272,33 +299,34 @@ The tool will report:
 | NVIDIA GTX 1660 | FP16 precision, reduced batch size |
 | CPU-only | Thread optimization, quantized models |
 
-
 ## Advanced Configuration {#advanced-configuration}
 
 For advanced users, edit `/uvfast.json` to fine-tune hardware configurations:
 
-```json
+``
+`json
 
 {
 
   "hardware_optimizations": {
 
-```text
-"acm": {
+```
+"
+acm": {
   "thread_count": 8,
   "memory_fraction": 0.8,
   "mixed_precision": true
 }
 
-```text
+```
   }
 }
 
-```text
+```
 ---
 **Previous**: [Hardware Compatibility](compatibility.md) | **Next**: [Intel Arc Guide](device-specific/intel-arc.md) | __See also_*: [Performance
 Troubleshooting](../reference/troubleshooting.md)
 
-```text`
+````
 
-```text`
+````

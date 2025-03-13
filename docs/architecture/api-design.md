@@ -25,13 +25,16 @@ The REST API provides HTTP endpoints for interacting with AI-Playground services
 
 ### Base URL {#base-url}
 
-```text
-https://<server>:<port>/api/
+```
+https://<server>:<port>/api
+/
 v1
 
-```text
+```
 
-### Authentication {#authentica
+### Authentication {#authentic
+
+a {#authentication-authentica}
 
 tion}
 
@@ -39,10 +42,11 @@ The API supports token-based authentication:
 
 ```http
 
-Authorization: Bearer
+Authorization: Beare
+r
  <api_token>
 
-```text
+```
 
 ### Endpoints {#endpoints}
 
@@ -57,7 +61,6 @@ Authorization: Bearer
 | `/models/upload` | POST | Upload a model |
 | `/models/{model_id}` | DELETE | Delete a model |
 
-
 #### Inference {#inference}
 
 | Endpoint | Method | Description |
@@ -66,7 +69,6 @@ Authorization: Bearer
 | `/inference/batch/{model_id}` | POST | Run batch inference |
 | `/inference/async/{model_id}` | POST | Start async inference job |
 | `/inference/jobs/{job_id}` | GET | Get async job status/results |
-
 
 #### Hardware Management {#hardware-management}
 
@@ -77,7 +79,6 @@ Authorization: Bearer
 | `/hardware/profile` | POST | Create hardware profile |
 | `/hardware/profiles` | GET | List hardware profiles |
 
-
 #### System {#system}
 
 | Endpoint | Method | Description |
@@ -85,7 +86,6 @@ Authorization: Bearer
 | `/system/status` | GET | Get system status |
 | `/system/metrics` | GET | Get performance metrics |
 | `/system/logs` | GET | Get system logs |
-
 
 ### Request Examples {#request-examples}
 
@@ -95,7 +95,8 @@ Request:
 
 ```http
 
-POST /api/v1/infere
+POST /api/v1/infer
+e
 nce/text-generation
 Content-Type: application/json
 
@@ -106,13 +107,15 @@ Content-Type: application/json
   "hardware_profile": "arc-optimized"
 }
 
-```text
+```
 Response:
 
 ```http
 
-HTTP/1.
+HTTP/1
+.
 1 200 OK
+
 C
 ontent-Type: application/json
 
@@ -134,9 +137,11 @@ ontent-Type: application/json
   }
 }
 
-```text
+```
 
-#### Batch Processing {#b
+#### Batch Processing {#
+
+b {#batch-processing-b}
 
 atch-processing}
 
@@ -144,7 +149,8 @@ Request:
 
 ```http
 
-POST /api/v1/in
+POST /api/v1/i
+n
 ference/batch/image-classification
 Content-Type: application/json
 
@@ -156,13 +162,15 @@ Content-Type: application/json
   "hardware_profile": "auto"
 }
 
-```text
+```
 Response:
 
 ```http
 
-HTT
-P/1.1 200
+HT
+T
+P/1.1 20
+0
 OK
 Content-Type: application/json
 
@@ -194,9 +202,11 @@ Content-Type: application/json
   }
 }
 
-```text
+```
 
-### Error Handling {#
+### Error Handling {
+
+# {#error-handling-}
 
 error-handling}
 
@@ -204,7 +214,8 @@ Errors are returned as JSON with appropriate HTTP status codes:
 
 ```http
 
-HTTP/1.1 40
+HTTP/1.1 4
+0
 0 Bad Request
 Content-Type: application/json
 
@@ -220,8 +231,9 @@ Content-Type: application/json
   }
 }
 
-```text
-Common status codes
+```
+Common status code
+s
 :
 
 - `200 OK`: Request successful
@@ -246,18 +258,22 @@ The Python API provides a programmatic interface for integrating AI-Playground i
 
 ```bash
 
-pip insta
+pip inst
+a
 ll ai-playground
 
-```text
+```
 
-### Client Initia
+### Client Initi
+
+a {#client-initia}
 
 lization {#client-initialization}
 
 ```python
 
 from
+
 ai_playground import AIPlayground
 
 ## Initialize with default settings {#initialize-with-default-settings}
@@ -272,15 +288,18 @@ client = AIPlayground(
   hardware_profile="arc-optimized"
 )
 
-```text
+```
 
-### Model Manag
+### Model Mana
+
+g {#model-manag}
 
 ement {#model-management}
 
 ```python
 
 ##
+
  List available models {#list-available-models}
 
 models = client.list_models()
@@ -302,7 +321,7 @@ client.upload_model(
   metadata={"author": "Example User"}
 )
 
-```text
+```
 
 ### Inference
 
@@ -339,9 +358,11 @@ job = model.generate_async(prompt="Write a long essay about AI")
 if job.is_complete():
   result = job.get_result()
 
-```text
+```
 
 ### Hardwar
+
+ {#hardwar}
 
 e Management {#hardware-management}
 
@@ -370,13 +391,16 @@ client.create_hardware_profile(
 
 model.set_hardware_profile("low-memory")
 
-```text
+```
 
 ### Error
+
+ {#error}
 
  Handling {#error-handling}
 
 ```pytho
+
 n
 
 from ai_playground.exceptions import ModelNotFoundError, HardwareNotSupportedError
@@ -395,9 +419,11 @@ except HardwareNotSupportedError as e:
 
 client.set_hardware(device_type="cpu")
 
-```text
+```
 
 ## CLI
+
+{#cli}
 
 Interface {#cli-interface}
 
@@ -406,6 +432,7 @@ The command-line interface provides a way to interact with AI-Playground from th
 ### Basic Usage {#basic-usage}
 
 ```bas
+
 h
 
 ## Get help {#get-help}
@@ -424,13 +451,16 @@ ai-playground infer --model text-generation --prompt "Hello, world" --output out
 
 ai-playground hardware info
 
-```text
+```
 
 ### A
+
+ {#a}
 
 dvanced Usage {#advanced-usage}
 
 ```b
+
 ash
 
 ## Run with specific hardware {#run-with-specific-hardware}
@@ -445,8 +475,10 @@ ai-playground infer-batch --model classifier --input-file images.txt --output re
 
 ai-playground hardware create-profile --name arc-optimized --precision fp16 --batch-size 4
 
-```text
+```
+
 ##
+
 WebSocket API {#websocket-api}
 
 For applications requiring real-time updates, a WebSocket API is available.
@@ -468,14 +500,17 @@ socket.onopen = () => {
   }));
 };
 
-```text
+``
+`
+
 #
 
 ## Streaming Inference {#streaming-inference}
 
 ```javascript
 
-// Request streaming inference
+/
+/ Request streaming inference
 socket.send(JSON.stringify({
   type: 'inference',
   model_id: 'text-generation',
@@ -501,7 +536,7 @@ socket.onmessage = (event) => {
   }
 };
 
-```text
+```
 
 ## API Versioning {#api-versioning}
 
@@ -548,7 +583,6 @@ The API implements several security measures:
 ---
 **Previous**: [Architecture Overview](overview.md) | **Next**: [Hardware Integration](hardware-integration.md) | __See also_*: [Python API Reference](../reference/python-api.md)
 
+```
 
-```text
-
-```text`
+````
