@@ -145,10 +145,7 @@ def generate_markdown(endpoints, output_file=None):
         route = endpoint["routes"][0][0]
         parts = route.split("/")
 
-        if len(parts) >= 3 and parts[1] == "api":
-            category = parts[2]
-        else:
-            category = "other"
+        category = parts[2] if len(parts) >= 3 and parts[1] == "api" else "other"
 
         categories[category].append(endpoint)
 
@@ -247,10 +244,7 @@ def generate_github_summary(endpoints):
             for route, methods_list in endpoint["routes"]:
                 parts = route.split("/")
 
-                if len(parts) >= 3 and parts[1] == "api":
-                    category = parts[2]
-                else:
-                    category = "other"
+                category = parts[2] if len(parts) >= 3 and parts[1] == "api" else "other"
 
                 categories[category] += 1
 

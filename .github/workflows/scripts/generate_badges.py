@@ -341,7 +341,7 @@ class BadgesGenerator:
             f.write("| Badge | Status | Color |\n")
             f.write("|-------|--------|-------|\n")
 
-            for badge_type, badge_config in self.badges.items():
+            for _badge_type, badge_config in self.badges.items():
                 f.write(
                     f"| {badge_config['label']} | {badge_config['message']} | {badge_config['color']} |\n"
                 )

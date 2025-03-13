@@ -156,15 +156,14 @@ class FileDownloader:
         retry = 0
         while True:
             try:
-                with response:
-                    with fw:
-                        for bytes in response.iter_content(chunk_size=4096):
-                            self.download_size += bytes.__len__()
-                            fw.write(bytes)
+                with response, fw:
+                    for bytes in response.iter_content(chunk_size=4096):
+                        self.download_size += bytes.__len__()
+                        fw.write(bytes)
 
-                            if self.download_stop:
-                                print(f"FileDownloader thread {Thread.native_id} exit by stop")
-                                break
+                        if self.download_stop:
+                            print(f"FileDownloader thread {Thread.native_id} exit by stop")
+                            break
                 break
             except Exception:
                 traceback.print_exc()

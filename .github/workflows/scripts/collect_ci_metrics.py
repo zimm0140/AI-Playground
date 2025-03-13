@@ -2,7 +2,7 @@
 """
 CI Metrics Collector
 
-This script collects key performance indicators from the CI process and generates 
+This script collects key performance indicators from the CI process and generates
 a metrics dashboard with insights on test performance, coverage trends, and build times.
 """
 

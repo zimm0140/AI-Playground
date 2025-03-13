@@ -129,7 +129,6 @@ def process_file(file_path: str, dry_run: bool, verbose: bool) -> bool:
         with open(file_path, encoding="utf-8") as f:
             content = f.read()
 
-        original_content = content
         changed = False
 
         # Fix imports from typing
@@ -170,10 +169,7 @@ def main() -> None:
     args = parse_args()
     path = args.path
 
-    if os.path.isfile(path):
-        files = [path]
-    else:
-        files = find_python_files(path)
+    files = [path] if os.path.isfile(path) else find_python_files(path)
 
     if args.dry_run:
         print("Dry run mode - no changes will be made")

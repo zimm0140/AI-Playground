@@ -1012,10 +1012,7 @@ def outpaint(params: OutpaintParams):
     set_components(pipe, params)
 
     pipe.to(service_config.device)
-    if isinstance(pipe, StableDiffusionXLInpaintPipeline):
-        max_size = 1536
-    else:
-        max_size = 768
+    max_size = 1536 if isinstance(pipe, StableDiffusionXLInpaintPipeline) else 768
 
     ori_image = Image.open(params.image)
 

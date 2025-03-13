@@ -91,15 +91,9 @@ def prepare_img_and_mask(image, mask, device, pad_out_to_modulo=8, scale_factor=
 
     def scale_image(img, factor, interpolation=cv2.INTER_AREA):
         """Resize the image by a given factor using the specified interpolation method."""
-        if img.shape[0] == 1:
-            img = img[0]
-        else:
-            img = np.transpose(img, (1, 2, 0))
+        img = img[0] if img.shape[0] == 1 else np.transpose(img, (1, 2, 0))
         img = cv2.resize(img, dsize=None, fx=factor, fy=factor, interpolation=interpolation)
-        if img.ndim == 2:
-            img = img[None, ...]
-        else:
-            img = np.transpose(img, (2, 0, 1))
+        img = img[None, ...] if img.ndim == 2 else np.transpose(img, (2, 0, 1))
         return img
 
     out_image = get_image(image)

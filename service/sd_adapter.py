@@ -386,9 +386,9 @@ class SD_SSE_Adapter:
 
         param_list = []
         for k, v in params.__dict__.items():
-            if k == "generate_number" or k == "image_preview":
+            if k in ("generate_number", "image_preview"):
                 continue
-            elif k == "image" or k == "mask_image":
+            elif k in ("image", "mask_image"):
                 # currently, this option does not occur and would be, moreover,
                 # explicitly filtered out in get_response_params(). It is therefore
                 # uncertain, from where the reference images would be drawn from.

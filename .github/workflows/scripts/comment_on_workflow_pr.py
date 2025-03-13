@@ -140,7 +140,7 @@ class PRCommentGenerator:
 
     def get_workflow_filenames(self) -> set[str]:
         """Extract workflow filenames from changed files paths"""
-        return set(os.path.basename(file) for file in self.changed_workflows)
+        return {os.path.basename(file) for file in self.changed_workflows}
 
     def get_workflow_validation_status(self, filename: str) -> dict[str, Any]:
         """Get validation status for a specific workflow"""

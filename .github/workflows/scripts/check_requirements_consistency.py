@@ -10,6 +10,7 @@ import argparse
 import glob
 import os
 import re
+import sys
 from collections import defaultdict
 
 
@@ -172,14 +173,13 @@ class RequirementsChecker:
                             }
                         )
 
-            elif rule["name"] == "empty_line":
-                if re.search(pattern, content):
-                    result[self._get_severity_list(severity)].append(
-                        {
-                            "rule": rule["name"],
-                            "message": "File contains consecutive empty lines or trailing empty lines",
-                        }
-                    )
+            elif rule["name"] == "empty_line" and re.search(pattern, content):
+                result[self._get_severity_list(severity)].append(
+                    {
+                        "rule": rule["name"],
+                        "message": "File contains consecutive empty lines or trailing empty lines",
+                    }
+                )
 
         # Check for additional consistency issues
         self._check_package_naming(lines, result)
@@ -413,7 +413,7 @@ def main():
 
     # Exit with proper code for CI
     # Use exit code 0 here to allow CI to continue, but the report will still show issues
-    exit(0)
+    sys.exit(0)
 
 
 if __name__ == "__main__":

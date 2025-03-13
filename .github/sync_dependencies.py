@@ -21,7 +21,7 @@ DEPENDENCY_PATTERN = r"['\"]([^'\"]+?)['\"]"
 def parse_setup_py_dependencies(setup_py_path: str) -> tuple[list[str], dict[str, list[str]]]:
     """
     Parse dependencies from setup.py file.
-    
+
     Returns:
         Tuple containing install_requires list and extras_require dictionary
     """
@@ -89,9 +89,8 @@ def update_pyproject_from_setup(setup_py_path: str, pyproject_path: str) -> None
             pyproject_data["project"]["optional-dependencies"][extra_name] = deps
 
     # Update Rye dev-dependencies if present
-    if "tool" in pyproject_data and "rye" in pyproject_data["tool"]:
-        if "dev" in extras_require:
-            pyproject_data["tool"]["rye"]["dev-dependencies"] = extras_require["dev"]
+    if "tool" in pyproject_data and "rye" in pyproject_data["tool"] and "dev" in extras_require:
+        pyproject_data["tool"]["rye"]["dev-dependencies"] = extras_require["dev"]
 
     save_pyproject_toml(pyproject_path, pyproject_data)
     print(f"Successfully updated {pyproject_path} based on {setup_py_path}")
@@ -150,7 +149,7 @@ def update_setup_from_pyproject(setup_py_path: str, pyproject_path: str) -> None
 def sync_dependencies(direction: str = "both") -> None:
     """
     Synchronize dependencies between setup.py and pyproject.toml.
-    
+
     Args:
         direction: 'to_pyproject', 'to_setup', or 'both'
     """

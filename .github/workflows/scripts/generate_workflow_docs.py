@@ -242,7 +242,7 @@ def generate_workflow_doc(workflow, workflow_file):
                 and default_value.startswith("data:image")
             ):
                 default_value = "(embedded image)"
-            elif isinstance(default_value, (dict, list)):
+            elif isinstance(default_value, dict | list):
                 default_value = json.dumps(default_value)[:20] + "..."
 
             doc.append(f"| {label} | {input_type} | `{default_value}` |")

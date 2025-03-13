@@ -13,8 +13,6 @@ with special handling for:
 7. Respects code blocks without language specifiers (MD040 is set to false)
 """
 
-import glob
-import os
 import re
 import sys
 from pathlib import Path

@@ -188,7 +188,7 @@ else:
     # If package is not found, add helpful error message
     # and implement basic stubs for CI
     __version__ = "0.0.0-stub"
-    
+
     # Log a more helpful message about the missing package
     print(
         "WARNING: hardware_detection package not found. "

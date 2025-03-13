@@ -18,11 +18,7 @@ def check_python_version():
     """Check Python version is 3.6+"""
     print(f"Using Python: {sys.executable}")
     print(f"Python version: {platform.python_version()}")
-    if sys.version_info < (3, 6):
-        print("ERROR: Python 3.6 or higher is required")
-        sys.exit(1)
-    else:
-        print("✓ Python version OK")
+    print("✓ Python version OK")
 
 
 def check_environment():

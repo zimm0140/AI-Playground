@@ -134,7 +134,7 @@ def is_cuda(self):
     Returns:
         bool: True if device is XPU or CUDA, False otherwise.
     """
-    return self.device.type == "xpu" or self.device.type == "cuda"
+    return self.device.type in ("xpu", "cuda")
 
 
 def check_device(device):
@@ -206,7 +206,7 @@ def autocast_init(self, device_type, dtype=None, enabled=True, cache_enabled=Non
         enabled: Whether autocast is enabled.
         cache_enabled: Whether caching is enabled.
     """
-    if device_type == "cuda" or device_type == "xpu":
+    if device_type in ("cuda", "xpu"):
         if dtype is None:
             dtype = torch.bfloat16
         return original_autocast_init(
@@ -622,7 +622,7 @@ def torch_tensor(data, *args, dtype=None, device=None, **kwargs):
             (isinstance(device, torch.device) and hasattr(device, "type") and device.type == "xpu")  # type: ignore
             or (isinstance(device, str) and "xpu" in device)
         ):
-            if dtype == torch.float64 or dtype is None and (hasattr(data, "dtype") and (data.dtype == torch.float64 or data.dtype == float)):
+            if dtype == torch.float64 or dtype is None and (hasattr(data, "dtype") and (data.dtype in (torch.float64, float))):
                 dtype = torch.float32
     return original_torch_tensor(data, *args, dtype=dtype, device=device, **kwargs)
 

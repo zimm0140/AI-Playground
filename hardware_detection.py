@@ -5,6 +5,7 @@ This module provides functions to detect Intel hardware, especially GPUs and spe
 processors that require specific Python packages for optimal performance.
 """
 
+import contextlib
 import json
 import os
 import platform
@@ -201,10 +202,8 @@ def get_cpu_info() -> dict:
                 text=True,
                 timeout=5, check=False,
             ).stdout
-            try:
+            with contextlib.suppress(ValueError):
                 info["cores"] = int(cores_output.strip())
-            except ValueError:
-                pass
     except (subprocess.SubprocessError, FileNotFoundError, TimeoutError):
         pass
 
@@ -241,9 +240,8 @@ def detect_hardware_type() -> str:
 
         # Check CPU name pattern
         cpu_pattern = hw_config.get("cpu_name_pattern")
-        if cpu_pattern and "name" in cpu_info:
-            if re.search(cpu_pattern, cpu_info["name"], re.IGNORECASE):
-                return hw_type
+        if cpu_pattern and "name" in cpu_info and re.search(cpu_pattern, cpu_info["name"], re.IGNORECASE):
+            return hw_type
 
     # Default to base if no specific hardware is detected
     return config.get("default_hardware", "base")

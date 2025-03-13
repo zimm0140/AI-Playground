@@ -39,7 +39,7 @@ class ModelDownloaderApi:
         """
         Initialize the ModelDownloaderApi with an empty file queue and HF filesystem.
         """
-        self.file_queue = list()
+        self.file_queue = []
         self.fs = HfFileSystem()
 
     def get_info(self, repo_id: str, is_sd=False):
@@ -128,6 +128,6 @@ class ModelDownloaderApi:
 
 if __name__ == "__main__":
     if len(sys.argv) == 1:
-        exit(1)
+        sys.exit(1)
     else:
         ModelDownloaderApi().get_info(sys.argv[1], int(sys.argv[2]) != 0 if sys.argv.__len__() > 2 else False)

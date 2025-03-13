@@ -631,7 +631,7 @@ class ComfyWorkflowSimulator:
                 f"Simulated {result['name']}: {status} in {result['execution_time']}s"
             )
 
-            if not result["status"] == "success" and result["errors"]:
+            if result["status"] != "success" and result["errors"]:
                 for error in result["errors"][:3]:  # Show first 3 errors
                     print(f"  - {error}")
                 if len(result["errors"]) > 3:
@@ -666,7 +666,7 @@ class ComfyWorkflowSimulator:
 
             for result in sorted(
                 self.results["workflows"],
-                key=lambda x: (not x["status"] == "success", x["name"]),
+                key=lambda x: (x["status"] != "success", x["name"]),
             ):
                 status = "✅ Success" if result["status"] == "success" else "❌ Failed"
                 executed_node_count = sum(

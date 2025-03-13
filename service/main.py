@@ -97,16 +97,16 @@ if __name__ == "__main__":
     )
 
     # Configure generation parameters for quality and performance
-    generate_kwargs = dict(
-        inputs=tensor,
-        streamer=streamer,
-        num_beams=1,
-        do_sample=True,
-        max_new_tokens=256,
-        temperature=0.7,
-        top_k=50,
-        top_p=0.95,
-    )
+    generate_kwargs = {
+        "inputs": tensor,
+        "streamer": streamer,
+        "num_beams": 1,
+        "do_sample": True,
+        "max_new_tokens": 256,
+        "temperature": 0.7,
+        "top_k": 50,
+        "top_p": 0.95,
+    }
 
     # Ensure any pending XPU operations are completed before generation
     torch.xpu.synchronize()

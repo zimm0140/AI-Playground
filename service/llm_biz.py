@@ -241,7 +241,7 @@ def generate(
     # Start generation in a separate thread
     chat_thread = threading.Thread(
         target=stream_chat_generate,
-        kwargs=dict(model=model, args=generate_kwargs, error_callback=error_callback),
+        kwargs={"model": model, "args": generate_kwargs, "error_callback": error_callback},
     )
 
     chat_thread.start()

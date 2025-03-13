@@ -275,7 +275,7 @@ class HardwareCompatibilityAutofix:
         for file_path in (
             self.compatibility_data.get("hardware_requirements", {})
             .get(hw_name, {})
-            .keys()
+
         ):
             if os.path.basename(file_path) == file_name:
                 return file_path
@@ -329,10 +329,7 @@ class HardwareCompatibilityAutofix:
                 package_found = True
 
                 # Format the new line with the updated version
-                if version == "latest":
-                    new_line = f"{package}\n"
-                else:
-                    new_line = f"{package}{version}\n"
+                new_line = f"{package}\n" if version == "latest" else f"{package}{version}\n"
 
                 updated_lines.append(new_line)
                 print(f"Updating {file_path}: {line.strip()} -> {new_line.strip()}")

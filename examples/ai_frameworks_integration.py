@@ -87,7 +87,7 @@ def setup_langchain_model(device, hardware_type, model_id="microsoft/Phi-3-mini-
         tokenizer=tokenizer,
         max_new_tokens=512,
         temperature=0.7,
-        device=device if not hardware_type == "ovino" else "cpu",
+        device=device if hardware_type != "ovino" else "cpu",
     )
 
     # Wrap with LangChain

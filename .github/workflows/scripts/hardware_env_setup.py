@@ -2,7 +2,7 @@
 """
 Script to set up simulated hardware environments for CI testing.
 
-This script creates mock files and environment variables for different hardware types 
+This script creates mock files and environment variables for different hardware types
 to allow testing without actual hardware.
 """
 

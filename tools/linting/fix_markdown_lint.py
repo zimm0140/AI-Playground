@@ -15,8 +15,6 @@ This script addresses:
 - MD010: Convert hard tabs to spaces
 """
 
-import glob
-import os
 import re
 from pathlib import Path
 
@@ -235,9 +233,8 @@ def main():
 
     # Process remaining files
     for file in markdown_files:
-        if file not in processed:
-            if fix_markdown_file(file):
-                fixed_count += 1
+        if file not in processed and fix_markdown_file(file):
+            fixed_count += 1
 
     print(f"\n✅ Fixed issues in {fixed_count} files")
     print("\nNote: Some markdown issues may require manual fixing:")

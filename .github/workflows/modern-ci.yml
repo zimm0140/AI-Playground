@@ -109,36 +109,65 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-      - name: Prepare Docker context
-        run: |
-          # Create simple test file to ensure there's something to test
-          mkdir -p hardware_detection/tests
-          cat > hardware_detection/tests/test_simple.py << 'EOL'
-          def test_import():
-              import sys
-              print(sys.path)
-              # Try to import, but don't fail if not found
-              try:
-                  import hardware_detection
-                  print("Imported hardware_detection")
-                  assert True
-              except ImportError as e:
-                  print(f"Import error: {e}")
-                  # Don't fail test in CI
-                  assert True
-          EOL
 
-          # Copy setup.py to hardware_detection/ if it doesn't exist
-          test -f hardware_detection/setup.py || cp setup.py hardware_detection/
+      - name: Create .dockerignore
+        run: |
+          if [ ! -f .dockerignore ]; then
+            cat > .dockerignore << EOL
+            __pycache__/
+            *.py[cod]
+            *$py.class
+            *.so
+            .Python
+            build/
+            develop-eggs/
+            dist/
+            downloads/
+            eggs/
+            .eggs/
+            lib/
+            lib64/
+            parts/
+            sdist/
+            var/
+            wheels/
+            *.egg-info/
+            .installed.cfg
+            *.egg
+            .pytest_cache/
+            .coverage
+            htmlcov/
+            .venv/
+            venv/
+            ENV/
+            .git/
+            .github/
+            WebUI/
+            node_modules/
+            docs/
+            ci_artifacts/
+            EOL
+          fi
         shell: bash
+
       - name: Build and test Docker image
         run: |
-          cd hardware_detection
-          ls -la  # Debug: List files in directory
-          docker build -t hardware-detection-test .
-          docker run --rm hardware-detection-test
+          echo "Building and testing hardware detection Docker image..."
+
+          # Debug environment
+          ls -la
+          ls -la hardware_detection
+
+          # Build the Docker image
+          docker build -t hardware-detection-test -f hardware_detection/Dockerfile .
+
+          # Run basic tests
+          docker run --rm hardware-detection-test python -m pytest -xvs hardware_detection/tests/test_import.py
+
+          echo "Docker tests completed successfully"
         shell: bash
 
   integration-test:

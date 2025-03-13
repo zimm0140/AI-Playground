@@ -314,7 +314,7 @@ def is_llm():
 
 
 # Cache for storing model sizes to avoid redundant computations
-size_cache = dict()
+size_cache = {}
 lock = threading.Lock()
 
 
@@ -372,7 +372,7 @@ def get_model_size():
     import concurrent.futures
 
     list = request.get_json()
-    result_dict = dict()
+    result_dict = {}
     request_list = []
     for item in list:
         repo_id = item["repo_id"]
@@ -411,10 +411,7 @@ def fill_size_execute(repo_id: str, type: int, result_dict: dict):
         result_dict: Dictionary to store the result.
     """
     key = f"{repo_id}_{type}"
-    if type == 4:
-        total_size = utils.get_ESRGAN_size()
-    else:
-        total_size = HFPlaygroundDownloader().get_model_total_size(repo_id, type)
+    total_size = utils.get_ESRGAN_size() if type == 4 else HFPlaygroundDownloader().get_model_total_size(repo_id, type)
     with lock:
         size_cache.__setitem__(key, total_size)
         result_dict.__setitem__(key, bytes2human(total_size, "%(value).2f%(symbol)s"))
@@ -509,7 +506,7 @@ def get_rag_files():
         JSON response with the list of indexed files, including filenames and MD5 hashes.
     """
     try:
-        result_list = list()
+        result_list = []
         index_list = rag.get_index_list()
         if list is not None:
             for index in index_list:

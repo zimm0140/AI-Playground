@@ -174,7 +174,7 @@ def check_comfyui_model_exists(type, repo_id) -> bool:
     """
     model_type = convert_model_type(type)
     model_dir = service_config.comfy_ui_model_paths.get(model_type)
-    if model_type == "faceswap" or model_type == "facerestore":
+    if model_type in ("faceswap", "facerestore"):
         dir_to_look_for = os.path.join(model_dir, flat_repo_local_dir_name(repo_id))
     elif model_type == "nsfwdetector":
         dir_to_look_for = os.path.join(model_dir, "vit-base-nsfw-detector", extract_model_id_pathsegments(repo_id))

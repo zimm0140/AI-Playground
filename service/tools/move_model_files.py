@@ -79,7 +79,7 @@ def move_model_files(src_dir, target_dir):
     try:
         # for each file in src_dir, move it to target_dir if target path does not exist
         # otherwise, remove the target file and move the backup file to target path
-        for root, dirs, files in os.walk(src_dir):
+        for root, _dirs, files in os.walk(src_dir):
             for file in files:
                 src_file = os.path.join(root, file)
                 target_file = src_file.replace(src_dir, target_dir)

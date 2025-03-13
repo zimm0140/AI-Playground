@@ -5,6 +5,7 @@ This module provides functions to detect hardware, especially GPUs and specializ
 processors that require specific Python packages for optimal performance.
 """
 
+import contextlib
 import json
 import logging
 import os
@@ -272,10 +273,8 @@ def get_cpu_info() -> dict[str, Any]:
         info["name"] = name_output.strip()
 
         cores_output = safe_run_command(["sysctl", "-n", "hw.physicalcpu"])
-        try:
+        with contextlib.suppress(ValueError):
             info["cores"] = int(cores_output.strip())
-        except ValueError:
-            pass
 
     debug_print(f"Detected CPU info: {info}")
     return info
@@ -399,10 +398,9 @@ def _check_cpu_match(hw_type: str, hw_config: dict[str, Any], cpu_info: dict[str
         bool: True if a match is found, False otherwise
     """
     cpu_pattern = hw_config.get("cpu_name_pattern")
-    if cpu_pattern and "name" in cpu_info:
-        if re.search(cpu_pattern, cpu_info["name"], re.IGNORECASE):
-            debug_print(f"Detected hardware type from CPU: {hw_type}")
-            return True
+    if cpu_pattern and "name" in cpu_info and re.search(cpu_pattern, cpu_info["name"], re.IGNORECASE):
+        debug_print(f"Detected hardware type from CPU: {hw_type}")
+        return True
     return False
 
 

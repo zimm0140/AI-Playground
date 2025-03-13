@@ -115,7 +115,7 @@ def test_torch_tensor_creation(device):
         print(f"Tensor dtype: {x.dtype}")
 
         # Do a simple operation
-        y = x + 1
+        x + 1
         print("Successfully performed tensor operation: x + 1")
 
         return True

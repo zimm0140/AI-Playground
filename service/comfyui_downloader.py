@@ -276,9 +276,7 @@ def is_package_installed(packageSpecifier: str):
         package_name = packageSpecifier.split("/")[-1].split("-")[0]
     else:
         package_name = packageSpecifier.split("==")[0]
-    if package_name in installed_packages:
-        return True
-    return False
+    return package_name in installed_packages
 
 
 def install_comfyui() -> bool:

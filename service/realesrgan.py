@@ -100,10 +100,7 @@ class RealESRGANer:
         state_dicts = torch.load(model_path, map_location=self.deivce)
 
         # prefer to use params_ema
-        if "params_ema" in state_dicts:
-            keyname = "params_ema"
-        else:
-            keyname = "params"
+        keyname = "params_ema" if "params_ema" in state_dicts else "params"
         self.model.load_state_dict(state_dicts[keyname], strict=True)
 
         self.model.eval()

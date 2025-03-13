@@ -131,7 +131,7 @@ class EmbeddingDatabase:
         index_cache = os.path.join(INDEX_DATABASE_PATH, "index.faiss")
         self.db = FAISS.load_local(INDEX_DATABASE_PATH, self.embeddings) if os.path.exists(index_cache) else None
         index_json = os.path.join(INDEX_DATABASE_PATH, "index.json")
-        self.index_list = self.__load_exists_index(index_json) if os.path.exists(index_json) else list()
+        self.index_list = self.__load_exists_index(index_json) if os.path.exists(index_json) else []
         self.text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=CHUNK_SIZE, chunk_overlap=CHUNK_OVERLAP, length_function=len
         )
@@ -151,7 +151,7 @@ class EmbeddingDatabase:
                 return json.load(f)
         except Exception as e:
             print(f"load index.json error: {e}")
-            return list()
+            return []
 
     def __save_index(self, file_base_name: str, md5: str, doc_ids: str):
         """

@@ -188,7 +188,7 @@ class WorkflowVersionTracker:
                 node_structure = {
                     "class_type": node_data.get("class_type"),
                     # Include only input keys but not their values
-                    "input_keys": sorted(list(node_data.get("inputs", {}).keys())),
+                    "input_keys": sorted(node_data.get("inputs", {}).keys()),
                 }
                 nodes_structure[node_id] = node_structure
             structure["nodes"] = nodes_structure
@@ -300,10 +300,7 @@ class WorkflowVersionTracker:
     def is_breaking_change(self, changes: list[str]) -> bool:
         """Determine if changes might be breaking"""
         # Consider removal of nodes or connections as potentially breaking
-        for change in changes:
-            if change.startswith("Removed") or "type changed" in change:
-                return True
-        return False
+        return any(change.startswith("Removed") or "type changed" in change for change in changes)
 
     def track_workflow(self, file_path: str) -> tuple[bool, WorkflowHistory]:
         """Track a single workflow file, updating its version history"""
@@ -437,7 +434,7 @@ class WorkflowVersionTracker:
             recent_changes = []
             breaking_changes = []
 
-            for workflow_id, history in self.workflow_history.items():
+            for _workflow_id, history in self.workflow_history.items():
                 if not history.versions:
                     continue
 
@@ -492,7 +489,7 @@ class WorkflowVersionTracker:
 
             # Individual workflow histories
             f.write("## Workflow Histories\n\n")
-            for workflow_id, history in sorted(
+            for _workflow_id, history in sorted(
                 self.workflow_history.items(), key=lambda x: x[1].filename
             ):
                 f.write(f"### {history.filename}\n\n")
@@ -558,7 +555,7 @@ class WorkflowVersionTracker:
             )
 
             f.write("| Workflow | Min Memory | ")
-            for config_id, config in hw_configs.items():
+            for _config_id, config in hw_configs.items():
                 f.write(f"{config['description']} | ")
             f.write("\n")
 
@@ -569,7 +566,7 @@ class WorkflowVersionTracker:
 
             # Estimate memory requirements for each workflow
             # This is a simplification - in a real system, we would analyze each workflow in detail
-            for workflow_id, history in sorted(
+            for _workflow_id, history in sorted(
                 self.workflow_history.items(), key=lambda x: x[1].filename
             ):
                 latest = history.get_latest_version()
@@ -586,7 +583,7 @@ class WorkflowVersionTracker:
                 f.write(f"| {history.filename} | {estimated_memory:.1f}GB | ")
 
                 # Check compatibility with each hardware configuration
-                for config_id, config in hw_configs.items():
+                for _config_id, config in hw_configs.items():
                     if estimated_memory <= config["memory"]:
                         f.write("✅ Compatible | ")
                     elif estimated_memory <= config["memory"] * 1.2:
@@ -639,7 +636,7 @@ class WorkflowVersionTracker:
             recent_changes = []
             breaking_changes = []
 
-            for workflow_id, history in self.workflow_history.items():
+            for _workflow_id, history in self.workflow_history.items():
                 if not history.versions:
                     continue
 

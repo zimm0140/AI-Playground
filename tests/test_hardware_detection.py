@@ -21,7 +21,6 @@ from hardware_detection.core import (
     load_config,
 )
 
-
 # Set in CI environment
 CI_TESTING = os.environ.get('CI_TESTING', 'false').lower() == 'true'
 

@@ -175,7 +175,7 @@ class HardwareCompatibilityAdvisor:
             # Special case for version constraints
             if ">" in suggested_version or "<" in suggested_version:
                 # For constraints, prefer the most permissive
-                for version_str in versions.keys():
+                for version_str in versions:
                     if "==" in version_str:
                         suggested_version = version_str
                         rationale = "Exact version preferred over constraints"
@@ -273,12 +273,11 @@ class HardwareCompatibilityAdvisor:
                     if (
                         hw_name in resolution_plans
                         and file_name in resolution_plans[hw_name]
-                    ):
-                        if package in resolution_plans[hw_name][file_name]:
-                            # Update the version
-                            resolution_plans[hw_name][file_name][
-                                package
-                            ] = suggested_version
+                    ) and package in resolution_plans[hw_name][file_name]:
+                        # Update the version
+                        resolution_plans[hw_name][file_name][
+                            package
+                        ] = suggested_version
 
         # Apply medium priority recommendations only if they don't conflict with high priority
         for recommendation in self.recommendations.get("medium_priority", []):
@@ -297,12 +296,11 @@ class HardwareCompatibilityAdvisor:
                     if (
                         hw_name in resolution_plans
                         and file_name in resolution_plans[hw_name]
-                    ):
-                        if package in resolution_plans[hw_name][file_name]:
-                            # Update the version
-                            resolution_plans[hw_name][file_name][
-                                package
-                            ] = suggested_version
+                    ) and package in resolution_plans[hw_name][file_name]:
+                        # Update the version
+                        resolution_plans[hw_name][file_name][
+                            package
+                        ] = suggested_version
 
         self.resolution_plans = resolution_plans
         return resolution_plans
@@ -445,7 +443,7 @@ class HardwareCompatibilityAdvisor:
                 for file_path in (
                     self.compatibility_data.get("hardware_requirements", {})
                     .get(hw_name, {})
-                    .keys()
+
                 ):
                     if os.path.basename(file_path) == file_name:
                         original_files.append(file_path)

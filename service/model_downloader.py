@@ -35,7 +35,7 @@ from huggingface_hub import HfFileSystem, hf_hub_url, model_info
 from psutil._common import bytes2human
 
 # Cache for storing model file lists to avoid redundant API calls
-model_list_cache = dict()
+model_list_cache = {}
 model_lock = Lock()
 
 
@@ -268,7 +268,7 @@ class HFPlaygroundDownloader:
         key = f"{repo_id}_{model_type}"
         cache_item = model_list_cache.get(key)
         if cache_item is None:
-            file_list = list()
+            file_list = []
             self.enum_file_list(file_list, repo_id, model_type)
             model_list_cache.__setitem__(key, {"size": self.total_size, "queue": self.file_queue})
         else:
@@ -330,7 +330,7 @@ class HFPlaygroundDownloader:
             item = model_list_cache.get(key)
 
         if item is None:
-            file_list = list()
+            file_list = []
             self.enum_file_list(file_list, repo_id, model_type)
             with model_lock:
                 model_list_cache.__setitem__(key, {"size": self.total_size, "queue": file_list})
@@ -400,16 +400,15 @@ class HFPlaygroundDownloader:
         cur_level = 0
         first_model = None
         model_levels = [(".fp32.", 3), (".fp16.", 2), ("", 1)]
-        new_list = list()
+        new_list = []
         for item in file_list:
             name = str(item.get("name"))
             if name.endswith(".safetensors") or name.endswith(".bin"):
                 for lv_item in model_levels:
                     ext, lv = lv_item
-                    if name.__contains__(ext):
-                        if lv > cur_level:
-                            cur_level = lv
-                            first_model = item
+                    if name.__contains__(ext) and lv > cur_level:
+                        cur_level = lv
+                        first_model = item
             else:
                 new_list.append(item)
         new_list.append(first_model)
@@ -573,7 +572,7 @@ class HFPlaygroundDownloader:
         self.save_path = path.join(utils.get_model_path(model_type, backend))
         self.save_path_tmp = path.abspath(path.join(self.save_path, repo_id.replace("/", "---") + "_tmp"))
 
-        file_list = list()
+        file_list = []
         self.enum_file_list(file_list, repo_id, model_type)
         self.build_queue(file_list)
         file = self.file_queue.get_nowait()
@@ -603,16 +602,15 @@ class HFPlaygroundDownloader:
                             download_retry += 2  # we only want to retry once in case of non network errors
                             raise DownloadException(file.url)
                         # start download file
-                        with response:
-                            with fw:
-                                for bytes in response.iter_content(chunk_size=4096):
-                                    download_len = bytes.__len__()
-                                    with self.thread_lock:
-                                        self.download_size += download_len
-                                    file.disk_file_size += fw.write(bytes)
-                                    if self.download_stop:
-                                        print(f"thread {Thread.native_id} exit by user stop")
-                                        break
+                        with response, fw:
+                            for bytes in response.iter_content(chunk_size=4096):
+                                download_len = bytes.__len__()
+                                with self.thread_lock:
+                                    self.download_size += download_len
+                                file.disk_file_size += fw.write(bytes)
+                                if self.download_stop:
+                                    print(f"thread {Thread.native_id} exit by user stop")
+                                    break
                         break
                     except Exception:
                         traceback.print_exc()

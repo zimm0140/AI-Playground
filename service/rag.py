@@ -143,7 +143,7 @@ class EmbeddingDatabase:
             else None
         )
         index_json = os.path.join(INDEX_DATABASE_PATH, "index.json")
-        self.index_list = self.__load_exists_index(index_json) if os.path.exists(index_json) else list()
+        self.index_list = self.__load_exists_index(index_json) if os.path.exists(index_json) else []
         self.text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=CHUNK_SIZE,
             chunk_overlap=CHUNK_OVERLAP,
@@ -175,7 +175,7 @@ class EmbeddingDatabase:
                 return json.load(f)
         except Exception as e:
             print(f"load index.json error: {e}")
-            return list()
+            return []
 
     def __save_index(self, file_base_name: str, md5: str, doc_ids: str):
         """
@@ -205,7 +205,7 @@ class EmbeddingDatabase:
         """
         if self.db is None:
             self.db = FAISS.from_documents(docs, self.embeddings)
-            docs_ids = list()
+            docs_ids = []
             for key in self.db.index_to_docstore_id:
                 docs_ids.append(self.db.index_to_docstore_id[key])
         else:
@@ -301,7 +301,7 @@ class EmbeddingDatabase:
         if docs.__len__() == 0:
             return False, None, None
         # print("------------docs: ", docs[:2])
-        doc_contents = list()
+        doc_contents = []
         source_set = set()
         for doc, _ in docs[:INDEX_NUM]:
             print("{}  --- {}", _, doc.page_content)

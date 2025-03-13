@@ -51,7 +51,7 @@ def run_command(cmd: list[str], cwd: str | None = None, check: bool = True) -> t
 def is_uv_installed() -> bool:
     """Check if uv is installed."""
     try:
-        subprocess.run(["uv", "--version"], check=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        subprocess.run(["uv", "--version"], check=False, capture_output=True)
         return True
     except FileNotFoundError:
         return False

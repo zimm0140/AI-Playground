@@ -199,7 +199,7 @@ class WorkflowRequirementsAnalyzer:
         control_net_count = 0
         lora_count = 0
 
-        for node_id, node_data in nodes.items():
+        for _node_id, node_data in nodes.items():
             if "class_type" not in node_data:
                 continue
 
@@ -269,7 +269,7 @@ class WorkflowRequirementsAnalyzer:
             if "inputs" in node_data and "batch_size" in node_data["inputs"]:
                 try:
                     batch_input = node_data["inputs"]["batch_size"]
-                    if isinstance(batch_input, (int, float)):
+                    if isinstance(batch_input, int | float):
                         batch_size = max(batch_size, int(batch_input))
                 except (ValueError, TypeError):
                     pass  # Use default if we can't parse the batch size
@@ -327,7 +327,7 @@ class WorkflowRequirementsAnalyzer:
     def analyze_all_workflows(self):
         """
         Analyze all workflow files in the specified directory.
-        
+
         Returns:
             dict: Analysis results for all workflows
         """
@@ -354,10 +354,10 @@ class WorkflowRequirementsAnalyzer:
     def aggregate_results(self, results):
         """
         Aggregate results from multiple workflows for summary.
-        
+
         Args:
             results (dict): Raw analysis results from all workflows
-            
+
         Returns:
             dict: Aggregated results
         """
@@ -435,10 +435,10 @@ class WorkflowRequirementsAnalyzer:
     def generate_markdown_report(self, results):
         """
         Generate a Markdown report from the analysis results.
-        
+
         Args:
             results (dict): Analysis results from all workflows
-            
+
         Returns:
             str: Markdown report content
         """

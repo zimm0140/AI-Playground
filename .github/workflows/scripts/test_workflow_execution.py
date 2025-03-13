@@ -166,12 +166,11 @@ class ComfyWorkflowTester:
         path = set()
 
         for node in graph:
-            if node not in visited:
-                if has_cycle(node, visited, path):
-                    return (
-                        True,
-                        f"Circular dependency detected starting from node {node}",
-                    )
+            if node not in visited and has_cycle(node, visited, path):
+                return (
+                    True,
+                    f"Circular dependency detected starting from node {node}",
+                )
 
         return False, "No circular dependencies"
 

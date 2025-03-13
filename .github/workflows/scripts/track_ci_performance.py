@@ -11,6 +11,7 @@ to generate reports and visualizations to identify performance trends.
 """
 
 import argparse
+import contextlib
 import json
 import os
 import platform
@@ -356,10 +357,8 @@ def main():
         print(f"Finalized metrics: {final_path}")
 
         # Try to remove the temporary file
-        try:
+        with contextlib.suppress(OSError):
             os.remove(metrics_file)
-        except OSError:
-            pass
 
 
 if __name__ == "__main__":

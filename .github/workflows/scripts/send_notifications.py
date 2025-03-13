@@ -114,7 +114,7 @@ class NotificationSender:
             <b>Status:</b> {status.upper()}<br>
             <b>Completed at:</b> {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
         </p>
-        
+
         <h3>Summary</h3>
         <ul>
             <li>Test Pass Rate: {test_pass_rate}%</li>
@@ -123,7 +123,7 @@ class NotificationSender:
             <li>Security Vulnerabilities: {vulnerabilities}</li>
             <li>Platform Compatibility Issues: {platform_issues}</li>
         </ul>
-        
+
         <p>
             <a href="{self.run_url}">View Details</a>
         </p>

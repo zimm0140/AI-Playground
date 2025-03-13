@@ -376,7 +376,7 @@ class ComfyWorkflowValidator:
 
                 for workflow in self.results["workflows"]:
                     if not workflow["is_valid"]:
-                        issue_types = set(issue["type"] for issue in workflow["issues"])
+                        issue_types = {issue["type"] for issue in workflow["issues"]}
                         issue_summary = ", ".join(
                             t.replace("_", " ").title() for t in issue_types
                         )

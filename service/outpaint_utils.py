@@ -142,10 +142,7 @@ def outpaint_canny_gradient(
     Returns:
         PIL Image containing the modified mask with gradients
     """
-    if isinstance(image, Image.Image):
-        img_ndata = np.array(image)
-    else:
-        img_ndata = image
+    img_ndata = np.array(image) if isinstance(image, Image.Image) else image
     h, w, _ = img_ndata.shape
     dist = 30
     if top_pad > 0:
@@ -189,10 +186,7 @@ def outpaint_canny_blur(
     Returns:
         PIL Image containing the modified mask with blurred edges
     """
-    if isinstance(image, Image.Image):
-        img_ndata = np.array(image)
-    else:
-        img_ndata = image
+    img_ndata = np.array(image) if isinstance(image, Image.Image) else image
     h, w, _ = img_ndata.shape
     if top_pad > 0:
         region = img_ndata[top_pad - 10 : top_pad + 10, :]

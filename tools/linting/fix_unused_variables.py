@@ -3,7 +3,6 @@
 Script to fix unused variable (F841) warnings in CI scripts.
 """
 
-import os
 import re
 import sys
 from pathlib import Path

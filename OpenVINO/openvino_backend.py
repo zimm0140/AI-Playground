@@ -70,7 +70,7 @@ class OpenVino(LLMInterface):
             model_path = path.abspath(path.join(model_base_path, model_name))
 
             # Enable compilation cache for better performance
-            enable_compile_cache = dict()
+            enable_compile_cache = {}
             enable_compile_cache["CACHE_DIR"] = "llm_cache"
             self._model = openvino_genai.LLMPipeline(model_path, "AUTO", **enable_compile_cache)
             self._tokenizer = self._model.get_tokenizer()

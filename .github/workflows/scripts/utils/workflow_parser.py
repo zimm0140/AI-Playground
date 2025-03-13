@@ -58,12 +58,11 @@ def get_workflow_links(workflow: dict[str, Any]) -> list[list[Any]] | None:
         return workflow["links"]
     elif "comfyUiApiWorkflow" in workflow and isinstance(
         workflow["comfyUiApiWorkflow"], dict
+    ) and "links" in workflow["comfyUiApiWorkflow"] and isinstance(
+        workflow["comfyUiApiWorkflow"]["links"], list
     ):
-        if "links" in workflow["comfyUiApiWorkflow"] and isinstance(
-            workflow["comfyUiApiWorkflow"]["links"], list
-        ):
-            # API format with links inside comfyUiApiWorkflow
-            return workflow["comfyUiApiWorkflow"]["links"]
+        # API format with links inside comfyUiApiWorkflow
+        return workflow["comfyUiApiWorkflow"]["links"]
 
     return None
 
@@ -120,9 +119,8 @@ def get_workflow_attribute(workflow: dict[str, Any], attribute: str) -> Any:
         return workflow[attribute]
     elif "comfyUiApiWorkflow" in workflow and isinstance(
         workflow["comfyUiApiWorkflow"], dict
-    ):
-        if attribute in workflow["comfyUiApiWorkflow"]:
-            return workflow["comfyUiApiWorkflow"][attribute]
+    ) and attribute in workflow["comfyUiApiWorkflow"]:
+        return workflow["comfyUiApiWorkflow"][attribute]
 
     return None
 

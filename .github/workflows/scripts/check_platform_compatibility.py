@@ -2,7 +2,7 @@
 """
 Platform Compatibility Checker
 
-This script analyzes the codebase for potential platform-specific issues 
+This script analyzes the codebase for potential platform-specific issues
 that might cause compatibility problems across different operating systems.
 """
 
@@ -189,18 +189,17 @@ class PlatformCompatibilityChecker:
                             )
 
                 # Check for shebang in script files
-                if lines and lines[0].startswith("#!"):
-                    if "/bin/" in lines[0]:
-                        issues.append(
-                            {
-                                "file": file_path,
-                                "line": 1,
-                                "pattern_name": "unix_shebang",
-                                "description": f"Unix-specific shebang: {lines[0]}",
-                                "platforms": ["unix", "macos"],
-                                "severity": "warning",
-                            }
-                        )
+                if lines and lines[0].startswith("#!") and "/bin/" in lines[0]:
+                    issues.append(
+                        {
+                            "file": file_path,
+                            "line": 1,
+                            "pattern_name": "unix_shebang",
+                            "description": f"Unix-specific shebang: {lines[0]}",
+                            "platforms": ["unix", "macos"],
+                            "severity": "warning",
+                        }
+                    )
         except Exception as e:
             issues.append(
                 {

@@ -257,7 +257,7 @@ import sys
 
 class TestAPI(unittest.TestCase):
     \"\"\"Test the API endpoints\"\"\"
-    
+
     def setUp(self):
         \"\"\"Set up the test environment\"\"\"
         self.model_dir = os.environ.get('MODEL_DIR', './models')
@@ -282,7 +282,7 @@ class TestAPI(unittest.TestCase):
     def test_api_health(self):
         \"\"\"Simple test to check the API is healthy\"\"\"
         self.assertTrue(True)  # Placeholder test that always passes
-        
+
 if __name__ == '__main__':
     unittest.main()
 """
