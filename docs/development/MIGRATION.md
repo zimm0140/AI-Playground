@@ -205,6 +205,7 @@ For detailed guidance on type compatibility issues and solutions, see the [Type 
 
 
    ```bash
+
 ## Using Lockfiles for Reproducible Environments {#using-lockfiles-for-reproducible-environments}
 
 The project now uses lockfiles to ensure reproducible environments:

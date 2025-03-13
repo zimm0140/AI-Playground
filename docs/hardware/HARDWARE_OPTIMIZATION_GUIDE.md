@@ -331,9 +331,9 @@ Lower times indicate better performance. Compare results across hardware types t
 
 If your Intel Arc GPU is not detected:
 
-22. Ensure you have the latest Intel GPU drivers installed
+19. Ensure you have the latest Intel GPU drivers installed
 
-1. Check that the environment variable `XPU_VISIBLE_DEVICES` is set correctly
+23. Check that the environment variable `XPU_VISIBLE_DEVICES` is set correctly
 
 1. Verify that Intel® Extension for PyTorch is installed:
 
