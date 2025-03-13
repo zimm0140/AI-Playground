@@ -246,4 +246,5 @@ Typical optimal batch sizes:
 **Previous**: [Hardware Optimization](../optimization.md) | **See also**: [Meteor Lake Guide](intel-meteor-lake.md)
 
 ```markdown
+
 ```text
