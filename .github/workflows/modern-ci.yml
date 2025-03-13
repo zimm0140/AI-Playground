@@ -248,21 +248,21 @@ jobs:
         run: |
           echo "Running automatic formatting fixes"
           # Create summary file
-          echo "# Linting Results" > $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "# Linting Results" >> $env:GITHUB_STEP_SUMMARY
+          echo "" >> $env:GITHUB_STEP_SUMMARY
 
           # Run fixers and capture output
-          echo "## Auto-fixes Applied" >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          python .github/workflows/scripts/fix_lint_issues.py 2>&1 | Tee-Object -Append -FilePath $GITHUB_STEP_SUMMARY
-          python .github/workflows/scripts/fix_markdown_issues.py 2>&1 | Tee-Object -Append -FilePath $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "## Auto-fixes Applied" >> $env:GITHUB_STEP_SUMMARY
+          echo '```' >> $env:GITHUB_STEP_SUMMARY
+          python .github/workflows/scripts/fix_lint_issues.py
+          python .github/workflows/scripts/fix_markdown_issues.py
+          echo '```' >> $env:GITHUB_STEP_SUMMARY
 
           # Show what files were changed
-          echo "## Files Changed" >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          git diff --name-only | Tee-Object -Append -FilePath $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "## Files Changed" >> $env:GITHUB_STEP_SUMMARY
+          echo '```' >> $env:GITHUB_STEP_SUMMARY
+          git diff --name-only
+          echo '```' >> $env:GITHUB_STEP_SUMMARY
 
           # Always succeed
           exit 0
@@ -270,26 +270,26 @@ jobs:
 
       - name: Lint Python
         run: |
-          echo "## Python Linting Results" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Python Linting Results" >> $env:GITHUB_STEP_SUMMARY
+          echo "" >> $env:GITHUB_STEP_SUMMARY
 
           # Run Ruff and capture output
-          echo "### Ruff Check" >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          ruff check . 2>&1 | Tee-Object -Append -FilePath $GITHUB_STEP_SUMMARY || echo "Ruff issues found"
-          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "### Ruff Check" >> $env:GITHUB_STEP_SUMMARY
+          echo '```' >> $env:GITHUB_STEP_SUMMARY
+          ruff check . || echo "Ruff issues found"
+          echo '```' >> $env:GITHUB_STEP_SUMMARY
 
           # Run Ruff format check
-          echo "### Ruff Format" >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          ruff format --check . 2>&1 | Tee-Object -Append -FilePath $GITHUB_STEP_SUMMARY || echo "Format issues found"
-          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "### Ruff Format" >> $env:GITHUB_STEP_SUMMARY
+          echo '```' >> $env:GITHUB_STEP_SUMMARY
+          ruff format --check . || echo "Format issues found"
+          echo '```' >> $env:GITHUB_STEP_SUMMARY
 
           # Run mypy
-          echo "### Type Checking" >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          mypy hardware_detection 2>&1 | Tee-Object -Append -FilePath $GITHUB_STEP_SUMMARY || echo "Type issues found"
-          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "### Type Checking" >> $env:GITHUB_STEP_SUMMARY
+          echo '```' >> $env:GITHUB_STEP_SUMMARY
+          mypy hardware_detection || echo "Type issues found"
+          echo '```' >> $env:GITHUB_STEP_SUMMARY
 
           echo "::notice::Linting completed with warnings - see job summary for details"
           # Always succeed since we want to see the results in the summary
@@ -298,30 +298,30 @@ jobs:
 
       - name: Skip TypeScript Linting
         run: |
-          echo "## TypeScript Linting" >> $GITHUB_STEP_SUMMARY
-          echo "TypeScript linting is skipped to avoid dependency conflicts" >> $GITHUB_STEP_SUMMARY
-          echo "To run locally: cd WebUI && npm install --legacy-peer-deps && npm run lint:check" >> $GITHUB_STEP_SUMMARY
+          echo "## TypeScript Linting" >> $env:GITHUB_STEP_SUMMARY
+          echo "TypeScript linting is skipped to avoid dependency conflicts" >> $env:GITHUB_STEP_SUMMARY
+          echo "To run locally: cd WebUI && npm install --legacy-peer-deps && npm run lint:check" >> $env:GITHUB_STEP_SUMMARY
           exit 0
         shell: pwsh
 
       - name: Check markdown files
         run: |
-          echo "## Markdown Linting" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Markdown Linting" >> $env:GITHUB_STEP_SUMMARY
+          echo "" >> $env:GITHUB_STEP_SUMMARY
 
           # Run markdown fixes
-          echo "### Auto-fixes Applied" >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          python .github/workflows/scripts/fix_markdown_code_blocks.py 2>&1 | Tee-Object -Append -FilePath $GITHUB_STEP_SUMMARY
-          python .github/workflows/scripts/fix_markdown_link_fragments.py 2>&1 | Tee-Object -Append -FilePath $GITHUB_STEP_SUMMARY
-          python .github/workflows/scripts/fix_api_markdown.py 2>&1 | Tee-Object -Append -FilePath $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "### Auto-fixes Applied" >> $env:GITHUB_STEP_SUMMARY
+          echo '```' >> $env:GITHUB_STEP_SUMMARY
+          python .github/workflows/scripts/fix_markdown_code_blocks.py
+          python .github/workflows/scripts/fix_markdown_link_fragments.py
+          python .github/workflows/scripts/fix_api_markdown.py
+          echo '```' >> $env:GITHUB_STEP_SUMMARY
 
           # Run mdformat
-          echo "### MDFormat Results" >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          mdformat . 2>&1 | Tee-Object -Append -FilePath $GITHUB_STEP_SUMMARY || echo "Markdown format issues found"
-          echo '```' >> $GITHUB_STEP_SUMMARY
+          echo "### MDFormat Results" >> $env:GITHUB_STEP_SUMMARY
+          echo '```' >> $env:GITHUB_STEP_SUMMARY
+          mdformat . || echo "Markdown format issues found"
+          echo '```' >> $env:GITHUB_STEP_SUMMARY
 
           # Always succeed
           exit 0
