@@ -88,7 +88,7 @@ If you prefer to set up the environment manually:
 
    ```text
 
-1. Install dependencies based on your hardware:
+2. Install dependencies based on your hardware:
 
    ```bash
 
@@ -127,7 +127,7 @@ docker run -p 8000:8000 ai-playground
 
 ### Common Issues
 
-1. *_Package installation failures__
+2. *_Package installation failures__
 
    Try updating pip and setuptools:
 
@@ -137,11 +137,11 @@ docker run -p 8000:8000 ai-playground
 
    ```text
 
-1. **GPU not detected**
+2. **GPU not detected**
 
    Ensure you have the latest GPU drivers installed for your hardware.
 
-1. **Python version compatibility**
+2. **Python version compatibility**
 
    If you encounter compatibility issues, we strongly recommend using Python 3.10.
 

@@ -26,7 +26,7 @@ We use `uv`, an extremely fast Python package manager, for dependency management
 
    ```text`
 
-1. **Clone and Setup**:
+2. **Clone and Setup**:
 
    ```text`bash
 
@@ -78,7 +78,7 @@ We provide convenient scripts for common development tasks:
 
 ### Before Submitting a Pull Request
 
-1. **Ensure all tests pass**:
+2. **Ensure all tests pass**:
 
    ```bash
 
@@ -86,7 +86,7 @@ We provide convenient scripts for common development tasks:
 
    ```text
 
-1. **Check code quality**:
+2. **Check code quality**:
 
    ```bash
 
@@ -94,7 +94,7 @@ We provide convenient scripts for common development tasks:
 
    ```text
 
-1. **Format your code**:
+2. **Format your code**:
 
    ```bash
 
@@ -102,7 +102,7 @@ We provide convenient scripts for common development tasks:
 
    ```text
 
-1. **Update lockfiles if you've changed dependencies**:
+2. **Update lockfiles if you've changed dependencies**:
 
    ```bash
 
@@ -115,13 +115,13 @@ We provide convenient scripts for common development tasks:
 
 We use Python type annotations and verify them with mypy. For Python 3.10+ compatibility:
 
-1. Use `Union` and `Optional` from the `typing` module
+2. Use `Union` and `Optional` from the `typing` module
 
 
-1. For Python 3.10+, you can use the `|` operator for union types, but be consistent
+2. For Python 3.10+, you can use the `|` operator for union types, but be consistent
 
 
-1. Use `TypeVar` for generic type annotations
+2. Use `TypeVar` for generic type annotations
 
 ## Commit Messages
 
@@ -151,13 +151,13 @@ CI: Add uv support to GitHub Actions
 
 If you have questions about the development process or need help with your contribution, please:
 
-1. Check the documentation in QUICKSTART.md and MIGRATION.md
+2. Check the documentation in QUICKSTART.md and MIGRATION.md
 
 
-1. Open an issue with the "question" label
+2. Open an issue with the "question" label
 
 
-1. Ask for help in pull request comments
+2. Ask for help in pull request comments
 
 Thank you for contributing to AI Playground!
 

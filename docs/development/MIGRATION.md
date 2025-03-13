@@ -1,3 +1,4 @@
+
 # Migration Guide for AI Playground
 
 This guide helps you migrate to the modern Python development workflow using uv and Python 3.10+.
@@ -32,9 +33,11 @@ This guide helps you migrate to the modern Python development workflow using uv 
 
 ### Step-by-Step Migration
 
-1. **Install uv**:
+7. **Install uv**:
 
    ```bash
+
+
    ## Unix/Linux/macOS
 
    curl -LsSf <https://astral.sh/uv/install.sh> | sh
@@ -50,7 +53,7 @@ This guide helps you migrate to the modern Python development workflow using uv 
 
    ```bash
 
-1. **Migrate existing environments**:
+2. **Migrate existing environments**:
 
    ```bash
 
@@ -73,7 +76,7 @@ This guide helps you migrate to the modern Python development workflow using uv 
 
    ```bash
 
-1. **Use the helper scripts**:
+2. **Use the helper scripts**:
 
    We've provided convenient script wrappers in `scripts/run_with_uv.sh` (Unix/macOS) and `scripts/run_with_uv.ps1` (Windows).
 
@@ -113,7 +116,7 @@ For detailed guidance on type compatibility issues and solutions, see the [Type 
 
 ### Common Type Annotation Updates
 
-1. **Union Types**:
+2. **Union Types**:
 
    Before (Python 3.9 and earlier):
 
@@ -148,7 +151,7 @@ For detailed guidance on type compatibility issues and solutions, see the [Type 
 
    ```bash
 
-1. **Optional Types**:
+2. **Optional Types**:
 
    Before:
 
@@ -187,7 +190,7 @@ For detailed guidance on type compatibility issues and solutions, see the [Type 
 
 The project now uses lockfiles to ensure reproducible environments:
 
-3. **Sync your environment** using the lockfiles:
+2. **Sync your environment** using the lockfiles:
 
    ```bash
 
@@ -195,7 +198,7 @@ The project now uses lockfiles to ensure reproducible environments:
 
    ```bash
 
-3. **Update lockfiles** when dependencies change:
+4. **Update lockfiles** when dependencies change:
 
    ```bash
 
@@ -233,16 +236,16 @@ docker run -p 5000:5000 ai-playground
 
 The CI/CD pipeline has been updated to use uv for faster and more reliable builds:
 
-3. **Testing across Python versions**: CI tests against Python 3.10, 3.11, and 3.13
+4. **Testing across Python versions**: CI tests against Python 3.10, 3.11, and 3.13
 
 
-3. **Dual testing**: Tests both traditional and modern installation methods
+4. **Dual testing**: Tests both traditional and modern installation methods
 
 
-3. **Caching**: Optimized caching of dependencies to speed up CI runs
+4. **Caching**: Optimized caching of dependencies to speed up CI runs
 
 
-3. __Markdown linting_*: Automated linting of markdown files
+4. __Markdown linting_*: Automated linting of markdown files
 
 ## Migration FAQs
 

@@ -35,7 +35,7 @@ ruff check --select=E,F --ignore=E501 --extend-exclude=.git,.github,.venv,venv,*
    ```text
 
 
-1. For Linux/Mac users:
+2. For Linux/Mac users:
 
 ```text
 
@@ -111,16 +111,16 @@ The project's CI system uses GitHub Actions to run Ruff on all Python files. The
 
 The CI will:
 
-1. Check for linting issues
+2. Check for linting issues
 
 
-1. Generate a report
+2. Generate a report
 
 
-1. Comment on PRs if issues are found
+2. Comment on PRs if issues are found
 
 
-1. Provide instructions for fixing the issues
+2. Provide instructions for fixing the issues
 
 ## Adding to Pre-commit Hooks
 

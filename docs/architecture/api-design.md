@@ -10,19 +10,19 @@ The AI-Playground APIs are designed with the following principles:
 1. **Consistency**: APIs follow consistent patterns and naming conventions
 
 
-1. **Simplicity**: Common operations are simple and intuitive
+2. **Simplicity**: Common operations are simple and intuitive
 
 
-1. **Flexibility**: Advanced options are available when needed
+2. **Flexibility**: Advanced options are available when needed
 
 
-1. **Documentation**: All APIs are well-documented with examples
+2. **Documentation**: All APIs are well-documented with examples
 
 
-1. **Versioning**: APIs are versioned to ensure backward compatibility
+2. **Versioning**: APIs are versioned to ensure backward compatibility
 
 
-1. **Error handling**: Clear error messages and appropriate status codes
+2. **Error handling**: Clear error messages and appropriate status codes
 
 ## REST API
 
@@ -470,10 +470,10 @@ socket.onmessage = (event) => {
 
 AI-Playground APIs are versioned to ensure backward compatibility:
 
-1. **REST API**: Version in URL path (e.g., `/api/v1/models`)
+2. **REST API**: Version in URL path (e.g., `/api/v1/models`)
 
 
-1. **Python API**: Version in package (e.g., `from ai_playground.v1 import AIPlayground`)
+2. **Python API**: Version in package (e.g., `from ai_playground.v1 import AIPlayground`)
 
 When breaking changes are necessary, a new version is released with:
 
@@ -486,19 +486,19 @@ When breaking changes are necessary, a new version is released with:
 
 The API implements several security measures:
 
-1. **Authentication**: Token-based auth for all API calls
+2. **Authentication**: Token-based auth for all API calls
 
 
-1. **Authorization**: Role-based access control for sensitive operations
+2. **Authorization**: Role-based access control for sensitive operations
 
 
-1. **Rate limiting**: Prevents abuse of the API
+2. **Rate limiting**: Prevents abuse of the API
 
 
-1. **Input validation**: Thoroughly validates all input data
+2. **Input validation**: Thoroughly validates all input data
 
 
-1. **TLS encryption**: All API traffic is encrypted
+2. **TLS encryption**: All API traffic is encrypted
 
 ## Additional Resources
 

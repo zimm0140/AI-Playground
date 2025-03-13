@@ -38,16 +38,16 @@ The detection system:
 1. Identifies CPU architecture and features
 
 
-1. Detects available GPUs and their capabilities
+2. Detects available GPUs and their capabilities
 
 
-1. Checks for specialized hardware like Intel NPUs
+2. Checks for specialized hardware like Intel NPUs
 
 
-1. Verifies the presence of optimization libraries like OpenVINO
+2. Verifies the presence of optimization libraries like OpenVINO
 
 
-1. Selects the most appropriate configuration based on findings
+2. Selects the most appropriate configuration based on findings
 
 ## Hardware-specific Optimizations
 

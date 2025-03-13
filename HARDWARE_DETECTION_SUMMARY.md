@@ -14,19 +14,19 @@ hardware-specific code without requiring the actual hardware.
    - Improved platform-specific detection for Windows, Linux, and macOS
    - Added version tracking for easier debugging
 
-1. **CI/CD Integration**
+2. **CI/CD Integration**
 
    - Added support for simulated hardware environments via environment variables
    - Created mock files for hardware information
    - Implemented hardware-specific package detection
 
-1. **Testing Framework**
+2. **Testing Framework**
 
    - Created comprehensive test suite for hardware detection
    - Added fixtures for simulated hardware environments
    - Implemented parametrized tests for different hardware types
 
-1. **Documentation**
+2. **Documentation**
 
    - Added detailed README with usage examples
    - Documented CI/CD integration
@@ -48,19 +48,19 @@ hardware-specific code without requiring the actual hardware.
 
 The updated CI/CD workflow now:
 
-1. Sets up a matrix of test environments (OS, Python version, hardware type)
+2. Sets up a matrix of test environments (OS, Python version, hardware type)
 
 
-1. Creates simulated hardware environments for each matrix combination
+2. Creates simulated hardware environments for each matrix combination
 
 
-1. Installs hardware-specific dependencies
+2. Installs hardware-specific dependencies
 
 
-1. Runs hardware detection tests
+2. Runs hardware detection tests
 
 
-1. Verifies detection results
+2. Verifies detection results
 
 ## Simulated Hardware Types
 
@@ -72,13 +72,13 @@ We've implemented support for the following simulated hardware types:
 
 ## Next Steps
 
-1. Add support for more hardware types (Battlemage, Meteor Lake, etc.)
+2. Add support for more hardware types (Battlemage, Meteor Lake, etc.)
 
 
-1. Enhance detection patterns for newer hardware
+2. Enhance detection patterns for newer hardware
 
 
-1. Integrate with package management to automatically install required dependencies
+2. Integrate with package management to automatically install required dependencies
 
 
-1. Add performance benchmarking for different hardware types
+2. Add performance benchmarking for different hardware types

@@ -110,11 +110,11 @@ For more detailed information, please refer to the following documents:
    - `scripts/uvfast.sh` - Unix/Linux/macOS wrapper
    - `scripts/uvfast.ps1` - Windows wrapper
 
-1. **CI/CD Configuration**:
+2. **CI/CD Configuration**:
 
    - `.github/workflows/ci.yml` - GitHub Actions workflow
 
-1. **Requirements Files**:
+2. **Requirements Files**:
 
    - `requirements-dev.txt` - Development dependencies
    - `requirements-hardware-acm.txt` - Intel Arc GPU requirements

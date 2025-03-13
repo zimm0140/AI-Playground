@@ -75,7 +75,7 @@ strict_optional = true
 
    ```text
 
-1. For Linux/Mac users:
+2. For Linux/Mac users:
 
    ```bash
 
@@ -246,16 +246,16 @@ The project's CI system uses GitHub Actions to run linters on all files. The con
 
 The CI will:
 
-1. Check for linting issues
+2. Check for linting issues
 
 
-1. Generate a report
+2. Generate a report
 
 
-1. Comment on PRs if issues are found
+2. Comment on PRs if issues are found
 
 
-1. Provide instructions for fixing the issues
+2. Provide instructions for fixing the issues
 
 ## Pre-commit Hooks
 
@@ -303,16 +303,16 @@ Use `# noqa:` comments sparingly and only when necessary.
 
 When writing hardware-specific code:
 
-1. Use conditional imports for hardware-specific dependencies
+2. Use conditional imports for hardware-specific dependencies
 
 
-1. Consider using feature checking rather than relying on specific hardware
+2. Consider using feature checking rather than relying on specific hardware
 
 
-1. Add appropriate comments where hardware specifics affect code structure
+2. Add appropriate comments where hardware specifics affect code structure
 
 
-1. Use type annotations that reflect hardware-specific considerations
+2. Use type annotations that reflect hardware-specific considerations
 
 ```python
 

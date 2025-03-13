@@ -25,13 +25,13 @@ The implementation combines modern Python packaging practices with hardware dete
    - Generate lockfiles for reproducible environments
    - Provide information about detected hardware
 
-1. **hardware_detection.py**: Hardware detection module
+2. **hardware_detection.py**: Hardware detection module
 
    - Detect Intel GPUs and processors
    - Identify appropriate dependencies based on hardware
    - Check for hardware-specific features
 
-1. **pyproject.toml**: Modern PEP 621 configuration
+2. **pyproject.toml**: Modern PEP 621 configuration
 
    - Core dependencies for all environments
    - Optional dependencies for specific hardware types
@@ -39,18 +39,18 @@ The implementation combines modern Python packaging practices with hardware dete
 
 ### Additional Components
 
-1. **GitHub Actions Workflow**: CI/CD pipeline for testing
+2. **GitHub Actions Workflow**: CI/CD pipeline for testing
 
    - Matrix testing across multiple Python versions
    - Simulated hardware environments
    - Lockfile validation
 
-1. **Docker Configuration**: Containerized development
+2. **Docker Configuration**: Containerized development
 
    - Hardware-specific container targets
    - Optimized for different acceleration types
 
-1. __XPU Integration Example_*: Demo of hardware-aware configuration
+2. __XPU Integration Example_*: Demo of hardware-aware configuration
 
    - Shows how to use hardware detection with PyTorch
    - Configures backends based on available hardware
@@ -59,7 +59,7 @@ The implementation combines modern Python packaging practices with hardware dete
 
 ### Quick Start
 
-1. Clone the repository and navigate to the project directory:
+2. Clone the repository and navigate to the project directory:
 
 \`\`\`text\`bash
 git clone <repository-url>
@@ -67,7 +67,7 @@ cd <project-directory>
 
 ```text`text
 
-1. Run the setup command to create an environment for your hardware:
+2. Run the setup command to create an environment for your hardware:
 
 ```bash
 
@@ -75,7 +75,7 @@ python uvfast.py setup --dev
 
 ```text
 
-1. Activate the virtual environment:
+2. Activate the virtual environment:
 
 ```bash
 
@@ -89,7 +89,7 @@ source .venv/bin/activate
 
 ```text
 
-1. Run commands in the optimized environment:
+2. Run commands in the optimized environment:
 
 ```bash
 

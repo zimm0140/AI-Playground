@@ -69,16 +69,16 @@ Throughout these modernization efforts, we've maintained backward compatibility:
    - `scripts/uvfast.sh` - Unix/Linux/macOS wrapper
    - `scripts/uvfast.ps1` - Windows wrapper
 
-1. **CI/CD**:
+2. **CI/CD**:
 
    - `.github/workflows/ci.yml` - Updated CI workflow
 
-1. **Requirements**:
+2. **Requirements**:
 
    - `requirements-dev.txt` - Development dependencies
    - `requirements-hardware-_.txt` - Hardware-specific requirements
 
-1. *_Documentation__:
+2. *_Documentation__:
 
    - `UVFAST_IMPLEMENTATION_GUIDE.md` - Implementation guide
    - `UVFAST_CHEATSHEET.md` - Command reference
@@ -87,19 +87,19 @@ Throughout these modernization efforts, we've maintained backward compatibility:
 
 ## Next Steps
 
-1. **Generate lockfiles** for all hardware configurations
+2. **Generate lockfiles** for all hardware configurations
 
 
-1. **Migrate existing tests** to use the new infrastructure
+2. **Migrate existing tests** to use the new infrastructure
 
 
-1. **Integrate additional hardware types** as needed
+2. **Integrate additional hardware types** as needed
 
 
-1. **Train team members** on the new workflow
+2. **Train team members** on the new workflow
 
 
-1. __Monitor CI performance_* and make adjustments as necessary
+2. __Monitor CI performance_* and make adjustments as necessary
 
 ## Conclusion
 

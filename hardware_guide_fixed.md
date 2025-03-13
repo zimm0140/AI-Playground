@@ -1,3 +1,4 @@
+
 # Hardware Optimization Guide for AI Applications
 
 This guide explains how to optimize your AI applications for Intel hardware using our hardware-aware environment management system.

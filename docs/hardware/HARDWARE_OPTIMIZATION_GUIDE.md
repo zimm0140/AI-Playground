@@ -1,3 +1,4 @@
+
 # Hardware Optimization Guide for AI Applications
 
 This guide explains how to optimize your AI applications for Intel hardware using our hardware-aware environment management system.
@@ -302,10 +303,10 @@ If your Intel Arc GPU is not detected:
 10. Ensure you have the latest Intel GPU drivers installed
 
 
-3. Check that the environment variable `XPU_VISIBLE_DEVICES` is set correctly
+11. Check that the environment variable `XPU_VISIBLE_DEVICES` is set correctly
 
 
-3. Verify that Intel® Extension for PyTorch is installed:
+4. Verify that Intel® Extension for PyTorch is installed:
 
    ```bash
 
@@ -317,25 +318,25 @@ If your Intel Arc GPU is not detected:
 
 For OpenVINO problems:
 
-3. Ensure OpenVINO is correctly installed
+4. Ensure OpenVINO is correctly installed
 
 
-3. Verify your CPU is compatible with OpenVINO
+4. Verify your CPU is compatible with OpenVINO
 
 
-3. Check for environment variable conflicts
+4. Check for environment variable conflicts
 
 #### Performance Issues
 
 If you experience slower than expected performance:
 
-3. Use the benchmarking tool to identify bottlenecks
+4. Use the benchmarking tool to identify bottlenecks
 
 
-3. Try different batch sizes and model configurations
+4. Try different batch sizes and model configurations
 
 
-3. Update to the latest versions of Intel® Extension for PyTorch and OpenVINO
+4. Update to the latest versions of Intel® Extension for PyTorch and OpenVINO
 
 ## Advanced Configuration
 

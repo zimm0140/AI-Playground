@@ -10,16 +10,16 @@ AI-Playground's hardware integration architecture is designed to:
 1. *_Abstract hardware differences__: Shield users from hardware-specific implementation details
 
 
-1. **Maximize performance**: Leverage hardware-specific optimizations when available
+2. **Maximize performance**: Leverage hardware-specific optimizations when available
 
 
-1. **Provide graceful fallbacks**: Work even when optimal hardware is unavailable
+2. **Provide graceful fallbacks**: Work even when optimal hardware is unavailable
 
 
-1. **Support seamless transitions**: Allow easy switching between hardware options
+2. **Support seamless transitions**: Allow easy switching between hardware options
 
 
-1. **Enable extensibility**: Make it easy to add support for new hardware
+2. **Enable extensibility**: Make it easy to add support for new hardware
 
 ## Hardware Support Layers
 
@@ -145,19 +145,19 @@ Implements hardware-specific optimizations:
 
 The hardware detection process consists of the following steps:
 
-1. **System Probing**: Query the system for available hardware
+2. **System Probing**: Query the system for available hardware
 
 
-1. **Capability Assessment**: Determine the capabilities of detected hardware
+2. **Capability Assessment**: Determine the capabilities of detected hardware
 
 
-1. **Driver Validation**: Check for required drivers and their versions
+2. **Driver Validation**: Check for required drivers and their versions
 
 
-1. **Feature Verification**: Test for specific hardware features
+2. **Feature Verification**: Test for specific hardware features
 
 
-1. **Priority Assignment**: Assign priorities to available hardware options
+2. **Priority Assignment**: Assign priorities to available hardware options
 
 ### Detection Implementation
 
@@ -1456,19 +1456,19 @@ self.torch.xpu.empty_cache()
 
 To add support for a new hardware platform:
 
-1. **Create a new backend class** inheriting from `HardwareBackend`
+2. **Create a new backend class** inheriting from `HardwareBackend`
 
 
-1. **Implement required methods** for the new hardware
+2. **Implement required methods** for the new hardware
 
 
-1. **Add detection logic** to identify the new hardware
+2. **Add detection logic** to identify the new hardware
 
 
-1. **Create optimization profiles** for the new hardware
+2. **Create optimization profiles** for the new hardware
 
 
-1. **Register the backend** with the hardware abstraction layer
+2. **Register the backend** with the hardware abstraction layer
 
 ```python
 

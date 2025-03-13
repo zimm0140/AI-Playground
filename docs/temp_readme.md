@@ -63,13 +63,13 @@ Each workflow is provided as a JSON file that can be imported directly into Comf
 1. Download the JSON file
 
 
-1. Open ComfyUI in your browser
+2. Open ComfyUI in your browser
 
 
-1. Right-click anywhere in the canvas
+2. Right-click anywhere in the canvas
 
 
-1. Select "Load" and choose the downloaded JSON file
+2. Select "Load" and choose the downloaded JSON file
 
 ## Required Models
 
@@ -79,22 +79,22 @@ Most workflows require specific checkpoint models, VAEs, or LoRAs. Check the das
 
 To contribute a new workflow:
 
-1. Create a fork of this repository
+2. Create a fork of this repository
 
 
-1. Add your workflow JSON file to this directory
+2. Add your workflow JSON file to this directory
 
 
-1. Create a pull request
+2. Create a pull request
 
 
-1. Our CI system will automatically validate your workflow
+2. Our CI system will automatically validate your workflow
 
 
-1. Address any issues identified in the validation
+2. Address any issues identified in the validation
 
 
-1. Once all checks pass, your workflow will be reviewed for merging
+2. Once all checks pass, your workflow will be reviewed for merging
 
 ## Documentation
 

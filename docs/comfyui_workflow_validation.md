@@ -10,10 +10,10 @@ The ComfyUI workflow validation process consists of three main stages:
 1. *_Structural Validation__: Checks that workflow JSON files are well-formed and contain the expected structure.
 
 
-1. **Requirements Analysis**: Analyzes workflows to determine model, custom node, and hardware requirements.
+2. **Requirements Analysis**: Analyzes workflows to determine model, custom node, and hardware requirements.
 
 
-1. **Execution Simulation**: Simulates the workflow execution without requiring models or GPU resources.
+2. **Execution Simulation**: Simulates the workflow execution without requiring models or GPU resources.
 
 The validation runs automatically on:
 
@@ -139,19 +139,19 @@ The dashboard includes:
 
 When workflows are modified in a pull request, an automated system:
 
-1. Runs all validation, analysis, and simulation stages
+2. Runs all validation, analysis, and simulation stages
 
 
-1. Generates a detailed comment on the PR with results
+2. Generates a detailed comment on the PR with results
 
 
-1. Flags workflows with issues that need to be fixed
+2. Flags workflows with issues that need to be fixed
 
 
-1. Provides specific recommendations for each workflow
+2. Provides specific recommendations for each workflow
 
 
-1. Updates the comment when changes are made to workflows
+2. Updates the comment when changes are made to workflows
 
 This integration helps contributors understand issues before merging and ensures that only high-quality workflows are added to the repository.
 
@@ -220,19 +220,19 @@ Each script supports additional arguments:
 
 Planned improvements to the workflow validation process:
 
-1. **Actual Execution Testing**: Implement actual execution testing with minimal example models
+2. **Actual Execution Testing**: Implement actual execution testing with minimal example models
 
 
-1. **Regression Testing**: Compare execution results between versions to detect regressions
+2. **Regression Testing**: Compare execution results between versions to detect regressions
 
 
-1. **Performance Benchmarking**: Measure execution time and memory usage for workflows
+2. **Performance Benchmarking**: Measure execution time and memory usage for workflows
 
 
-1. **Extended Node Support**: Add support for validating more custom node types
+2. **Extended Node Support**: Add support for validating more custom node types
 
 
-1. __Workflow Generation_*: Generate test workflows to validate node compatibility
+2. __Workflow Generation_*: Generate test workflows to validate node compatibility
 
 ```text`
 
