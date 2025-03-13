@@ -88,6 +88,7 @@ gration}
 
    powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 
+
    ```
 
 1. **Migrate existing environments**:
@@ -186,6 +187,7 @@ s}
 
    def func(x: int | str) -> float | None:
 
+
    ```bash
 
    ...
@@ -219,6 +221,7 @@ sh
    ```python
 
    def func(x: int | None = None) -> str | None:
+
 
    ```bash
 

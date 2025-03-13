@@ -39,18 +39,25 @@ We use a systematic approach to manage technical debt:
 #### Fix Linting Issues
 
 ```bash
+
 # Fix all issues in a directory
+
 python tools/linting/fix_lint_issues.py [directory]
 
 # Fix specific rules
+
 python tools/linting/fix_lint_issues.py [directory] --rules F401 W291
+
 ```
 
 #### Track Technical Debt
 
 ```bash
+
 # Generate technical debt report
+
 python tools/linting/track_technical_debt.py
+
 ```
 
 The script will:
@@ -64,6 +71,7 @@ The script will:
 
 ```bash
 python tools/linting/check_linting.py
+
 ```
 
 ### Reports
