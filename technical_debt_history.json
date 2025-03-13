@@ -1,0 +1,27 @@
+[
+  {
+    "timestamp": "2025-03-13T19:39:55.931281",
+    "issues": {
+      "high_priority": 0,
+      "medium_priority": 0,
+      "low_priority": 0
+    },
+    "total_files": 12696,
+    "affected_files": 0
+  },
+  {
+    "timestamp": "2025-03-13T19:41:07.793054",
+    "issues": {
+      "high_priority": 295,
+      "medium_priority": 825,
+      "low_priority": 9246
+    },
+    "total_files": 12696,
+    "affected_files": 107,
+    "files_by_category": {
+      "high_priority": 16,
+      "medium_priority": 39,
+      "low_priority": 99
+    }
+  }
+]

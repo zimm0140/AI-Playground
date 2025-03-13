@@ -11,9 +11,10 @@ This script:
 
 import json
 import subprocess
+import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional, Set
+from typing import Dict, List, Optional, Set, Tuple
 
 
 class TechnicalDebtTracker:
@@ -22,7 +23,7 @@ class TechnicalDebtTracker:
         self.categories = {
             "high_priority": ["F401", "W291", "F821", "N801", "N802", "N803"],
             "medium_priority": ["C901", "E501", "E402", "RET503", "RET504", "RET505"],
-            "low_priority": ["S*", "PTH*", "SIM*"],
+            "low_priority": ["S", "PTH", "SIM"],
         }
 
     def load_history(self) -> List[Dict]:
@@ -35,6 +36,25 @@ class TechnicalDebtTracker:
         """Save technical debt history."""
         self.history_file.write_text(json.dumps(data, indent=2))
 
+    def count_issues(self, rule: str) -> Tuple[int, Set[str]]:
+        """Count issues for a specific rule."""
+        cmd = ["ruff", "check", ".", f"--select={rule}"]
+        result = subprocess.run(cmd, capture_output=True, text=True, check=False)
+
+        if result.returncode == 0:
+            return 0, set()
+
+        lines = result.stdout.strip().split("\n")
+        # Extract filenames from the output
+        files = set()
+        for line in lines:
+            if ":" in line:
+                filename = line.split(":")[0]
+                if filename and Path(filename).exists():
+                    files.add(filename)
+
+        return len(lines), files
+
     def analyze_codebase(self) -> Dict:
         """Analyze current state of technical debt."""
         results = {
@@ -42,31 +62,33 @@ class TechnicalDebtTracker:
             "issues": {},
             "total_files": 0,
             "affected_files": 0,
+            "files_by_category": {},
         }
+
+        all_affected_files = set()
 
         # Run ruff to get current issues
         for category, rules in self.categories.items():
             category_issues = 0
-            affected_files = set()
+            category_files = set()
 
             for rule in rules:
-                cmd = ["ruff", "check", ".", f"--select={rule}", "--format=json"]
                 try:
-                    output = subprocess.run(cmd, capture_output=True, text=True, check=False)
-                    if output.returncode == 0:
-                        continue
-
-                    violations = json.loads(output.stdout) if output.stdout else []
-                    category_issues += len(violations)
-                    affected_files.update(v["filename"] for v in violations)
+                    count, files = self.count_issues(rule)
+                    category_issues += count
+                    category_files.update(files)
+                    all_affected_files.update(files)
+                    print(f"- Rule {rule}: {count} issues in {len(files)} files")
                 except Exception as e:
                     print(f"Error analyzing rule {rule}: {e}")
 
             results["issues"][category] = category_issues
-            results["affected_files"] = len(affected_files)
+            results["files_by_category"][category] = len(category_files)
 
         # Count total Python files
-        results["total_files"] = len(list(Path().rglob("*.py")))
+        py_files = list(Path().rglob("*.py"))
+        results["total_files"] = len(py_files)
+        results["affected_files"] = len(all_affected_files)
 
         return results
 
@@ -83,7 +105,8 @@ class TechnicalDebtTracker:
         ]
 
         for category, count in current["issues"].items():
-            report.append(f"- {category.replace('_', ' ').title()}: {count} issues")
+            files = current["files_by_category"].get(category, 0)
+            report.append(f"- {category.replace('_', ' ').title()}: {count} issues in {files} files")
 
         if len(history) > 1:
             report.extend(
@@ -139,7 +162,8 @@ class TechnicalDebtTracker:
         print(f"- Total files: {current['total_files']}")
         print(f"- Files with issues: {current['affected_files']}")
         for category, count in current["issues"].items():
-            print(f"- {category.replace('_', ' ').title()}: {count} issues")
+            files = current["files_by_category"].get(category, 0)
+            print(f"- {category.replace('_', ' ').title()}: {count} issues in {files} files")
 
 
 def main():
