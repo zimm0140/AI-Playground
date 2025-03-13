@@ -1,3 +1,5 @@
+from pathlib import Path
+
 #!/usr/bin/env python
 """
 Final fix for README.md to make it pass Prettier checks
@@ -93,7 +95,7 @@ For more detailed information about the workflow validation system,
 """
 
 # Write the fixed content to the file
-with open("WebUI/external/workflows/README.md", "w", encoding="utf-8") as f:
+with Path("WebUI/external/workflows/README.md").open(, "w", encoding="utf-8") as f:
     f.write(content)
 
 print("Fixed README.md")

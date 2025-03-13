@@ -5,9 +5,9 @@ This script will run ruff with the --fix option on the directories
 with reported issues.
 """
 
-import os
 import subprocess
 import sys
+from pathlib import Path
 
 
 def main():
@@ -18,7 +18,7 @@ def main():
     success = True
 
     for directory in directories:
-        if not os.path.exists(directory):
+        if not Path(directory).exists():
             print(f"⚠️ Directory {directory} does not exist, skipping.")
             continue
 

@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 """Unit tests for setup_hardware_env.py module."""
 
-import os
 import sys
 import unittest
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 # Add parent directory to path so we can import from the root
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 import setup_hardware_env
 

@@ -73,11 +73,11 @@ def test_specific_hardware_detection(hardware_type):
 def test_environment_variables():
     """Test that environment variables are correctly set and used."""
     # Test with a custom mock directory
-    custom_mock_dir = ".uvfast/custom_mock"
-    os.makedirs(custom_mock_dir, exist_ok=True)
+    custom_mock_dir = Path(".uvfast/custom_mock")
+    custom_mock_dir.mkdir(parents=True, exist_ok=True)
 
     # Create a custom GPU info file
-    with open(f"{custom_mock_dir}/gpu_info.txt", "w", encoding="utf-8") as f:
+    with custom_mock_dir.joinpath("gpu_info.txt").open("w", encoding="utf-8") as f:
         f.write("Custom Test GPU\n")
 
     # Set the environment variable
@@ -106,7 +106,7 @@ def test_config_loading():
     """Test loading of uvfast.json configuration."""
     # Create a test config file
     config_path = Path(".uvfast/uvfast.json")
-    os.makedirs(config_path.parent, exist_ok=True)
+    config_path.parent.mkdir(parents=True, exist_ok=True)
 
     config_content = {
         "hardware_types": ["test_hw1", "test_hw2", "base"],
@@ -119,7 +119,7 @@ def test_config_loading():
 
     import json
 
-    with open(config_path, "w", encoding="utf-8") as f:
+    with config_path.open("w", encoding="utf-8") as f:
         json.dump(config_content, f, indent=2)
 
     try:
@@ -137,4 +137,4 @@ def test_config_loading():
     finally:
         # Clean up
         if config_path.exists():
-            os.unlink(config_path)
+            config_path.unlink()

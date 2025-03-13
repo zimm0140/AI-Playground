@@ -17,6 +17,7 @@ import glob
 import os
 import re
 import sys
+from pathlib import Path
 
 # Maximum line length (from .markdownlint.yaml)
 MAX_LINE_LENGTH = 180
@@ -106,7 +107,7 @@ def fix_bare_urls(content: str) -> str:
 def fix_markdown_file(file_path: str) -> bool:
     """Apply all fixes to a markdown file."""
     try:
-        with open(file_path, encoding="utf-8") as f:
+        with Path(file_path).open(, encoding="utf-8") as f:
             content = f.read()
 
         original_content = content
@@ -125,7 +126,7 @@ def fix_markdown_file(file_path: str) -> bool:
 
         # Write changes if needed
         if content != original_content:
-            with open(file_path, "w", encoding="utf-8") as f:
+            with Path(file_path).open(, "w", encoding="utf-8") as f:
                 f.write(content)
             print(f"✅ Fixed linting issues in {file_path}")
             return True
@@ -139,11 +140,11 @@ def fix_markdown_file(file_path: str) -> bool:
 
 def find_markdown_files(path: str) -> list[str]:
     """Find all markdown files in the given path."""
-    if os.path.isfile(path) and path.lower().endswith(".md"):
+    if Path(path).is_file() and path.lower().endswith(".md"):
         return [path]
 
-    if os.path.isdir(path):
-        md_files = glob.glob(os.path.join(path, "**/*.md"), recursive=True)
+    if Path(path).is_dir():
+        md_files = Path().glob(Path(path) / "**/*.md", recursive=True)
         return md_files
 
     return []

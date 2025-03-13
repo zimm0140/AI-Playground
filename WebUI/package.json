@@ -8,8 +8,8 @@
     "dev": "vite",
     "build": "vue-tsc && vite build",
     "preview": "vite preview",
-    "lint:check": "eslint . --config .eslintrc.cjs",
-    "lint:fix": "eslint . --fix --config .eslintrc.cjs",
+    "lint:check": "eslint .",
+    "lint:fix": "eslint . --fix",
     "format:check": "prettier --check .",
     "format:fix": "prettier --write .",
     "type-check": "vue-tsc --noEmit"

@@ -98,7 +98,7 @@ class UVFast:
         config_path = Path("uvfast.json")
         if config_path.exists():
             try:
-                with open(config_path) as f:
+                with Path(config_pat).open(h) as f:
                     config = json.load(f)
                 return config
             except (json.JSONDecodeError, OSError) as e:

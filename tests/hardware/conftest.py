@@ -25,10 +25,10 @@ def base_environment(mock_dir, monkeypatch):
         monkeypatch.delenv("SIMULATED_HARDWARE")
 
     # Create mock files
-    with open(mock_dir / "gpu_info.txt", "w", encoding="utf-8") as f:
+    with mock_dir.joinpath("gpu_info.txt").open("w", encoding="utf-8") as f:
         f.write("Generic GPU\n")
 
-    with open(mock_dir / "cpu_info.txt", "w", encoding="utf-8") as f:
+    with mock_dir.joinpath("cpu_info.txt").open("w", encoding="utf-8") as f:
         f.write("vendor: Generic\n")
         f.write("name: Generic CPU\n")
         f.write("cores: 4\n")
@@ -46,10 +46,10 @@ def intel_arc_environment(mock_dir, monkeypatch):
     monkeypatch.setenv("SIMULATED_HARDWARE", "acm")
 
     # Create mock files
-    with open(mock_dir / "gpu_info.txt", "w", encoding="utf-8") as f:
+    with mock_dir.joinpath("gpu_info.txt").open("w", encoding="utf-8") as f:
         f.write("Intel(R) Arc(TM) A770 Graphics\n")
 
-    with open(mock_dir / "cpu_info.txt", "w", encoding="utf-8") as f:
+    with mock_dir.joinpath("cpu_info.txt").open("w", encoding="utf-8") as f:
         f.write("vendor: Intel\n")
         f.write("name: Intel(R) Core(TM) i9-13900K\n")
         f.write("cores: 24\n")
@@ -59,7 +59,7 @@ def intel_arc_environment(mock_dir, monkeypatch):
     intel_gpu_dir = mock_dir / "intel_gpu_stub"
     intel_gpu_dir.mkdir(exist_ok=True)
 
-    with open(intel_gpu_dir / "__init__.py", "w", encoding="utf-8") as f:
+    with intel_gpu_dir.joinpath("__init__.py").open("w", encoding="utf-8") as f:
         f.write("# Mock Intel GPU package\n")
         f.write("__version__ = '1.0.0'\n")
 
@@ -77,10 +77,10 @@ def openvino_environment(mock_dir, monkeypatch):
     monkeypatch.setenv("SIMULATED_HARDWARE", "ovino")
 
     # Create mock files
-    with open(mock_dir / "gpu_info.txt", "w", encoding="utf-8") as f:
+    with mock_dir.joinpath("gpu_info.txt").open("w", encoding="utf-8") as f:
         f.write("Intel(R) UHD Graphics 770\n")
 
-    with open(mock_dir / "cpu_info.txt", "w", encoding="utf-8") as f:
+    with mock_dir.joinpath("cpu_info.txt").open("w", encoding="utf-8") as f:
         f.write("vendor: Intel\n")
         f.write("name: Intel(R) Core(TM) i7-1370P\n")
         f.write("cores: 16\n")
@@ -90,7 +90,7 @@ def openvino_environment(mock_dir, monkeypatch):
     openvino_dir = mock_dir / "openvino"
     openvino_dir.mkdir(exist_ok=True)
 
-    with open(openvino_dir / "__init__.py", "w", encoding="utf-8") as f:
+    with openvino_dir.joinpath("__init__.py").open("w", encoding="utf-8") as f:
         f.write("# Mock OpenVINO package\n")
         f.write("__version__ = '2023.1.0'\n")
 
@@ -112,10 +112,10 @@ def all_environments(request, mock_dir, monkeypatch):
         if "SIMULATED_HARDWARE" in os.environ:
             monkeypatch.delenv("SIMULATED_HARDWARE")
 
-        with open(mock_dir / "gpu_info.txt", "w", encoding="utf-8") as f:
+        with mock_dir.joinpath("gpu_info.txt").open("w", encoding="utf-8") as f:
             f.write("Generic GPU\n")
 
-        with open(mock_dir / "cpu_info.txt", "w", encoding="utf-8") as f:
+        with mock_dir.joinpath("cpu_info.txt").open("w", encoding="utf-8") as f:
             f.write("vendor: Generic\n")
             f.write("name: Generic CPU\n")
             f.write("cores: 4\n")
@@ -123,10 +123,10 @@ def all_environments(request, mock_dir, monkeypatch):
     elif hardware_type == "acm":
         monkeypatch.setenv("SIMULATED_HARDWARE", "acm")
 
-        with open(mock_dir / "gpu_info.txt", "w", encoding="utf-8") as f:
+        with mock_dir.joinpath("gpu_info.txt").open("w", encoding="utf-8") as f:
             f.write("Intel(R) Arc(TM) A770 Graphics\n")
 
-        with open(mock_dir / "cpu_info.txt", "w", encoding="utf-8") as f:
+        with mock_dir.joinpath("cpu_info.txt").open("w", encoding="utf-8") as f:
             f.write("vendor: Intel\n")
             f.write("name: Intel(R) Core(TM) i9-13900K\n")
             f.write("cores: 24\n")
@@ -134,10 +134,10 @@ def all_environments(request, mock_dir, monkeypatch):
     elif hardware_type == "ovino":
         monkeypatch.setenv("SIMULATED_HARDWARE", "ovino")
 
-        with open(mock_dir / "gpu_info.txt", "w", encoding="utf-8") as f:
+        with mock_dir.joinpath("gpu_info.txt").open("w", encoding="utf-8") as f:
             f.write("Intel(R) UHD Graphics 770\n")
 
-        with open(mock_dir / "cpu_info.txt", "w", encoding="utf-8") as f:
+        with mock_dir.joinpath("cpu_info.txt").open("w", encoding="utf-8") as f:
             f.write("vendor: Intel\n")
             f.write("name: Intel(R) Core(TM) i7-1370P\n")
             f.write("cores: 16\n")

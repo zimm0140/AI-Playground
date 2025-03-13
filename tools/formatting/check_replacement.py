@@ -1,3 +1,5 @@
+from pathlib import Path
+
 content = "from web_api import app"
 content = content.replace(
     "from web_api import app",
@@ -5,6 +7,6 @@ content = content.replace(
 )
 print(content)
 
-with open("test_output.txt", "w") as f:
+with Path("test_output.txt").open(, "w") as f:
     f.write(content)
 print("Written to test_output.txt")

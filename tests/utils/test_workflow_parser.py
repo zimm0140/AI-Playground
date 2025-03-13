@@ -6,16 +6,16 @@ These tests verify that the workflow parsing functions correctly handle
 different workflow formats and edge cases.
 """
 
-import os
 import sys
+from pathlib import Path
 from typing import Any
 
 # Add the GitHub workflows scripts directory to the Python path
-script_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-sys.path.append(os.path.join(script_dir, ".github", "workflows", "scripts"))
+script_dir = Path(__file__).resolve().parent.parent.parent
+sys.path.append(str(script_dir / ".github" / "workflows" / "scripts"))
 
 # Import the workflow parser functions after modifying the path
-from utils.workflow_parser import (
+from utils.workflow_parser import (  # noqa: E402
     build_link_map,  # noqa: E402
     get_node_class_type,
     get_node_inputs,
@@ -98,7 +98,8 @@ def test_get_workflow_links_traditional_format():
     workflow = {"links": [[1, 0, 2, 0], [3, 0, 4, 0]]}
     links = get_workflow_links(workflow)
     assert links is not None
-    assert len(links) == 2
+    expected_link_count = 2
+    assert len(links) == expected_link_count
     assert links[0] == [1, 0, 2, 0]
     assert links[1] == [3, 0, 4, 0]
 
@@ -108,7 +109,8 @@ def test_get_workflow_links_api_format():
     workflow = {"comfyUiApiWorkflow": {"links": [[1, 0, 2, 0], [3, 0, 4, 0]]}}
     links = get_workflow_links(workflow)
     assert links is not None
-    assert len(links) == 2
+    expected_link_count = 2
+    assert len(links) == expected_link_count
     assert links[0] == [1, 0, 2, 0]
     assert links[1] == [3, 0, 4, 0]
 

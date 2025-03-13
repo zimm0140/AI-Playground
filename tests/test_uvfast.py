@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 """Unit tests for uvfast.py module."""
 
-import os
 import sys
 import unittest
 from pathlib import Path
 from unittest.mock import mock_open, patch
 
 # Add parent directory to path so we can import from the root
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 import uvfast
 
@@ -123,9 +122,9 @@ class TestUVFast(unittest.TestCase):
 
         # Check that it's formed correctly based on the platform
         if sys.platform == "win32":
-            self.assertTrue(str(python_path).endswith(os.path.join("Scripts", "python.exe")))
+            self.assertTrue(str(python_path).endswith(str(Path("Scripts") / "python.exe")))
         else:
-            self.assertTrue(str(python_path).endswith(os.path.join("bin", "python")))
+            self.assertTrue(str(python_path).endswith(str(Path("bin") / "python")))
 
     @patch("uvfast.UVFast._load_config")
     def test_get_requirements_files(self, mock_load_config):

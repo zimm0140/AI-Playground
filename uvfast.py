@@ -145,18 +145,44 @@ class UVFast:
             self.hardware_type = self._simple_hardware_detection()
 
     def _load_config(self) -> dict[str, list[str]]:
-        """Load configuration from uvfast.json or use defaults."""
-        config_path = Path("uvfast.json")
+        """Load the configuration from the config file."""
+        config_path = Path(".uvfast.json")
         if config_path.exists():
             try:
-                with open(config_path) as f:
+                with config_path.open() as f:
                     config = json.load(f)
                 return config
-            except (json.JSONDecodeError, OSError) as e:
-                logging.error(f"Error loading configuration: {e}")
-                logging.info("Using default configuration")
-                return DEFAULT_CONFIG.copy()
-        return DEFAULT_CONFIG.copy()
+            except json.JSONDecodeError:
+                logging.warning(f"Failed to parse config file: {config_path}")
+                return {}
+        else:
+            # Create a default config
+            return {
+                "project_name": "ai-playground",
+                "hardware_types": ["intel_arc", "intel_cpu", "openvino", "rocm", "cuda"],
+                "requirements": {
+                    "base": "requirements.txt",
+                    "dev": "requirements-dev.txt",
+                    "hardware": {
+                        "intel_arc": "requirements-intel-arc.txt",
+                        "intel_cpu": "requirements-intel-cpu.txt",
+                        "openvino": "requirements-openvino.txt",
+                        "rocm": "requirements-rocm.txt",
+                        "cuda": "requirements-cuda.txt",
+                    },
+                },
+                "lockfiles": {
+                    "base": "requirements.lock",
+                    "dev": "requirements-dev.lock",
+                    "hardware": {
+                        "intel_arc": "requirements-intel-arc.lock",
+                        "intel_cpu": "requirements-intel-cpu.lock",
+                        "openvino": "requirements-openvino.lock",
+                        "rocm": "requirements-rocm.lock",
+                        "cuda": "requirements-cuda.lock",
+                    },
+                },
+            }
 
     def _simple_hardware_detection(self) -> str:
         """Simple hardware detection as a fallback when the module is not available."""
@@ -169,6 +195,7 @@ class UVFast:
                     ["wmic", "path", "win32_VideoController", "get", "Name"],
                     capture_output=True,
                     text=True,
+                    check=False,
                 ).stdout
                 gpu_names = [line.strip() for line in output.split("\n")[1:] if line.strip()]
 
@@ -190,6 +217,7 @@ class UVFast:
                 [sys.executable, "-c", "import openvino"],
                 capture_output=True,
                 text=True,
+                check=False,
             )
             return "ovino"
         except (subprocess.SubprocessError, FileNotFoundError):
@@ -267,15 +295,10 @@ class UVFast:
                     )
                 else:
                     # Install uv on Unix-like systems
-                    subprocess.run(
-                        ["curl", "-sSf", "https://astral.sh/uv/install.sh", "|", "sh"], check=True
-                    )
+                    subprocess.run(["curl", "-sSf", "https://astral.sh/uv/install.sh", "|", "sh"], check=True)
                 return True
             except subprocess.SubprocessError:
-                logging.error(
-                    "Failed to install uv. Please install it manually from "
-                    "https://github.com/astral-sh/uv"
-                )
+                logging.error("Failed to install uv. Please install it manually from https://github.com/astral-sh/uv")
                 return False
 
     def _create_venv(self, clean: bool = False) -> bool:
@@ -357,10 +380,12 @@ class UVFast:
             return 1
 
     def info(self, args: argparse.Namespace) -> int:
-        """Show information about the environment."""
+        """Display information about the environment."""
+        # Show hardware information
+        print("Hardware Information:")
         print(f"Project: {self.config.get('project_name', 'ai-playground')}")
         print(f"Detected hardware type: {self.hardware_type}")
-        print(f"Available hardware types: {', '.join(self.config.get('hardware_types', []}")
+        print(f"Available hardware types: {', '.join(self.config.get('hardware_types', []))}")
 
         # Show requirements files
         print("\nRequirements files:")
@@ -393,7 +418,7 @@ class UVFast:
 
     def update_lockfiles(self, args: argparse.Namespace) -> int:
         """Update lockfiles for the specified hardware types."""
-        hardware_types = [args.hardware] if args.hardware else self.config.get("hardware_types", []
+        hardware_types = self.config.get("hardware_types", []) if args.all else [args.hardware or self.hardware_type]
         logging.info(f"Updating lockfiles for hardware types: {', '.join(hardware_types)}")
 
         if not self._ensure_uv_installed():
@@ -434,10 +459,7 @@ class UVFast:
             return 1
 
         # Get the hardware types to process
-        if args.all:
-            hardware_types = self.config.get("hardware_types", []
-        else:
-            hardware_types = [args.hardware or self.hardware_type]
+        hardware_types = self.config.get("hardware_types", []) if args.all else [args.hardware or self.hardware_type]
 
         for hw_type in hardware_types:
             logging.info(f"Generating lockfile for hardware type: {hw_type}")
@@ -466,9 +488,7 @@ class UVFast:
 
 def main() -> int:
     """Main entry point for uvfast."""
-    parser = argparse.ArgumentParser(
-        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
-    )
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     subparsers = parser.add_subparsers(dest="command", help="Command to run")
 
     # Setup command
@@ -495,9 +515,7 @@ def main() -> int:
         choices=["base", "acm", "bmg", "mtl", "lnl", "ovino", "arl_h"],
         help="Hardware type to update lockfiles for",
     )
-    update_parser.add_argument(
-        "--dev", action="store_true", help="Include development dependencies"
-    )
+    update_parser.add_argument("--dev", action="store_true", help="Include development dependencies")
 
     # Lock command
     lock_parser = subparsers.add_parser("lock", help="Generate lockfiles for dependencies")
@@ -507,9 +525,7 @@ def main() -> int:
         help="Hardware type to generate lockfile for",
     )
     lock_parser.add_argument("--dev", action="store_true", help="Include development dependencies")
-    lock_parser.add_argument(
-        "--all", action="store_true", help="Generate lockfiles for all hardware types"
-    )
+    lock_parser.add_argument("--all", action="store_true", help="Generate lockfiles for all hardware types")
 
     args = parser.parse_args()
 
@@ -520,20 +536,22 @@ def main() -> int:
     # Create the UVFast instance
     uvfast = UVFast()
 
-    # Dispatch to the appropriate method
-    if args.command == "setup":
-        return uvfast.setup(args)
-    elif args.command == "run":
-        return uvfast.run(args)
-    elif args.command == "info":
-        return uvfast.info(args)
-    elif args.command == "update-lockfiles":
-        return uvfast.update_lockfiles(args)
-    elif args.command == "lock":
-        return uvfast.lock(args)
+    # Dictionary-based command dispatch
+    command_handlers = {
+        "setup": uvfast.setup,
+        "run": uvfast.run,
+        "info": uvfast.info,
+        "update-lockfiles": uvfast.update_lockfiles,
+        "lock": uvfast.lock,
+    }
 
-    parser.print_help()
-    return 0
+    # Get the appropriate handler and execute it
+    handler = command_handlers.get(args.command)
+    if handler:
+        return handler(args)
+
+    # This should never happen as argparse will validate the command
+    return 1
 
 
 if __name__ == "__main__":

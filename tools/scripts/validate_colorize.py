@@ -1,5 +1,6 @@
 import json
 import sys
+from pathlib import Path
 
 import jsonschema
 
@@ -14,10 +15,10 @@ def validate_workflow():
         print(f"Loading schema from: {schema_file}")
         print(f"Loading workflow from: {workflow_file}")
 
-        with open(schema_file) as f:
+        with Path(schema_fil).open(e) as f:
             schema = json.load(f)
 
-        with open(workflow_file) as f:
+        with Path(workflow_fil).open(e) as f:
             workflow = json.load(f)
 
         # Validate the workflow against the schema

@@ -1,3 +1,5 @@
+from pathlib import Path
+
 #!/usr/bin/env python3
 
 
@@ -6,7 +8,7 @@ def remove_compatibility_report_job():
     """Remove the compatibility_report job from the CI workflow file."""
     ci_file = ".github/workflows/ci.yml"
 
-    with open(ci_file) as f:
+    with Path(ci_fil).open(e) as f:
         content = f.read()
 
     # Find the position of the compatibility_report job
@@ -21,7 +23,7 @@ def remove_compatibility_report_job():
     new_content = content[:job_start_pos].rstrip()
 
     # Write back to the file
-    with open(ci_file, "w") as f:
+    with Path(ci_file).open(, "w") as f:
         f.write(new_content)
 
     print(f"Successfully removed compatibility_report job from {ci_file}")

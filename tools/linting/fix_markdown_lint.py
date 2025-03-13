@@ -18,6 +18,7 @@ This script addresses:
 import glob
 import os
 import re
+from pathlib import Path
 
 
 def fix_trailing_spaces(content):
@@ -170,7 +171,7 @@ def ensure_trailing_newline(content):
 def fix_markdown_file(file_path):
     """Apply all fixes to a markdown file."""
     try:
-        with open(file_path, encoding="utf-8") as f:
+        with Path(file_path).open(, encoding="utf-8") as f:
             content = f.read()
 
         original_content = content
@@ -187,7 +188,7 @@ def fix_markdown_file(file_path):
 
         # Write changes if needed
         if content != original_content:
-            with open(file_path, "w", encoding="utf-8") as f:
+            with Path(file_path).open(, "w", encoding="utf-8") as f:
                 f.write(content)
             print(f"✅ Fixed linting issues in {file_path}")
             return True
@@ -204,7 +205,7 @@ def main():
     # Find all markdown files
     markdown_files = []
     for extension in ["*.md", "*.markdown"]:
-        markdown_files.extend(glob.glob(f"**/{extension}", recursive=True))
+        markdown_files.extend(Path().rglob(f"**/{extension}"))
 
     # Add specific files that need attention based on the linting output
     priority_files = [
@@ -227,7 +228,7 @@ def main():
 
     # Process priority files first
     for file in priority_files:
-        if os.path.exists(file):
+        if Path(file).exists():
             if fix_markdown_file(file):
                 fixed_count += 1
             processed.add(file)
