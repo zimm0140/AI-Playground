@@ -8,7 +8,6 @@ problematic files with custom fixes.
 import logging
 import os
 import re
-import sys
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
@@ -35,23 +34,23 @@ def fix_blank_lines_around_headings(content):
     """Ensure headings are surrounded by blank lines."""
     # Find all headings
     heading_pattern = r"(^|\n)([^\n]+\n)(#{1,6}\s+.+)(\n[^\n]+)"
-    
+
     # Replace with proper spacing
     def add_blank_lines(match):
         before = match.group(1) + match.group(2)
         heading = match.group(3)
         after = match.group(4)
-        
+
         # If there's not already a blank line before
         if not before.endswith("\n\n"):
             before = before.rstrip("\n") + "\n\n"
-        
+
         # If there's not already a blank line after
         if not after.startswith("\n"):
             after = "\n" + after
-            
+
         return before + heading + after
-    
+
     return re.sub(heading_pattern, add_blank_lines, content, flags=re.MULTILINE)
 
 
@@ -59,32 +58,32 @@ def fix_blank_lines_around_lists(content):
     """Ensure lists are surrounded by blank lines."""
     # Find start of lists
     list_start_pattern = r"(^|\n)([^\n-*\d]+\n)([-*]\s+.+|\d+\.\s+.+)"
-    
+
     # Replace with proper spacing before lists
     def add_blank_line_before_list(match):
         before = match.group(1) + match.group(2)
         list_item = match.group(3)
-        
+
         # If there's not already a blank line before
         if not before.endswith("\n\n"):
             before = before.rstrip("\n") + "\n\n"
-            
+
         return before + list_item
-    
+
     content = re.sub(list_start_pattern, add_blank_line_before_list, content, flags=re.MULTILINE)
-    
+
     # Find end of lists
     list_end_pattern = r"(^|\n)([-*]\s+.+|\d+\.\s+.+)(\n)([^-*\d\n])"
-    
+
     # Replace with proper spacing after lists
     def add_blank_line_after_list(match):
         before = match.group(1)
         list_item = match.group(2)
         newline = match.group(3)
         after = match.group(4)
-        
+
         return before + list_item + "\n\n" + after
-    
+
     return re.sub(list_end_pattern, add_blank_line_after_list, content, flags=re.MULTILINE)
 
 
@@ -92,23 +91,23 @@ def fix_blank_lines_around_code_blocks(content):
     """Ensure code blocks are surrounded by blank lines."""
     # Find code blocks without proper spacing
     code_block_pattern = r"(^|\n)([^\n`]+\n)(```[\w]*\n.*?\n```)(\n[^\n`]+)"
-    
+
     # Replace with proper spacing
     def add_blank_lines_around_code(match):
         before = match.group(1) + match.group(2)
         code_block = match.group(3)
         after = match.group(4)
-        
+
         # If there's not already a blank line before
         if not before.endswith("\n\n"):
             before = before.rstrip("\n") + "\n\n"
-        
+
         # If there's not already a blank line after
         if not after.startswith("\n"):
             after = "\n" + after
-            
+
         return before + code_block + after
-    
+
     return re.sub(code_block_pattern, add_blank_lines_around_code, content, flags=re.DOTALL | re.MULTILINE)
 
 
@@ -129,11 +128,11 @@ def fix_hardware_optimization_guide(file_path):
     if toc_match:
         toc_start = toc_match.group(1)
         new_toc = toc_start + "\n"  # Add extra newline for spacing
-        
+
         # Extract TOC entries
         entry_pattern = r"\d+\.\s+\[(.*?)\]\(#.*?\)"
         entries = re.findall(entry_pattern, toc_match.group(0))
-        
+
         # Rebuild TOC with correct fragments
         for i, entry in enumerate(entries, 1):
             if entry in headings:
@@ -144,13 +143,13 @@ def fix_hardware_optimization_guide(file_path):
                 fallback_fragment = entry.lower().replace(" ", "-")
                 fallback_fragment = re.sub(r"[^\w\-]", "", fallback_fragment)
                 new_toc += f"{i}. [{entry}](#{fallback_fragment})\n"
-        
+
         # Add blank line after TOC
         new_toc += "\n"
-        
+
         # Replace old TOC with new one
         content = content.replace(toc_match.group(0), new_toc)
-    
+
     # Fix spacing around headings and lists
     content = fix_blank_lines_around_headings(content)
     content = fix_blank_lines_around_lists(content)
@@ -277,7 +276,7 @@ def main():
         fix_migration_guide(migration_guide_path)
 
     print(
-        f"Fixed link fragments and formatting in a total of {sum(1 for p in [hardware_guide_path, api_reference_path, migration_guide_path] if os.path.exists(p))} files."
+        f"Fixed link fragments and formatting in a total of {sum(1 for p in [hardware_guide_path, api_reference_path, migration_guide_path] if os.path.exists(p))} files.",
     )
 
 

@@ -54,7 +54,7 @@ def extract_endpoints(file_path):
 
         for pattern in route_patterns:
             for match in re.finditer(
-                pattern, prev_block + block[: func_match.start()], re.DOTALL
+                pattern, prev_block + block[: func_match.start()], re.DOTALL,
             ):
                 route_defs.append(match.group(0))
 
@@ -122,7 +122,7 @@ def extract_endpoints(file_path):
                     "docstring": docstring,
                     "input_schema": input_schema,
                     "output_schema": output_schema,
-                }
+                },
             )
 
     return endpoints
@@ -132,7 +132,7 @@ def generate_markdown(endpoints, output_file=None):
     """Generate markdown documentation from the extracted endpoints."""
     if not endpoints:
         print("No endpoints found.")
-        return
+        return None
 
     # Organize endpoints by category based on URL prefix
     categories = defaultdict(list)
@@ -263,7 +263,7 @@ def generate_github_summary(endpoints):
         f.write("|----------|-------|\n")
 
         for category, count in sorted(
-            categories.items(), key=lambda x: x[1], reverse=True
+            categories.items(), key=lambda x: x[1], reverse=True,
         ):
             f.write(f"| {category.capitalize()} | {count} |\n")
 
@@ -285,7 +285,7 @@ def generate_github_summary(endpoints):
 def main():
     parser = argparse.ArgumentParser(description="Generate API documentation summary")
     parser.add_argument(
-        "--input", default="service/web_api.py", help="Path to the web API file"
+        "--input", default="service/web_api.py", help="Path to the web API file",
     )
     parser.add_argument(
         "--output",

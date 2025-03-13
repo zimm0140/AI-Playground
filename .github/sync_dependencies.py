@@ -121,7 +121,7 @@ def update_setup_from_pyproject(setup_py_path: str, pyproject_path: str) -> None
         setup_content = re.sub(
             r"install_requires\s*=\s*\[[\s\S]*?\]",
             install_requires_replacement,
-            setup_content
+            setup_content,
         )
 
     # Replace extras_require
@@ -137,7 +137,7 @@ def update_setup_from_pyproject(setup_py_path: str, pyproject_path: str) -> None
         setup_content = re.sub(
             r"extras_require\s*=\s*\{[\s\S]*?\}",
             extras_require_replacement,
-            setup_content
+            setup_content,
         )
 
     # Write back to setup.py

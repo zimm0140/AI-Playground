@@ -243,7 +243,7 @@ class EmbeddingDatabase:
         elif file_ext == ".md":
             # Load markdown and split into embeded pieces
             raw_documents = UnstructuredMarkdownLoader(
-                file, mode="elements", strategy="fast"
+                file, mode="elements", strategy="fast",
             ).load()  # UnstructuredFileLoader
         else:
             raise Exception(f"unsupported file ext {file_ext}")

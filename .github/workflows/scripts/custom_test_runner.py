@@ -66,7 +66,7 @@ def run_tests():
         print(
             "\nTests completed with status: PARTIAL SUCCESS"
             if result.wasSuccessful()
-            else "\nTests completed with status: EXPECTED FAILURES"
+            else "\nTests completed with status: EXPECTED FAILURES",
         )
         print("This is CI mode, so continuing regardless of test results.")
 

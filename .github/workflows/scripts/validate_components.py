@@ -56,7 +56,7 @@ def validate_component(component_file):
         parts = version.split(".")
         if len(parts) != 3 or not all(part.isdigit() for part in parts):
             issues.append(
-                f"Invalid version format: {version}. Should be semver (e.g., 1.0.0)"
+                f"Invalid version format: {version}. Should be semver (e.g., 1.0.0)",
             )
 
     # Check inputs
@@ -71,7 +71,7 @@ def validate_component(component_file):
             for field in input_required_fields:
                 if field not in input_item:
                     issues.append(
-                        f"Input {i} ({input_item.get('name', 'unnamed')}) missing required field: {field}"
+                        f"Input {i} ({input_item.get('name', 'unnamed')}) missing required field: {field}",
                     )
 
     # Check outputs
@@ -86,7 +86,7 @@ def validate_component(component_file):
             for field in output_required_fields:
                 if field not in output_item:
                     issues.append(
-                        f"Output {i} ({output_item.get('name', 'unnamed')}) missing required field: {field}"
+                        f"Output {i} ({output_item.get('name', 'unnamed')}) missing required field: {field}",
                     )
 
     # Check nodes
@@ -115,12 +115,12 @@ def validate_component(component_file):
 
                 if "nodeId" not in mapping:
                     issues.append(
-                        f"Input mapping for {input_name} missing required field: nodeId"
+                        f"Input mapping for {input_name} missing required field: nodeId",
                     )
 
                 if "inputName" not in mapping:
                     issues.append(
-                        f"Input mapping for {input_name} missing required field: inputName"
+                        f"Input mapping for {input_name} missing required field: inputName",
                     )
 
     # Check output mappings
@@ -135,12 +135,12 @@ def validate_component(component_file):
 
                 if "nodeId" not in mapping:
                     issues.append(
-                        f"Output mapping for {output_name} missing required field: nodeId"
+                        f"Output mapping for {output_name} missing required field: nodeId",
                     )
 
                 if "outputIndex" not in mapping:
                     issues.append(
-                        f"Output mapping for {output_name} missing required field: outputIndex"
+                        f"Output mapping for {output_name} missing required field: outputIndex",
                     )
 
     return len(issues) == 0, issues
@@ -229,7 +229,7 @@ def main():
         help="Directory containing component JSON files",
     )
     parser.add_argument(
-        "--output-dir", required=True, help="Directory to write validation reports"
+        "--output-dir", required=True, help="Directory to write validation reports",
     )
 
     args = parser.parse_args()

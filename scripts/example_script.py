@@ -83,10 +83,10 @@ def main() -> None:
     """Main function to parse arguments and run the script."""
     parser = argparse.ArgumentParser(description="Fetch and display GitHub repositories for an organization")
     parser.add_argument(
-        "org_name", nargs="?", default="astral-sh", help="GitHub organization name (default: astral-sh)"
+        "org_name", nargs="?", default="astral-sh", help="GitHub organization name (default: astral-sh)",
     )
     parser.add_argument(
-        "num_repos", nargs="?", type=int, default=5, help="Number of repositories to display (default: 5)"
+        "num_repos", nargs="?", type=int, default=5, help="Number of repositories to display (default: 5)",
     )
     args = parser.parse_args()
 

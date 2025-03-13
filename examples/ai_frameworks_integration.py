@@ -63,7 +63,7 @@ def setup_langchain_model(device, hardware_type, model_id="microsoft/Phi-3-mini-
     if hardware_type == "acm":
         # Intel Arc GPU optimization
         model = AutoModelForCausalLM.from_pretrained(model_id, torch_dtype=torch.float16, trust_remote_code=True).to(
-            device
+            device,
         )
 
     elif hardware_type == "ovino":

@@ -131,7 +131,7 @@ class LLM_SSE_Adapter:
                 {
                     "type": "error",
                     "err_type": "repositories_not_found",
-                }
+                },
             )
         elif isinstance(ex, NotEnoughDiskSpaceException):
             self.put_msg(
@@ -140,7 +140,7 @@ class LLM_SSE_Adapter:
                     "err_type": "not_enough_disk_space",
                     "need": bytes2human(ex.requires_space),
                     "free": bytes2human(ex.free_space),
-                }
+                },
             )
         elif isinstance(ex, DownloadException):
             self.put_msg({"type": "error", "err_type": "download_exception"})

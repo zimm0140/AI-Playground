@@ -155,7 +155,7 @@ class LLM_SSE_Adapter:
                 {
                     "type": "error",
                     "err_type": "repositories_not_found",
-                }
+                },
             )
         # elif isinstance(ex, NotEnoughDiskSpaceException):
         #     self.put_msg(

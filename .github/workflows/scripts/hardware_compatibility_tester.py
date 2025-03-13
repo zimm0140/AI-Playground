@@ -202,7 +202,7 @@ class HardwareCompatibilityTester:
                         "severity": "high"
                         if "==" in "".join(all_versions)
                         else "medium",
-                    }
+                    },
                 )
 
         self.conflict_data = conflicts
@@ -289,7 +289,7 @@ class HardwareCompatibilityTester:
 
             f.write("## Overview\n\n")
             f.write(
-                "This report analyzes package compatibility across different hardware platforms.\n\n"
+                "This report analyzes package compatibility across different hardware platforms.\n\n",
             )
 
             f.write(f"- **Generated on**: {platform.node()}\n")
@@ -330,7 +330,7 @@ class HardwareCompatibilityTester:
                         f.write(" — |")
                     elif hw2 in self.hardware_compatibility_matrix[hw1]:
                         f.write(
-                            f" {self.hardware_compatibility_matrix[hw1][hw2]['score']} |"
+                            f" {self.hardware_compatibility_matrix[hw1][hw2]['score']} |",
                         )
                     else:
                         f.write(" N/A |")
@@ -343,7 +343,7 @@ class HardwareCompatibilityTester:
                 f.write("No conflicts detected.\n")
             else:
                 f.write(
-                    f"Found {len(self.conflict_data)} packages with compatibility issues.\n\n"
+                    f"Found {len(self.conflict_data)} packages with compatibility issues.\n\n",
                 )
 
                 # Sort conflicts by severity
@@ -375,7 +375,7 @@ class HardwareCompatibilityTester:
 
             if not self.conflict_data:
                 f.write(
-                    "All packages are compatible across hardware platforms. No action required.\n"
+                    "All packages are compatible across hardware platforms. No action required.\n",
                 )
             else:
                 f.write("### High Priority Fixes\n\n")
@@ -390,7 +390,7 @@ class HardwareCompatibilityTester:
                             f"`{v}`" for v in sorted(conflict["all_versions"])
                         )
                         f.write(
-                            f"- **{package}**: Standardize version across platforms. Current versions: {versions}\n"
+                            f"- **{package}**: Standardize version across platforms. Current versions: {versions}\n",
                         )
                 else:
                     f.write("No high priority fixes required.\n")
@@ -407,7 +407,7 @@ class HardwareCompatibilityTester:
                             f"`{v}`" for v in sorted(conflict["all_versions"])
                         )
                         f.write(
-                            f"- **{package}**: Consider standardizing version requirements. Current specs: {versions}\n"
+                            f"- **{package}**: Consider standardizing version requirements. Current specs: {versions}\n",
                         )
                 else:
                     f.write("No medium priority fixes required.\n")
@@ -447,7 +447,7 @@ class HardwareCompatibilityTester:
             # Show conflict summary
             conflict_count = len(self.conflict_data)
             high_priority = len(
-                [c for c in self.conflict_data if c["severity"] == "high"]
+                [c for c in self.conflict_data if c["severity"] == "high"],
             )
 
             if conflict_count > 0:
@@ -492,12 +492,12 @@ class HardwareCompatibilityTester:
 
             f.write(f"- **Overall compatibility rate**: {compatibility_rate:.1f}%\n")
             f.write(
-                f"- **Fully compatible hardware pairs**: {fully_compatible} out of {total_pairs}\n"
+                f"- **Fully compatible hardware pairs**: {fully_compatible} out of {total_pairs}\n",
             )
 
             # Reference to full report
             f.write(
-                "\nSee [detailed report](hardware_compatibility_report.md) for more information.\n"
+                "\nSee [detailed report](hardware_compatibility_report.md) for more information.\n",
             )
 
     def run(self) -> int:
@@ -554,7 +554,7 @@ class HardwareCompatibilityTester:
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Analyze hardware-specific package compatibility"
+        description="Analyze hardware-specific package compatibility",
     )
     parser.add_argument(
         "--output-dir",
@@ -580,7 +580,7 @@ def main():
     args = parser.parse_args()
 
     tester = HardwareCompatibilityTester(
-        output_dir=args.output_dir, req_files_pattern=args.req_files_pattern
+        output_dir=args.output_dir, req_files_pattern=args.req_files_pattern,
     )
 
     exit_code = tester.run()

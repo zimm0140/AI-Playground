@@ -49,7 +49,7 @@ def get_gpu_info() -> list:
         sim_hw = os.environ.get("SIMULATED_HARDWARE", "").lower()
         if sim_hw == "acm":
             return ["Intel(R) Arc(TM) A770 Graphics"]
-        elif sim_hw == "ovino":
+        if sim_hw == "ovino":
             return ["Intel(R) UHD Graphics"]
 
     # Check for mock files

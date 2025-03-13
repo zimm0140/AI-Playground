@@ -110,18 +110,16 @@ def run_ruff_fix(files=None):
                     True,
                     f"All issues fixed successfully after multiple passes!\n\nPrevious issues:\n{issues_found}",
                 )
-            else:
-                remaining_issues = final_result.stdout
-                return False, (
-                    f"Some issues were fixed, but others require manual attention.\n\n"
-                    f"Original issues:\n{issues_found}\n\n"
-                    f"Remaining issues:\n{remaining_issues}"
-                )
-        else:
-            return (
-                True,
-                f"All issues fixed successfully!\n\nPrevious issues:\n{issues_found}",
+            remaining_issues = final_result.stdout
+            return False, (
+                f"Some issues were fixed, but others require manual attention.\n\n"
+                f"Original issues:\n{issues_found}\n\n"
+                f"Remaining issues:\n{remaining_issues}"
             )
+        return (
+            True,
+            f"All issues fixed successfully!\n\nPrevious issues:\n{issues_found}",
+        )
 
     except Exception as e:
         return False, f"Error running Ruff: {str(e)}"

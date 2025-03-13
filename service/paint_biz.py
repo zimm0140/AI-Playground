@@ -449,7 +449,7 @@ def load_model_from_pretrained(model_dir: str):
         Loaded diffusion pipeline
     """
     if os.path.exists(os.path.join(model_dir, "unet/diffusion_pytorch_model.fp32.safetensors")) or os.path.exists(
-        os.path.join(model_dir, "unet/diffusion_pytorch_model.fp32.bin")
+        os.path.join(model_dir, "unet/diffusion_pytorch_model.fp32.bin"),
     ):
         pipe = DiffusionPipeline.from_pretrained(
             model_dir,
@@ -458,7 +458,7 @@ def load_model_from_pretrained(model_dir: str):
             device=service_config.device,
         )
     elif os.path.exists(os.path.join(model_dir, "unet/diffusion_pytorch_model.fp16.safetensors")) or os.path.exists(
-        os.path.join(model_dir, "unet/diffusion_pytorch_model.fp16.bin")
+        os.path.join(model_dir, "unet/diffusion_pytorch_model.fp16.bin"),
     ):
         pipe = DiffusionPipeline.from_pretrained(model_dir, torch_dtype=torch.bfloat16, variant="fp16")
     else:
@@ -719,7 +719,7 @@ def convet_compel_prompt(prompt: str, pipe: StableDiffusionPipeline | StableDiff
         custom_inputs.update(
             {
                 "prompt_embeds": prompt_embeds,
-            }
+            },
         )
 
     return custom_inputs
@@ -935,7 +935,7 @@ def inpaint(params: InpaintParams):
 
     slice_w, slice_h = slice_image.size
     out_width, out_height, out_radio = inpaint_utils.calc_out_size(
-        slice_w, slice_h, isinstance(pipe, StableDiffusionXLInpaintPipeline)
+        slice_w, slice_h, isinstance(pipe, StableDiffusionXLInpaintPipeline),
     )
     if out_radio != 1:
         slice_image = slice_image.resize((out_width, out_height))
@@ -1062,7 +1062,7 @@ def outpaint(params: OutpaintParams):
 
             if scale_ratio != 1:
                 unmasked_unchanged_image = Image.fromarray(
-                    get_ESRGANer().enhance(unmasked_unchanged_image, scale_ratio)[0]
+                    get_ESRGANer().enhance(unmasked_unchanged_image, scale_ratio)[0],
                 )
 
             output_image(pipe, unmasked_unchanged_image, params)
@@ -1256,7 +1256,7 @@ def assert_stop_generate():
     if _stop_generate:
         # Stop flag is active: signal the event and abort generation by raising an exception.
         _stop_event.set()
-        raise StopGenerateException()
+        raise StopGenerateException
 
 
 def clear_xpu_cache():

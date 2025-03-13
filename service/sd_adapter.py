@@ -231,7 +231,7 @@ class SD_SSE_Adapter:
                 {
                     "type": "error",
                     "err_type": "repositories_not_found",
-                }
+                },
             )
         elif isinstance(ex, NotEnoughDiskSpaceException):
             self.put_msg(
@@ -240,7 +240,7 @@ class SD_SSE_Adapter:
                     "err_type": "not_enough_disk_space",
                     "need": bytes2human(ex.requires_space),
                     "free": bytes2human(ex.free_space),
-                }
+                },
             )
         elif isinstance(ex, DownloadException):
             self.put_msg({"type": "error", "err_type": "download_exception"})
@@ -388,7 +388,7 @@ class SD_SSE_Adapter:
         for k, v in params.__dict__.items():
             if k in ("generate_number", "image_preview"):
                 continue
-            elif k in ("image", "mask_image"):
+            if k in ("image", "mask_image"):
                 # currently, this option does not occur and would be, moreover,
                 # explicitly filtered out in get_response_params(). It is therefore
                 # uncertain, from where the reference images would be drawn from.
@@ -401,7 +401,7 @@ class SD_SSE_Adapter:
                         "name": k,
                         "type": "image",
                         "value": save_path,
-                    }
+                    },
                 )
             else:
                 param_list.append(
@@ -409,7 +409,7 @@ class SD_SSE_Adapter:
                         "name": k,
                         "value": v,
                         "type": "normal",
-                    }
+                    },
                 )
 
         history_item = {

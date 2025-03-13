@@ -26,7 +26,7 @@ class NotificationSender:
     def __init__(self, metrics_file=None, artifacts_dir="ci_artifacts"):
         self.artifacts_dir = artifacts_dir
         self.metrics_file = metrics_file or os.path.join(
-            artifacts_dir, "metrics/ci_metrics.json"
+            artifacts_dir, "metrics/ci_metrics.json",
         )
 
         # GitHub Actions environment variables
@@ -293,8 +293,8 @@ View Details: {self.run_url}
                             },
                         ],
                         "footer": f"CI Notification | {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
-                    }
-                ]
+                    },
+                ],
             }
 
             # Send the message to Slack
@@ -303,11 +303,10 @@ View Details: {self.run_url}
             if response.status_code == 200:
                 print("Slack notification sent successfully")
                 return True
-            else:
-                print(
-                    f"Error sending Slack notification: {response.status_code} {response.text}"
-                )
-                return False
+            print(
+                f"Error sending Slack notification: {response.status_code} {response.text}",
+            )
+            return False
 
         except Exception as e:
             print(f"Error sending Slack notification: {str(e)}")
@@ -365,7 +364,7 @@ View Details: {self.run_url}
                             },
                         ],
                         "markdown": True,
-                    }
+                    },
                 ],
                 "potentialAction": [
                     {
@@ -387,11 +386,10 @@ View Details: {self.run_url}
             if response.status_code < 400:  # Teams returns 200 or 201 for success
                 print("Teams notification sent successfully")
                 return True
-            else:
-                print(
-                    f"Error sending Teams notification: {response.status_code} {response.text}"
-                )
-                return False
+            print(
+                f"Error sending Teams notification: {response.status_code} {response.text}",
+            )
+            return False
 
         except Exception as e:
             print(f"Error sending Teams notification: {str(e)}")
@@ -463,7 +461,7 @@ def main():
 
     # Initialize notification sender
     sender = NotificationSender(
-        metrics_file=args.metrics_file, artifacts_dir=args.artifacts_dir
+        metrics_file=args.metrics_file, artifacts_dir=args.artifacts_dir,
     )
 
     # Configure notification channels

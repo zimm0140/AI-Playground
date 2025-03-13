@@ -44,7 +44,7 @@ def validate_workflow(workflow_file, schema):
         if nodes:
             if "nodes" in workflow and workflow["nodes"] == nodes:
                 print(
-                    f"Validating {os.path.basename(workflow_file)} (top-level nodes format)"
+                    f"Validating {os.path.basename(workflow_file)} (top-level nodes format)",
                 )
             elif "comfyUiApiWorkflow" in workflow:
                 if (
@@ -52,15 +52,15 @@ def validate_workflow(workflow_file, schema):
                     and workflow["comfyUiApiWorkflow"]["nodes"] == nodes
                 ):
                     print(
-                        f"Validating {os.path.basename(workflow_file)} (comfyUiApiWorkflow.nodes format)"
+                        f"Validating {os.path.basename(workflow_file)} (comfyUiApiWorkflow.nodes format)",
                     )
                 else:
                     print(
-                        f"Validating {os.path.basename(workflow_file)} (comfyUiApiWorkflow format)"
+                        f"Validating {os.path.basename(workflow_file)} (comfyUiApiWorkflow format)",
                     )
         else:
             print(
-                f"Warning: {os.path.basename(workflow_file)} does not contain nodes in any recognized format"
+                f"Warning: {os.path.basename(workflow_file)} does not contain nodes in any recognized format",
             )
 
         jsonschema.validate(instance=workflow, schema=schema)
@@ -156,7 +156,7 @@ def validate_all_workflows(workflows_dir, schema_file, output_file):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Validate ComfyUI workflow JSON files against schema"
+        description="Validate ComfyUI workflow JSON files against schema",
     )
     parser.add_argument(
         "--workflows-dir",
@@ -164,16 +164,16 @@ def main():
         help="Directory containing workflow JSON files",
     )
     parser.add_argument(
-        "--schema-file", required=True, help="Path to the JSON schema file"
+        "--schema-file", required=True, help="Path to the JSON schema file",
     )
     parser.add_argument(
-        "--output-file", required=True, help="Path to write the validation report"
+        "--output-file", required=True, help="Path to write the validation report",
     )
 
     args = parser.parse_args()
 
     exit_code = validate_all_workflows(
-        args.workflows_dir, args.schema_file, args.output_file
+        args.workflows_dir, args.schema_file, args.output_file,
     )
 
     sys.exit(exit_code)

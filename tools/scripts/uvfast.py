@@ -93,19 +93,16 @@ class UVFast:
             # Simple detection as fallback
             self.hardware_type = self._simple_hardware_detection()
 
-    def _load_config(self) -> dict[str, list[str]]:
-        """Load configuration from uvfast.json or use defaults."""
-        config_path = Path("uvfast.json")
-        if config_path.exists():
+    def _load_config(self) -> dict:
+        """Load configuration from a JSON file."""
+        config_path = self._get_config_path()
+        if config_path and config_path.exists():
             try:
                 with Path(config_path).open() as f:
-                    config = json.load(f)
-                return config
+                    return json.load(f)
             except (json.JSONDecodeError, OSError) as e:
                 logging.error(f"Error loading configuration: {e}")
-                logging.info("Using default configuration")
-                return DEFAULT_CONFIG.copy()
-        return DEFAULT_CONFIG.copy()
+        return {}
 
     def _simple_hardware_detection(self) -> str:
         """Simple hardware detection as a fallback when the module is not available."""
@@ -278,7 +275,11 @@ class UVFast:
         return self._process_requirements_files(req_files, python_executable, hardware_type, args)
 
     def _process_requirements_files(
-        self, req_files: list[str], python_executable: Path, hardware_type: str, args: argparse.Namespace
+        self,
+        req_files: list[str],
+        python_executable: Path,
+        hardware_type: str,
+        args: argparse.Namespace,
     ) -> int:
         """Process each requirements file and install dependencies."""
         for req_file in req_files:
@@ -306,7 +307,11 @@ class UVFast:
         return 0
 
     def _install_from_lockfile(
-        self, hardware_type: str, req_file: str, python_executable: Path, args: argparse.Namespace
+        self,
+        hardware_type: str,
+        req_file: str,
+        python_executable: Path,
+        args: argparse.Namespace,
     ) -> bool:
         """Install dependencies using a lockfile if available."""
         # Use lockfile if available
@@ -548,7 +553,7 @@ class UVFast:
                     python uvfast.py run pytest tests/
                     python uvfast.py lock --all
                     python uvfast.py info --verbose
-                """
+                """,
             ),
         )
 
@@ -605,7 +610,8 @@ class UVFast:
 
         # Hardware check command
         hardware_parser = subparsers.add_parser(
-            "hardware-check", help="Check hardware and show compatibility information"
+            "hardware-check",
+            help="Check hardware and show compatibility information",
         )
         hardware_parser.add_argument("--verbose", action="store_true", help="Show verbose hardware information")
 
@@ -638,9 +644,8 @@ class UVFast:
         handler = command_handlers.get(args.command)
         if handler:
             return handler(args)
-        else:
-            logging.error(f"Unknown command: {args.command}")
-            return 1
+        logging.error(f"Unknown command: {args.command}")
+        return 1
 
 
 if __name__ == "__main__":

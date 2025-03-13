@@ -52,8 +52,7 @@ def setup_hardware_detection():
     # First check for the new package structure
     if Path("hardware_detection").exists() and Path("hardware_detection").is_dir():
         return setup_package_structure()
-    else:
-        return setup_legacy_structure()
+    return setup_legacy_structure()
 
 
 def setup_package_structure():
@@ -108,7 +107,7 @@ __all__ = [
     "is_openvino_available",
     "print_hardware_info",
 ]
-'''
+''',
                     )
                 else:
                     f.write('"""Auto-generated hardware_detection package."""\n')
@@ -646,7 +645,7 @@ def setup_uvfast():
             "arl_h": "requirements-hardware-arl_h.lock"
         }
     }
-}"""
+}""",
                 )
 
         return True

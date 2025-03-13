@@ -105,8 +105,7 @@ def get_python_executable(venv_dir):
     """Get the Python executable path for the virtual environment."""
     if platform.system() == "Windows":
         return Path(venv_dir) / "Scripts" / "python.exe"
-    else:
-        return Path(venv_dir) / "bin" / "python"
+    return Path(venv_dir) / "bin" / "python"
 
 
 def install_requirements(python_executable, hardware_type, dev=False, use_uv=False):
@@ -149,7 +148,7 @@ def check_hardware_availability(hardware_type):
 
     if hardware_type != detected_type:
         logging.warning(
-            f"Warning: Requested hardware type '{hardware_type}' does not match detected type '{detected_type}'"
+            f"Warning: Requested hardware type '{hardware_type}' does not match detected type '{detected_type}'",
         )
         logging.warning("This might cause issues with hardware-specific dependencies")
         return False

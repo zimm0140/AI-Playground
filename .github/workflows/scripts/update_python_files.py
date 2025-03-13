@@ -80,7 +80,7 @@ def fix_ruff_issues(files):
 
         # Fix other issues
         run_command(
-            ["ruff", "check"] + ruff_common_args + ["--fix", filename], show_output=True
+            ["ruff", "check"] + ruff_common_args + ["--fix", filename], show_output=True,
         )
 
     # Print summary

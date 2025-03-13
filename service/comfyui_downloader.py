@@ -199,7 +199,7 @@ def get_git_ref(repo_dir: str) -> str | None:
         return git_ref
     except Exception as e:
         logging.warning(f"Resolving git ref in {repo_dir} failed due to {e}")
-        return
+        return None
 
 
 def _install_pip_requirements(requirements_txt_path: str):
@@ -235,7 +235,7 @@ def install_pypi_package(packageSpecifier: str):
         return
     if packageSpecifier.endswith(".whl"):
         pip_specifier = os.path.abspath(
-            os.path.join(service_config.comfyui_python_env, packageSpecifier.split("/")[-1])
+            os.path.join(service_config.comfyui_python_env, packageSpecifier.split("/")[-1]),
         )
         try:
             response = requests.get(packageSpecifier, stream=True, timeout=30)
@@ -344,25 +344,24 @@ def download_custom_node(node_repo_data: ComfyUICustomNodesGithubRepoId) -> bool
     if is_custom_node_installed_with_git_ref(node_repo_data):
         logging.info(f"node repo {node_repo_data} already exists. Omitting")
         return True
-    else:
-        try:
-            expected_git_url = f"https://github.com/{node_repo_data.username}/{node_repo_data.repoName}"
-            expected_custom_node_path = os.path.join(
-                service_config.comfy_ui_root_path, "custom_nodes", node_repo_data.repoName
-            )
-            potential_node_requirements = os.path.join(expected_custom_node_path, "requirements.txt")
+    try:
+        expected_git_url = f"https://github.com/{node_repo_data.username}/{node_repo_data.repoName}"
+        expected_custom_node_path = os.path.join(
+            service_config.comfy_ui_root_path, "custom_nodes", node_repo_data.repoName,
+        )
+        potential_node_requirements = os.path.join(expected_custom_node_path, "requirements.txt")
 
-            aipg_utils.remove_existing_filesystem_resource(expected_custom_node_path)
-            _install_git_repo(expected_git_url, expected_custom_node_path)
-            _checkout_git_ref(expected_custom_node_path, node_repo_data.gitRef)
-            _patch_custom_node_if_required(expected_custom_node_path, node_repo_data)
-            _install_pip_requirements(potential_node_requirements)
-            return True
-        except Exception as e:
-            logging.error(
-                f"Failed to install custom comfy node {node_repo_data.username}/{node_repo_data.repoName} due to {e}"
-            )
-            return False
+        aipg_utils.remove_existing_filesystem_resource(expected_custom_node_path)
+        _install_git_repo(expected_git_url, expected_custom_node_path)
+        _checkout_git_ref(expected_custom_node_path, node_repo_data.gitRef)
+        _patch_custom_node_if_required(expected_custom_node_path, node_repo_data)
+        _install_pip_requirements(potential_node_requirements)
+        return True
+    except Exception as e:
+        logging.error(
+            f"Failed to install custom comfy node {node_repo_data.username}/{node_repo_data.repoName} due to {e}",
+        )
+        return False
 
 
 # Gourieff/ComfyUI-ReActor/scripts/reactor_sfw.py

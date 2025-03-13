@@ -46,7 +46,7 @@ else:
     print(
         "WARNING: hardware_detection package not found. "
         "Using stub implementations for CI environment. "
-        "For production, please install the hardware_detection package."
+        "For production, please install the hardware_detection package.",
     )
 
     def detect_hardware_type() -> str:

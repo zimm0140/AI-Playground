@@ -188,7 +188,7 @@ class WorkflowRequirementsAnalyzer:
 
         if not nodes:
             workflow_result["errors"].append(
-                "Workflow does not have required structure"
+                "Workflow does not have required structure",
             )
             return workflow_result
 
@@ -380,7 +380,7 @@ class WorkflowRequirementsAnalyzer:
                 results["aggregate"]["memory_requirements"]["workflows_by_memory"][min_memory] = []
 
             results["aggregate"]["memory_requirements"]["workflows_by_memory"][min_memory].append(
-                workflow["filename"]
+                workflow["filename"],
             )
 
             # Track min/max memory across all workflows
@@ -402,7 +402,7 @@ class WorkflowRequirementsAnalyzer:
                         results["aggregate"]["models"][model_type][model] = []
 
                     results["aggregate"]["models"][model_type][model].append(
-                        workflow["filename"]
+                        workflow["filename"],
                     )
 
             # Aggregate custom nodes
@@ -418,7 +418,7 @@ class WorkflowRequirementsAnalyzer:
                     results["aggregate"]["python_packages"][package] = []
 
                 results["aggregate"]["python_packages"][package].append(
-                    workflow["filename"]
+                    workflow["filename"],
                 )
 
         return results
@@ -460,10 +460,10 @@ class WorkflowRequirementsAnalyzer:
             report.append("## Memory Requirements")
             report.append("")
             report.append(
-                f"Minimum memory needed: {results['aggregate']['memory_requirements']['min']}GB"
+                f"Minimum memory needed: {results['aggregate']['memory_requirements']['min']}GB",
             )
             report.append(
-                f"Maximum memory needed: {results['aggregate']['memory_requirements']['max']}GB"
+                f"Maximum memory needed: {results['aggregate']['memory_requirements']['max']}GB",
             )
             report.append("")
             report.append("### Workflows by Memory Requirement")
@@ -472,7 +472,7 @@ class WorkflowRequirementsAnalyzer:
             report.append("| ----------- | --------- |")
 
             for memory, workflows in sorted(
-                results["aggregate"]["memory_requirements"]["workflows_by_memory"].items()
+                results["aggregate"]["memory_requirements"]["workflows_by_memory"].items(),
             ):
                 report.append(f"| {memory} | {len(workflows)} |")
 
@@ -530,7 +530,7 @@ class WorkflowRequirementsAnalyzer:
                     for model_type, models in workflow["models"].items():
                         if models:
                             report.append(
-                                f"- {model_type.capitalize()}: {', '.join(models)}"
+                                f"- {model_type.capitalize()}: {', '.join(models)}",
                             )
                     report.append("")
 
@@ -552,7 +552,7 @@ class WorkflowRequirementsAnalyzer:
                 report.append("**Memory Requirements:**\n")
                 report.append(f"- Minimum: {workflow['memory_required']['min']}GB")
                 report.append(
-                    f"- Recommended: {workflow['memory_required']['recommended']}GB"
+                    f"- Recommended: {workflow['memory_required']['recommended']}GB",
                 )
                 report.append("")
             else:
@@ -576,7 +576,7 @@ class WorkflowRequirementsAnalyzer:
 def main():
     """Main entry point for the script"""
     parser = argparse.ArgumentParser(
-        description="Analyze ComfyUI workflow requirements"
+        description="Analyze ComfyUI workflow requirements",
     )
     parser.add_argument(
         "--workflows-dir",

@@ -170,10 +170,9 @@ class FileDownloader:
                 retry += 1
                 if retry > 3:
                     raise DownloadException(self.url)
-                else:
-                    print(f"FileDownloader thread {Thread.native_id} retry {retry} times")
-                    time.sleep(1)
-                    response, fw = self.__init_download(self.url, self.filename)
+                print(f"FileDownloader thread {Thread.native_id} retry {retry} times")
+                time.sleep(1)
+                response, fw = self.__init_download(self.url, self.filename)
 
     def __start_report_download_progress(self):
         """

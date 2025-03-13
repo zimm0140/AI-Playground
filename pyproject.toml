@@ -1,13 +1,13 @@
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["setuptools>=42.0", "wheel"]
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "hardware_detection"
 version = "0.1.0"
-description = "Hardware detection module for ML workloads"
+description = "Hardware detection utilities for AI Playground"
 readme = { text = "Hardware detection module for ML workloads", content-type = "text/plain" }
-requires-python = ">=3.10"
+requires-python = ">=3.9"
 license = { text = "MIT License" }
 keywords = ["hardware", "detection", "ml", "gpu"]
 authors = [{ name = "Your Name", email = "your.email@example.com" }]
@@ -22,16 +22,18 @@ classifiers = [
     "Operating System :: OS Independent",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-dependencies = ["typing-extensions>=4.0.0"]
+dependencies = ["typing-extensions>=4.8.0"]
 
 [project.optional-dependencies]
-test = ["pytest>=7.0.0", "pytest-cov>=4.0.0", "pytest-mock>=3.10.0"]
-dev = ["ruff>=0.2.0", "mypy>=1.0.0", "types-requests>=2.31.0"]
+test = ["pytest>=7.0.0", "pytest-mock>=3.10.0"]
+typecheck = ["mypy>=1.5.1"]
+dev = ["ruff>=0.2.0", "types-requests>=2.31.0"]
 
 [tool.pytest.ini_options]
 minversion = "7.0"
 addopts = "-ra -q --import-mode=append"
 testpaths = ["hardware_detection/tests"]
+pythonpath = ["."]
 
 [tool.mypy]
 python_version = "3.10"
@@ -49,53 +51,67 @@ warn_unreachable = true
 strict_equality = true
 
 [tool.ruff]
-# Target Python 3.10 code
-target-version = "py310"
-# Never enforce line length (handled by formatter)
+target-version = "py39"
 line-length = 120
-
-# Excluding certain directories
-extend-exclude = [
-    "venv",
-    ".venv",
-    "node_modules",
-    "dist",
-    "build",
-    "__pycache__",
-    "typings",
-    ".git",
-    ".pytest_cache",
-    "WebUI/node_modules",
-]
-
-[tool.ruff.lint]
-# Enable recommended rules
 select = [
     "E",
     "F",
     "W",
     "I",
-    "C90",
-    "UP",
-    "B",
     "N",
-    "PL",
-    "A",
+    "UP",
+    "S",
     "C4",
+    "B",
+    "A",
+    "COM",
+    "C90",
+    "RSE",
+    "RET",
     "SIM",
     "PTH",
 ]
-# Ignore specific errors globally
-ignore = ["E501", "PLR0913", "PLR0915"]
+ignore = [
+    # Path handling issues - temporarily disabled
+    "PTH101",
+    "PTH102",
+    "PTH103",
+    "PTH104",
+    "PTH107",
+    "PTH110",
+    "PTH118",
+    "PTH120",
+    "PTH122",
+    "PTH123",
+    "PTH202",
+    # Variable shadowing issues - temporarily disabled for backward compatibility 
+    "A001",
+    "A002",
+    # Mixed case variables - existing code style
+    "N802",
+    "N803",
+    "N806",
+    "N815",
+    "N816",
+    # Magic values - can be addressed in future refactoring
+    "PLR2004",
+    # Loop overwrite - harmless in this context
+    "PLW2901",
+]
 
-[tool.ruff.lint.per-file-ignores]
-"hardware_detection/tests/conftest.py" = ["F811"]
-"tests/hardware/conftest.py" = ["F811"]
-"tests/**/conftest.py" = ["F811"]
-"hardware_detection/core.py" = ["C901"]
-"hardware_detection.py" = ["C901"]
-"tools/scripts/uvfast.py" = ["C901"]
-".github/workflows/scripts/*.py" = ["C901"]
+[tool.ruff.per-file-ignores]
+"test*.py" = ["S101", "F401", "F403"]
+"service/xpu_hijacks.py" = ["A001", "A002", "SIM102", "N802", "N816"]
+"service/web_api.py" = ["N802", "N803", "N806", "A001"]
+"service/web_request_bodies.py" = ["N815"]
+"tools/formatting/*.py" = ["C901", "PLR0912"]
+"tools/scripts/*.py" = ["F821"]
+"tests/tools/hardware/hardware_detection.py" = [
+    "I001",
+    "E702",
+    "PLE0605",
+    "F403",
+]
 
 [tool.ruff.format]
 quote-style = "double"

@@ -38,8 +38,7 @@ def get_image_ndarray(image: Image.Image | np.ndarray) -> np.ndarray:
     """
     if isinstance(image, Image.Image):
         return np.array(image)
-    else:
-        return image
+    return image
 
 
 def detect_mask_valid_edge(
@@ -70,7 +69,7 @@ def detect_mask_valid_edge(
 
 
 def pre_input_and_mask(
-    image: Image.Image, mask: Image.Image
+    image: Image.Image, mask: Image.Image,
 ) -> tuple[Image.Image, Image.Image, tuple[int, int, int, int]]:
     """
     Preprocess and crop the input image and mask for inpainting.
@@ -187,14 +186,13 @@ def resize_by_max(image: Image.Image, max_size: int, multiple_of_8=True):
                 new_width = make_multiple_of_8(downscale_width)
                 new_height = make_multiple_of_8(downscale_height)
             return image.resize((new_width, new_height)), downscale_ratio
-        else:
-            downscale_ratio = image.height / max_size
-            downscale_width = int(image.width / downscale_ratio)
-            downscale_height = int(image.height / downscale_ratio)
-            if multiple_of_8:
-                new_width = make_multiple_of_8(downscale_width)
-                new_height = make_multiple_of_8(downscale_height)
-            return image.resize((new_width, new_height)), downscale_ratio
+        downscale_ratio = image.height / max_size
+        downscale_width = int(image.width / downscale_ratio)
+        downscale_height = int(image.height / downscale_ratio)
+        if multiple_of_8:
+            new_width = make_multiple_of_8(downscale_width)
+            new_height = make_multiple_of_8(downscale_height)
+        return image.resize((new_width, new_height)), downscale_ratio
     return image, 1
 
 

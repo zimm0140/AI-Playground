@@ -80,7 +80,7 @@ class BadgesGenerator:
 
         # Links to GitHub Actions workflows
         self.github_actions_url = os.environ.get(
-            "GITHUB_SERVER_URL", "https://github.com"
+            "GITHUB_SERVER_URL", "https://github.com",
         )
         self.github_repo = os.environ.get("GITHUB_REPOSITORY", "")
         self.actions_base_url = f"{self.github_actions_url}/{self.github_repo}/actions"
@@ -99,7 +99,7 @@ class BadgesGenerator:
         else:
             # Look for artifacts that might indicate build status
             perf_files = glob.glob(
-                f"{self.artifacts_dir}/performance*/performance_data.csv"
+                f"{self.artifacts_dir}/performance*/performance_data.csv",
             )
             if perf_files:
                 self.badges["build"]["message"] = "passing"
@@ -108,7 +108,7 @@ class BadgesGenerator:
     def generate_coverage_badge(self):
         """Generate code coverage badge based on coverage reports."""
         coverage_files = glob.glob(f"{self.artifacts_dir}/coverage*/*.xml") + glob.glob(
-            f"{self.artifacts_dir}/*/coverage.xml"
+            f"{self.artifacts_dir}/*/coverage.xml",
         )
 
         linux_coverage = None
@@ -204,7 +204,7 @@ class BadgesGenerator:
         # Check for existence of platform compatibility reports
         linux_report = glob.glob(f"{self.artifacts_dir}/compatibility-report-linux*")
         windows_report = glob.glob(
-            f"{self.artifacts_dir}/compatibility-report-windows*"
+            f"{self.artifacts_dir}/compatibility-report-windows*",
         )
         macos_report = glob.glob(f"{self.artifacts_dir}/compatibility-report-macos*")
 
@@ -231,7 +231,7 @@ class BadgesGenerator:
         """Generate documentation status badge."""
         # Check for existence of API documentation
         api_docs = glob.glob(f"{self.artifacts_dir}/api-documentation*") + glob.glob(
-            f"{self.artifacts_dir}/api-endpoints-summary*"
+            f"{self.artifacts_dir}/api-endpoints-summary*",
         )
 
         if api_docs:
@@ -245,7 +245,7 @@ class BadgesGenerator:
         """Generate dependencies status badge."""
         # Check for dependency updates
         dependency_report = os.path.join(
-            self.artifacts_dir, "dependencies/main-diff.txt"
+            self.artifacts_dir, "dependencies/main-diff.txt",
         )
 
         if os.path.exists(dependency_report):
@@ -285,9 +285,8 @@ class BadgesGenerator:
                     f.write(response.content)
                 print(f"Badge downloaded: {output_file}")
                 return True
-            else:
-                print(f"Failed to download badge: {response.status_code}")
-                return False
+            print(f"Failed to download badge: {response.status_code}")
+            return False
         except Exception as e:
             print(f"Error downloading badge: {str(e)}")
             return False
@@ -343,7 +342,7 @@ class BadgesGenerator:
 
             for _badge_type, badge_config in self.badges.items():
                 f.write(
-                    f"| {badge_config['label']} | {badge_config['message']} | {badge_config['color']} |\n"
+                    f"| {badge_config['label']} | {badge_config['message']} | {badge_config['color']} |\n",
                 )
 
             f.write("\nBadges have been generated and can be added to your README.md\n")
@@ -382,12 +381,12 @@ def main():
         help="Directory containing CI artifacts",
     )
     parser.add_argument(
-        "--output-dir", default="ci_artifacts/badges", help="Directory to store badges"
+        "--output-dir", default="ci_artifacts/badges", help="Directory to store badges",
     )
     args = parser.parse_args()
 
     generator = BadgesGenerator(
-        artifacts_dir=args.artifacts_dir, output_dir=args.output_dir
+        artifacts_dir=args.artifacts_dir, output_dir=args.output_dir,
     )
     generator.run()
 

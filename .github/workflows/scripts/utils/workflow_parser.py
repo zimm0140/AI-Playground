@@ -22,23 +22,22 @@ def get_workflow_nodes(workflow: dict[str, Any]) -> dict[str, Any] | None:
     if "nodes" in workflow and isinstance(workflow["nodes"], dict):
         # Traditional ComfyUI format with top-level nodes
         return workflow["nodes"]
-    elif "comfyUiApiWorkflow" in workflow and isinstance(
-        workflow["comfyUiApiWorkflow"], dict
+    if "comfyUiApiWorkflow" in workflow and isinstance(
+        workflow["comfyUiApiWorkflow"], dict,
     ):
         if "nodes" in workflow["comfyUiApiWorkflow"] and isinstance(
-            workflow["comfyUiApiWorkflow"]["nodes"], dict
+            workflow["comfyUiApiWorkflow"]["nodes"], dict,
         ):
             # API format with nodes inside comfyUiApiWorkflow.nodes
             return workflow["comfyUiApiWorkflow"]["nodes"]
-        else:
-            # API format with nodes directly inside comfyUiApiWorkflow (numeric keys)
-            # Check if it has node-like structure (typically with keys that are numeric strings)
-            has_nodes = any(
-                isinstance(v, dict) and "class_type" in v
-                for k, v in workflow["comfyUiApiWorkflow"].items()
-            )
-            if has_nodes:
-                return workflow["comfyUiApiWorkflow"]
+        # API format with nodes directly inside comfyUiApiWorkflow (numeric keys)
+        # Check if it has node-like structure (typically with keys that are numeric strings)
+        has_nodes = any(
+            isinstance(v, dict) and "class_type" in v
+            for k, v in workflow["comfyUiApiWorkflow"].items()
+        )
+        if has_nodes:
+            return workflow["comfyUiApiWorkflow"]
 
     return None
 
@@ -56,10 +55,10 @@ def get_workflow_links(workflow: dict[str, Any]) -> list[list[Any]] | None:
     if "links" in workflow and isinstance(workflow["links"], list):
         # Traditional format with top-level links
         return workflow["links"]
-    elif "comfyUiApiWorkflow" in workflow and isinstance(
-        workflow["comfyUiApiWorkflow"], dict
+    if "comfyUiApiWorkflow" in workflow and isinstance(
+        workflow["comfyUiApiWorkflow"], dict,
     ) and "links" in workflow["comfyUiApiWorkflow"] and isinstance(
-        workflow["comfyUiApiWorkflow"]["links"], list
+        workflow["comfyUiApiWorkflow"]["links"], list,
     ):
         # API format with links inside comfyUiApiWorkflow
         return workflow["comfyUiApiWorkflow"]["links"]
@@ -117,8 +116,8 @@ def get_workflow_attribute(workflow: dict[str, Any], attribute: str) -> Any:
     """
     if attribute in workflow:
         return workflow[attribute]
-    elif "comfyUiApiWorkflow" in workflow and isinstance(
-        workflow["comfyUiApiWorkflow"], dict
+    if "comfyUiApiWorkflow" in workflow and isinstance(
+        workflow["comfyUiApiWorkflow"], dict,
     ) and attribute in workflow["comfyUiApiWorkflow"]:
         return workflow["comfyUiApiWorkflow"][attribute]
 

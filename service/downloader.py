@@ -119,7 +119,7 @@ class ModelDownloaderApi:
                         "name": name.replace(self.repo_id, self.repo_folder),
                         "size": size,
                         "url": url,
-                    }
+                    },
                 )
 
         if is_root:

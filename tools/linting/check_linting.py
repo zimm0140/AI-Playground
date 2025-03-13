@@ -15,12 +15,11 @@ def check_directory(directory):
     if result.returncode == 0:
         print(f"✅ {directory} passed!")
         return True
-    else:
-        print(
-            f"❌ {directory} failed with {result.stdout.count('F401') + result.stdout.count('F841') + result.stdout.count('E402')} issues:"
-        )
-        print(result.stdout)
-        return False
+    print(
+        f"❌ {directory} failed with {result.stdout.count('F401') + result.stdout.count('F841') + result.stdout.count('E402')} issues:",
+    )
+    print(result.stdout)
+    return False
 
 
 def main():
@@ -35,9 +34,8 @@ def main():
     if all_passed:
         print("\n✅ All checks passed! Your code should now pass the CI linting checks.")
         return 0
-    else:
-        print("\n❌ Some checks failed. Please fix the remaining issues.")
-        return 1
+    print("\n❌ Some checks failed. Please fix the remaining issues.")
+    return 1
 
 
 if __name__ == "__main__":

@@ -102,7 +102,7 @@ def get_gpu_info() -> list[str]:
         debug_print(f"Using simulated hardware: {sim_hw}")
         if sim_hw == "acm":
             return ["Intel(R) Arc(TM) A770 Graphics (Simulated)"]
-        elif sim_hw == "ovino":
+        if sim_hw == "ovino":
             return ["Intel(R) UHD Graphics (Simulated)"]
         return []
 
@@ -332,7 +332,7 @@ def _get_simulated_hardware() -> str | None:
 
 
 def _detect_specific_hardware(
-    detection_config: dict[str, Any], gpus: list[str], cpu_info: dict[str, Any]
+    detection_config: dict[str, Any], gpus: list[str], cpu_info: dict[str, Any],
 ) -> str | None:
     """Check for specific hardware types based on detection configuration.
 

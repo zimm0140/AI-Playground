@@ -117,12 +117,12 @@ class ComfyWorkflowValidator:
                 workflow = json.load(file)
         except json.JSONDecodeError as e:
             file_result["issues"].append(
-                {"type": "json_error", "message": f"Invalid JSON: {str(e)}"}
+                {"type": "json_error", "message": f"Invalid JSON: {str(e)}"},
             )
             return file_result
         except Exception as e:
             file_result["issues"].append(
-                {"type": "file_error", "message": f"Error reading file: {str(e)}"}
+                {"type": "file_error", "message": f"Error reading file: {str(e)}"},
             )
             return file_result
 
@@ -143,7 +143,7 @@ class ComfyWorkflowValidator:
                 {
                     "type": "structure_error",
                     "message": "No valid nodes structure found. Expected either top-level 'nodes' or 'comfyUiApiWorkflow.nodes'",
-                }
+                },
             )
             return file_result
 
@@ -153,14 +153,14 @@ class ComfyWorkflowValidator:
                 {
                     "type": "structure_error",
                     "message": "'nodes' is not a dictionary object",
-                }
+                },
             )
             return file_result
 
         # Check for empty nodes
         if not nodes:
             file_result["issues"].append(
-                {"type": "content_warning", "message": "Workflow contains no nodes"}
+                {"type": "content_warning", "message": "Workflow contains no nodes"},
             )
 
         # Collect node IDs and types
@@ -177,7 +177,7 @@ class ComfyWorkflowValidator:
                     {
                         "type": "node_error",
                         "message": f"Node {node_id} does not have a 'class_type'",
-                    }
+                    },
                 )
                 continue
 
@@ -194,7 +194,7 @@ class ComfyWorkflowValidator:
                 {
                     "type": "node_warning",
                     "message": f"Workflow uses {len(unknown_node_types)} unknown node types: {', '.join(unknown_node_types)}",
-                }
+                },
             )
 
         # Validate connections
@@ -202,7 +202,7 @@ class ComfyWorkflowValidator:
             # Check if links is a list
             if not isinstance(workflow["links"], list):
                 file_result["issues"].append(
-                    {"type": "structure_error", "message": "'links' is not a list"}
+                    {"type": "structure_error", "message": "'links' is not a list"},
                 )
             else:
                 for i, link in enumerate(workflow["links"]):
@@ -212,7 +212,7 @@ class ComfyWorkflowValidator:
                             {
                                 "type": "link_error",
                                 "message": f"Link at index {i} has invalid format",
-                            }
+                            },
                         )
                         continue
 
@@ -224,7 +224,7 @@ class ComfyWorkflowValidator:
                             {
                                 "type": "link_error",
                                 "message": f"Link references non-existent source node {from_node}",
-                            }
+                            },
                         )
 
                     # Check if target node exists
@@ -233,7 +233,7 @@ class ComfyWorkflowValidator:
                             {
                                 "type": "link_error",
                                 "message": f"Link references non-existent target node {to_node}",
-                            }
+                            },
                         )
 
         # Mark as valid if no issues were found
@@ -277,13 +277,13 @@ class ComfyWorkflowValidator:
             # Summary section
             f.write("## Summary\n\n")
             f.write(
-                f"- Total workflows analyzed: {self.results['summary']['total_workflows']}\n"
+                f"- Total workflows analyzed: {self.results['summary']['total_workflows']}\n",
             )
             f.write(
-                f"- Valid workflows: {self.results['summary']['valid_workflows']}\n"
+                f"- Valid workflows: {self.results['summary']['valid_workflows']}\n",
             )
             f.write(
-                f"- Invalid workflows: {self.results['summary']['invalid_workflows']}\n\n"
+                f"- Invalid workflows: {self.results['summary']['invalid_workflows']}\n\n",
             )
 
             # Status overview
@@ -315,21 +315,21 @@ class ComfyWorkflowValidator:
             # Recommendations
             f.write("## Recommendations\n\n")
             f.write(
-                "1. **Fix JSON formatting errors**: Ensure all workflow files contain valid JSON syntax.\n"
+                "1. **Fix JSON formatting errors**: Ensure all workflow files contain valid JSON syntax.\n",
             )
             f.write(
-                "2. **Add missing node types**: If unknown node types are legitimate, consider adding them to the validator's known node types list.\n"
+                "2. **Add missing node types**: If unknown node types are legitimate, consider adding them to the validator's known node types list.\n",
             )
             f.write(
-                "3. **Fix broken links**: Ensure all node connections reference valid nodes in the workflow.\n"
+                "3. **Fix broken links**: Ensure all node connections reference valid nodes in the workflow.\n",
             )
             f.write(
-                "4. **Standardize workflows**: Consider standardizing workflows or adding documentation for custom node types.\n\n"
+                "4. **Standardize workflows**: Consider standardizing workflows or adding documentation for custom node types.\n\n",
             )
 
             f.write("---\n")
             f.write(
-                "*This report was automatically generated by the CI workflow validation script.*\n"
+                "*This report was automatically generated by the CI workflow validation script.*\n",
             )
 
         print(f"Report generated at {report_path}")
@@ -356,7 +356,7 @@ class ComfyWorkflowValidator:
             # Status indicators
             if self.results["summary"]["invalid_workflows"] > 0:
                 f.write(
-                    f"⚠️ **Found {self.results['summary']['invalid_workflows']} invalid workflow(s)**\n\n"
+                    f"⚠️ **Found {self.results['summary']['invalid_workflows']} invalid workflow(s)**\n\n",
                 )
             else:
                 f.write("✅ **All workflows are valid**\n\n")
@@ -365,7 +365,7 @@ class ComfyWorkflowValidator:
             f.write("| Metric | Count |\n")
             f.write("|--------|-------|\n")
             f.write(
-                f"| Total Workflows | {self.results['summary']['total_workflows']} |\n"
+                f"| Total Workflows | {self.results['summary']['total_workflows']} |\n",
             )
             f.write(f"| Valid | {self.results['summary']['valid_workflows']} |\n")
             f.write(f"| Invalid | {self.results['summary']['invalid_workflows']} |\n\n")
@@ -381,7 +381,7 @@ class ComfyWorkflowValidator:
                             t.replace("_", " ").title() for t in issue_types
                         )
                         f.write(
-                            f"- **{workflow['filename']}**: {issue_summary} ({len(workflow['issues'])} issues)\n"
+                            f"- **{workflow['filename']}**: {issue_summary} ({len(workflow['issues'])} issues)\n",
                         )
 
                 f.write("\nSee workflow validation report artifact for details.\n")
@@ -418,7 +418,7 @@ def main():
     args = parser.parse_args()
 
     validator = ComfyWorkflowValidator(
-        workflows_dir=args.workflows_dir, output_dir=args.output_dir
+        workflows_dir=args.workflows_dir, output_dir=args.output_dir,
     )
 
     invalid_count = validator.run()

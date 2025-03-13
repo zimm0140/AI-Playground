@@ -121,8 +121,7 @@ def is_available():
     """
     if ipex is None:
         return False
-    else:
-        return ipex.has_xpu()
+    return ipex.has_xpu()
 
 
 @property
@@ -216,14 +215,13 @@ def autocast_init(self, device_type, dtype=None, enabled=True, cache_enabled=Non
             enabled=enabled,
             cache_enabled=cache_enabled,
         )
-    else:
-        return original_autocast_init(
-            self,
-            device_type=device_type,
-            dtype=dtype,
-            enabled=enabled,
-            cache_enabled=cache_enabled,
-        )
+    return original_autocast_init(
+        self,
+        device_type=device_type,
+        dtype=dtype,
+        enabled=enabled,
+        cache_enabled=cache_enabled,
+    )
 
 
 # Store the original interpolate function
@@ -271,16 +269,15 @@ def interpolate(
             recompute_scale_factor=recompute_scale_factor,
             antialias=antialias,
         ).to(return_device, dtype=return_dtype)
-    else:
-        return original_interpolate(
-            tensor,
-            size=size,
-            scale_factor=scale_factor,
-            mode=mode,
-            align_corners=align_corners,
-            recompute_scale_factor=recompute_scale_factor,
-            antialias=antialias,
-        )
+    return original_interpolate(
+        tensor,
+        size=size,
+        scale_factor=scale_factor,
+        mode=mode,
+        align_corners=align_corners,
+        recompute_scale_factor=recompute_scale_factor,
+        antialias=antialias,
+    )
 
 
 # Store the original from_numpy function
@@ -303,8 +300,7 @@ def from_numpy(ndarray):
     """
     if ndarray.dtype == float:
         return original_from_numpy(ndarray.astype("float32"))
-    else:
-        return original_from_numpy(ndarray)
+    return original_from_numpy(ndarray)
 
 
 # Store the original as_tensor function
@@ -349,8 +345,7 @@ def as_tensor_hijack(original_as_tensor):
             )
         ):
             return original_as_tensor(data, dtype=torch.float32, device=device)
-        else:
-            return original_as_tensor(data, dtype=dtype, device=device)
+        return original_as_tensor(data, dtype=dtype, device=device)
 
 
 # Handle 32-bit attention workarounds for devices that don't support float64
@@ -415,7 +410,7 @@ def scaled_dot_product_attention(query, key, value, attn_mask=None, dropout_p=0.
     if attn_mask is not None and query.dtype != attn_mask.dtype:
         attn_mask = attn_mask.to(dtype=query.dtype)
     return original_scaled_dot_product_attention(
-        query, key, value, attn_mask=attn_mask, dropout_p=dropout_p, is_causal=is_causal
+        query, key, value, attn_mask=attn_mask, dropout_p=dropout_p, is_causal=is_causal,
     )
 
 
@@ -567,8 +562,7 @@ def torch_cat(tensor, *args, **kwargs):
             *args,
             **kwargs,
         )
-    else:
-        return original_torch_cat(tensor, *args, **kwargs)
+    return original_torch_cat(tensor, *args, **kwargs)
 
 
 # Store the original pad function
@@ -593,8 +587,7 @@ def functional_pad(input, pad, mode="constant", value=None):
     """
     if mode == "reflect" and input.dtype == torch.bfloat16:
         return original_functional_pad(input.to(torch.float32), pad, mode=mode, value=value).to(dtype=torch.bfloat16)
-    else:
-        return original_functional_pad(input, pad, mode=mode, value=value)
+    return original_functional_pad(input, pad, mode=mode, value=value)
 
 
 # Store the original tensor function
@@ -647,8 +640,7 @@ def Tensor_to(self, device=None, *args, **kwargs):
     """
     if check_device(device):
         return original_Tensor_to(self, return_xpu(device), *args, **kwargs)
-    else:
-        return original_Tensor_to(self, device, *args, **kwargs)
+    return original_Tensor_to(self, device, *args, **kwargs)
 
 
 # Store the original Tensor.cuda method
@@ -671,8 +663,7 @@ def Tensor_cuda(self, device=None, *args, **kwargs):
     """
     if check_device(device):
         return original_Tensor_cuda(self, return_xpu(device), *args, **kwargs)
-    else:
-        return original_Tensor_cuda(self, device, *args, **kwargs)
+    return original_Tensor_cuda(self, device, *args, **kwargs)
 
 
 # Store the original UntypedStorage.__init__ method
@@ -694,8 +685,7 @@ def UntypedStorage_init(*args, device=None, **kwargs):
     """
     if check_device(device):
         return original_UntypedStorage_init(*args, device=return_xpu(device), **kwargs)
-    else:
-        return original_UntypedStorage_init(*args, device=device, **kwargs)
+    return original_UntypedStorage_init(*args, device=device, **kwargs)
 
 
 # Store the original UntypedStorage.cuda method
@@ -718,8 +708,7 @@ def UntypedStorage_cuda(self, device=None, *args, **kwargs):
     """
     if check_device(device):
         return original_UntypedStorage_cuda(self, return_xpu(device), *args, **kwargs)
-    else:
-        return original_UntypedStorage_cuda(self, device, *args, **kwargs)
+    return original_UntypedStorage_cuda(self, device, *args, **kwargs)
 
 
 # Store the original empty function
@@ -741,8 +730,7 @@ def torch_empty(*args, device=None, **kwargs):
     """
     if check_device(device):
         return original_torch_empty(*args, device=return_xpu(device), **kwargs)
-    else:
-        return original_torch_empty(*args, device=device, **kwargs)
+    return original_torch_empty(*args, device=device, **kwargs)
 
 
 # Store the original randn function
@@ -767,8 +755,7 @@ def torch_randn(*args, device=None, dtype=None, **kwargs):
         dtype = None
     if check_device(device):
         return original_torch_randn(*args, device=return_xpu(device), **kwargs)
-    else:
-        return original_torch_randn(*args, device=device, **kwargs)
+    return original_torch_randn(*args, device=device, **kwargs)
 
 
 # Store the original ones function
@@ -790,8 +777,7 @@ def torch_ones(*args, device=None, **kwargs):
     """
     if check_device(device):
         return original_torch_ones(*args, device=return_xpu(device), **kwargs)
-    else:
-        return original_torch_ones(*args, device=device, **kwargs)
+    return original_torch_ones(*args, device=device, **kwargs)
 
 
 # Store the original zeros function
@@ -813,8 +799,7 @@ def torch_zeros(*args, device=None, **kwargs):
     """
     if check_device(device):
         return original_torch_zeros(*args, device=return_xpu(device), **kwargs)
-    else:
-        return original_torch_zeros(*args, device=device, **kwargs)
+    return original_torch_zeros(*args, device=device, **kwargs)
 
 
 # Store the original linspace function
@@ -841,8 +826,7 @@ def torch_linspace(*args: Any, device: str | torch.device | None = None, **kwarg
     """
     if check_device(device):
         return original_torch_linspace(*args, device=return_xpu(device), **kwargs)
-    else:
-        return original_torch_linspace(*args, device=device, **kwargs)
+    return original_torch_linspace(*args, device=device, **kwargs)
 
 
 # Store the original Generator function
@@ -862,8 +846,7 @@ def torch_Generator(device=None):
     """
     if check_device(device):
         return original_torch_Generator(return_xpu(device))
-    else:
-        return original_torch_Generator(device)
+    return original_torch_Generator(device)
 
 
 # Store the original load function
@@ -886,8 +869,7 @@ def torch_load(f, map_location=None, *args, **kwargs):
     """
     if check_device(map_location):
         return original_torch_load(f, *args, map_location=return_xpu(map_location), **kwargs)
-    else:
-        return original_torch_load(f, *args, map_location=map_location, **kwargs)
+    return original_torch_load(f, *args, map_location=map_location, **kwargs)
 
 
 # =================== MAIN HIJACK APPLICATION FUNCTION ===================

@@ -90,7 +90,7 @@ def generate_workflow_doc(workflow, workflow_file):
                     doc.append('<div class="input-image">')
                     doc.append("<p><strong>Input:</strong></p>")
                     doc.append(
-                        f'<img src="{example["inputImage"]}" alt="Input for {title}" />'
+                        f'<img src="{example["inputImage"]}" alt="Input for {title}" />',
                     )
                     doc.append("</div>")
 
@@ -98,7 +98,7 @@ def generate_workflow_doc(workflow, workflow_file):
                     doc.append('<div class="output-image">')
                     doc.append("<p><strong>Output:</strong></p>")
                     doc.append(
-                        f'<img src="{example["outputImage"]}" alt="Output for {title}" />'
+                        f'<img src="{example["outputImage"]}" alt="Output for {title}" />',
                     )
                     doc.append("</div>")
 
@@ -196,7 +196,7 @@ def generate_workflow_doc(workflow, workflow_file):
                     repo = parts[0]
                     commit = parts[1] if len(parts) > 1 else ""
                     doc.append(
-                        f"- [{repo}](https://github.com/{repo}) (commit: `{commit}`)"
+                        f"- [{repo}](https://github.com/{repo}) (commit: `{commit}`)",
                     )
                 else:
                     doc.append(f"- {node}")
@@ -230,7 +230,7 @@ def generate_workflow_doc(workflow, workflow_file):
 
         for input_item in workflow["inputs"]:
             label = input_item.get(
-                "label", input_item.get("nodeInput", "Unnamed Input")
+                "label", input_item.get("nodeInput", "Unnamed Input"),
             )
             input_type = input_item.get("type", "")
             default_value = input_item.get("defaultValue", "")
@@ -303,7 +303,7 @@ def generate_gallery(workflows_dir, output_dir):
             if workflow and "examples" in workflow and workflow["examples"]:
                 # Get the first example with an output image
                 example = next(
-                    (ex for ex in workflow["examples"] if "outputImage" in ex), None
+                    (ex for ex in workflow["examples"] if "outputImage" in ex), None,
                 )
 
                 if example:
@@ -314,16 +314,16 @@ def generate_gallery(workflows_dir, output_dir):
                             "tags": workflow.get("tags", []),
                             "outputImage": example.get("outputImage", ""),
                             "doc_file": sanitize_filename(
-                                workflow.get("name", filename)
+                                workflow.get("name", filename),
                             )
                             + ".md",
                             "display_priority": workflow.get("displayPriority", 0),
-                        }
+                        },
                     )
 
     # Sort by display priority (higher first) and then by name
     workflows_with_examples.sort(
-        key=lambda w: (-w.get("display_priority", 0), w["name"])
+        key=lambda w: (-w.get("display_priority", 0), w["name"]),
     )
 
     # Create gallery grid
@@ -333,7 +333,7 @@ def generate_gallery(workflows_dir, output_dir):
         gallery.append('<div class="workflow-card">')
         gallery.append(f'<a href="{workflow["doc_file"]}">')
         gallery.append(
-            f'<img src="{workflow["outputImage"]}" alt="{workflow["name"]}" />'
+            f'<img src="{workflow["outputImage"]}" alt="{workflow["name"]}" />',
         )
         gallery.append(f'<h3>{workflow["name"]}</h3>')
         gallery.append("</a>")
@@ -429,7 +429,7 @@ def generate_gallery(workflows_dir, output_dir):
   border-radius: 4px;
 }
 </style>
-"""
+""",
     )
 
     # Write gallery file
@@ -465,7 +465,7 @@ def generate_index(workflows_dir, output_dir):
                         "description": workflow.get("description", ""),
                         "doc_file": doc_filename,
                         "display_priority": workflow.get("displayPriority", 0),
-                    }
+                    },
                 )
 
     # Sort by display priority (higher first) and then by name
@@ -506,7 +506,7 @@ def generate_index(workflows_dir, output_dir):
 
 
 def generate_all_docs(
-    workflows_dir, output_dir, create_index=False, create_gallery=False
+    workflows_dir, output_dir, create_index=False, create_gallery=False,
 ):
     """Generate documentation for all workflow files in a directory."""
     if not os.path.exists(output_dir):
@@ -554,7 +554,7 @@ def generate_all_docs(
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Generate documentation for ComfyUI workflow files"
+        description="Generate documentation for ComfyUI workflow files",
     )
     parser.add_argument(
         "--workflows-dir",
@@ -562,7 +562,7 @@ def main():
         help="Directory containing workflow JSON files",
     )
     parser.add_argument(
-        "--output-dir", required=True, help="Directory to write documentation files"
+        "--output-dir", required=True, help="Directory to write documentation files",
     )
     parser.add_argument(
         "--create-index",
@@ -582,7 +582,7 @@ def main():
         sys.exit(1)
 
     success = generate_all_docs(
-        args.workflows_dir, args.output_dir, args.create_index, args.create_gallery
+        args.workflows_dir, args.output_dir, args.create_index, args.create_gallery,
     )
     sys.exit(0 if success else 1)
 

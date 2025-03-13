@@ -152,7 +152,7 @@ def save_metrics(metrics, output_dir):
 
     # Also write a summary markdown file for GitHub
     summary_path = os.path.join(
-        output_dir, f"ci_metrics_summary_{workflow_name}_{job_name}.md"
+        output_dir, f"ci_metrics_summary_{workflow_name}_{job_name}.md",
     )
     write_summary_markdown(metrics, summary_path)
 
@@ -234,7 +234,7 @@ def get_git_commit():
     """Get the current git commit hash"""
     try:
         result = subprocess.run(
-            ["git", "rev-parse", "HEAD"], capture_output=True, text=True, check=True
+            ["git", "rev-parse", "HEAD"], capture_output=True, text=True, check=True,
         )
         return result.stdout.strip()
     except (subprocess.SubprocessError, FileNotFoundError):
@@ -279,7 +279,7 @@ def parse_args():
     )
 
     parser.add_argument(
-        "--job", help="Name of the job", default=os.environ.get("GITHUB_JOB", "unknown")
+        "--job", help="Name of the job", default=os.environ.get("GITHUB_JOB", "unknown"),
     )
 
     parser.add_argument(
@@ -305,11 +305,11 @@ def parse_args():
     )
 
     parser.add_argument(
-        "--init", help="Initialize metrics collection", action="store_true"
+        "--init", help="Initialize metrics collection", action="store_true",
     )
 
     parser.add_argument(
-        "--finalize", help="Finalize metrics collection", action="store_true"
+        "--finalize", help="Finalize metrics collection", action="store_true",
     )
 
     return parser.parse_args()
@@ -319,7 +319,7 @@ def main():
     """Main function"""
     args = parse_args()
     metrics_file = os.path.join(
-        args.output_dir, f"current_metrics_{args.workflow}_{args.job}.json"
+        args.output_dir, f"current_metrics_{args.workflow}_{args.job}.json",
     )
 
     if args.init:

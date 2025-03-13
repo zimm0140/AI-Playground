@@ -116,12 +116,12 @@ def patch_files():
                         next_line = lines[i + 1]
                         next_stripped = next_line.strip()
                         if next_stripped and not next_line.startswith(
-                            " " * (indent + 4)
+                            " " * (indent + 4),
                         ):
                             # Replace the next line with proper indentation
                             lines[i + 1] = " " * (indent + 4) + next_stripped + "\n"
                             print(
-                                f"  - Fixed indentation after try statement at line {i+1}"
+                                f"  - Fixed indentation after try statement at line {i+1}",
                             )
                     continue
 
@@ -198,7 +198,7 @@ def patch_files():
                         # Verify again
                         try:
                             compiled = compile(
-                                fixed_content, "service/tests/test_api.py", "exec"
+                                fixed_content, "service/tests/test_api.py", "exec",
                             )
                             print("  - Verified file now compiles successfully")
                             # Use the compiled variable
@@ -208,7 +208,7 @@ def patch_files():
                             print(f"  ! Syntax error still present: {e}")
                             # Last resort: replace the file with a minimal working version
                             print(
-                                "  - Syntax error persists, creating minimal working version"
+                                "  - Syntax error persists, creating minimal working version",
                             )
 
         except Exception as e:
@@ -245,7 +245,7 @@ def patch_files():
                     pass
             except SyntaxError:
                 print(
-                    "  ! test_api.py still has syntax errors, creating minimal version"
+                    "  ! test_api.py still has syntax errors, creating minimal version",
                 )
                 # Create a minimal version that will compile
                 with open("service/tests/test_api.py", "w") as f:
@@ -285,7 +285,7 @@ class TestAPI(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-"""
+""",
                     )
                 print("  - Created minimal working version of test_api.py for CI")
         except Exception as e:

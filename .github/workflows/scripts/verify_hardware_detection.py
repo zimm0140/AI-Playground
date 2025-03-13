@@ -211,7 +211,7 @@ def main():
     # Print summary
     debug_print("\nVerification Summary:")
     debug_print(
-        f"Environment: {'OK' if env_vars.get('SIMULATED_HARDWARE') != 'Not set' else 'WARNING'}"
+        f"Environment: {'OK' if env_vars.get('SIMULATED_HARDWARE') != 'Not set' else 'WARNING'}",
     )
     debug_print(f"Python Packages: {'OK' if packages_ok else 'WARNING'}")
     debug_print(f"Hardware Detection Module: {'OK' if module_ok else 'ERROR'}")
@@ -221,9 +221,8 @@ def main():
     if module_ok:
         debug_print("Verification completed successfully")
         return 0
-    else:
-        debug_print("Verification failed", "ERROR")
-        return 1
+    debug_print("Verification failed", "ERROR")
+    return 1
 
 
 if __name__ == "__main__":

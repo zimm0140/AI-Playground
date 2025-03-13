@@ -191,9 +191,8 @@ def fix_markdown_file(file_path):
                 f.write(content)
             print(f"✅ Fixed linting issues in {file_path}")
             return True
-        else:
-            print(f"✓ No fixable issues found in {file_path}")
-            return False
+        print(f"✓ No fixable issues found in {file_path}")
+        return False
     except Exception as e:
         print(f"❌ Error processing {file_path}: {str(e)}")
         return False

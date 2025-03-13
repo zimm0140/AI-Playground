@@ -114,14 +114,13 @@ def check_mmodel_exist(type: int, repo_id: str, backend: str) -> bool:
     """
     if backend == "default":
         return check_defaultbackend_mmodel_exist(type, repo_id)
-    elif backend == "openvino":
+    if backend == "openvino":
         return check_openvino_model_exists(type, repo_id)
-    elif backend == "comfyui":
+    if backend == "comfyui":
         return check_comfyui_model_exists(type, repo_id)
-    elif backend == "llama_cpp":
+    if backend == "llama_cpp":
         return check_llama_cpp_model_exists(type, repo_id)
-    else:
-        raise NameError("Unknown Backend")
+    raise NameError("Unknown Backend")
 
 
 def check_openvino_model_exists(type, repo_id) -> bool:
@@ -180,7 +179,7 @@ def check_comfyui_model_exists(type, repo_id) -> bool:
         dir_to_look_for = os.path.join(model_dir, "vit-base-nsfw-detector", extract_model_id_pathsegments(repo_id))
     else:
         dir_to_look_for = os.path.join(
-            model_dir, repo_local_root_dir_name(repo_id), extract_model_id_pathsegments(repo_id)
+            model_dir, repo_local_root_dir_name(repo_id), extract_model_id_pathsegments(repo_id),
         )
     return os.path.exists(dir_to_look_for)
 
@@ -262,38 +261,35 @@ def check_defaultbackend_mmodel_exist(type: int, repo_id: str) -> bool:
     if type == 0:
         dir = service_config.service_model_paths.get("llm")
         return os.path.exists(os.path.join(dir, folder_name))
-    elif type == 1:
+    if type == 1:
         dir = service_config.service_model_paths.get("stableDiffusion")
         if is_single_file(repo_id):
             return os.path.exists(os.path.join(dir, repo_id))
-        else:
-            return os.path.exists(os.path.join(dir, folder_name, "model_index.json"))
-    elif type == 2:
+        return os.path.exists(os.path.join(dir, folder_name, "model_index.json"))
+    if type == 2:
         dir = service_config.service_model_paths.get("lora")
         if is_single_file(repo_id):
             return os.path.exists(os.path.join(dir, repo_id))
-        else:
-            return os.path.exists(os.path.join(dir, folder_name, "pytorch_lora_weights.safetensors")) or os.path.exists(
-                os.path.join(dir, folder_name, "pytorch_lora_weights.bin")
-            )
-    elif type == 3:
+        return os.path.exists(os.path.join(dir, folder_name, "pytorch_lora_weights.safetensors")) or os.path.exists(
+            os.path.join(dir, folder_name, "pytorch_lora_weights.bin"),
+        )
+    if type == 3:
         dir = service_config.service_model_paths.get("vae")
         return os.path.exists(os.path.join(dir, folder_name))
-    elif type == 4:
+    if type == 4:
         import realesrgan
 
         dir = service_config.service_model_paths.get("ESRGAN")
         return os.path.exists(os.path.join(dir, realesrgan.ESRGAN_MODEL_URL.split("/")[-1]))
-    elif type == 5:
+    if type == 5:
         dir = service_config.service_model_paths.get("embedding")
         return os.path.exists(os.path.join(dir, folder_name))
-    elif type == 6:
+    if type == 6:
         dir = service_config.service_model_paths.get("inpaint")
         if is_single_file(repo_id):
             return os.path.exists(os.path.join(dir, repo_id))
-        else:
-            return os.path.exists(os.path.join(dir, repo_id.replace("/", "---"), "model_index.json"))
-    elif type == 7:
+        return os.path.exists(os.path.join(dir, repo_id.replace("/", "---"), "model_index.json"))
+    if type == 7:
         dir = service_config.service_model_paths.get("preview")
         return (
             os.path.exists(os.path.join(dir, folder_name, "config.json"))
@@ -319,46 +315,45 @@ def convert_model_type(type: int):
     """
     if type == 0:
         return "llm"
-    elif type == 1:
+    if type == 1:
         return "stableDiffusion"
-    elif type == 2:
+    if type == 2:
         return "lora"
-    elif type == 3:
+    if type == 3:
         return "vae"
-    elif type == 4:
+    if type == 4:
         return "ESRGAN"
-    elif type == 5:
+    if type == 5:
         return "embedding"
-    elif type == 6:
+    if type == 6:
         return "inpaint"
-    elif type == 7:
+    if type == 7:
         return "preview"
-    elif type == 8:
+    if type == 8:
         return "ggufLLM"
-    elif type == 9:
+    if type == 9:
         return "openvinoLLM"
-    elif type == 100:
+    if type == 100:
         return "unet"
-    elif type == 101:
+    if type == 101:
         return "clip"
-    elif type == 102:
+    if type == 102:
         return "vae"
-    elif type == 103:
+    if type == 103:
         return "defaultCheckpoint"
-    elif type == 104:
+    if type == 104:
         return "defaultLora"
-    elif type == 105:
+    if type == 105:
         return "controlNet"
-    elif type == 106:
+    if type == 106:
         return "faceswap"
-    elif type == 107:
+    if type == 107:
         return "facerestore"
-    elif type == 108:
+    if type == 108:
         return "nsfwdetector"
-    elif type == 109:
+    if type == 109:
         return "checkpoints"
-    else:
-        raise Exception(f"unknown model type value {type}")
+    raise Exception(f"unknown model type value {type}")
 
 
 def get_model_path(type: int, backend: str) -> str | None:
@@ -374,14 +369,13 @@ def get_model_path(type: int, backend: str) -> str | None:
     """
     if backend == "default":
         return service_config.service_model_paths.get(convert_model_type(type))
-    elif backend == "llama_cpp":
+    if backend == "llama_cpp":
         return service_config.llama_cpp_model_paths.get(convert_model_type(type))
-    elif backend == "openvino":
+    if backend == "openvino":
         return service_config.openvino_model_paths.get(convert_model_type(type))
-    elif backend == "comfyui":
+    if backend == "comfyui":
         return service_config.comfy_ui_model_paths.get(convert_model_type(type))
-    else:
-        raise NameError("Unknown Backend")
+    raise NameError("Unknown Backend")
 
 
 def calculate_md5(file_path: str):

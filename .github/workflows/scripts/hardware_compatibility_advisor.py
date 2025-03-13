@@ -345,7 +345,7 @@ class HardwareCompatibilityAdvisor:
 
             f.write("## Overview\n\n")
             f.write(
-                "This plan provides specific recommendations for resolving package compatibility issues across hardware platforms.\n\n"
+                "This plan provides specific recommendations for resolving package compatibility issues across hardware platforms.\n\n",
             )
 
             # Write summary of recommendations
@@ -404,7 +404,7 @@ class HardwareCompatibilityAdvisor:
             # Write standardized requirements section
             f.write("## Standardized Requirements\n\n")
             f.write(
-                "The following sections provide standardized requirements files for each platform with resolved conflicts.\n\n"
+                "The following sections provide standardized requirements files for each platform with resolved conflicts.\n\n",
             )
 
             for hw_name, hw_files in self.optimized_requirements.items():
@@ -455,7 +455,7 @@ class HardwareCompatibilityAdvisor:
 
                 # Create the patch file
                 patch_file = os.path.join(
-                    self.output_dir, f"{hw_name}_{file_name}.patch"
+                    self.output_dir, f"{hw_name}_{file_name}.patch",
                 )
 
                 with open(patch_file, "w", encoding="utf-8") as f:
@@ -495,16 +495,16 @@ class HardwareCompatibilityAdvisor:
             )
 
             f.write(
-                f"Generated **{total_recommendations}** recommendations for resolving hardware compatibility issues:\n\n"
+                f"Generated **{total_recommendations}** recommendations for resolving hardware compatibility issues:\n\n",
             )
 
             f.write("| Priority | Count | Action Required |\n")
             f.write("|----------|-------|----------------|\n")
             f.write(
-                f"| 🔴 High | {high_priority_count} | Immediate attention required |\n"
+                f"| 🔴 High | {high_priority_count} | Immediate attention required |\n",
             )
             f.write(
-                f"| 🟡 Medium | {medium_priority_count} | Review in next development cycle |\n"
+                f"| 🟡 Medium | {medium_priority_count} | Review in next development cycle |\n",
             )
             f.write(f"| 🟢 Low | {low_priority_count} | Consider when convenient |\n\n")
 
@@ -520,19 +520,19 @@ class HardwareCompatibilityAdvisor:
                     affected_platforms = ", ".join(recommendation["affected_platforms"])
 
                     f.write(
-                        f"- **{package}**: Standardize on `{suggested_version}` across {affected_platforms}\n"
+                        f"- **{package}**: Standardize on `{suggested_version}` across {affected_platforms}\n",
                     )
 
                 if high_priority_count > 3:
                     f.write(
-                        f"\n... and {high_priority_count - 3} more high priority recommendations\n"
+                        f"\n... and {high_priority_count - 3} more high priority recommendations\n",
                     )
 
                 f.write("\n")
 
             # Reference to full report
             f.write(
-                "See [detailed resolution plan](resolution_plan.md) for complete recommendations.\n"
+                "See [detailed resolution plan](resolution_plan.md) for complete recommendations.\n",
             )
 
         # Add summary to GitHub step summary if running in GitHub Actions
@@ -543,30 +543,30 @@ class HardwareCompatibilityAdvisor:
                 # Add overview
                 f.write("### Overview\n\n")
                 f.write(
-                    "The Hardware Compatibility Advisor analyzed compatibility data and generated recommendations.\n\n"
+                    "The Hardware Compatibility Advisor analyzed compatibility data and generated recommendations.\n\n",
                 )
 
                 # Add statistics
                 f.write("### Statistics\n\n")
                 f.write(
                     "- **Total Conflicts:** {}\n".format(
-                        len(self.compatibility_data.get("conflicts", []))
-                    )
+                        len(self.compatibility_data.get("conflicts", [])),
+                    ),
                 )
                 f.write(
                     "- **High Priority Recommendations:** {}\n".format(
-                        len(self.recommendations.get("high_priority", []))
-                    )
+                        len(self.recommendations.get("high_priority", [])),
+                    ),
                 )
                 f.write(
                     "- **Medium Priority Recommendations:** {}\n".format(
-                        len(self.recommendations.get("medium_priority", []))
-                    )
+                        len(self.recommendations.get("medium_priority", [])),
+                    ),
                 )
                 f.write(
                     "- **Low Priority Recommendations:** {}\n".format(
-                        len(self.recommendations.get("low_priority", []))
-                    )
+                        len(self.recommendations.get("low_priority", [])),
+                    ),
                 )
 
                 # Add recommendation summary
@@ -576,14 +576,14 @@ class HardwareCompatibilityAdvisor:
                     for rec in self.recommendations["high_priority"][:5]:  # Show top 5
                         f.write(
                             "- `{}`: Standardize to `{}`\n".format(
-                                rec["package"], rec["suggested_version"]
-                            )
+                                rec["package"], rec["suggested_version"],
+                            ),
                         )
                     if len(self.recommendations["high_priority"]) > 5:
                         f.write(
                             "- ... and {} more\n".format(
-                                len(self.recommendations["high_priority"]) - 5
-                            )
+                                len(self.recommendations["high_priority"]) - 5,
+                            ),
                         )
                     f.write("\n")
 
@@ -591,14 +591,14 @@ class HardwareCompatibilityAdvisor:
                 f.write("\n### Next Steps\n\n")
                 f.write(
                     "1. Review the [Resolution Plan]({})\n".format(
-                        os.path.join(self.output_dir, "resolution_plan.md")
-                    )
+                        os.path.join(self.output_dir, "resolution_plan.md"),
+                    ),
                 )
                 f.write(
-                    "2. Apply recommended changes to standardize package versions\n"
+                    "2. Apply recommended changes to standardize package versions\n",
                 )
                 f.write(
-                    "3. Re-run the hardware compatibility tests to verify improvements\n"
+                    "3. Re-run the hardware compatibility tests to verify improvements\n",
                 )
 
             print("Added summary to GitHub Actions output")
@@ -656,7 +656,7 @@ class HardwareCompatibilityAdvisor:
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Analyze hardware compatibility and provide recommendations"
+        description="Analyze hardware compatibility and provide recommendations",
     )
     parser.add_argument(
         "--input-dir",
@@ -682,7 +682,7 @@ def main():
     args = parser.parse_args()
 
     advisor = HardwareCompatibilityAdvisor(
-        input_dir=args.input_dir, output_dir=args.output_dir, data_file=args.data_file
+        input_dir=args.input_dir, output_dir=args.output_dir, data_file=args.data_file,
     )
 
     exit_code = advisor.run()

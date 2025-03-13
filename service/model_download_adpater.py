@@ -98,7 +98,7 @@ class Model_Downloader_Adapter:
             speed: Current download speed in bytes per second
         """
         print(
-            f"download {repo_id} {bytes2human(download_size)}/{bytes2human(total_size)} speed {bytes2human(speed)}"
+            f"download {repo_id} {bytes2human(download_size)}/{bytes2human(total_size)} speed {bytes2human(speed)}",
         )
         data = {
             "type": "download_model_progress",
@@ -145,7 +145,7 @@ class Model_Downloader_Adapter:
                 {
                     "type": "error",
                     "err_type": "repositories_not_found",
-                }
+                },
             )
         elif isinstance(ex, NotEnoughDiskSpaceException):
             self.put_msg(
@@ -154,7 +154,7 @@ class Model_Downloader_Adapter:
                     "err_type": "not_enough_disk_space",
                     "need": bytes2human(ex.requires_space),
                     "free": bytes2human(ex.free_space),
-                }
+                },
             )
         elif isinstance(ex, DownloadException):
             self.put_msg({"type": "error", "err_type": "download_exception"})
@@ -203,7 +203,7 @@ class Model_Downloader_Adapter:
                     self.file_downloader.download_file(
                         realesrgan.ESRGAN_MODEL_URL,
                         os.path.join(
-                            utils.get_model_path(item.type, item.backend), os.path.basename(realesrgan.ESRGAN_MODEL_URL)
+                            utils.get_model_path(item.type, item.backend), os.path.basename(realesrgan.ESRGAN_MODEL_URL),
                         ),
                     )
                 else:

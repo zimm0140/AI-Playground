@@ -113,7 +113,7 @@ class HardwareCompatibilityAutofix:
                 high_priority_text = high_priority_match.group(1)
                 # Parse the recommendations
                 self.resolution_plan["high_priority"] = self._parse_recommendations(
-                    high_priority_text
+                    high_priority_text,
                 )
             else:
                 self.resolution_plan["high_priority"] = []
@@ -166,7 +166,7 @@ class HardwareCompatibilityAutofix:
 
                 # Extract the suggested version
                 suggested_version_match = re.search(
-                    r"\*\*Suggested Version\*\*: `(.*?)`", package_content
+                    r"\*\*Suggested Version\*\*: `(.*?)`", package_content,
                 )
                 if suggested_version_match:
                     suggested_version = suggested_version_match.group(1)
@@ -189,7 +189,7 @@ class HardwareCompatibilityAutofix:
                             "package": package_name,
                             "suggested_version": suggested_version,
                             "affected_platforms": affected_platforms,
-                        }
+                        },
                     )
 
         return recommendations
@@ -220,7 +220,7 @@ class HardwareCompatibilityAutofix:
                     if package in file_data:
                         # Get the original requirements file path
                         original_file = self._find_original_file_path(
-                            hw_name, file_name
+                            hw_name, file_name,
                         )
                         if not original_file:
                             self.skipped_changes[hw_name].append(
@@ -228,14 +228,14 @@ class HardwareCompatibilityAutofix:
                                     "package": package,
                                     "file": file_name,
                                     "reason": "Original file not found",
-                                }
+                                },
                             )
                             continue
 
                         # Find the line with the package declaration
                         try:
                             self._update_package_version(
-                                original_file, package, suggested_version
+                                original_file, package, suggested_version,
                             )
 
                             # Record the change
@@ -245,7 +245,7 @@ class HardwareCompatibilityAutofix:
                                     "file": original_file,
                                     "original_version": file_data[package],
                                     "new_version": suggested_version,
-                                }
+                                },
                             )
                         except Exception as e:
                             self.skipped_changes[hw_name].append(
@@ -253,7 +253,7 @@ class HardwareCompatibilityAutofix:
                                     "package": package,
                                     "file": original_file,
                                     "reason": f"Failed to update: {str(e)}",
-                                }
+                                },
                             )
 
         return {
@@ -283,7 +283,7 @@ class HardwareCompatibilityAutofix:
         return ""
 
     def _update_package_version(
-        self, file_path: str, package: str, version: str
+        self, file_path: str, package: str, version: str,
     ) -> bool:
         """
         Update package version in a requirements file.
@@ -369,10 +369,10 @@ class HardwareCompatibilityAutofix:
             )
 
             f.write(
-                f"- **Mode**: {'High Priority Only' if self.high_priority_only else 'All Recommendations'}\n"
+                f"- **Mode**: {'High Priority Only' if self.high_priority_only else 'All Recommendations'}\n",
             )
             f.write(
-                f"- **Dry Run**: {'Yes (no changes applied)' if self.dry_run else 'No (changes applied)'}\n"
+                f"- **Dry Run**: {'Yes (no changes applied)' if self.dry_run else 'No (changes applied)'}\n",
             )
             f.write(f"- **Total Changes Applied**: {total_applied}\n")
             f.write(f"- **Total Changes Skipped**: {total_skipped}\n\n")
@@ -397,7 +397,7 @@ class HardwareCompatibilityAutofix:
                         new_version = change["new_version"]
 
                         f.write(
-                            f"| {package} | {file_name} | `{original_version}` | `{new_version}` |\n"
+                            f"| {package} | {file_name} | `{original_version}` | `{new_version}` |\n",
                         )
 
                     f.write("\n")
@@ -433,17 +433,17 @@ class HardwareCompatibilityAutofix:
 
             if self.dry_run:
                 f.write(
-                    "This was a dry run, so no changes were actually applied. To apply the changes, run with `--no-dry-run`.\n\n"
+                    "This was a dry run, so no changes were actually applied. To apply the changes, run with `--no-dry-run`.\n\n",
                 )
             else:
                 f.write(
-                    "1. Review the applied changes to ensure they meet your requirements.\n"
+                    "1. Review the applied changes to ensure they meet your requirements.\n",
                 )
                 f.write(
-                    "2. If needed, restore from backups (files with `.bak` extension).\n"
+                    "2. If needed, restore from backups (files with `.bak` extension).\n",
                 )
                 f.write(
-                    "3. Run the hardware compatibility tests again to verify that conflicts have been resolved.\n\n"
+                    "3. Run the hardware compatibility tests again to verify that conflicts have been resolved.\n\n",
                 )
 
             f.write("## Backup Information\n\n")
@@ -452,7 +452,7 @@ class HardwareCompatibilityAutofix:
                 f.write("No backups were created because this was a dry run.\n")
             else:
                 f.write(
-                    "Backups were created with the suffix `{self.backup_suffix}` for each modified file.\n"
+                    "Backups were created with the suffix `{self.backup_suffix}` for each modified file.\n",
                 )
                 f.write("To restore from backup, use:\n\n")
                 f.write("```bash\n")
@@ -482,20 +482,20 @@ class HardwareCompatibilityAutofix:
             )
 
             f.write(
-                f"**Mode**: {'🔴 High Priority Only' if self.high_priority_only else '🟠 All Recommendations'} | "
+                f"**Mode**: {'🔴 High Priority Only' if self.high_priority_only else '🟠 All Recommendations'} | ",
             )
             f.write(
-                f"**Run Type**: {'🔍 Dry Run (no changes)' if self.dry_run else '🛠️ Live Run (applied changes)'}\n\n"
+                f"**Run Type**: {'🔍 Dry Run (no changes)' if self.dry_run else '🛠️ Live Run (applied changes)'}\n\n",
             )
 
             # Summary counts
             f.write("| Result | Count | Details |\n")
             f.write("|--------|-------|--------|\n")
             f.write(
-                f"| ✅ Applied | {total_applied} | Changes successfully applied |\n"
+                f"| ✅ Applied | {total_applied} | Changes successfully applied |\n",
             )
             f.write(
-                f"| ⚠️ Skipped | {total_skipped} | Changes that could not be applied |\n\n"
+                f"| ⚠️ Skipped | {total_skipped} | Changes that could not be applied |\n\n",
             )
 
             # Show sample of applied changes
@@ -512,14 +512,14 @@ class HardwareCompatibilityAutofix:
                                 "package": change["package"],
                                 "from": change["original_version"],
                                 "to": change["new_version"],
-                            }
+                            },
                         )
                     if len(samples) >= 5:  # Show at most 5 samples
                         break
 
                 for sample in samples[:5]:
                     f.write(
-                        f"- {sample['hardware']}: `{sample['package']}` from `{sample['from']}` to `{sample['to']}`\n"
+                        f"- {sample['hardware']}: `{sample['package']}` from `{sample['from']}` to `{sample['to']}`\n",
                     )
 
                 if total_applied > 5:
@@ -527,7 +527,7 @@ class HardwareCompatibilityAutofix:
 
             # Reference to full report
             f.write(
-                "\n[See detailed report](autofix_report.md) for complete information about applied and skipped changes.\n"
+                "\n[See detailed report](autofix_report.md) for complete information about applied and skipped changes.\n",
             )
 
         return summary_path
@@ -571,7 +571,7 @@ class HardwareCompatibilityAutofix:
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Auto-fix hardware compatibility issues"
+        description="Auto-fix hardware compatibility issues",
     )
     parser.add_argument(
         "--input-dir",
@@ -599,7 +599,7 @@ def main():
         help="JSON file with compatibility test data",
     )
     parser.add_argument(
-        "--backup-suffix", default=".bak", help="Suffix for backup files"
+        "--backup-suffix", default=".bak", help="Suffix for backup files",
     )
     parser.add_argument(
         "--high-priority-only",
@@ -613,7 +613,7 @@ def main():
         help="Apply both high and medium priority fixes",
     )
     parser.add_argument(
-        "--dry-run", action="store_true", help="Simulate changes without applying them"
+        "--dry-run", action="store_true", help="Simulate changes without applying them",
     )
     parser.add_argument(
         "--github-summary",

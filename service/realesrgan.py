@@ -75,7 +75,7 @@ class RealESRGANer:
         self.half = half
         self.deivce = torch.device(DEVICE)
         model_path: str = os.path.abspath(
-            os.path.join(service_config.service_model_paths.get("ESRGAN"), ESRGAN_MODEL_URL.split("/")[-1])
+            os.path.join(service_config.service_model_paths.get("ESRGAN"), ESRGAN_MODEL_URL.split("/")[-1]),
         )
         # Choose model architecture based on model filename (2x or 4x upscaling)
         if model_path.endswith("RealESRGAN_x2plus.pth"):

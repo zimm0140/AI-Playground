@@ -45,7 +45,7 @@ def find_python_files(directory="service"):
                 break
         else:
             print(
-                f"Could not find service directory in any of these locations: {possible_locations}"
+                f"Could not find service directory in any of these locations: {possible_locations}",
             )
             return []
 
@@ -92,7 +92,7 @@ def fix_issues():
     # Check for issues first
     print_header("Checking for Issues")
     check_result = run_command(
-        ["ruff", "check"] + ruff_common_args + ["--statistics"] + files
+        ["ruff", "check"] + ruff_common_args + ["--statistics"] + files,
     )
 
     if check_result.returncode == 0:
@@ -106,7 +106,7 @@ def fix_issues():
     # Check again after fixes
     print_header("Checking Again After Fixes")
     recheck_result = run_command(
-        ["ruff", "check"] + ruff_common_args + ["--statistics"] + files
+        ["ruff", "check"] + ruff_common_args + ["--statistics"] + files,
     )
 
     if recheck_result.returncode == 0:
@@ -133,23 +133,22 @@ def fix_issues():
     # Final check
     print_header("Final Check")
     final_result = run_command(
-        ["ruff", "check"] + ruff_common_args + ["--statistics"] + files
+        ["ruff", "check"] + ruff_common_args + ["--statistics"] + files,
     )
 
     if final_result.returncode == 0:
         print("\n✅ All issues fixed successfully!")
         return True
-    else:
-        print("\n⚠️ Some issues still need manual attention")
+    print("\n⚠️ Some issues still need manual attention")
 
-        # Show remaining issues in a more readable way
-        print_header("Issues Needing Manual Attention")
-        run_command(["ruff", "check"] + ruff_common_args + ["--format=text"] + files)
+    # Show remaining issues in a more readable way
+    print_header("Issues Needing Manual Attention")
+    run_command(["ruff", "check"] + ruff_common_args + ["--format=text"] + files)
 
-        # Suggest manual fixes
-        print_header("Suggestions for Manual Fixes")
-        print(
-            """
+    # Suggest manual fixes
+    print_header("Suggestions for Manual Fixes")
+    print(
+        """
 Common issues that need manual attention:
 
 1. Unused imports (F401):
@@ -163,10 +162,10 @@ Common issues that need manual attention:
 3. Missing whitespace (E2xx):
    - Add spaces around operators
    - Add spaces after commas in lists/dicts
-        """
-        )
+        """,
+    )
 
-        return False
+    return False
 
 
 if __name__ == "__main__":

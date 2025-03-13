@@ -306,7 +306,7 @@ class HFPlaygroundDownloader:
                             file.url,
                             local_file_size,
                             save_filename,
-                        )
+                        ),
                     )
             else:
                 self.file_queue.put(HFDonloadItem(file.relpath, file.size, file.url, 0, save_filename))
@@ -335,8 +335,7 @@ class HFPlaygroundDownloader:
             with model_lock:
                 model_list_cache.__setitem__(key, {"size": self.total_size, "queue": file_list})
             return self.total_size
-        else:
-            return item["size"]
+        return item["size"]
 
     def enum_file_list(self, file_list: list, enum_path: str, model_type: int, is_root=True):
         """

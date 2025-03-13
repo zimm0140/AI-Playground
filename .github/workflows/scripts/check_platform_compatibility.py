@@ -136,7 +136,7 @@ class PlatformCompatibilityChecker:
                     "description": f"File type '{ext}' is Windows-specific",
                     "platforms": ["windows"],
                     "severity": "error",
-                }
+                },
             )
             return issues  # No need to check the content further
 
@@ -149,7 +149,7 @@ class PlatformCompatibilityChecker:
                     "description": f"File type '{ext}' is Unix/macOS-specific",
                     "platforms": ["unix", "macos"],
                     "severity": "error",
-                }
+                },
             )
             return issues  # No need to check the content further
 
@@ -168,7 +168,7 @@ class PlatformCompatibilityChecker:
                             "description": "File uses Windows-specific line endings (CRLF)",
                             "platforms": ["windows"],
                             "severity": "info",
-                        }
+                        },
                     )
 
                 # Check against other patterns
@@ -185,7 +185,7 @@ class PlatformCompatibilityChecker:
                                     "description": f"{pattern['description']}: {matches.group(0)}",
                                     "platforms": pattern["platforms"],
                                     "severity": pattern["severity"],
-                                }
+                                },
                             )
 
                 # Check for shebang in script files
@@ -198,7 +198,7 @@ class PlatformCompatibilityChecker:
                             "description": f"Unix-specific shebang: {lines[0]}",
                             "platforms": ["unix", "macos"],
                             "severity": "warning",
-                        }
+                        },
                     )
         except Exception as e:
             issues.append(
@@ -209,7 +209,7 @@ class PlatformCompatibilityChecker:
                     "description": f"Error reading file: {str(e)}",
                     "platforms": [],
                     "severity": "error",
-                }
+                },
             )
 
         return issues
@@ -243,7 +243,7 @@ class PlatformCompatibilityChecker:
                 lines = content.split("\n")
                 for i, line in enumerate(lines):
                     if not line.strip().startswith("#") and re.search(
-                        r"^\s*(?:import|from)\s+", line
+                        r"^\s*(?:import|from)\s+", line,
                     ):
                         for platform, imports in platform_imports.items():
                             for import_name in imports:
@@ -259,7 +259,7 @@ class PlatformCompatibilityChecker:
                                             "description": f"{platform.capitalize()}-specific import: {import_name}",
                                             "platforms": [platform],
                                             "severity": "error",
-                                        }
+                                        },
                                     )
         except Exception as e:
             issues.append(
@@ -270,7 +270,7 @@ class PlatformCompatibilityChecker:
                     "description": f"Error reading file: {str(e)}",
                     "platforms": [],
                     "severity": "error",
-                }
+                },
             )
 
         return issues
@@ -311,7 +311,7 @@ class PlatformCompatibilityChecker:
                                     "description": f"Platform-specific condition: {matches.group(0)}",
                                     "platforms": ["cross-platform"],
                                     "severity": "info",  # This is actually a good practice for cross-platform code
-                                }
+                                },
                             )
         except Exception as e:
             issues.append(
@@ -322,7 +322,7 @@ class PlatformCompatibilityChecker:
                     "description": f"Error reading file: {str(e)}",
                     "platforms": [],
                     "severity": "error",
-                }
+                },
             )
 
         return issues
@@ -352,12 +352,12 @@ class PlatformCompatibilityChecker:
 
         # Generate markdown report
         markdown_path = os.path.join(
-            self.report_dir, "platform_compatibility_report.md"
+            self.report_dir, "platform_compatibility_report.md",
         )
         with open(markdown_path, "w", encoding="utf-8") as f:
             f.write("# Platform Compatibility Report\n\n")
             f.write(
-                "This report identifies potential platform-specific code that may cause compatibility issues.\n\n"
+                "This report identifies potential platform-specific code that may cause compatibility issues.\n\n",
             )
 
             # Summary section
@@ -365,13 +365,13 @@ class PlatformCompatibilityChecker:
             f.write(f"- **Total files analyzed**: {len(issues_by_file)}\n")
             f.write(f"- **Total issues found**: {len(all_issues)}\n")
             f.write(
-                f"- **Error level issues**: {len(issues_by_severity.get('error', []))}\n"
+                f"- **Error level issues**: {len(issues_by_severity.get('error', []))}\n",
             )
             f.write(
-                f"- **Warning level issues**: {len(issues_by_severity.get('warning', []))}\n"
+                f"- **Warning level issues**: {len(issues_by_severity.get('warning', []))}\n",
             )
             f.write(
-                f"- **Info level issues**: {len(issues_by_severity.get('info', []))}\n\n"
+                f"- **Info level issues**: {len(issues_by_severity.get('info', []))}\n\n",
             )
 
             # Platform breakdown
@@ -389,13 +389,13 @@ class PlatformCompatibilityChecker:
             f.write("| File | Total Issues | Errors | Warnings | Info |\n")
             f.write("|------|--------------|--------|----------|------|\n")
             for file, issues in sorted(
-                issues_by_file.items(), key=lambda x: len(x[1]), reverse=True
+                issues_by_file.items(), key=lambda x: len(x[1]), reverse=True,
             ):
                 errors = sum(1 for i in issues if i["severity"] == "error")
                 warnings = sum(1 for i in issues if i["severity"] == "warning")
                 infos = sum(1 for i in issues if i["severity"] == "info")
                 f.write(
-                    f"| {file} | {len(issues)} | {errors} | {warnings} | {infos} |\n"
+                    f"| {file} | {len(issues)} | {errors} | {warnings} | {infos} |\n",
                 )
             f.write("\n")
 
@@ -425,7 +425,7 @@ class PlatformCompatibilityChecker:
                     line_info = f"Line {issue['line']}: " if issue["line"] else ""
 
                     f.write(
-                        f"- {severity_emoji} **{issue['pattern_name']}** ({platforms}) - {line_info}{issue['description']}\n"
+                        f"- {severity_emoji} **{issue['pattern_name']}** ({platforms}) - {line_info}{issue['description']}\n",
                     )
 
                 f.write("\n")
@@ -433,36 +433,36 @@ class PlatformCompatibilityChecker:
             # Recommendations
             f.write("## Recommendations\n\n")
             f.write(
-                "1. **Use os.path for file operations**: Replace hardcoded path separators with `os.path.join()`\n"
+                "1. **Use os.path for file operations**: Replace hardcoded path separators with `os.path.join()`\n",
             )
             f.write(
-                "2. **Use pathlib for modern path handling**: Consider using the cross-platform `pathlib` module\n"
+                "2. **Use pathlib for modern path handling**: Consider using the cross-platform `pathlib` module\n",
             )
             f.write(
-                "3. **Check platform conditionally**: Use `if sys.platform == 'win32'` for platform-specific code\n"
+                "3. **Check platform conditionally**: Use `if sys.platform == 'win32'` for platform-specific code\n",
             )
             f.write(
-                "4. **Use consistent line endings**: Configure your editor to use LF (Unix-style) line endings\n"
+                "4. **Use consistent line endings**: Configure your editor to use LF (Unix-style) line endings\n",
             )
             f.write(
-                "5. **Abstract platform-specific operations**: Create utility functions to abstract OS-specific code\n\n"
+                "5. **Abstract platform-specific operations**: Create utility functions to abstract OS-specific code\n\n",
             )
 
             f.write("## Next Steps\n\n")
             f.write(
-                "- Review error-level issues first as they're most likely to cause compatibility problems\n"
+                "- Review error-level issues first as they're most likely to cause compatibility problems\n",
             )
             f.write(
-                "- Consider adding cross-platform tests to verify behavior across different operating systems\n"
+                "- Consider adding cross-platform tests to verify behavior across different operating systems\n",
             )
             f.write(
-                "- Use techniques like dependency injection to make platform-specific code more testable\n\n"
+                "- Use techniques like dependency injection to make platform-specific code more testable\n\n",
             )
 
             # Footer
             f.write("---\n\n")
             f.write(
-                f"*This report was automatically generated by the CI process on {os.popen('date').read().strip()}*\n"
+                f"*This report was automatically generated by the CI process on {os.popen('date').read().strip()}*\n",
             )
 
         return markdown_path, json_path
@@ -488,17 +488,17 @@ class PlatformCompatibilityChecker:
 
             f.write("### Overview\n\n")
             f.write(
-                f"Found **{len(all_issues)}** potential platform compatibility issues\n\n"
+                f"Found **{len(all_issues)}** potential platform compatibility issues\n\n",
             )
 
             # Status indicators
             if error_count > 0:
                 f.write(
-                    "🔴 **Platform-specific issues found that may break cross-platform compatibility**\n\n"
+                    "🔴 **Platform-specific issues found that may break cross-platform compatibility**\n\n",
                 )
             elif warning_count > 0:
                 f.write(
-                    "⚠️ **Minor platform-specific issues found that should be reviewed**\n\n"
+                    "⚠️ **Minor platform-specific issues found that should be reviewed**\n\n",
                 )
             else:
                 f.write("✅ **No critical platform-specific issues found**\n\n")
@@ -522,19 +522,19 @@ class PlatformCompatibilityChecker:
             # Provide recommendation based on findings
             if error_count > 0:
                 f.write(
-                    "⚠️ **Recommendation**: Review error-level issues immediately to ensure cross-platform compatibility\n"
+                    "⚠️ **Recommendation**: Review error-level issues immediately to ensure cross-platform compatibility\n",
                 )
             elif warning_count > 0:
                 f.write(
-                    "ℹ️ **Recommendation**: Consider refactoring code with platform-specific patterns for better compatibility\n"
+                    "ℹ️ **Recommendation**: Consider refactoring code with platform-specific patterns for better compatibility\n",
                 )
             else:
                 f.write(
-                    "✅ **Recommendation**: Continue maintaining good cross-platform practices\n"
+                    "✅ **Recommendation**: Continue maintaining good cross-platform practices\n",
                 )
 
             f.write(
-                "\nSee platform compatibility report artifact for detailed information.\n"
+                "\nSee platform compatibility report artifact for detailed information.\n",
             )
 
     def run(self):
@@ -583,7 +583,7 @@ class PlatformCompatibilityChecker:
         self.generate_github_summary(all_issues)
 
         print(
-            f"Platform compatibility analysis complete. Reports saved to {markdown_path} and {json_path}"
+            f"Platform compatibility analysis complete. Reports saved to {markdown_path} and {json_path}",
         )
 
         # Return exit code based on errors
@@ -592,7 +592,7 @@ class PlatformCompatibilityChecker:
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Check for platform-specific issues in the codebase"
+        description="Check for platform-specific issues in the codebase",
     )
     parser.add_argument(
         "--report-dir",

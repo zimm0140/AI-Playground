@@ -37,7 +37,7 @@ def fix_artifact_names(file_path):
 
         # Find artifact uploads within the job
         artifact_pattern = re.compile(
-            r"(\s+)- name: Upload .*\n.*uses: actions/upload-artifact.*\n.*with:\s*\n\s+name: ([^\n]+)"
+            r"(\s+)- name: Upload .*\n.*uses: actions/upload-artifact.*\n.*with:\s*\n\s+name: ([^\n]+)",
         )
         artifact_matches = list(artifact_pattern.finditer(job_content))
 
@@ -54,13 +54,13 @@ def fix_artifact_names(file_path):
 
             # Replace the artifact name in the content
             pattern = re.compile(
-                f"(\\s+name: Upload .*\\n.*uses: actions/upload-artifact.*\\n.*with:\\s*\\n\\s+name: ){re.escape(artifact_name)}"
+                f"(\\s+name: Upload .*\\n.*uses: actions/upload-artifact.*\\n.*with:\\s*\\n\\s+name: ){re.escape(artifact_name)}",
             )
             new_content = pattern.sub(f"\\1{new_artifact_name}", content)
 
             if new_content != content:
                 changes.append(
-                    f"  - Changed artifact name '{artifact_name}' to '{new_artifact_name}'"
+                    f"  - Changed artifact name '{artifact_name}' to '{new_artifact_name}'",
                 )
                 content = new_content
 
@@ -72,9 +72,8 @@ def fix_artifact_names(file_path):
         for change in changes:
             print(change)
         return True
-    else:
-        print(f"No changes needed in {file_path}")
-        return False
+    print(f"No changes needed in {file_path}")
+    return False
 
 
 def main():

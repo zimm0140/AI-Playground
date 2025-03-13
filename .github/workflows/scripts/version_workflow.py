@@ -61,12 +61,11 @@ def bump_version(current_version, bump_type):
 
     if bump_type == "major":
         return format_version((major + 1, 0, 0))
-    elif bump_type == "minor":
+    if bump_type == "minor":
         return format_version((major, minor + 1, 0))
-    elif bump_type == "patch":
+    if bump_type == "patch":
         return format_version((major, minor, patch + 1))
-    else:
-        return current_version
+    return current_version
 
 
 def detect_breaking_changes(old_workflow, new_workflow):
@@ -98,33 +97,33 @@ def detect_breaking_changes(old_workflow, new_workflow):
         new_type = new_inputs[input_name].get("type")
         if old_type != new_type:
             breaking_changes.append(
-                f"Changed type of input '{input_name}' from '{old_type}' to '{new_type}'"
+                f"Changed type of input '{input_name}' from '{old_type}' to '{new_type}'",
             )
 
     # Check for changed model requirements
     old_models = {
         model.get("model", "")
         for model in old_workflow.get("comfyUIRequirements", {}).get(
-            "requiredModels", []
+            "requiredModels", [],
         )
     }
     new_models = {
         model.get("model", "")
         for model in new_workflow.get("comfyUIRequirements", {}).get(
-            "requiredModels", []
+            "requiredModels", [],
         )
     }
 
     removed_models = old_models - new_models
     if removed_models:
         breaking_changes.append(
-            f"Removed model requirements: {', '.join(removed_models)}"
+            f"Removed model requirements: {', '.join(removed_models)}",
         )
 
     # Check for changed backend
     if old_workflow.get("backend") != new_workflow.get("backend"):
         breaking_changes.append(
-            f"Changed backend from '{old_workflow.get('backend')}' to '{new_workflow.get('backend')}'"
+            f"Changed backend from '{old_workflow.get('backend')}' to '{new_workflow.get('backend')}'",
         )
 
     # Check for removed outputs
@@ -141,7 +140,7 @@ def detect_breaking_changes(old_workflow, new_workflow):
         new_type = new_outputs[output_name].get("type")
         if old_type != new_type:
             breaking_changes.append(
-                f"Changed type of output '{output_name}' from '{old_type}' to '{new_type}'"
+                f"Changed type of output '{output_name}' from '{old_type}' to '{new_type}'",
             )
 
     return breaking_changes
@@ -200,7 +199,7 @@ def find_previous_version(workflow_file):
     # This is a placeholder. In a real implementation, this would use git or other VCS
     # to retrieve the previous version of the file.
     print(
-        "Warning: Finding previous versions requires integration with version control."
+        "Warning: Finding previous versions requires integration with version control.",
     )
     print("This feature is not implemented in this script.")
 
@@ -229,10 +228,10 @@ def process_all_workflows(workflows_dir, bump_type=None):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Manage versioning for ComfyUI workflow files"
+        description="Manage versioning for ComfyUI workflow files",
     )
     parser.add_argument(
-        "--workflows-dir", help="Directory containing workflow JSON files"
+        "--workflows-dir", help="Directory containing workflow JSON files",
     )
     parser.add_argument("--workflow", help="Path to a specific workflow file to update")
     parser.add_argument(

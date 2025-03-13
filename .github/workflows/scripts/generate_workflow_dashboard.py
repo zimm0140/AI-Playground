@@ -50,18 +50,17 @@ class ComfyWorkflowDashboard:
         """Load workflow validation results"""
         try:
             validation_file = os.path.join(
-                self.validation_dir, "workflow_validation_results.json"
+                self.validation_dir, "workflow_validation_results.json",
             )
             if os.path.exists(validation_file):
                 with open(validation_file, encoding="utf-8") as f:
                     self.validation_data = json.load(f)
                 print(
-                    f"Loaded validation data for {len(self.validation_data.get('workflows', []))} workflows"
+                    f"Loaded validation data for {len(self.validation_data.get('workflows', []))} workflows",
                 )
                 return True
-            else:
-                print(f"Validation data file not found: {validation_file}")
-                return False
+            print(f"Validation data file not found: {validation_file}")
+            return False
         except Exception as e:
             print(f"Error loading validation data: {e}")
             return False
@@ -70,18 +69,17 @@ class ComfyWorkflowDashboard:
         """Load workflow requirements analysis"""
         try:
             requirements_file = os.path.join(
-                self.requirements_dir, "workflow_requirements_results.json"
+                self.requirements_dir, "workflow_requirements_results.json",
             )
             if os.path.exists(requirements_file):
                 with open(requirements_file, encoding="utf-8") as f:
                     self.requirements_data = json.load(f)
                 print(
-                    f"Loaded requirements data for {len(self.requirements_data.get('workflows', []))} workflows"
+                    f"Loaded requirements data for {len(self.requirements_data.get('workflows', []))} workflows",
                 )
                 return True
-            else:
-                print(f"Requirements data file not found: {requirements_file}")
-                return False
+            print(f"Requirements data file not found: {requirements_file}")
+            return False
         except Exception as e:
             print(f"Error loading requirements data: {e}")
             return False
@@ -94,12 +92,11 @@ class ComfyWorkflowDashboard:
                 with open(tests_file, encoding="utf-8") as f:
                     self.tests_data = json.load(f)
                 print(
-                    f"Loaded test data for {len(self.tests_data.get('workflow_results', []))} workflows"
+                    f"Loaded test data for {len(self.tests_data.get('workflow_results', []))} workflows",
                 )
                 return True
-            else:
-                print(f"Tests data file not found: {tests_file}")
-                return False
+            print(f"Tests data file not found: {tests_file}")
+            return False
         except Exception as e:
             print(f"Error loading tests data: {e}")
             return False
@@ -112,12 +109,11 @@ class ComfyWorkflowDashboard:
                 with open(history_file, encoding="utf-8") as f:
                     self.versions_data = json.load(f)
                 print(
-                    f"Loaded version history for {len(self.versions_data.get('workflows', []))} workflows"
+                    f"Loaded version history for {len(self.versions_data.get('workflows', []))} workflows",
                 )
                 return True
-            else:
-                print(f"Version history file not found: {history_file}")
-                return False
+            print(f"Version history file not found: {history_file}")
+            return False
         except Exception as e:
             print(f"Error loading version history: {e}")
             return False
@@ -244,10 +240,10 @@ class ComfyWorkflowDashboard:
                 filename = workflow["filename"]
                 if filename in self.dashboard_data:
                     self.dashboard_data[filename]["tests"]["passed"] = workflow.get(
-                        "passed", False
+                        "passed", False,
                     )
                     self.dashboard_data[filename]["tests"]["issues"] = workflow.get(
-                        "issues", []
+                        "issues", [],
                     )
                     self.dashboard_data[filename]["tests"][
                         "execution_time"
@@ -275,7 +271,7 @@ class ComfyWorkflowDashboard:
                 if filename in self.dashboard_data:
                     versions = workflow.get("versions", [])
                     self.dashboard_data[filename]["versions"]["total_versions"] = len(
-                        versions
+                        versions,
                     )
 
                     if versions:
@@ -354,7 +350,7 @@ class ComfyWorkflowDashboard:
             with open(md_path, "w", encoding="utf-8") as f:
                 f.write("# ComfyUI Workflow Dashboard\n\n")
                 f.write(
-                    f"Generated on: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n"
+                    f"Generated on: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n",
                 )
 
                 # Summary section
@@ -393,10 +389,10 @@ class ComfyWorkflowDashboard:
                 # Dashboard table
                 f.write("## Workflow Status Dashboard\n\n")
                 f.write(
-                    "| Workflow | Validation | Test | Memory Req. | Nodes | Custom Nodes | Versions | Status |\n"
+                    "| Workflow | Validation | Test | Memory Req. | Nodes | Custom Nodes | Versions | Status |\n",
                 )
                 f.write(
-                    "|----------|------------|------|-------------|-------|--------------|----------|--------|\n"
+                    "|----------|------------|------|-------------|-------|--------------|----------|--------|\n",
                 )
 
                 for filename, data in sorted(self.dashboard_data.items()):
@@ -464,7 +460,7 @@ class ComfyWorkflowDashboard:
                         status_text = "❓ Unknown"
 
                     f.write(
-                        f"| {filename} | {validation_status} | {test_status} | {memory_text} | {node_count} | {custom_nodes_text} | {version_status} | {status_text} |\n"
+                        f"| {filename} | {validation_status} | {test_status} | {memory_text} | {node_count} | {custom_nodes_text} | {version_status} | {status_text} |\n",
                     )
 
                 f.write("\n")
@@ -473,11 +469,11 @@ class ComfyWorkflowDashboard:
                 f.write("### Status Legend\n\n")
                 f.write("- ✅ **Pass**: No issues detected\n")
                 f.write(
-                    "- ⚠️ **Warning**: Minor issues that might not affect functionality\n"
+                    "- ⚠️ **Warning**: Minor issues that might not affect functionality\n",
                 )
                 f.write("- ❌ **Fail**: Critical issues that need to be addressed\n")
                 f.write(
-                    "- ❓ **Unknown**: Not enough information to determine status\n\n"
+                    "- ❓ **Unknown**: Not enough information to determine status\n\n",
                 )
 
                 # Workflow details
@@ -493,7 +489,7 @@ class ComfyWorkflowDashboard:
 
                 for filename, data in self.dashboard_data.items():
                     grouped_workflows[data["status"]["overall"]].append(
-                        (filename, data)
+                        (filename, data),
                     )
 
                 # First show failing workflows
@@ -522,11 +518,11 @@ class ComfyWorkflowDashboard:
                         # Requirements
                         f.write("**Requirements:**\n\n")
                         f.write(
-                            f"- Memory: Min {data['requirements']['memory_required']['min']}GB, Recommended {data['requirements']['memory_required']['recommended']}GB\n"
+                            f"- Memory: Min {data['requirements']['memory_required']['min']}GB, Recommended {data['requirements']['memory_required']['recommended']}GB\n",
                         )
                         if data["requirements"]["custom_nodes"]:
                             f.write(
-                                f"- Custom Nodes: {', '.join(data['requirements']['custom_nodes'])}\n"
+                                f"- Custom Nodes: {', '.join(data['requirements']['custom_nodes'])}\n",
                             )
                         f.write("\n")
 
@@ -573,11 +569,11 @@ class ComfyWorkflowDashboard:
                         # Requirements
                         f.write("**Requirements:**\n\n")
                         f.write(
-                            f"- Memory: Min {data['requirements']['memory_required']['min']}GB, Recommended {data['requirements']['memory_required']['recommended']}GB\n"
+                            f"- Memory: Min {data['requirements']['memory_required']['min']}GB, Recommended {data['requirements']['memory_required']['recommended']}GB\n",
                         )
                         if data["requirements"]["custom_nodes"]:
                             f.write(
-                                f"- Custom Nodes: {', '.join(data['requirements']['custom_nodes'])}\n"
+                                f"- Custom Nodes: {', '.join(data['requirements']['custom_nodes'])}\n",
                             )
                         f.write("\n")
 
@@ -648,16 +644,16 @@ class ComfyWorkflowDashboard:
                 # Final notes
                 f.write("## Notes\n\n")
                 f.write(
-                    "1. This dashboard is automatically generated by the CI workflow.\n"
+                    "1. This dashboard is automatically generated by the CI workflow.\n",
                 )
                 f.write(
-                    "2. Workflows with high memory requirements may not run on all systems.\n"
+                    "2. Workflows with high memory requirements may not run on all systems.\n",
                 )
                 f.write(
-                    "3. Breaking changes in workflows may affect compatibility with older versions.\n"
+                    "3. Breaking changes in workflows may affect compatibility with older versions.\n",
                 )
                 f.write(
-                    "4. Custom nodes required by workflows must be installed separately.\n\n"
+                    "4. Custom nodes required by workflows must be installed separately.\n\n",
                 )
 
                 f.write("---\n")
@@ -705,11 +701,11 @@ class ComfyWorkflowDashboard:
                 # Status indicators based on counts
                 if status_counts["fail"] > 0:
                     f.write(
-                        f"❌ **{status_counts['fail']} workflow(s) have critical issues**\n\n"
+                        f"❌ **{status_counts['fail']} workflow(s) have critical issues**\n\n",
                     )
                 elif status_counts["warning"] > 0:
                     f.write(
-                        f"⚠️ **{status_counts['warning']} workflow(s) have warnings**\n\n"
+                        f"⚠️ **{status_counts['warning']} workflow(s) have warnings**\n\n",
                     )
                 else:
                     f.write("✅ **All workflows are passing**\n\n")
@@ -776,13 +772,13 @@ class ComfyWorkflowDashboard:
 
                         # Format issues for table
                         issues_text = ", ".join(
-                            critical_issues[:2]
+                            critical_issues[:2],
                         )  # Show only first 2 issues
                         if len(critical_issues) > 2:
                             issues_text += f", +{len(critical_issues) - 2} more"
 
                         f.write(
-                            f"| {filename} | {validation_status} | {test_status} | {issues_text} |\n"
+                            f"| {filename} | {validation_status} | {test_status} | {issues_text} |\n",
                         )
 
                     f.write("\n")

@@ -49,9 +49,8 @@ def fix_unused_variable(file_path):
             f.write(fixed_content)
         print(f"✅ Fixed unused variables in {file_path}")
         return True
-    else:
-        print(f"ℹ️ No changes made to {file_path}")
-        return False
+    print(f"ℹ️ No changes made to {file_path}")
+    return False
 
 
 def main():

@@ -61,15 +61,14 @@ class PRCommentGenerator:
         """Load workflow validation results"""
         try:
             validation_file = os.path.join(
-                self.validation_dir, "workflow_validation_results.json"
+                self.validation_dir, "workflow_validation_results.json",
             )
             if os.path.exists(validation_file):
                 with open(validation_file, encoding="utf-8") as f:
                     self.validation_data = json.load(f)
                 return True
-            else:
-                print(f"Validation data file not found: {validation_file}")
-                return False
+            print(f"Validation data file not found: {validation_file}")
+            return False
         except Exception as e:
             print(f"Error loading validation data: {e}")
             return False
@@ -78,15 +77,14 @@ class PRCommentGenerator:
         """Load workflow requirements analysis"""
         try:
             requirements_file = os.path.join(
-                self.requirements_dir, "workflow_requirements_results.json"
+                self.requirements_dir, "workflow_requirements_results.json",
             )
             if os.path.exists(requirements_file):
                 with open(requirements_file, encoding="utf-8") as f:
                     self.requirements_data = json.load(f)
                 return True
-            else:
-                print(f"Requirements data file not found: {requirements_file}")
-                return False
+            print(f"Requirements data file not found: {requirements_file}")
+            return False
         except Exception as e:
             print(f"Error loading requirements data: {e}")
             return False
@@ -99,9 +97,8 @@ class PRCommentGenerator:
                 with open(tests_file, encoding="utf-8") as f:
                     self.tests_data = json.load(f)
                 return True
-            else:
-                print(f"Tests data file not found: {tests_file}")
-                return False
+            print(f"Tests data file not found: {tests_file}")
+            return False
         except Exception as e:
             print(f"Error loading tests data: {e}")
             return False
@@ -110,15 +107,14 @@ class PRCommentGenerator:
         """Load workflow simulation results"""
         try:
             simulation_file = os.path.join(
-                self.simulation_dir, "workflow_simulation_results.json"
+                self.simulation_dir, "workflow_simulation_results.json",
             )
             if os.path.exists(simulation_file):
                 with open(simulation_file, encoding="utf-8") as f:
                     self.simulation_data = json.load(f)
                 return True
-            else:
-                print(f"Simulation data file not found: {simulation_file}")
-                return False
+            print(f"Simulation data file not found: {simulation_file}")
+            return False
         except Exception as e:
             print(f"Error loading simulation data: {e}")
             return False
@@ -131,9 +127,8 @@ class PRCommentGenerator:
                 with open(history_file, encoding="utf-8") as f:
                     self.versions_data = json.load(f)
                 return True
-            else:
-                print(f"Version history file not found: {history_file}")
-                return False
+            print(f"Version history file not found: {history_file}")
+            return False
         except Exception as e:
             print(f"Error loading version history: {e}")
             return False
@@ -181,7 +176,7 @@ class PRCommentGenerator:
                     "is_analyzed": workflow.get("is_analyzed", False),
                     "status": "pass" if workflow.get("is_analyzed", False) else "fail",
                     "memory_required": workflow.get(
-                        "memory_required", {"min": 0, "recommended": 0}
+                        "memory_required", {"min": 0, "recommended": 0},
                     ),
                     "models": workflow.get("models", {}),
                     "custom_nodes": workflow.get("custom_nodes", []),
@@ -487,7 +482,7 @@ class PRCommentGenerator:
 
                 if workflow["test"]["status"] == "fail":
                     recommendations.append(
-                        "Ensure workflow graph is properly connected without circular dependencies"
+                        "Ensure workflow graph is properly connected without circular dependencies",
                     )
 
                 if workflow["simulation"]["status"] == "fail":
@@ -495,12 +490,12 @@ class PRCommentGenerator:
 
                 if workflow["changes"].get("has_breaking_changes", False):
                     recommendations.append(
-                        "Consider impact of breaking changes on existing users"
+                        "Consider impact of breaking changes on existing users",
                     )
 
                 if workflow["requirements"]["memory_required"]["min"] > 16:
                     recommendations.append(
-                        "Optimize for lower memory usage if possible"
+                        "Optimize for lower memory usage if possible",
                     )
 
                 if recommendations:
@@ -533,7 +528,7 @@ class PRCommentGenerator:
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Generate PR comment for ComfyUI workflow changes"
+        description="Generate PR comment for ComfyUI workflow changes",
     )
     parser.add_argument(
         "--validation-dir",
@@ -566,7 +561,7 @@ def main():
         help="Directory containing dashboard",
     )
     parser.add_argument(
-        "--changed-files", nargs="+", help="List of changed files in the PR"
+        "--changed-files", nargs="+", help="List of changed files in the PR",
     )
     parser.add_argument(
         "--output-file",
@@ -582,7 +577,7 @@ def main():
 
     if not changed_files:
         print(
-            "No changed files provided. Please provide --changed-files or set CHANGED_FILES environment variable"
+            "No changed files provided. Please provide --changed-files or set CHANGED_FILES environment variable",
         )
         sys.exit(1)
 

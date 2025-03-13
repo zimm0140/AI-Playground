@@ -133,7 +133,7 @@ class EmbeddingDatabase:
         index_json = os.path.join(INDEX_DATABASE_PATH, "index.json")
         self.index_list = self.__load_exists_index(index_json) if os.path.exists(index_json) else []
         self.text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=CHUNK_SIZE, chunk_overlap=CHUNK_OVERLAP, length_function=len
+            chunk_size=CHUNK_SIZE, chunk_overlap=CHUNK_OVERLAP, length_function=len,
         )
 
     def __load_exists_index(self, index_json: str):

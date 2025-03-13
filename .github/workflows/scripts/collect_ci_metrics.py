@@ -49,7 +49,7 @@ class CIMetricsCollector:
 
         # Look for test result files
         test_result_files = glob.glob(
-            f"{self.artifacts_dir}/*/test_results.json"
+            f"{self.artifacts_dir}/*/test_results.json",
         ) + glob.glob(f"{self.artifacts_dir}/*/test_results_*.json")
 
         for result_file in test_result_files:
@@ -93,19 +93,19 @@ class CIMetricsCollector:
 
                 # Update total metrics
                 self.metrics_data["test_metrics"]["total_tests"] += results.get(
-                    "total", 0
+                    "total", 0,
                 )
                 self.metrics_data["test_metrics"]["passed_tests"] += results.get(
-                    "passed", 0
+                    "passed", 0,
                 )
                 self.metrics_data["test_metrics"]["failed_tests"] += results.get(
-                    "failed", 0
+                    "failed", 0,
                 )
                 self.metrics_data["test_metrics"]["skipped_tests"] += results.get(
-                    "skipped", 0
+                    "skipped", 0,
                 )
                 self.metrics_data["test_metrics"]["test_duration"] += results.get(
-                    "duration", 0
+                    "duration", 0,
                 )
 
             except Exception as e:
@@ -115,7 +115,7 @@ class CIMetricsCollector:
         total = self.metrics_data["test_metrics"]["total_tests"]
         if total > 0:
             self.metrics_data["test_metrics"]["pass_rate"] = round(
-                (self.metrics_data["test_metrics"]["passed_tests"] / total) * 100, 2
+                (self.metrics_data["test_metrics"]["passed_tests"] / total) * 100, 2,
             )
         else:
             self.metrics_data["test_metrics"]["pass_rate"] = 0
@@ -133,7 +133,7 @@ class CIMetricsCollector:
 
         # Look for coverage XML files
         coverage_files = glob.glob(f"{self.artifacts_dir}/coverage*/*.xml") + glob.glob(
-            f"{self.artifacts_dir}/*/coverage.xml"
+            f"{self.artifacts_dir}/*/coverage.xml",
         )
 
         for coverage_file in coverage_files:
@@ -190,10 +190,10 @@ class CIMetricsCollector:
             and self.metrics_data["coverage_metrics"]["platform_coverage"]
         ):
             platform_coverages = list(
-                self.metrics_data["coverage_metrics"]["platform_coverage"].values()
+                self.metrics_data["coverage_metrics"]["platform_coverage"].values(),
             )
             self.metrics_data["coverage_metrics"]["overall_coverage"] = round(
-                sum(platform_coverages) / len(platform_coverages), 2
+                sum(platform_coverages) / len(platform_coverages), 2,
             )
 
         print(f"Collected coverage metrics: {self.metrics_data['coverage_metrics']}")
@@ -209,7 +209,7 @@ class CIMetricsCollector:
 
         # Look for performance data files
         performance_files = glob.glob(
-            f"{self.artifacts_dir}/performance*/performance_data.csv"
+            f"{self.artifacts_dir}/performance*/performance_data.csv",
         )
 
         for perf_file in performance_files:
@@ -253,7 +253,7 @@ class CIMetricsCollector:
                 print(f"Error processing performance file {perf_file}: {str(e)}")
 
         print(
-            f"Collected performance metrics: {self.metrics_data['performance_metrics']}"
+            f"Collected performance metrics: {self.metrics_data['performance_metrics']}",
         )
 
     def collect_security_metrics(self):
@@ -328,7 +328,7 @@ class CIMetricsCollector:
 
         # Look for platform compatibility JSON file
         platform_files = glob.glob(
-            f"{self.artifacts_dir}/platform*/platform_issues.json"
+            f"{self.artifacts_dir}/platform*/platform_issues.json",
         )
 
         for platform_file in platform_files:
@@ -338,7 +338,7 @@ class CIMetricsCollector:
 
                 # Count total issues
                 self.metrics_data["platform_metrics"]["total_issues"] = len(
-                    platform_issues
+                    platform_issues,
                 )
 
                 # Count by severity
@@ -393,16 +393,16 @@ class CIMetricsCollector:
             "run_number": self.metrics_data["run_number"],
             "test_pass_rate": self.metrics_data["test_metrics"].get("pass_rate", 0),
             "overall_coverage": self.metrics_data["coverage_metrics"].get(
-                "overall_coverage", 0
+                "overall_coverage", 0,
             ),
             "total_duration": self.metrics_data["performance_metrics"].get(
-                "total_duration", 0
+                "total_duration", 0,
             ),
             "total_vulnerabilities": self.metrics_data["security_metrics"].get(
-                "total_vulnerabilities", 0
+                "total_vulnerabilities", 0,
             ),
             "platform_issues": self.metrics_data["platform_metrics"].get(
-                "total_issues", 0
+                "total_issues", 0,
             ),
         }
         history_data.append(history_entry)
@@ -443,19 +443,19 @@ class CIMetricsCollector:
             f.write(f"- **Skipped Tests**: {test_metrics.get('skipped_tests', 0)}\n")
             f.write(f"- **Pass Rate**: {test_metrics.get('pass_rate', 0)}%\n")
             f.write(
-                f"- **Total Duration**: {test_metrics.get('test_duration', 0):.2f} seconds\n\n"
+                f"- **Total Duration**: {test_metrics.get('test_duration', 0):.2f} seconds\n\n",
             )
 
             # Platform Test Results
             if test_metrics.get("platform_results"):
                 f.write("### Platform Test Results\n\n")
                 f.write(
-                    "| Platform | Tests | Passed | Failed | Skipped | Pass Rate |\n"
+                    "| Platform | Tests | Passed | Failed | Skipped | Pass Rate |\n",
                 )
                 f.write("|----------|-------|--------|--------|---------|----------|\n")
 
                 for platform, metrics in test_metrics.get(
-                    "platform_results", {}
+                    "platform_results", {},
                 ).items():
                     total = metrics.get("total_tests", 0)
                     pass_rate = (
@@ -464,7 +464,7 @@ class CIMetricsCollector:
                         else 0
                     )
                     f.write(
-                        f"| {platform.capitalize()} | {total} | {metrics.get('passed_tests', 0)} | {metrics.get('failed_tests', 0)} | {metrics.get('skipped_tests', 0)} | {pass_rate}% |\n"
+                        f"| {platform.capitalize()} | {total} | {metrics.get('passed_tests', 0)} | {metrics.get('failed_tests', 0)} | {metrics.get('skipped_tests', 0)} | {pass_rate}% |\n",
                     )
 
                 f.write("\n")
@@ -473,7 +473,7 @@ class CIMetricsCollector:
             f.write("## Coverage Metrics\n\n")
             coverage_metrics = self.metrics_data["coverage_metrics"]
             f.write(
-                f"- **Overall Coverage**: {coverage_metrics.get('overall_coverage', 0)}%\n\n"
+                f"- **Overall Coverage**: {coverage_metrics.get('overall_coverage', 0)}%\n\n",
             )
 
             # Platform Coverage
@@ -483,7 +483,7 @@ class CIMetricsCollector:
                 f.write("|----------|----------|\n")
 
                 for platform, coverage in coverage_metrics.get(
-                    "platform_coverage", {}
+                    "platform_coverage", {},
                 ).items():
                     f.write(f"| {platform.capitalize()} | {coverage}% |\n")
 
@@ -518,7 +518,7 @@ class CIMetricsCollector:
             f.write("## Performance Metrics\n\n")
             performance_metrics = self.metrics_data["performance_metrics"]
             f.write(
-                f"- **Total CI Duration**: {performance_metrics.get('total_duration', 0):.2f} seconds\n\n"
+                f"- **Total CI Duration**: {performance_metrics.get('total_duration', 0):.2f} seconds\n\n",
             )
 
             # Slowest Steps
@@ -536,16 +536,16 @@ class CIMetricsCollector:
             f.write("## Security Metrics\n\n")
             security_metrics = self.metrics_data["security_metrics"]
             f.write(
-                f"- **Total Vulnerabilities**: {security_metrics.get('total_vulnerabilities', 0)}\n"
+                f"- **Total Vulnerabilities**: {security_metrics.get('total_vulnerabilities', 0)}\n",
             )
             f.write(
-                f"- **High Severity**: {security_metrics.get('high_vulnerabilities', 0)}\n"
+                f"- **High Severity**: {security_metrics.get('high_vulnerabilities', 0)}\n",
             )
             f.write(
-                f"- **Medium Severity**: {security_metrics.get('medium_vulnerabilities', 0)}\n"
+                f"- **Medium Severity**: {security_metrics.get('medium_vulnerabilities', 0)}\n",
             )
             f.write(
-                f"- **Low Severity**: {security_metrics.get('low_vulnerabilities', 0)}\n\n"
+                f"- **Low Severity**: {security_metrics.get('low_vulnerabilities', 0)}\n\n",
             )
 
             # Vulnerable Packages
@@ -560,16 +560,16 @@ class CIMetricsCollector:
             f.write("## Platform Compatibility Metrics\n\n")
             platform_metrics = self.metrics_data["platform_metrics"]
             f.write(
-                f"- **Total Platform Issues**: {platform_metrics.get('total_issues', 0)}\n"
+                f"- **Total Platform Issues**: {platform_metrics.get('total_issues', 0)}\n",
             )
             f.write(
-                f"- **Error Level Issues**: {platform_metrics.get('severity_counts', {}).get('error', 0)}\n"
+                f"- **Error Level Issues**: {platform_metrics.get('severity_counts', {}).get('error', 0)}\n",
             )
             f.write(
-                f"- **Warning Level Issues**: {platform_metrics.get('severity_counts', {}).get('warning', 0)}\n"
+                f"- **Warning Level Issues**: {platform_metrics.get('severity_counts', {}).get('warning', 0)}\n",
             )
             f.write(
-                f"- **Info Level Issues**: {platform_metrics.get('severity_counts', {}).get('info', 0)}\n\n"
+                f"- **Info Level Issues**: {platform_metrics.get('severity_counts', {}).get('info', 0)}\n\n",
             )
 
             # Platform-specific Issues
@@ -579,7 +579,7 @@ class CIMetricsCollector:
                 f.write("|----------|--------|\n")
 
                 for platform, count in platform_metrics.get(
-                    "platform_issues", {}
+                    "platform_issues", {},
                 ).items():
                     f.write(f"| {platform.capitalize()} | {count} |\n")
 
@@ -625,7 +625,7 @@ class CIMetricsCollector:
 
         # Plot security vulnerabilities over time
         axs[1, 1].plot(
-            timestamps, vulnerabilities, marker="o", linestyle="-", color="red"
+            timestamps, vulnerabilities, marker="o", linestyle="-", color="red",
         )
         axs[1, 1].set_title("Security Vulnerabilities Over Time")
         axs[1, 1].set_ylabel("Vulnerabilities Count")
@@ -634,7 +634,7 @@ class CIMetricsCollector:
 
         # Plot platform issues over time
         axs[2, 0].plot(
-            timestamps, platform_issues, marker="o", linestyle="-", color="purple"
+            timestamps, platform_issues, marker="o", linestyle="-", color="purple",
         )
         axs[2, 0].set_title("Platform Compatibility Issues Over Time")
         axs[2, 0].set_ylabel("Issues Count")
@@ -698,7 +698,7 @@ class CIMetricsCollector:
 
             # Platform coverage
             platform_coverage = self.metrics_data["coverage_metrics"].get(
-                "platform_coverage", {}
+                "platform_coverage", {},
             )
             if platform_coverage:
                 f.write("| Platform | Coverage |\n")
@@ -715,7 +715,7 @@ class CIMetricsCollector:
             f.write(f"Total CI duration: **{duration:.2f} seconds**\n\n")
 
             slowest_steps = self.metrics_data["performance_metrics"].get(
-                "slowest_steps", []
+                "slowest_steps", [],
             )
             if slowest_steps:
                 f.write("Slowest steps:\n\n")
@@ -779,7 +779,7 @@ class CIMetricsCollector:
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Collect CI metrics and generate reports"
+        description="Collect CI metrics and generate reports",
     )
     parser.add_argument(
         "--artifacts-dir",
@@ -794,7 +794,7 @@ def main():
     args = parser.parse_args()
 
     collector = CIMetricsCollector(
-        artifacts_dir=args.artifacts_dir, output_dir=args.output_dir
+        artifacts_dir=args.artifacts_dir, output_dir=args.output_dir,
     )
     collector.run()
 

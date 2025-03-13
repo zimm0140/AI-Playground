@@ -25,7 +25,7 @@ def parse_args():
         help="Directory containing workflow JSON files",
     )
     parser.add_argument(
-        "--output-dir", required=True, help="Directory to write test results"
+        "--output-dir", required=True, help="Directory to write test results",
     )
 
     return parser.parse_args()

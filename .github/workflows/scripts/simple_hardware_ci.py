@@ -729,9 +729,8 @@ def run_tests():
         if result == 0:
             debug_print("Tests passed successfully")
             return True
-        else:
-            debug_print(f"Tests failed with code: {result}", "ERROR")
-            return False
+        debug_print(f"Tests failed with code: {result}", "ERROR")
+        return False
     except ImportError:
         debug_print("Pytest not found, skipping tests", "WARNING")
         return True

@@ -43,8 +43,8 @@ def test_get_workflow_nodes_api_format_nested():
             "nodes": {
                 "1": {"class_type": "LoadImage"},
                 "2": {"class_type": "SaveImage"},
-            }
-        }
+            },
+        },
     }
     nodes = get_workflow_nodes(workflow)
     assert nodes is not None
@@ -60,7 +60,7 @@ def test_get_workflow_nodes_api_format_direct():
         "comfyUiApiWorkflow": {
             "1": {"class_type": "LoadImage"},
             "2": {"class_type": "SaveImage"},
-        }
+        },
     }
     nodes = get_workflow_nodes(workflow)
     assert nodes is not None
@@ -152,7 +152,7 @@ def test_build_link_map_with_malformed_links():
         "links": [
             [1, 0, 2],  # Missing to_slot
             [3, 0, 4, 0],
-        ]
+        ],
     }
     link_map = build_link_map(workflow)
     assert len(link_map) == 1

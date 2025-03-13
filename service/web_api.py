@@ -71,7 +71,7 @@ app = APIFlask(__name__)
 
 
 @app.get("/healthy")
-def healthEndpoint():
+def health_endpoint():
     """
     Health check endpoint to verify the service is running.
 
@@ -82,7 +82,7 @@ def healthEndpoint():
 
 
 @app.get("/api/applicationExit")
-def applicationExit():
+def application_exit():
     """
     Endpoint to terminate the application by sending a SIGINT signal to the process.
     """
@@ -335,7 +335,7 @@ def is_model_gated():
             "code": 0,
             "message": "success",
             "gatedList": gated,
-        }
+        },
     )
 
 
@@ -395,7 +395,7 @@ def get_model_size():
             "code": 0,
             "message": "success",
             "sizeList": result_dict,
-        }
+        },
     )
 
 
@@ -436,7 +436,7 @@ def download_model(download_request_data: DownloadModelRequestBody):
         model_download_adpater._adapter.stop_download()
     try:
         model_download_adpater._adapter = model_download_adpater.Model_Downloader_Adapter(
-            hf_token=get_bearer_token(request)
+            hf_token=get_bearer_token(request),
         )
         iterator = model_download_adpater._adapter.download(download_request_data.data)
         return Response(stream_with_context(iterator), content_type="text/event-stream")

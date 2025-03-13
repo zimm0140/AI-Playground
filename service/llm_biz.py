@@ -459,7 +459,7 @@ def assert_stop_generate():
     global _stop_generate, _stop_event
     if _stop_generate:
         _stop_event.set()
-        raise StopGenerateException()
+        raise StopGenerateException
 
 
 def dispose():

@@ -72,7 +72,7 @@ class RequirementsChecker:
             return {
                 "file": file_path,
                 "errors": [
-                    {"rule": "file_existence", "message": "File does not exist"}
+                    {"rule": "file_existence", "message": "File does not exist"},
                 ],
                 "warnings": [],
                 "info": [],
@@ -103,7 +103,7 @@ class RequirementsChecker:
         # Check for empty file
         if not content.strip():
             result["errors"].append(
-                {"rule": "empty_file", "message": "Requirements file is empty"}
+                {"rule": "empty_file", "message": "Requirements file is empty"},
             )
             return result
 
@@ -134,7 +134,7 @@ class RequirementsChecker:
             if rule["name"] == "header_comment":
                 if not re.match(pattern, content):
                     result[self._get_severity_list(severity)].append(
-                        {"rule": rule["name"], "message": rule["description"]}
+                        {"rule": rule["name"], "message": rule["description"]},
                     )
 
             elif rule["name"] == "package_version_pin":
@@ -145,7 +145,7 @@ class RequirementsChecker:
                                 "rule": rule["name"],
                                 "message": f"Line {i+1}: Package does not have pinned version: {line}",
                                 "line": i + 1,
-                            }
+                            },
                         )
 
             elif rule["name"] == "section_markers":
@@ -157,20 +157,20 @@ class RequirementsChecker:
                         {
                             "rule": rule["name"],
                             "message": "File has multiple packages but no section markers",
-                        }
+                        },
                     )
 
             elif rule["name"] == "index_url":
                 for i, line in enumerate(lines):
                     if line.startswith("--extra-index-url") and not re.match(
-                        pattern, line
+                        pattern, line,
                     ):
                         result[self._get_severity_list(severity)].append(
                             {
                                 "rule": rule["name"],
                                 "message": f"Line {i+1}: Extra index URL is not properly formatted: {line}",
                                 "line": i + 1,
-                            }
+                            },
                         )
 
             elif rule["name"] == "empty_line" and re.search(pattern, content):
@@ -178,7 +178,7 @@ class RequirementsChecker:
                     {
                         "rule": rule["name"],
                         "message": "File contains consecutive empty lines or trailing empty lines",
-                    }
+                    },
                 )
 
         # Check for additional consistency issues
@@ -204,7 +204,7 @@ class RequirementsChecker:
                             "rule": "package_naming",
                             "message": f"Line {i+1}: Package name does not follow consistent style (lowercase, numbers, hyphens or underscores): {package_name}",
                             "line": i + 1,
-                        }
+                        },
                     )
 
     def _check_version_consistency(self, lines, result):
@@ -225,28 +225,27 @@ class RequirementsChecker:
         # If both formats are used, flag as inconsistency
         if len(version_formats) > 1 and min(version_formats.values()) > 0:
             formats = ", ".join(
-                [f"{fmt} ({count} times)" for fmt, count in version_formats.items()]
+                [f"{fmt} ({count} times)" for fmt, count in version_formats.items()],
             )
             result["warnings"].append(
                 {
                     "rule": "version_format",
                     "message": f"Inconsistent version pinning formats: {formats}. Standardize on one format.",
-                }
+                },
             )
 
     def _get_severity_list(self, severity):
         """Map severity to the appropriate result list."""
         if severity == "error":
             return "errors"
-        elif severity == "warning":
+        if severity == "warning":
             return "warnings"
-        else:
-            return "info"
+        return "info"
 
     def generate_markdown_report(self, results):
         """Generate a markdown report of the analysis results."""
         report_path = os.path.join(
-            self.report_dir, "requirements_consistency_report.md"
+            self.report_dir, "requirements_consistency_report.md",
         )
 
         with open(report_path, "w", encoding="utf-8") as f:
@@ -266,16 +265,16 @@ class RequirementsChecker:
 
             # Summary table
             f.write(
-                "| File | Packages | Pinned Versions | Unpinned | Comments | Sections | Errors | Warnings |\n"
+                "| File | Packages | Pinned Versions | Unpinned | Comments | Sections | Errors | Warnings |\n",
             )
             f.write(
-                "|------|----------|----------------|----------|----------|----------|--------|----------|\n"
+                "|------|----------|----------------|----------|----------|----------|--------|----------|\n",
             )
 
             for result in results:
                 metrics = result["metrics"]
                 f.write(
-                    f"| {result['file']} | {metrics.get('package_lines', 0)} | {metrics.get('pinned_versions', 0)} | {metrics.get('unpinned_versions', 0)} | {metrics.get('comment_lines', 0)} | {metrics.get('section_markers', 0)} | {len(result['errors'])} | {len(result['warnings'])} |\n"
+                    f"| {result['file']} | {metrics.get('package_lines', 0)} | {metrics.get('pinned_versions', 0)} | {metrics.get('unpinned_versions', 0)} | {metrics.get('comment_lines', 0)} | {metrics.get('section_markers', 0)} | {len(result['errors'])} | {len(result['warnings'])} |\n",
                 )
 
             f.write("\n## Detailed Results\n\n")
@@ -313,19 +312,19 @@ class RequirementsChecker:
             f.write("\n## Recommendations\n\n")
 
             f.write(
-                "1. **Standardize version pinning**: Use the `==` format consistently for all packages.\n"
+                "1. **Standardize version pinning**: Use the `==` format consistently for all packages.\n",
             )
             f.write(
-                "2. **Add section markers**: Use section headers like `# === SECTION ===` to organize requirements.\n"
+                "2. **Add section markers**: Use section headers like `# === SECTION ===` to organize requirements.\n",
             )
             f.write(
-                "3. **Add header comments**: Each requirements file should have a comment header explaining its purpose.\n"
+                "3. **Add header comments**: Each requirements file should have a comment header explaining its purpose.\n",
             )
             f.write(
-                "4. **Pin all versions**: Specify exact versions for all packages to ensure reproducibility.\n"
+                "4. **Pin all versions**: Specify exact versions for all packages to ensure reproducibility.\n",
             )
             f.write(
-                "5. **Consistent naming**: Follow consistent package naming conventions.\n\n"
+                "5. **Consistent naming**: Follow consistent package naming conventions.\n\n",
             )
 
             f.write("*This report was automatically generated by the CI process on ")
@@ -399,7 +398,7 @@ class RequirementsChecker:
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Check requirements files for consistency"
+        description="Check requirements files for consistency",
     )
     parser.add_argument(
         "--report-dir",

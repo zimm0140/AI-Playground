@@ -1,136 +1,92 @@
-
-# Migration Guide for AI Playground
+# Migration Guide for AI Playground {#migration-guide-for-ai-playground}
 
 This guide helps you migrate to the modern Python development workflow using uv and Python 3.10+.
 
-## Table of Contents
+## Table of Contents {#table-of-contents}
 
 1. [Migrating from pip to uv](#migrating-from-pip-to-uv)
-
-
 2. [Updating Type Annotations for Python 3.10+](#updating-type-annotations-for-python-310)
-
-
 3. [Using Lockfiles for Reproducible Environments](#using-lockfiles-for-reproducible-environments)
-
-
 4. [Working with Docker](#working-with-docker)
-
-
 5. [CI/CD Pipeline Updates](#cicd-pipeline-updates)
-
-
 6. [Migration FAQs](#migration-faqs)
 
-## Migrating from pip to uv
+## Migrating from pip to uv {#migrating-from-pip-to-uv}
 
-### Why Migrate to uv?
+### Why Migrate to uv? {#why-migrate-to-uv}
 
 - **Speed**: uv is 10-100x faster than pip for dependency resolution
 - **Reliability**: Improved dependency resolution and conflict handling
 - **Features**: Better support for modern Python packaging standards
 - **Lockfiles**: Native support for lockfile generation and updating
 
-### Step-by-Step Migration
+### Step-by-Step Migration {#step-by-step-migration}
 
-7. **Install uv**:
+1. **Install uv**:
 
    ```bash
-
-
    ## Unix/Linux/macOS
-
-   curl -LsSf <https://astral.sh/uv/install.sh> | sh
+   curl -LsSf https://astral.sh/uv/install.sh | sh
 
    ## Windows
-
-   powershell -ExecutionPolicy ByPass -c "irm <https://astral.sh/uv/install.ps1> | iex"
-
-
-   ```bash
-
-   ```bash
-
-   ```bash
+   powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+   ```
 
 2. **Migrate existing environments**:
 
    ```bash
-
    ## Generate lockfiles from your existing requirements
-
    uv pip compile requirements.txt --output-file requirements.lock
    uv pip compile requirements-dev.txt --output-file requirements-dev.lock
 
    ## Create a new environment using uv
-
    uv venv
 
    ## Install using lockfiles
-
    uv pip sync requirements.lock requirements-dev.lock
+   ```
 
-   ```bash
-
-   ```bash
-
-   ```bash
-
-2. **Use the helper scripts**:
+3. **Use the helper scripts**:
 
    We've provided convenient script wrappers in `scripts/run_with_uv.sh` (Unix/macOS) and `scripts/run_with_uv.ps1` (Windows).
 
    ```bash
-
    ## Run tests
-
    ./scripts/run_with_uv.sh test
 
    ## Run linters
-
    ./scripts/run_with_uv.sh lint
+   ```
 
-   ```bash
-
-   ```bash
-
-   ```bash
-
-## Updating Type Annotations for Python 3.10+
+## Updating Type Annotations for Python 3.10+ {#updating-type-annotations-for-python-310}
 
 Python 3.10 introduced new type annotation syntax. We've provided a helper script to identify type annotations that can be updated:
 
 ```bash
-
-## Scan the entire project
-
+## Scan the entire project {#scan-the-entire-project}
 python scripts/fix_type_annotations.py .
 
-## Scan a specific file
-
+## Scan a specific file {#scan-a-specific-file}
 python scripts/fix_type_annotations.py path/to/file.py
-
 ```bash
 
 For detailed guidance on type compatibility issues and solutions, see the [Type Compatibility Guide](TYPE_COMPATIBILITY.md).
 
-### Common Type Annotation Updates
+### Common Type Annotation Updates {#common-type-annotation-updates}
 
 2. **Union Types**:
 
    Before (Python 3.9 and earlier):
 
    ```python
-
    from typing import Union
 
    def func(x: Union[int, str]) -> Union[float, None]:
-
-```bash
+   ```bash
 
    ...
 
-```bash
+   ```bash
 
 
    ```bash
@@ -138,15 +94,12 @@ For detailed guidance on type compatibility issues and solutions, see the [Type 
    After (Python 3.10+):
 
    ```python
-
    def func(x: int | str) -> float | None:
-
-
-```bash
+   ```bash
 
    ...
 
-```bash
+   ```bash
 
 
    ```bash
@@ -156,16 +109,14 @@ For detailed guidance on type compatibility issues and solutions, see the [Type 
    Before:
 
    ```python
-
    from typing import Optional
 
    def func(x: Optional[int] = None) -> Optional[str]:
-
-```bash
+   ```bash
 
    ...
 
-```bash
+   ```bash
 
 
    ```bash
@@ -173,66 +124,55 @@ For detailed guidance on type compatibility issues and solutions, see the [Type 
    After:
 
    ```python
-
    def func(x: int | None = None) -> str | None:
-
-
-```bash
+   ```bash
 
    ...
 
-```bash
+   ```bash
 
 
    ```bash
 
-## Using Lockfiles for Reproducible Environments
+## Using Lockfiles for Reproducible Environments {#using-lockfiles-for-reproducible-environments}
 
 The project now uses lockfiles to ensure reproducible environments:
 
 2. **Sync your environment** using the lockfiles:
 
    ```bash
-
    uv pip sync requirements.lock requirements-dev.lock
-
    ```bash
 
 4. **Update lockfiles** when dependencies change:
 
    ```bash
-
    uv pip compile requirements.txt --output-file requirements.lock
    uv pip compile requirements-dev.txt --output-file requirements-dev.lock
-
    ```bash
 
-## Working with Docker
+## Working with Docker {#working-with-docker}
 
 The project includes a Dockerfile optimized for uv:
 
 ```bash
-
-## Build and run the development image
-
+## Build and run the development image {#build-and-run-the-development-image}
 docker build --target development -t ai-playground-dev .
 docker run -p 5000:5000 -v $(pwd):/app ai-playground-dev
 
-## Build and run the production image
-
+## Build and run the production image {#build-and-run-the-production-image}
 docker build --target production -t ai-playground .
 docker run -p 5000:5000 ai-playground
-
 ```bash
 
-### Benefits of the uv-based Dockerfile
+### Benefits of the uv-based Dockerfile {#benefits-of-the-uv-based-dockerfile}
 
 - **Faster builds**: uv's speed dramatically reduces build times
 - **Reproducible environments**: Using lockfiles ensures consistent environments
 - **Multi-stage builds**: Separate development and production images
 - **Smaller images**: Only necessary dependencies are included
 
-## CI/CD Pipeline Updates
+## CI/CD Pipeline Updates {#cicd-pipeline-updates}
 
 The CI/CD pipeline has been updated to use uv for faster and more reliable builds:
 
@@ -247,35 +187,33 @@ The CI/CD pipeline has been updated to use uv for faster and more reliable build
 
 4. __Markdown linting_*: Automated linting of markdown files
 
-## Migration FAQs
+## Migration FAQs {#migration-faqs}
 
-### Q: Do I need to uninstall pip?
+### Q: Do I need to uninstall pip? {#q-do-i-need-to-uninstall-pip}
 
 A: No. uv works alongside pip and doesn't replace it completely. The helper scripts will install uv if needed.
 
-### Q: Will my existing scripts still work?
+### Q: Will my existing scripts still work? {#q-will-my-existing-scripts-still-work}
 
 A: Yes. We maintain backward compatibility with traditional workflows while offering improved alternatives.
 
-### Q: How do I add a new dependency?
+### Q: How do I add a new dependency? {#q-how-do-i-add-a-new-dependency}
 
 A: Add it to `requirements.txt` or `requirements-dev.txt`, then run:
 
    ```bash
-
    uv pip compile requirements.txt --output-file requirements.lock
-
    ```bash
 
-### Q: Can I still use requirements.txt?
+### Q: Can I still use requirements.txt? {#q-can-i-still-use-requirementstxt}
 
 A: Yes. We maintain compatibility with requirements.txt while leveraging uv's improved handling.
 
-### Q: Will these changes affect existing installations?
+### Q: Will these changes affect existing installations? {#q-will-these-changes-affect-existing-installations}
 
 A: No. Users installing via pip will still be able to do so. These changes enhance the development experience without breaking compatibility.
 
-### Q: What if I encounter type checking errors after migration?
+### Q: What if I encounter type checking errors after migration? {#q-what-if-i-encounter-type-checking-errors-after-migration}
 
 A: Use the `scripts/fix_type_annotations.py` script to help identify and fix type annotation issues.
 

@@ -82,7 +82,7 @@ if __name__ == "__main__":
 
     # Format the conversation using the model's chat template
     prompt = pipe.tokenizer.apply_chat_template(
-        messages, tokenize=False, add_generation_prompt=True, return_tensors="pt"
+        messages, tokenize=False, add_generation_prompt=True, return_tensors="pt",
     )
 
     # Encode the prompt into token IDs and move to the XPU device

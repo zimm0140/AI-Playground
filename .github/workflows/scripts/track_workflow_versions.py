@@ -67,7 +67,7 @@ class WorkflowHistory:
     """Represents the version history of a workflow"""
 
     def __init__(
-        self, workflow_id: str, filename: str, versions: list[WorkflowVersion] = None
+        self, workflow_id: str, filename: str, versions: list[WorkflowVersion] = None,
     ):
         self.workflow_id = workflow_id
         self.filename = filename
@@ -112,7 +112,7 @@ class WorkflowVersionTracker:
     ):
         self.workflows_dir = workflows_dir
         self.history_file = history_file or os.path.join(
-            output_dir, "workflow_history.json"
+            output_dir, "workflow_history.json",
         )
         self.output_dir = output_dir
         os.makedirs(output_dir, exist_ok=True)
@@ -214,7 +214,7 @@ class WorkflowVersionTracker:
         def get_nodes(workflow):
             if "nodes" in workflow and isinstance(workflow["nodes"], dict):
                 return workflow["nodes"]
-            elif (
+            if (
                 "comfyUiApiWorkflow" in workflow
                 and isinstance(workflow["comfyUiApiWorkflow"], dict)
                 and "nodes" in workflow["comfyUiApiWorkflow"]
@@ -247,7 +247,7 @@ class WorkflowVersionTracker:
                 for node_id in removed_nodes
             ]
             changes.append(
-                f"Removed {len(removed_nodes)} node(s): {', '.join(node_types)}"
+                f"Removed {len(removed_nodes)} node(s): {', '.join(node_types)}",
             )
 
         # Check for changed node configurations
@@ -260,7 +260,7 @@ class WorkflowVersionTracker:
             if old_node.get("class_type") != new_node.get("class_type"):
                 changed_nodes.append(node_id)
                 changes.append(
-                    f"Node {node_id} type changed from {old_node.get('class_type')} to {new_node.get('class_type')}"
+                    f"Node {node_id} type changed from {old_node.get('class_type')} to {new_node.get('class_type')}",
                 )
 
             # Check if inputs changed significantly (keys added/removed)
@@ -326,7 +326,7 @@ class WorkflowVersionTracker:
             if workflow_id not in self.workflow_history:
                 is_new = True
                 self.workflow_history[workflow_id] = WorkflowHistory(
-                    workflow_id, filename
+                    workflow_id, filename,
                 )
 
             history = self.workflow_history[workflow_id]
@@ -347,7 +347,7 @@ class WorkflowVersionTracker:
                     changes = self.detect_changes(prev_workflow, workflow)
                 else:
                     changes = [
-                        "Content changed, but unable to compare with previous version"
+                        "Content changed, but unable to compare with previous version",
                     ]
             else:
                 # No changes, just return the history
@@ -417,7 +417,7 @@ class WorkflowVersionTracker:
         with open(report_path, "w", encoding="utf-8") as f:
             f.write("# ComfyUI Workflow Version Report\n\n")
             f.write(
-                f"Generated on: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n"
+                f"Generated on: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n",
             )
 
             # Summary section
@@ -453,18 +453,18 @@ class WorkflowVersionTracker:
 
             f.write(f"- Workflows with recent changes: {len(recent_changes)}\n")
             f.write(
-                f"- Workflows with potentially breaking changes: {len(breaking_changes)}\n\n"
+                f"- Workflows with potentially breaking changes: {len(breaking_changes)}\n\n",
             )
 
             # Recent changes section
             if recent_changes:
                 f.write("## Recent Changes\n\n")
                 for filename, version in sorted(
-                    recent_changes, key=lambda x: x[1].timestamp, reverse=True
+                    recent_changes, key=lambda x: x[1].timestamp, reverse=True,
                 ):
                     f.write(f"### {filename}\n\n")
                     f.write(
-                        f"Updated: {version.timestamp.strftime('%Y-%m-%d %H:%M:%S')}\n\n"
+                        f"Updated: {version.timestamp.strftime('%Y-%m-%d %H:%M:%S')}\n\n",
                     )
                     f.write("Changes:\n")
                     for change in version.changes:
@@ -475,12 +475,12 @@ class WorkflowVersionTracker:
             if breaking_changes:
                 f.write("## Potentially Breaking Changes\n\n")
                 f.write(
-                    "The following workflows have changes that might affect compatibility:\n\n"
+                    "The following workflows have changes that might affect compatibility:\n\n",
                 )
                 for filename, version in breaking_changes:
                     f.write(f"### {filename}\n\n")
                     f.write(
-                        f"Updated: {version.timestamp.strftime('%Y-%m-%d %H:%M:%S')}\n\n"
+                        f"Updated: {version.timestamp.strftime('%Y-%m-%d %H:%M:%S')}\n\n",
                     )
                     f.write("Changes:\n")
                     for change in version.changes:
@@ -490,7 +490,7 @@ class WorkflowVersionTracker:
             # Individual workflow histories
             f.write("## Workflow Histories\n\n")
             for _workflow_id, history in sorted(
-                self.workflow_history.items(), key=lambda x: x[1].filename
+                self.workflow_history.items(), key=lambda x: x[1].filename,
             ):
                 f.write(f"### {history.filename}\n\n")
                 f.write(f"Total versions: {len(history.versions)}\n\n")
@@ -501,7 +501,7 @@ class WorkflowVersionTracker:
 
                     # Sort versions by timestamp (newest first)
                     sorted_versions = sorted(
-                        history.versions, key=lambda v: v.timestamp, reverse=True
+                        history.versions, key=lambda v: v.timestamp, reverse=True,
                     )
 
                     for version in sorted_versions:
@@ -515,14 +515,14 @@ class WorkflowVersionTracker:
                             changes_summary = changes_summary[:47] + "..."
 
                         f.write(
-                            f"| {version.hash_value[:8]} | {version.timestamp.strftime('%Y-%m-%d')} | {version.node_count} | {version.link_count} | {changes_summary} |\n"
+                            f"| {version.hash_value[:8]} | {version.timestamp.strftime('%Y-%m-%d')} | {version.node_count} | {version.link_count} | {changes_summary} |\n",
                         )
 
                 f.write("\n")
 
             f.write("\n---\n")
             f.write(
-                "*This report was automatically generated by the ComfyUI workflow version tracker.*\n"
+                "*This report was automatically generated by the ComfyUI workflow version tracker.*\n",
             )
 
         print(f"Report generated at {report_path}")
@@ -545,13 +545,13 @@ class WorkflowVersionTracker:
         with open(report_path, "w", encoding="utf-8") as f:
             f.write("# ComfyUI Workflow Compatibility Matrix\n\n")
             f.write(
-                f"Generated on: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n"
+                f"Generated on: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n",
             )
 
             # Compatibility matrix
             f.write("## Hardware Compatibility Matrix\n\n")
             f.write(
-                "This matrix shows which workflows are expected to be compatible with different hardware configurations:\n\n"
+                "This matrix shows which workflows are expected to be compatible with different hardware configurations:\n\n",
             )
 
             f.write("| Workflow | Min Memory | ")
@@ -567,7 +567,7 @@ class WorkflowVersionTracker:
             # Estimate memory requirements for each workflow
             # This is a simplification - in a real system, we would analyze each workflow in detail
             for _workflow_id, history in sorted(
-                self.workflow_history.items(), key=lambda x: x[1].filename
+                self.workflow_history.items(), key=lambda x: x[1].filename,
             ):
                 latest = history.get_latest_version()
                 if not latest:
@@ -577,7 +577,7 @@ class WorkflowVersionTracker:
                 # In a real system, we would use the actual analysis from analyze_workflow_requirements.py
                 # For now, this is just a placeholder estimate
                 estimated_memory = max(
-                    4, latest.node_count * 0.5 + latest.link_count * 0.2
+                    4, latest.node_count * 0.5 + latest.link_count * 0.2,
                 )
 
                 f.write(f"| {history.filename} | {estimated_memory:.1f}GB | ")
@@ -596,29 +596,29 @@ class WorkflowVersionTracker:
             f.write("\n")
             f.write("### Compatibility Levels\n\n")
             f.write(
-                "- ✅ **Compatible**: The workflow should run smoothly on this hardware.\n"
+                "- ✅ **Compatible**: The workflow should run smoothly on this hardware.\n",
             )
             f.write(
-                "- ⚠️ **Marginal**: The workflow may run, but could experience performance issues or out-of-memory errors.\n"
+                "- ⚠️ **Marginal**: The workflow may run, but could experience performance issues or out-of-memory errors.\n",
             )
             f.write(
-                "- ❌ **Not Compatible**: The workflow is unlikely to run successfully on this hardware.\n\n"
+                "- ❌ **Not Compatible**: The workflow is unlikely to run successfully on this hardware.\n\n",
             )
 
             f.write("## Notes\n\n")
             f.write(
-                "1. Memory estimates are based on workflow complexity and may vary based on specific models used.\n"
+                "1. Memory estimates are based on workflow complexity and may vary based on specific models used.\n",
             )
             f.write(
-                "2. Actual compatibility depends on specific models loaded, resolution settings, and batch sizes.\n"
+                "2. Actual compatibility depends on specific models loaded, resolution settings, and batch sizes.\n",
             )
             f.write(
-                "3. Consider using smaller models, lower resolutions, or disabling specific nodes to improve compatibility.\n\n"
+                "3. Consider using smaller models, lower resolutions, or disabling specific nodes to improve compatibility.\n\n",
             )
 
             f.write("---\n")
             f.write(
-                "*This matrix was automatically generated by the ComfyUI workflow version tracker.*\n"
+                "*This matrix was automatically generated by the ComfyUI workflow version tracker.*\n",
             )
 
         print(f"Compatibility matrix generated at {report_path}")
@@ -656,11 +656,11 @@ class WorkflowVersionTracker:
             # Status indicators
             if breaking_changes:
                 f.write(
-                    f"⚠️ **{len(breaking_changes)} workflow(s) have potentially breaking changes**\n\n"
+                    f"⚠️ **{len(breaking_changes)} workflow(s) have potentially breaking changes**\n\n",
                 )
             elif recent_changes:
                 f.write(
-                    f"ℹ️ **{len(recent_changes)} workflow(s) have recent changes**\n\n"
+                    f"ℹ️ **{len(recent_changes)} workflow(s) have recent changes**\n\n",
                 )
             else:
                 f.write("✅ **All workflows are stable**\n\n")
@@ -681,7 +681,7 @@ class WorkflowVersionTracker:
                 f.write("### Recent Changes\n\n")
 
                 for filename, version in sorted(
-                    recent_changes, key=lambda x: x[1].timestamp, reverse=True
+                    recent_changes, key=lambda x: x[1].timestamp, reverse=True,
                 )[:5]:  # Show at most 5
                     change_summary = (
                         ", ".join(version.changes) if version.changes else "No changes"
@@ -691,7 +691,7 @@ class WorkflowVersionTracker:
                         change_summary = change_summary[:77] + "..."
 
                     f.write(
-                        f"- **{filename}** ({version.timestamp.strftime('%Y-%m-%d')}): {change_summary}\n"
+                        f"- **{filename}** ({version.timestamp.strftime('%Y-%m-%d')}): {change_summary}\n",
                     )
 
                 if len(recent_changes) > 5:

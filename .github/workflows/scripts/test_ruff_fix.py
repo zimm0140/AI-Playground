@@ -30,12 +30,11 @@ def run_cmd(cmd, capture=True):
         elapsed = time.time() - start_time
         print(f"Command completed in {elapsed:.2f}s with exit code {result.returncode}")
         return result
-    else:
-        start_time = time.time()
-        result = subprocess.run(cmd, check=False)
-        elapsed = time.time() - start_time
-        print(f"Command completed in {elapsed:.2f}s with exit code {result.returncode}")
-        return result
+    start_time = time.time()
+    result = subprocess.run(cmd, check=False)
+    elapsed = time.time() - start_time
+    print(f"Command completed in {elapsed:.2f}s with exit code {result.returncode}")
+    return result
 
 
 def create_config_file():
@@ -150,7 +149,7 @@ def test_ruff_fixes(args):
     # Check if fixes were successful
     print_header("Checking if fixes were successful")
     after_result = run_cmd(
-        ["ruff", "check", "--select=E,F", "--statistics"] + service_files
+        ["ruff", "check", "--select=E,F", "--statistics"] + service_files,
     )
 
     if after_result.returncode == 0:
@@ -169,27 +168,26 @@ def test_ruff_fixes(args):
     # Final check
     print_header("Final check")
     final_result = run_cmd(
-        ["ruff", "check", "--select=E,F", "--statistics"] + service_files
+        ["ruff", "check", "--select=E,F", "--statistics"] + service_files,
     )
 
     if final_result.returncode == 0:
         print("All issues fixed successfully after multiple passes!")
         return 0
-    else:
-        print("Some issues still require manual attention.")
-        if not args.quiet:
-            print("\nRemaining issues:")
-            print(final_result.stdout)
-        return 1
+    print("Some issues still require manual attention.")
+    if not args.quiet:
+        print("\nRemaining issues:")
+        print(final_result.stdout)
+    return 1
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Test Ruff fixes on service directory")
     parser.add_argument(
-        "--skip-config", action="store_true", help="Skip creating config file"
+        "--skip-config", action="store_true", help="Skip creating config file",
     )
     parser.add_argument(
-        "--quiet", action="store_true", help="Don't show detailed error output"
+        "--quiet", action="store_true", help="Don't show detailed error output",
     )
     args = parser.parse_args()
 

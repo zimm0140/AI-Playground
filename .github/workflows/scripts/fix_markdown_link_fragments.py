@@ -49,7 +49,7 @@ def fix_link_fragments(file_path):
                     # Replace the invalid fragment with the correct heading ID
                     content = content.replace(f"[{link_text}](#{fragment})", f"[{link_text}](#{heading_id})")
                     print(
-                        f"Fixed link fragment in {file_path}: [{link_text}](#{fragment}) -> [{link_text}](#{heading_id})"
+                        f"Fixed link fragment in {file_path}: [{link_text}](#{fragment}) -> [{link_text}](#{heading_id})",
                     )
                     modified = True
                     break

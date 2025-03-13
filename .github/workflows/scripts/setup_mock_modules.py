@@ -56,7 +56,7 @@ def get_device_properties(device):
 def pin_memory(tensor):
     \"\"\"Mock pin_memory function.\"\"\"
     return tensor
-"""
+""",
         )
 
     # Create __pycache__ to avoid warnings
@@ -126,7 +126,7 @@ class Type:
     f16 = "f16"
     i32 = "i32"
     i64 = "i64"
-"""
+""",
         )
 
     # Create __pycache__ to avoid warnings

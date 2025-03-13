@@ -13,11 +13,10 @@ with special handling for:
 7. Respects code blocks without language specifiers (MD040 is set to false)
 """
 
+import glob
 import os
 import re
 import sys
-import glob
-from typing import List
 
 # Maximum line length (from .markdownlint.yaml)
 MAX_LINE_LENGTH = 180
@@ -69,7 +68,7 @@ def fix_code_blocks(content: str) -> str:
     # Ensure blank lines around fenced code blocks
     content = re.sub(r'([^\n])(\n```)', r'\1\n\2', content)
     content = re.sub(r'(```\n)([^\n])', r'\1\n\2', content)
-    
+
     # Importantly, do NOT add language specifiers to code blocks
     return content
 
@@ -96,11 +95,11 @@ def fix_bare_urls(content: str) -> str:
 def fix_markdown_file(file_path: str) -> bool:
     """Apply all fixes to a markdown file."""
     try:
-        with open(file_path, 'r', encoding='utf-8') as f:
+        with open(file_path, encoding='utf-8') as f:
             content = f.read()
-        
+
         original_content = content
-        
+
         # Apply fixes in a specific order
         content = fix_trailing_spaces(content)
         content = fix_consecutive_blank_lines(content)
@@ -112,47 +111,46 @@ def fix_markdown_file(file_path: str) -> bool:
         content = fix_code_blocks(content)
         content = fix_bare_urls(content)  # This now preserves user's URLs
         content = ensure_trailing_newline(content)
-        
+
         # Write changes if needed
         if content != original_content:
             with open(file_path, 'w', encoding='utf-8') as f:
                 f.write(content)
             print(f"✅ Fixed linting issues in {file_path}")
             return True
-        else:
-            print(f"✓ No fixable issues found in {file_path}")
-            return False
+        print(f"✓ No fixable issues found in {file_path}")
+        return False
     except Exception as e:
         print(f"❌ Error processing {file_path}: {str(e)}")
         return False
 
-def find_markdown_files(path: str) -> List[str]:
+def find_markdown_files(path: str) -> list[str]:
     """Find all markdown files in the given path."""
     if os.path.isfile(path) and path.lower().endswith('.md'):
         return [path]
-    
+
     if os.path.isdir(path):
         md_files = glob.glob(os.path.join(path, '**/*.md'), recursive=True)
         return md_files
-    
+
     return []
 
 def main():
     """Main function to process directories or files."""
     path = "." if len(sys.argv) < 2 else sys.argv[1]
-    
+
     md_files = find_markdown_files(path)
     if not md_files:
         print(f"🔍 No markdown files found in {path}")
         return
-    
+
     print(f"\n🔍 Found {len(md_files)} markdown files")
-    
+
     fixed_count = 0
     for file_path in md_files:
         if fix_markdown_file(file_path):
             fixed_count += 1
-    
+
     print(f"\n✅ Fixed issues in {fixed_count} files")
 
 if __name__ == "__main__":

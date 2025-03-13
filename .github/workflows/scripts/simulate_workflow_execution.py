@@ -38,7 +38,7 @@ from utils.workflow_parser import build_link_map, get_workflow_links, get_workfl
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
 )
 logger = logging.getLogger("ComfyWorkflowSimulator")
 
@@ -114,7 +114,7 @@ class ModelSimulation:
         else:
             # Generic model simulation
             logger.warning(
-                f"Unknown model type: {self.model_type} - using generic simulation"
+                f"Unknown model type: {self.model_type} - using generic simulation",
             )
             self.tensor_data = {"weights": torch.randn(1, 32, 32, 32)}
 
@@ -185,7 +185,7 @@ class NodeSimulation:
             return True, self.outputs
         except Exception as e:
             logger.error(
-                f"Error executing node {self.node_id} of type {self.node_type}: {str(e)}"
+                f"Error executing node {self.node_id} of type {self.node_type}: {str(e)}",
             )
             return False, {"error": str(e)}
 
@@ -194,8 +194,7 @@ class NodeSimulation:
         # For unknown nodes, we create outputs with appropriate shapes
         if TORCH_AVAILABLE:
             return {"output": torch.randn(1, 32, 32, 32)}
-        else:
-            return {"output": np.random.randn(1, 32, 32, 32)}
+        return {"output": np.random.randn(1, 32, 32, 32)}
 
     def _execute_CheckpointLoader(self):
         """Simulate checkpoint loader node"""
@@ -239,13 +238,12 @@ class NodeSimulation:
             # In reality, LoRA would modify these models
             # For simulation, we just pass them through
             return {"model": model, "clip": clip}
-        else:
-            # If no model/clip provided, return dummy tensors
-            model_sim = ModelSimulation("lora")
-            return {
-                "model": model_sim.get_tensor("lora_up"),
-                "clip": model_sim.get_tensor("lora_down"),
-            }
+        # If no model/clip provided, return dummy tensors
+        model_sim = ModelSimulation("lora")
+        return {
+            "model": model_sim.get_tensor("lora_up"),
+            "clip": model_sim.get_tensor("lora_down"),
+        }
 
     def _execute_CLIPTextEncode(self):
         """Simulate CLIP text encoding"""
@@ -258,9 +256,8 @@ class NodeSimulation:
             # Size depends on text length, but we'll use a fixed size for simulation
             text_token_count = min(len(text.split()), 77) if text else 3
             return {"conditioning": torch.randn(1, text_token_count, 64)}
-        else:
-            text_token_count = min(len(text.split()), 77) if text else 3
-            return {"conditioning": np.random.randn(1, text_token_count, 64)}
+        text_token_count = min(len(text.split()), 77) if text else 3
+        return {"conditioning": np.random.randn(1, text_token_count, 64)}
 
     def _execute_EmptyLatentImage(self):
         """Simulate empty latent image creation"""
@@ -274,8 +271,7 @@ class NodeSimulation:
 
         if TORCH_AVAILABLE:
             return {"latent": torch.zeros(batch_size, 4, latent_height, latent_width)}
-        else:
-            return {"latent": np.zeros((batch_size, 4, latent_height, latent_width))}
+        return {"latent": np.zeros((batch_size, 4, latent_height, latent_width))}
 
     def _execute_KSampler(self):
         """Simulate K-Sampler node"""
@@ -291,14 +287,12 @@ class NodeSimulation:
             if TORCH_AVAILABLE:
                 noise = torch.randn_like(latent) * 0.1
                 return {"latent": latent + noise}
-            else:
-                noise = np.random.randn(*latent.shape) * 0.1
-                return {"latent": latent + noise}
+            noise = np.random.randn(*latent.shape) * 0.1
+            return {"latent": latent + noise}
         # If no latent provided, return a dummy tensor
-        elif TORCH_AVAILABLE:
+        if TORCH_AVAILABLE:
             return {"latent": torch.randn(1, 4, 64, 64)}
-        else:
-            return {"latent": np.random.randn(1, 4, 64, 64)}
+        return {"latent": np.random.randn(1, 4, 64, 64)}
 
     def _execute_VAEDecode(self):
         """Simulate VAE decoding from latent to image"""
@@ -314,15 +308,13 @@ class NodeSimulation:
                 # Assuming samples has shape [B, 4, H, W]
                 B, _, H, W = samples.shape
                 return {"image": torch.randn(B, 3, H * 8, W * 8)}
-            else:
-                # NumPy version
-                B, _, H, W = samples.shape
-                return {"image": np.random.randn(B, 3, H * 8, W * 8)}
+            # NumPy version
+            B, _, H, W = samples.shape
+            return {"image": np.random.randn(B, 3, H * 8, W * 8)}
         # Fallback
-        elif TORCH_AVAILABLE:
+        if TORCH_AVAILABLE:
             return {"image": torch.randn(1, 3, 512, 512)}
-        else:
-            return {"image": np.random.randn(1, 3, 512, 512)}
+        return {"image": np.random.randn(1, 3, 512, 512)}
 
     def _execute_SaveImage(self):
         """Simulate saving an image"""
@@ -332,7 +324,7 @@ class NodeSimulation:
         # For simulation, we just log that we would save them
         if images is not None:
             logger.info(
-                f"Node {self.node_id}: Would save images with shape {images.shape}"
+                f"Node {self.node_id}: Would save images with shape {images.shape}",
             )
         else:
             logger.warning(f"Node {self.node_id}: No images to save")
@@ -355,17 +347,15 @@ class NodeSimulation:
                 new_H = int(H * scale)
                 new_W = int(W * scale)
                 return {"image": torch.randn(B, C, new_H, new_W)}
-            else:
-                # NumPy version
-                B, C, H, W = image.shape
-                new_H = int(H * scale)
-                new_W = int(W * scale)
-                return {"image": np.random.randn(B, C, new_H, new_W)}
+            # NumPy version
+            B, C, H, W = image.shape
+            new_H = int(H * scale)
+            new_W = int(W * scale)
+            return {"image": np.random.randn(B, C, new_H, new_W)}
         # Fallback
-        elif TORCH_AVAILABLE:
+        if TORCH_AVAILABLE:
             return {"image": torch.randn(1, 3, 1024, 1024)}
-        else:
-            return {"image": np.random.randn(1, 3, 1024, 1024)}
+        return {"image": np.random.randn(1, 3, 1024, 1024)}
 
     # Add more node-specific simulation methods as needed
 
@@ -374,7 +364,7 @@ class ComfyWorkflowSimulator:
     """Simulates execution of ComfyUI workflows"""
 
     def __init__(
-        self, workflows_dir: str, output_dir: str = "ci_artifacts/workflow_simulation"
+        self, workflows_dir: str, output_dir: str = "ci_artifacts/workflow_simulation",
     ):
         self.workflows_dir = workflows_dir
         self.output_dir = output_dir
@@ -478,7 +468,7 @@ class ComfyWorkflowSimulator:
             nodes = get_workflow_nodes(workflow)
             if nodes is None:
                 result["errors"].append(
-                    "Workflow does not have required nodes structure"
+                    "Workflow does not have required nodes structure",
                 )
                 return result
 
@@ -533,7 +523,7 @@ class ComfyWorkflowSimulator:
                         # Skip if source node failed
                         if from_node in failed_nodes:
                             result["errors"].append(
-                                f"Node {node_id} has input from failed node {from_node}"
+                                f"Node {node_id} has input from failed node {from_node}",
                             )
                             failed_nodes.add(node_id)
                             break
@@ -544,7 +534,7 @@ class ComfyWorkflowSimulator:
                             or from_slot not in node_outputs[from_node]
                         ):
                             result["errors"].append(
-                                f"Node {node_id} missing input from {from_node}:{from_slot}"
+                                f"Node {node_id} missing input from {from_node}:{from_slot}",
                             )
                             failed_nodes.add(node_id)
                             break
@@ -569,7 +559,7 @@ class ComfyWorkflowSimulator:
                             "type": node_type,
                             "success": True,
                             "outputs": {k: str(type(v)) for k, v in outputs.items()},
-                        }
+                        },
                     )
                 else:
                     failed_nodes.add(node_id)
@@ -579,10 +569,10 @@ class ComfyWorkflowSimulator:
                             "type": node_type,
                             "success": False,
                             "error": outputs.get("error", "Unknown error"),
-                        }
+                        },
                     )
                     result["errors"].append(
-                        f"Failed to execute node {node_id} ({node_type}): {outputs.get('error')}"
+                        f"Failed to execute node {node_id} ({node_type}): {outputs.get('error')}",
                     )
 
             # Set success if at least some nodes executed successfully
@@ -603,7 +593,7 @@ class ComfyWorkflowSimulator:
         result["execution_time"] = round(end_time - start_time, 2)
 
         logger.info(
-            f"Completed simulation of {result['name']} in {result['execution_time']}s - {'Success' if result['status'] == 'success' else 'Failed'}"
+            f"Completed simulation of {result['name']} in {result['execution_time']}s - {'Success' if result['status'] == 'success' else 'Failed'}",
         )
         return result
 
@@ -628,7 +618,7 @@ class ComfyWorkflowSimulator:
                 else f"❌ Failed ({len(result['errors'])} errors)"
             )
             print(
-                f"Simulated {result['name']}: {status} in {result['execution_time']}s"
+                f"Simulated {result['name']}: {status} in {result['execution_time']}s",
             )
 
             if result["status"] != "success" and result["errors"]:
@@ -650,13 +640,13 @@ class ComfyWorkflowSimulator:
             # Summary section
             f.write("## Summary\n\n")
             f.write(
-                f"- Total workflows simulated: {self.results['summary']['total_workflows']}\n"
+                f"- Total workflows simulated: {self.results['summary']['total_workflows']}\n",
             )
             f.write(
-                f"- Successful simulations: {self.results['summary']['successful_workflows']}\n"
+                f"- Successful simulations: {self.results['summary']['successful_workflows']}\n",
             )
             f.write(
-                f"- Failed simulations: {self.results['summary']['failed_workflows']}\n\n"
+                f"- Failed simulations: {self.results['summary']['failed_workflows']}\n\n",
             )
 
             # Simulation results overview
@@ -676,7 +666,7 @@ class ComfyWorkflowSimulator:
                 error_count = len(result["errors"])
 
                 f.write(
-                    f"| {result['name']} | {status} | {result['execution_time']}s | {executed_node_count}/{total_node_count} | {error_count} |\n"
+                    f"| {result['name']} | {status} | {result['execution_time']}s | {executed_node_count}/{total_node_count} | {error_count} |\n",
                 )
 
             f.write("\n")
@@ -697,7 +687,7 @@ class ComfyWorkflowSimulator:
                     )
                     total_node_count = len(result["node_execution"])
                     f.write(
-                        f"- **Node Execution**: {executed_node_count}/{total_node_count} nodes executed successfully\n\n"
+                        f"- **Node Execution**: {executed_node_count}/{total_node_count} nodes executed successfully\n\n",
                     )
 
                     if result["errors"]:
@@ -721,21 +711,21 @@ class ComfyWorkflowSimulator:
             # Recommendations
             f.write("## Recommendations\n\n")
             f.write(
-                "1. **Fix workflow errors**: Address the issues in failing workflows.\n"
+                "1. **Fix workflow errors**: Address the issues in failing workflows.\n",
             )
             f.write(
-                "2. **Add node implementations**: Implement simulation support for nodes with missing handlers.\n"
+                "2. **Add node implementations**: Implement simulation support for nodes with missing handlers.\n",
             )
             f.write(
-                "3. **Validate input connections**: Ensure all nodes receive the expected inputs.\n"
+                "3. **Validate input connections**: Ensure all nodes receive the expected inputs.\n",
             )
             f.write(
-                "4. **Check compatibility**: Verify that workflows use node combinations that work together.\n\n"
+                "4. **Check compatibility**: Verify that workflows use node combinations that work together.\n\n",
             )
 
             f.write("---\n")
             f.write(
-                "*This report was automatically generated by the ComfyUI workflow simulator.*\n"
+                "*This report was automatically generated by the ComfyUI workflow simulator.*\n",
             )
 
         logger.info(f"Report generated at {report_path}")
@@ -763,7 +753,7 @@ class ComfyWorkflowSimulator:
                 # Status indicators
                 if self.results["summary"]["failed_workflows"] > 0:
                     f.write(
-                        f"⚠️ **{self.results['summary']['failed_workflows']} workflow(s) failed simulation**\n\n"
+                        f"⚠️ **{self.results['summary']['failed_workflows']} workflow(s) failed simulation**\n\n",
                     )
                 else:
                     f.write("✅ **All workflows passed simulation**\n\n")
@@ -772,13 +762,13 @@ class ComfyWorkflowSimulator:
                 f.write("| Metric | Count |\n")
                 f.write("|--------|-------|\n")
                 f.write(
-                    f"| Total Workflows | {self.results['summary']['total_workflows']} |\n"
+                    f"| Total Workflows | {self.results['summary']['total_workflows']} |\n",
                 )
                 f.write(
-                    f"| Successful | {self.results['summary']['successful_workflows']} |\n"
+                    f"| Successful | {self.results['summary']['successful_workflows']} |\n",
                 )
                 f.write(
-                    f"| Failed | {self.results['summary']['failed_workflows']} |\n\n"
+                    f"| Failed | {self.results['summary']['failed_workflows']} |\n\n",
                 )
 
                 # Show failed workflows
@@ -805,12 +795,12 @@ class ComfyWorkflowSimulator:
                             top_error = top_error[:47] + "..."
 
                         f.write(
-                            f"| {result['name']} | {executed_nodes}/{total_nodes} | {top_error} |\n"
+                            f"| {result['name']} | {executed_nodes}/{total_nodes} | {top_error} |\n",
                         )
 
                     if len(failed_workflows) > 10:
                         f.write(
-                            f"\n... and {len(failed_workflows) - 10} more failed workflows.\n"
+                            f"\n... and {len(failed_workflows) - 10} more failed workflows.\n",
                         )
 
                 f.write("\nSee workflow simulation report artifact for details.\n")
@@ -835,7 +825,7 @@ class ComfyWorkflowSimulator:
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Simulate execution of ComfyUI workflows"
+        description="Simulate execution of ComfyUI workflows",
     )
     parser.add_argument(
         "--workflows-dir",
@@ -855,7 +845,7 @@ def main():
     args = parser.parse_args()
 
     simulator = ComfyWorkflowSimulator(
-        workflows_dir=args.workflows_dir, output_dir=args.output_dir
+        workflows_dir=args.workflows_dir, output_dir=args.output_dir,
     )
 
     failed_count = simulator.run()

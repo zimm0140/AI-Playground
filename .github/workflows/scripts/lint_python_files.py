@@ -77,7 +77,7 @@ def lint_python_files(file_paths=None):
             not_in_issues = check_not_in_patterns(content)
             for line_num, issue in not_in_issues:
                 print(
-                    f"  ⚠️ Consider using 'not in' instead of '{issue}' at line {line_num}"
+                    f"  ⚠️ Consider using 'not in' instead of '{issue}' at line {line_num}",
                 )
                 error_count += 1
 
@@ -152,14 +152,14 @@ def check_try_except_indentation(content):
                         (
                             i + 2,
                             f"Expected indentation of {indent + 4} spaces after 'try:'",
-                        )
+                        ),
                     )
 
         elif in_try_block and (stripped.startswith("except ") or stripped == "except:"):
             # Check if except is at same level as try
             if indent != try_indent:
                 issues.append(
-                    (i + 1, "'except' block should have same indentation as 'try'")
+                    (i + 1, "'except' block should have same indentation as 'try'"),
                 )
             in_try_block = False
 
@@ -243,7 +243,7 @@ if __name__ == "__main__":
     # Change to repo root if running from scripts directory
     script_dir = os.path.dirname(os.path.abspath(__file__))
     if os.path.basename(script_dir) == "scripts" and os.path.exists(
-        os.path.join(os.path.dirname(script_dir), "workflows")
+        os.path.join(os.path.dirname(script_dir), "workflows"),
     ):
         os.chdir(os.path.join(script_dir, "../.."))
 

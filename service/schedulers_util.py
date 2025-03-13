@@ -103,8 +103,7 @@ def set_scheduler(pipe: diffusers.DiffusionPipeline, name: str):
         # If already using the default scheduler, do nothing
         if default_class_name == type(pipe.scheduler).__name__:
             return
-        else:
-            scheduler_class = getattr(diffusers, default_class_name)
+        scheduler_class = getattr(diffusers, default_class_name)
     elif scheduler_cfg is None:
         raise Exception(f'unkown scheduler name "{name}"')
     else:

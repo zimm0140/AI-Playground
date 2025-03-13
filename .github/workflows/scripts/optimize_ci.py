@@ -22,7 +22,7 @@ def optimize_ci_workflows():
 
     # Find all workflow files
     workflow_files = glob.glob(".github/workflows/*.yml") + glob.glob(
-        ".github/workflows/*.yaml"
+        ".github/workflows/*.yaml",
     )
 
     if not workflow_files:
@@ -147,7 +147,7 @@ def optimize_pip_install(content):
     ):
         # Suggest combining requirements files
         print(
-            "  ℹ Suggestion: Consider using pip-compile to combine requirements files"
+            "  ℹ Suggestion: Consider using pip-compile to combine requirements files",
         )
 
     return content
@@ -176,7 +176,7 @@ def add_conditional_execution(content):
         if re.search(pattern, content):
             # We aren't adding a condition, just noting it would be good to have
             print(
-                "  ℹ Suggestion: Consider adding conditions to test steps for skip capability"
+                "  ℹ Suggestion: Consider adding conditions to test steps for skip capability",
             )
             break
 
@@ -206,14 +206,14 @@ def cleanup_redundant_steps(content):
     pip_install_count = len(re.findall(r"pip install", content))
     if pip_install_count > 3:
         print(
-            f"  ℹ Suggestion: Consider combining {pip_install_count} pip install steps"
+            f"  ℹ Suggestion: Consider combining {pip_install_count} pip install steps",
         )
 
     # Count steps in the workflow
     step_count = len(re.findall(r"- name:", content))
     if step_count > 20:
         print(
-            f"  ℹ Suggestion: Workflow has {step_count} steps, consider grouping related steps"
+            f"  ℹ Suggestion: Workflow has {step_count} steps, consider grouping related steps",
         )
 
     return content

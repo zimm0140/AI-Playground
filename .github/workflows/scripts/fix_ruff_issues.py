@@ -47,7 +47,7 @@ def run_ruff_fix(files=None, directory="."):
         # First run Ruff check to see what issues exist
         print(f"Running Ruff check on {len(files)} Python files...")
         result = subprocess.run(
-            ["ruff", "check"] + files, capture_output=True, text=True, check=False
+            ["ruff", "check"] + files, capture_output=True, text=True, check=False,
         )
 
         if result.returncode == 0:
@@ -56,21 +56,20 @@ def run_ruff_fix(files=None, directory="."):
         # Now run with --fix to auto-fix issues
         print("Running Ruff fix to automatically correct issues...")
         _ = subprocess.run(  # noqa: F841 (was fix_result)
-            ["ruff", "check", "--fix"] + files, capture_output=True, text=True, check=False
+            ["ruff", "check", "--fix"] + files, capture_output=True, text=True, check=False,
         )
 
         # Run check again to see what issues remain
         after_result = subprocess.run(
-            ["ruff", "check"] + files, capture_output=True, text=True, check=False
+            ["ruff", "check"] + files, capture_output=True, text=True, check=False,
         )
 
         if after_result.returncode == 0:
             return True, "All issues fixed successfully!"
-        else:
-            return (
-                False,
-                f"Some issues were fixed, but others require manual attention:\n{after_result.stdout}",
-            )
+        return (
+            False,
+            f"Some issues were fixed, but others require manual attention:\n{after_result.stdout}",
+        )
 
     except Exception as e:
         return False, f"Error running Ruff: {str(e)}"

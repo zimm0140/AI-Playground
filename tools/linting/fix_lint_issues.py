@@ -51,10 +51,9 @@ def main():
         print("✅ All fixable linting issues have been addressed.")
         print("Note: Some issues may require manual attention.")
         return 0
-    else:
-        print("⚠️ Some linting issues could not be automatically fixed.")
-        print("Please review the output and fix remaining issues manually.")
-        return 1
+    print("⚠️ Some linting issues could not be automatically fixed.")
+    print("Please review the output and fix remaining issues manually.")
+    return 1
 
 
 if __name__ == "__main__":

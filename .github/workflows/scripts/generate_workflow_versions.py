@@ -37,7 +37,7 @@ class WorkflowVersion:
         return {
             "version": self.version,
             "date": self.date,
-            "changes": self.changes
+            "changes": self.changes,
         }
 
     @classmethod
@@ -46,7 +46,7 @@ class WorkflowVersion:
         return cls(
             version=data.get("version", ""),
             date=data.get("date", ""),
-            changes=data.get("changes", [])
+            changes=data.get("changes", []),
         )
 
 class WorkflowHistory:
@@ -70,7 +70,7 @@ class WorkflowHistory:
         """Convert to dictionary representation."""
         return {
             "workflow_id": self.workflow_id,
-            "versions": [v.to_dict() for v in self.versions]
+            "versions": [v.to_dict() for v in self.versions],
         }
 
     @classmethod
@@ -79,7 +79,7 @@ class WorkflowHistory:
         versions = [WorkflowVersion.from_dict(v) for v in data.get("versions", [])]
         return cls(
             workflow_id=data.get("workflow_id", ""),
-            versions=versions
+            versions=versions,
         )
 
 def load_workflow(file_path: str) -> dict[str, Any]:
@@ -107,7 +107,7 @@ def generate_version_report(workflows_dir: str, output_dir: str) -> None:
 
     report = {
         "generated_at": datetime.now().isoformat(),
-        "workflows": []
+        "workflows": [],
     }
 
     # Process all workflow files
@@ -129,7 +129,7 @@ def generate_version_report(workflows_dir: str, output_dir: str) -> None:
             "current_version": version,
             "changelog": changelog,
             "tags": workflow.get("tags", []),
-            "description": workflow.get("description", "")
+            "description": workflow.get("description", ""),
         }
 
         report["workflows"].append(workflow_info)

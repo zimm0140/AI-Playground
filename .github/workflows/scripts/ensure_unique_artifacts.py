@@ -18,7 +18,7 @@ def ensure_unique_artifacts():
 
     # Find all workflow files
     workflow_files = glob.glob(".github/workflows/*.yml") + glob.glob(
-        ".github/workflows/*.yaml"
+        ".github/workflows/*.yaml",
     )
     workflow_files = [
         f for f in workflow_files if not f.endswith("ensure_unique_artifacts.yml")
@@ -151,12 +151,12 @@ def ensure_unique_artifacts():
                             current_job_match or current_job or workflow_prefix
                         ).lower()
                         job_prefix = re.sub(
-                            r"[^a-z0-9-]", "", job_prefix.replace(" ", "-")
+                            r"[^a-z0-9-]", "", job_prefix.replace(" ", "-"),
                         )[:10]
 
                         # Only update if the name isn't already unique
                         if not artifact_name.endswith(
-                            f"-{job_prefix}"
+                            f"-{job_prefix}",
                         ) and not artifact_name.startswith(f"{job_prefix}-"):
                             if artifact_name in [
                                 "build-artifacts",
@@ -176,7 +176,7 @@ def ensure_unique_artifacts():
                             indent = len(line) - len(line.lstrip())
                             lines[i] = " " * indent + f"name: {new_name}\n"
                             print(
-                                f"  - Renamed '{artifact_name}' to '{new_name}' in {file_path}"
+                                f"  - Renamed '{artifact_name}' to '{new_name}' in {file_path}",
                             )
                             updated = True
 
