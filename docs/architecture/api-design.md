@@ -62,6 +62,7 @@ r
 | `/models/upload` | POST | Upload a model |
 | `/models/{model_id}` | DELETE | Delete a model |
 
+
 #### Inference {#inference}
 
 | Endpoint | Method | Description |
@@ -70,6 +71,7 @@ r
 | `/inference/batch/{model_id}` | POST | Run batch inference |
 | `/inference/async/{model_id}` | POST | Start async inference job |
 | `/inference/jobs/{job_id}` | GET | Get async job status/results |
+
 
 #### Hardware Management {#hardware-management}
 
@@ -80,6 +82,7 @@ r
 | `/hardware/profile` | POST | Create hardware profile |
 | `/hardware/profiles` | GET | List hardware profiles |
 
+
 #### System {#system}
 
 | Endpoint | Method | Description |
@@ -87,6 +90,7 @@ r
 | `/system/status` | GET | Get system status |
 | `/system/metrics` | GET | Get performance metrics |
 | `/system/logs` | GET | Get system logs |
+
 
 ### Request Examples {#request-examples}
 
@@ -586,6 +590,7 @@ The API implements several security measures:
 
 ---
 **Previous**: [Architecture Overview](overview.md) | **Next**: [Hardware Integration](hardware-integration.md) | __See also_*: [Python API Reference](../reference/python-api.md)
+
 
 ```
 
