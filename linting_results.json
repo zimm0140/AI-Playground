@@ -1,0 +1,608 @@
+[
+  {
+    "cell": null,
+    "code": "N802",
+    "end_location": {
+      "column": 9,
+      "row": 46
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\openvino_stub.py",
+    "fix": null,
+    "location": {
+      "column": 5,
+      "row": 46
+    },
+    "message": "Function name `Core` should be lowercase",
+    "noqa_row": 46,
+    "url": "https://docs.astral.sh/ruff/rules/invalid-function-name"
+  },
+  {
+    "cell": null,
+    "code": "N802",
+    "end_location": {
+      "column": 34,
+      "row": 199
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\simulate_workflow_execution.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 199
+    },
+    "message": "Function name `_execute_CheckpointLoader` should be lowercase",
+    "noqa_row": 199,
+    "url": "https://docs.astral.sh/ruff/rules/invalid-function-name"
+  },
+  {
+    "cell": null,
+    "code": "N802",
+    "end_location": {
+      "column": 27,
+      "row": 220
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\simulate_workflow_execution.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 220
+    },
+    "message": "Function name `_execute_VAELoader` should be lowercase",
+    "noqa_row": 220,
+    "url": "https://docs.astral.sh/ruff/rules/invalid-function-name"
+  },
+  {
+    "cell": null,
+    "code": "N802",
+    "end_location": {
+      "column": 28,
+      "row": 228
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\simulate_workflow_execution.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 228
+    },
+    "message": "Function name `_execute_LoraLoader` should be lowercase",
+    "noqa_row": 228,
+    "url": "https://docs.astral.sh/ruff/rules/invalid-function-name"
+  },
+  {
+    "cell": null,
+    "code": "N802",
+    "end_location": {
+      "column": 32,
+      "row": 248
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\simulate_workflow_execution.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 248
+    },
+    "message": "Function name `_execute_CLIPTextEncode` should be lowercase",
+    "noqa_row": 248,
+    "url": "https://docs.astral.sh/ruff/rules/invalid-function-name"
+  },
+  {
+    "cell": null,
+    "code": "N802",
+    "end_location": {
+      "column": 34,
+      "row": 262
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\simulate_workflow_execution.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 262
+    },
+    "message": "Function name `_execute_EmptyLatentImage` should be lowercase",
+    "noqa_row": 262,
+    "url": "https://docs.astral.sh/ruff/rules/invalid-function-name"
+  },
+  {
+    "cell": null,
+    "code": "N802",
+    "end_location": {
+      "column": 26,
+      "row": 276
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\simulate_workflow_execution.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 276
+    },
+    "message": "Function name `_execute_KSampler` should be lowercase",
+    "noqa_row": 276,
+    "url": "https://docs.astral.sh/ruff/rules/invalid-function-name"
+  },
+  {
+    "cell": null,
+    "code": "N802",
+    "end_location": {
+      "column": 27,
+      "row": 297
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\simulate_workflow_execution.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 297
+    },
+    "message": "Function name `_execute_VAEDecode` should be lowercase",
+    "noqa_row": 297,
+    "url": "https://docs.astral.sh/ruff/rules/invalid-function-name"
+  },
+  {
+    "cell": null,
+    "code": "N802",
+    "end_location": {
+      "column": 27,
+      "row": 319
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\simulate_workflow_execution.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 319
+    },
+    "message": "Function name `_execute_SaveImage` should be lowercase",
+    "noqa_row": 319,
+    "url": "https://docs.astral.sh/ruff/rules/invalid-function-name"
+  },
+  {
+    "cell": null,
+    "code": "N802",
+    "end_location": {
+      "column": 30,
+      "row": 335
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\simulate_workflow_execution.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 335
+    },
+    "message": "Function name `_execute_UpscaleImage` should be lowercase",
+    "noqa_row": 335,
+    "url": "https://docs.astral.sh/ruff/rules/invalid-function-name"
+  },
+  {
+    "cell": null,
+    "code": "N801",
+    "end_location": {
+      "column": 22,
+      "row": 28
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\OpenVINO\\openvino_adapter.py",
+    "fix": null,
+    "location": {
+      "column": 7,
+      "row": 28
+    },
+    "message": "Class name `LLM_SSE_Adapter` should use CapWords convention",
+    "noqa_row": 28,
+    "url": "https://docs.astral.sh/ruff/rules/invalid-class-name"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 59,
+      "row": 88
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\benchmarks\\hardware_benchmark.py",
+    "fix": null,
+    "location": {
+      "column": 55,
+      "row": 88
+    },
+    "message": "`intel_extension_for_pytorch` imported but unused; consider using `importlib.util.find_spec` to test for availability",
+    "noqa_row": 88,
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 55,
+      "row": 26
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\examples\\ai_frameworks_integration.py",
+    "fix": null,
+    "location": {
+      "column": 51,
+      "row": 26
+    },
+    "message": "`intel_extension_for_pytorch` imported but unused; consider using `importlib.util.find_spec` to test for availability",
+    "noqa_row": 26,
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 28,
+      "row": 45
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\examples\\ai_frameworks_integration.py",
+    "fix": null,
+    "location": {
+      "column": 20,
+      "row": 45
+    },
+    "message": "`openvino` imported but unused; consider using `importlib.util.find_spec` to test for availability",
+    "noqa_row": 45,
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 55,
+      "row": 52
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\examples\\xpu_integration.py",
+    "fix": null,
+    "location": {
+      "column": 51,
+      "row": 52
+    },
+    "message": "`intel_extension_for_pytorch` imported but unused; consider using `importlib.util.find_spec` to test for availability",
+    "noqa_row": 52,
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 28,
+      "row": 82
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\examples\\xpu_integration.py",
+    "fix": null,
+    "location": {
+      "column": 20,
+      "row": 82
+    },
+    "message": "`openvino` imported but unused; consider using `importlib.util.find_spec` to test for availability",
+    "noqa_row": 82,
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "W291",
+    "end_location": {
+      "column": 61,
+      "row": 66
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\fix_markdown_advanced.py",
+    "fix": {
+      "applicability": "unsafe",
+      "edits": [
+        {
+          "content": "",
+          "end_location": {
+            "column": 61,
+            "row": 66
+          },
+          "location": {
+            "column": 60,
+            "row": 66
+          }
+        }
+      ],
+      "message": "Remove trailing whitespace"
+    },
+    "location": {
+      "column": 60,
+      "row": 66
+    },
+    "message": "Trailing whitespace",
+    "noqa_row": 68,
+    "url": "https://docs.astral.sh/ruff/rules/trailing-whitespace"
+  },
+  {
+    "cell": null,
+    "code": "N802",
+    "end_location": {
+      "column": 20,
+      "row": 479
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\service\\aipg_utils.py",
+    "fix": null,
+    "location": {
+      "column": 5,
+      "row": 479
+    },
+    "message": "Function name `get_ESRGAN_size` should be lowercase",
+    "noqa_row": 479,
+    "url": "https://docs.astral.sh/ruff/rules/invalid-function-name"
+  },
+  {
+    "cell": null,
+    "code": "N803",
+    "end_location": {
+      "column": 47,
+      "row": 223
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\service\\comfyui_downloader.py",
+    "fix": null,
+    "location": {
+      "column": 26,
+      "row": 223
+    },
+    "message": "Argument name `packageSpecifier` should be lowercase",
+    "noqa_row": 223,
+    "url": "https://docs.astral.sh/ruff/rules/invalid-argument-name"
+  },
+  {
+    "cell": null,
+    "code": "N803",
+    "end_location": {
+      "column": 47,
+      "row": 264
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\service\\comfyui_downloader.py",
+    "fix": null,
+    "location": {
+      "column": 26,
+      "row": 264
+    },
+    "message": "Argument name `packageSpecifier` should be lowercase",
+    "noqa_row": 264,
+    "url": "https://docs.astral.sh/ruff/rules/invalid-argument-name"
+  },
+  {
+    "cell": null,
+    "code": "N801",
+    "end_location": {
+      "column": 22,
+      "row": 21
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\service\\llm_adapter.py",
+    "fix": null,
+    "location": {
+      "column": 7,
+      "row": 21
+    },
+    "message": "Class name `LLM_SSE_Adapter` should use CapWords convention",
+    "noqa_row": 21,
+    "url": "https://docs.astral.sh/ruff/rules/invalid-class-name"
+  },
+  {
+    "cell": null,
+    "code": "N801",
+    "end_location": {
+      "column": 31,
+      "row": 33
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\service\\model_download_adpater.py",
+    "fix": null,
+    "location": {
+      "column": 7,
+      "row": 33
+    },
+    "message": "Class name `Model_Downloader_Adapter` should use CapWords convention",
+    "noqa_row": 33,
+    "url": "https://docs.astral.sh/ruff/rules/invalid-class-name"
+  },
+  {
+    "cell": null,
+    "code": "N802",
+    "end_location": {
+      "column": 17,
+      "row": 570
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\service\\paint_biz.py",
+    "fix": null,
+    "location": {
+      "column": 5,
+      "row": 570
+    },
+    "message": "Function name `get_ESRGANer` should be lowercase",
+    "noqa_row": 570,
+    "url": "https://docs.astral.sh/ruff/rules/invalid-function-name"
+  },
+  {
+    "cell": null,
+    "code": "N801",
+    "end_location": {
+      "column": 21,
+      "row": 30
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\service\\sd_adapter.py",
+    "fix": null,
+    "location": {
+      "column": 7,
+      "row": 30
+    },
+    "message": "Class name `SD_SSE_Adapter` should use CapWords convention",
+    "noqa_row": 30,
+    "url": "https://docs.astral.sh/ruff/rules/invalid-class-name"
+  },
+  {
+    "cell": null,
+    "code": "F821",
+    "end_location": {
+      "column": 26,
+      "row": 103
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\tools\\fix_markdown_advanced.py",
+    "fix": null,
+    "location": {
+      "column": 19,
+      "row": 103
+    },
+    "message": "Undefined name `fix_all`",
+    "noqa_row": 103,
+    "url": "https://docs.astral.sh/ruff/rules/undefined-name"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 12,
+      "row": 13
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\tools\\linting\\fix_lint_issues.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "",
+          "end_location": {
+            "column": 1,
+            "row": 14
+          },
+          "location": {
+            "column": 1,
+            "row": 13
+          }
+        }
+      ],
+      "message": "Remove unused import: `json`"
+    },
+    "location": {
+      "column": 8,
+      "row": 13
+    },
+    "message": "`json` imported but unused",
+    "noqa_row": 13,
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 10,
+      "row": 14
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\tools\\linting\\fix_lint_issues.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "",
+          "end_location": {
+            "column": 1,
+            "row": 15
+          },
+          "location": {
+            "column": 1,
+            "row": 14
+          }
+        }
+      ],
+      "message": "Remove unused import: `re`"
+    },
+    "location": {
+      "column": 8,
+      "row": 14
+    },
+    "message": "`re` imported but unused",
+    "noqa_row": 14,
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 45,
+      "row": 20
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\tools\\linting\\fix_lint_issues.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from typing import Dict, List, Optional, Tuple",
+          "end_location": {
+            "column": 52,
+            "row": 20
+          },
+          "location": {
+            "column": 1,
+            "row": 20
+          }
+        }
+      ],
+      "message": "Remove unused import: `typing.Set`"
+    },
+    "location": {
+      "column": 42,
+      "row": 20
+    },
+    "message": "`typing.Set` imported but unused",
+    "noqa_row": 20,
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 11,
+      "row": 14
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\tools\\linting\\track_technical_debt.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "",
+          "end_location": {
+            "column": 1,
+            "row": 15
+          },
+          "location": {
+            "column": 1,
+            "row": 14
+          }
+        }
+      ],
+      "message": "Remove unused import: `sys`"
+    },
+    "location": {
+      "column": 8,
+      "row": 14
+    },
+    "message": "`sys` imported but unused",
+    "noqa_row": 14,
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 40,
+      "row": 17
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\tools\\linting\\track_technical_debt.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from typing import Dict, List, Set, Tuple",
+          "end_location": {
+            "column": 52,
+            "row": 17
+          },
+          "location": {
+            "column": 1,
+            "row": 17
+          }
+        }
+      ],
+      "message": "Remove unused import: `typing.Optional`"
+    },
+    "location": {
+      "column": 32,
+      "row": 17
+    },
+    "message": "`typing.Optional` imported but unused",
+    "noqa_row": 17,
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  }
+]

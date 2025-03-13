@@ -1,0 +1,801 @@
+[
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 25,
+      "row": 132
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\analyze_workflow_requirements.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 132
+    },
+    "message": "`analyze_workflow` is too complex (37 > 10)",
+    "noqa_row": 132,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 26,
+      "row": 354
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\analyze_workflow_requirements.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 354
+    },
+    "message": "`aggregate_results` is too complex (14 > 10)",
+    "noqa_row": 354,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 33,
+      "row": 435
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\analyze_workflow_requirements.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 435
+    },
+    "message": "`generate_markdown_report` is too complex (20 > 10)",
+    "noqa_row": 435,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 21,
+      "row": 69
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\check_requirements_consistency.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 69
+    },
+    "message": "`analyze_file` is too complex (21 > 10)",
+    "noqa_row": 69,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 33,
+      "row": 125
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\collect_ci_metrics.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 125
+    },
+    "message": "`collect_coverage_metrics` is too complex (12 > 10)",
+    "noqa_row": 125,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 33,
+      "row": 427
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\collect_ci_metrics.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 427
+    },
+    "message": "`generate_markdown_report` is too complex (14 > 10)",
+    "noqa_row": 427,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 25,
+      "row": 304
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\comment_on_workflow_pr.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 304
+    },
+    "message": "`generate_comment` is too complex (41 > 10)",
+    "noqa_row": 304,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 28,
+      "row": 15
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\ensure_unique_artifacts.py",
+    "fix": null,
+    "location": {
+      "column": 5,
+      "row": 15
+    },
+    "message": "`ensure_unique_artifacts` is too complex (27 > 10)",
+    "noqa_row": 15,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 16,
+      "row": 14
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\fix_ci_issues.py",
+    "fix": null,
+    "location": {
+      "column": 5,
+      "row": 14
+    },
+    "message": "`patch_files` is too complex (34 > 10)",
+    "noqa_row": 14,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 23,
+      "row": 72
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\fix_markdown_all.py",
+    "fix": null,
+    "location": {
+      "column": 5,
+      "row": 72
+    },
+    "message": "`fix_link_fragments` is too complex (17 > 10)",
+    "noqa_row": 72,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 22,
+      "row": 85
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\fix_markdown_all.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 85
+    },
+    "message": "`_fix_fragment` is too complex (16 > 10)",
+    "noqa_row": 85,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 23,
+      "row": 179
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\fix_markdown_issues.py",
+    "fix": null,
+    "location": {
+      "column": 5,
+      "row": 179
+    },
+    "message": "`fix_link_fragments` is too complex (13 > 10)",
+    "noqa_row": 179,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 28,
+      "row": 347
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\fix_markdown_issues.py",
+    "fix": null,
+    "location": {
+      "column": 5,
+      "row": 347
+    },
+    "message": "`fix_blanks_around_lists` is too complex (11 > 10)",
+    "noqa_row": 347,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 22,
+      "row": 15
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\generate_api_summary.py",
+    "fix": null,
+    "location": {
+      "column": 5,
+      "row": 15
+    },
+    "message": "`extract_endpoints` is too complex (21 > 10)",
+    "noqa_row": 15,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 22,
+      "row": 131
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\generate_api_summary.py",
+    "fix": null,
+    "location": {
+      "column": 5,
+      "row": 131
+    },
+    "message": "`generate_markdown` is too complex (12 > 10)",
+    "noqa_row": 131,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 30,
+      "row": 121
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\generate_workflow_dashboard.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 121
+    },
+    "message": "`collect_all_workflows` is too complex (13 > 10)",
+    "noqa_row": 121,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 23,
+      "row": 151
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\generate_workflow_dashboard.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 151
+    },
+    "message": "`integrate_data` is too complex (26 > 10)",
+    "noqa_row": 151,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 36,
+      "row": 345
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\generate_workflow_dashboard.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 345
+    },
+    "message": "`generate_dashboard_markdown` is too complex (50 > 10)",
+    "noqa_row": 345,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 32,
+      "row": 668
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\generate_workflow_dashboard.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 668
+    },
+    "message": "`generate_github_summary` is too complex (20 > 10)",
+    "noqa_row": 668,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 26,
+      "row": 46
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\generate_workflow_docs.py",
+    "fix": null,
+    "location": {
+      "column": 5,
+      "row": 46
+    },
+    "message": "`generate_workflow_doc` is too complex (40 > 10)",
+    "noqa_row": 46,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 37,
+      "row": 117
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\hardware_compatibility_advisor.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 117
+    },
+    "message": "`generate_version_suggestions` is too complex (17 > 10)",
+    "noqa_row": 117,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 33,
+      "row": 246
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\hardware_compatibility_advisor.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 246
+    },
+    "message": "`generate_resolution_plan` is too complex (13 > 10)",
+    "noqa_row": 246,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 38,
+      "row": 211
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\hardware_compatibility_tester.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 211
+    },
+    "message": "`generate_compatibility_matrix` is too complex (12 > 10)",
+    "noqa_row": 211,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 33,
+      "row": 278
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\hardware_compatibility_tester.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 278
+    },
+    "message": "`generate_markdown_report` is too complex (17 > 10)",
+    "noqa_row": 278,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 22,
+      "row": 17
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\lint_python_files.py",
+    "fix": null,
+    "location": {
+      "column": 5,
+      "row": 17
+    },
+    "message": "`lint_python_files` is too complex (14 > 10)",
+    "noqa_row": 17,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 25,
+      "row": 169
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\lint_python_files.py",
+    "fix": null,
+    "location": {
+      "column": 5,
+      "row": 169
+    },
+    "message": "`check_unused_imports` is too complex (11 > 10)",
+    "noqa_row": 169,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 25,
+      "row": 387
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\simulate_workflow_execution.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 387
+    },
+    "message": "`topological_sort` is too complex (13 > 10)",
+    "noqa_row": 387,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 26,
+      "row": 449
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\simulate_workflow_execution.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 449
+    },
+    "message": "`simulate_workflow` is too complex (17 > 10)",
+    "noqa_row": 449,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 36,
+      "row": 135
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\test_workflow_execution.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 135
+    },
+    "message": "`check_circular_dependencies` is too complex (11 > 10)",
+    "noqa_row": 135,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 25,
+      "row": 177
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\test_workflow_execution.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 177
+    },
+    "message": "`topological_sort` is too complex (12 > 10)",
+    "noqa_row": 177,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 27,
+      "row": 243
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\test_workflow_execution.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 243
+    },
+    "message": "`simulate_execution` is too complex (21 > 10)",
+    "noqa_row": 243,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 23,
+      "row": 209
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\track_workflow_versions.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 209
+    },
+    "message": "`detect_changes` is too complex (11 > 10)",
+    "noqa_row": 209,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 32,
+      "row": 413
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\track_workflow_versions.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 413
+    },
+    "message": "`generate_version_report` is too complex (16 > 10)",
+    "noqa_row": 413,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 32,
+      "row": 627
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\track_workflow_versions.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 627
+    },
+    "message": "`generate_github_summary` is too complex (13 > 10)",
+    "noqa_row": 627,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 26,
+      "row": 104
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\validate_comfyui_workflows.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 104
+    },
+    "message": "`validate_workflow` is too complex (19 > 10)",
+    "noqa_row": 104,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 23,
+      "row": 19
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\.github\\workflows\\scripts\\validate_components.py",
+    "fix": null,
+    "location": {
+      "column": 5,
+      "row": 19
+    },
+    "message": "`validate_component` is too complex (34 > 10)",
+    "noqa_row": 19,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 24,
+      "row": 9
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\fix_markdown.py",
+    "fix": null,
+    "location": {
+      "column": 5,
+      "row": 9
+    },
+    "message": "`fix_markdown_tables` is too complex (11 > 10)",
+    "noqa_row": 9,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 24,
+      "row": 11
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\fix_markdown_tables.py",
+    "fix": null,
+    "location": {
+      "column": 5,
+      "row": 11
+    },
+    "message": "`fix_markdown_tables` is too complex (13 > 10)",
+    "noqa_row": 11,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 17,
+      "row": 45
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\hardware_detection.py",
+    "fix": null,
+    "location": {
+      "column": 5,
+      "row": 45
+    },
+    "message": "`get_gpu_info` is too complex (14 > 10)",
+    "noqa_row": 45,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 17,
+      "row": 120
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\hardware_detection.py",
+    "fix": null,
+    "location": {
+      "column": 5,
+      "row": 120
+    },
+    "message": "`get_cpu_info` is too complex (15 > 10)",
+    "noqa_row": 120,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 17,
+      "row": 86
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\hardware_detection\\core.py",
+    "fix": null,
+    "location": {
+      "column": 5,
+      "row": 86
+    },
+    "message": "`get_gpu_info` is too complex (13 > 10)",
+    "noqa_row": 86,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 17,
+      "row": 157
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\hardware_detection\\core.py",
+    "fix": null,
+    "location": {
+      "column": 5,
+      "row": 157
+    },
+    "message": "`get_cpu_info` is too complex (18 > 10)",
+    "noqa_row": 157,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 38,
+      "row": 245
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\service\\aipg_utils.py",
+    "fix": null,
+    "location": {
+      "column": 5,
+      "row": 245
+    },
+    "message": "`check_defaultbackend_mmodel_exist` is too complex (12 > 10)",
+    "noqa_row": 245,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 23,
+      "row": 303
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\service\\aipg_utils.py",
+    "fix": null,
+    "location": {
+      "column": 5,
+      "row": 303
+    },
+    "message": "`convert_model_type` is too complex (21 > 10)",
+    "noqa_row": 303,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 25,
+      "row": 41
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\service\\lama.py",
+    "fix": null,
+    "location": {
+      "column": 5,
+      "row": 41
+    },
+    "message": "`prepare_img_and_mask` is too complex (11 > 10)",
+    "noqa_row": 41,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 16,
+      "row": 300
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\service\\realesrgan.py",
+    "fix": null,
+    "location": {
+      "column": 9,
+      "row": 300
+    },
+    "message": "`enhance` is too complex (13 > 10)",
+    "noqa_row": 300,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  },
+  {
+    "cell": null,
+    "code": "C901",
+    "end_location": {
+      "column": 24,
+      "row": 31
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\tools\\scripts\\fix_markdown_issues.py",
+    "fix": null,
+    "location": {
+      "column": 5,
+      "row": 31
+    },
+    "message": "`fix_markdown_issues` is too complex (11 > 10)",
+    "noqa_row": 31,
+    "url": "https://docs.astral.sh/ruff/rules/complex-structure"
+  }
+]
