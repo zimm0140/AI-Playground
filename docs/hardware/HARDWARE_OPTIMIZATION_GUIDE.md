@@ -102,7 +102,6 @@ The system recognizes the following hardware types:
 | `ovino` | Intel CPUs with OpenVINO | OpenVINO runtime optimizations |
 | `base` | Standard hardware | Standard PyTorch CPU operations |
 
-
 ## Environment Setup {#environmen {#environment-setup-environmen}
 
 t-setup}
@@ -116,6 +115,7 @@ To set up your environment for the detected hardware
 ```bash
 
 # Set up for
+{#set-up-for}
 
 a
 
@@ -139,8 +139,8 @@ python uvfast.py
 setup --dev
 
 ```text
-
 ### Using Lockf {#usin
+ {#using-lockf-usin}
 
 g
 
@@ -154,6 +154,7 @@ ockfiles:
 ```bash
 
 # Generate
+{#generate}
 
 l
 
@@ -192,6 +193,7 @@ ized performance:
 ```python
 
 # Example of hardwar
+ {#example-of-hardwar}
 
 e
 
@@ -218,11 +220,11 @@ e)
 
 response = llm("Explain quantum computing in
 simple terms.")
-print(respo```
+print(respo```text
 
 ```text
-
-## Work {#
+## Work {# {#w
+ork-}
 
 work
 
@@ -239,6 +241,7 @@ ardware:
 ```python
 
 from examples.ai_f
+
 r
 ameworks_integration import c
 onfigure_hardware, setup_langchain_model
@@ -268,8 +271,8 @@ tivity in simple terms.")
 print(re```textse)
 
 ```text
-
-### Adva
+### Adva {#a
+dva}
 
 nc {
 
@@ -282,6 +285,7 @@ For complex LangChain applications, you can create hardware-aware chains:
 ```python
 
 from langchain.p
+
 r
 ompts import PromptTemplate
 from langchain.chains import LLMChain
@@ -319,8 +323,8 @@ response = chain.run(topic="quantum co
 mputing", question="What is quantum entan```textent?")
 
 ```text
-
-## Wor
+## Wor {#w
+or}
 
 k {#
 
@@ -338,12 +342,13 @@ Diffusion on Intel hardware:
 ```python
 
 from examples.
+
 a
 i_frameworks_i
 ntegration import configure_hardware, setup_stable_d
 iffusion
 
-# Auto-con {#auto-con}figure hardware {#a
+# Auto-con {#auto-con}figure hardware {#a {#auto-con-auto-configure-hardware-a}
 
 uto-configure-hardware}
 device, hw_type = configure_hardware()
@@ -366,9 +371,9 @@ image.save("astronaut_
 ```textars.png")
 
 ```text
-
 ###
 Opt
+
 {#opt}i {#opti}
 
 mizing for Speed {#optimiz
@@ -378,6 +383,7 @@ For faster inference with reduced quality:
 ```python
 
 # For Intel
+{#for-intel}
 
 A
 
@@ -402,10 +408,8 @@ ault 50
 ).images[0]
 
 ```text
-
-##
-
-# Op
+## # O
+p {#-op}
 
 t {#opt}
 
@@ -417,6 +421,7 @@ ation time:
 ```python
 
 # Higher q
+ {#higher-q}
 
 u
 
@@ -432,8 +437,8 @@ s=50,
 ).images[0]
 
 ```text
-
 ## P
+ {#p}
 
 er {#per}
 
@@ -445,8 +450,9 @@ To benchmark your hardware and
 
 ```bash
 
-#
-Run al
+# Run al
+ {#run-al}
+
 l
 
  benchmarks {#run-all-benchmarks}
@@ -466,14 +472,12 @@ python benchmarks/hardware_benchmark.py --sd      # Stable Diffus
 
 ion only
 
-# Specify iterations and output file {#specify-iterations-and-output-file {#specify-iterations-and-output-file-specify-iterations-and-output-file}
+# Specify iterations and output file {#specify-iterations-and-output-file-specify-iterations-and-output-file}
 
-}
 python benchmarks/hardware_benchmark.py --iterations 10 ```texttput r
 esults.json
 
 ```text
-
 ##
 
 # I {#i}
@@ -571,6 +575,7 @@ You can customize hardware detection by editing `hardware_detection.py`:
 ```python
 
 def de
+
 t
 ect_hardware_type():
     """
@@ -587,6 +592,7 @@ e detection logic
 "
 
 ```te
+
 xt
 
 ###
@@ -597,6 +603,7 @@ Environment Variables {#environment-variables}
 ```bash
 
 # Im
+ {#im}
 
 p
 
@@ -612,21 +619,22 @@ ptimize memory layout
 
 export SYCL_PI_LEVEL_ZERO_USE_IMMEDIATE_COMMANDLISTS=1  # Improve performance
 
-```
-
+```text
 text
 
 ## ## For OpenVINO {#for-openvino}
 
 ```bash
 
-# Important environment variables for OpenVINO
+#
+Important environment variables for OpenVINO {#important-environment-variables-for-openvino}
 
 export OPENVINO_THREADING=TBB  # Use TBB threading
 
 export OMP_NUM_THREADS=8  # Control number of OpenMP threads
 
-```
+`
+``
 
 ### Configuring uvfast.json {#configuring-uvfastjson}
 
@@ -665,7 +673,6 @@ You can create a `uvfast.json` file in your project root to customize behavior:
 }
 
 ```text
-
 This configuration allows for customized settings per hardware type, including environment```te```textbles and additional packages.
 
 ```text

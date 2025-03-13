@@ -1,22 +1,27 @@
 
-# Hardware-Aware Python Environment Management
+# Hardware-Aware Python Environment Management {#hardware-aware-python-environment-management}
 
 This project implements a hardware-aware environment management system for Python projects, with a focus on Intel hardware acceleration for machine learning workloads.
 
-## Overview
+## Overview {#overview}
 
 The implementation combines modern Python packaging practices with hardware detection to provide optimized environments for different hardware configurations:
 
 - Intel Arc GPUs (A-Series)
+
 - Intel Battlemage GPUs (B-Series)
+
 - Intel Meteor Lake processors
+
 - Intel Lunar Lake processors
+
 - OpenVINO acceleration
+
 - Fallback to standard configurations
 
-## Components
+## Components {#components}
 
-### Core Components
+### Core Components {#core-components}
 
 1. *_uvfast.py__: Main CLI tool for environment management
 
@@ -37,7 +42,7 @@ The implementation combines modern Python packaging practices with hardware dete
    - Optional dependencies for specific hardware types
    - Tool configuration for linting, testing, etc.
 
-### Additional Components
+### Additional Components {#additional-components}
 
 1. **GitHub Actions Workflow**: CI/CD pipeline for testing
 
@@ -55,9 +60,9 @@ The implementation combines modern Python packaging practices with hardware dete
    - Shows how to use hardware detection with PyTorch
    - Configures backends based on available hardware
 
-## Installation and Usage
+## Installation and Usage {#installation-and-usage}
 
-### Quick Start
+### Quick Start {#quick-start}
 
 1. Clone the repository and navigate to the project directory:
 
@@ -71,106 +76,121 @@ cd <project-directory>
 
 ```bash
 
-python uvfast.py setup --dev
+python uvfast.py
+setup --dev
 
 ```text
-
-1. Activate the virtual environment:
+1. Activate the virtual e
+nvironment:
 
 ```bash
 
 ## On Windows
+{#on-windows}
 
 .venv\Scripts\activate
 
-## On Linux/macOS
+## On Linux/macOS {#on-linuxmacos}
 
 source .venv/bin/activate
 
 ```text
-
-1. Run commands in the optimized environment:
+1. Run commands in the
+optimized environment:
 
 ```bash
 
-python uvfast.py run pytest
+python uvfast
+.py run pytest
 
 ```text
-
-### Manual Hardware Selection
+### Manual Hardware S
+election {#manual-hardware-selection}
 
 If you want to specify a hardware type explicitly:
 
 ```bash
 
-python uvfast.py setup --hardware acm --dev
+python uvfa
+st.py setup --hardware acm --dev
 
 ```text
-
-Available hardware types:
+Available hardware
+types:
 
 - `base`: Standard configuration
+
 - `acm`: Intel Arc GPUs (A-Series)
+
 - `bmg`: Intel Battlemage GPUs (B-Series)
+
 - `mtl`: Intel Meteor Lake processors
+
 - `lnl`: Intel Lunar Lake processors
+
 - `ovino`: OpenVINO acceleration
+
 - `arl_h`: Intel Arc Alchemist Hardware
 
-### Traditional Installation
+### Traditional Installation {#traditional-installation}
 
 For traditional installation with pip (but accelerated with uv):
 
 ```bash
 
-python uvfast.py legacy-install --dev
+python uv
+fast.py legacy-install --dev
 
 ```text
-
-Or for fully traditional installation:
+Or for fully trad
+itional installation:
 
 ```bash
 
-pip install -e .
+pip ins
+tall -e .
 pip install -e ".[dev]"
 
 ```text
-
-For hardware-specific dependencies:
+For hardware-sp
+ecific dependencies:
 
 ```bash
 
-pip install -e ".[acm]"  # For Intel Arc GPUs
+pip i
+nstall -e ".[acm]"  # For Intel Arc GPUs
 
 pip install -e ".[ovino]"  # For OpenVINO
 
 ```text
-
-## Lockfile Management
+## Lockfile M
+anagement {#lockfile-management}
 
 Generate lockfiles for reproducible environments:
 
 ```bash
 
-## Generate lockfile for current hardware
+##
+ Generate lockfile for current hardware {#generate-lockfile-for-current-hardware}
 
 python uvfast.py lock
 
-## Generate lockfiles for all hardware types
+## Generate lockfiles for all hardware types {#generate-lockfiles-for-all-hardware-types}
 
 python uvfast.py lock --all
 
 ```text
-
-Install from lockfiles:
+Install fro
+m lockfiles:
 
 ```bash
 
-python uvfast.py setup --use-lockfile
+p
+ython uvfast.py setup --use-lockfile
 
 ```text
-
-## Environment Information
+## Enviro
+nment Information {#environment-information}
 
 Display information about the current hardware and environment:
 
@@ -179,54 +199,59 @@ Display information about the current hardware and environment:
 python uvfast.py info
 
 ```text
+For mor
+e detailed information:
 
-For more detailed information:
-
-```bash
+```bas
+h
 
 python uvfast.py info --verbose
 
 ```text
-
-## Hardware-Specific Development
+## Ha
+rdware-Specific Development {#hardware-specific-development}
 
 The examples directory contains a sample script demonstrating how to use hardware detection with PyTorch:
 
-```bash
+```b
+ash
 
 python examples/xpu_integration.py
 
 ```text
+Thi
+s script automatically configures PyTorch for the appropriate backend (XPU for Intel GPUs, OpenVINO, or CPU) based on the detected hardware.
 
-This script automatically configures PyTorch for the appropriate backend (XPU for Intel GPUs, OpenVINO, or CPU) based on the detected hardware.
-
-## CI/CD Integration
+## CI/CD Integration {#cicd-integration}
 
 The GitHub Actions workflow in `.github/workflows/hardware-matrix.yml` demonstrates how to set up CI/CD for hardware-aware testing. It includes:
 
 - Matrix testing across multiple Python versions and hardware configurations
+
 - Hardware simulation for CI environments
+
 - Lockfile validation
 
-## Docker Usage
+## Docker Usage {#docker-usage}
 
 For containerized development:
 
-```bash
+``
+`bash
 
-## Build the container for your hardware
+## Build the container for your hardware {#build-the-container-for-your-hardware}
 
 docker build --target acm -t my-project:acm .  # For Intel Arc GPUs
 
 docker build --target openvino -t my-project:openvino .  # For OpenVINO
 
-## Run the container
+## Run the container {#run-the-container}
 
 docker run -it my-project:acm
 
 ```text
-
-Or using Docker Compose with profiles:
+O
+r using Docker Compose with profiles:
 
 ```bash
 
@@ -234,14 +259,16 @@ docker-compose --profile acm up
 docker-compose --profile openvino up
 
 ```text
-
-## Advanced Configuration
+## Advanced Configuration {#advanced-configuration}
 
 You can customize the hardware detection and environment configuration by modifying the `uvfast.json` file. This allows you to:
 
 - Add new hardware types
+
 - Customize detection patterns
+
 - Change dependency paths
+
 - Configure environment settings
 
 ```text`

@@ -179,7 +179,9 @@ def check_comfyui_model_exists(type, repo_id) -> bool:
         dir_to_look_for = os.path.join(model_dir, "vit-base-nsfw-detector", extract_model_id_pathsegments(repo_id))
     else:
         dir_to_look_for = os.path.join(
-            model_dir, repo_local_root_dir_name(repo_id), extract_model_id_pathsegments(repo_id),
+            model_dir,
+            repo_local_root_dir_name(repo_id),
+            extract_model_id_pathsegments(repo_id),
         )
     return os.path.exists(dir_to_look_for)
 

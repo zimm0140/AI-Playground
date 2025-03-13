@@ -53,6 +53,8 @@ strict_equality = true
 [tool.ruff]
 target-version = "py39"
 line-length = 120
+
+[tool.ruff.lint]
 select = [
     "E",
     "F",
@@ -99,7 +101,7 @@ ignore = [
     "PLW2901",
 ]
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "test*.py" = ["S101", "F401", "F403"]
 "service/xpu_hijacks.py" = ["A001", "A002", "SIM102", "N802", "N816"]
 "service/web_api.py" = ["N802", "N803", "N806", "A001"]

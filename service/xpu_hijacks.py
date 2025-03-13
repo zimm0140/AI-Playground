@@ -410,7 +410,12 @@ def scaled_dot_product_attention(query, key, value, attn_mask=None, dropout_p=0.
     if attn_mask is not None and query.dtype != attn_mask.dtype:
         attn_mask = attn_mask.to(dtype=query.dtype)
     return original_scaled_dot_product_attention(
-        query, key, value, attn_mask=attn_mask, dropout_p=dropout_p, is_causal=is_causal,
+        query,
+        key,
+        value,
+        attn_mask=attn_mask,
+        dropout_p=dropout_p,
+        is_causal=is_causal,
     )
 
 
@@ -615,7 +620,11 @@ def torch_tensor(data, *args, dtype=None, device=None, **kwargs):
             (isinstance(device, torch.device) and hasattr(device, "type") and device.type == "xpu")  # type: ignore
             or (isinstance(device, str) and "xpu" in device)
         ):
-            if dtype == torch.float64 or dtype is None and (hasattr(data, "dtype") and (data.dtype in (torch.float64, float))):
+            if (
+                dtype == torch.float64
+                or dtype is None
+                and (hasattr(data, "dtype") and (data.dtype in (torch.float64, float)))
+            ):
                 dtype = torch.float32
     return original_torch_tensor(data, *args, dtype=dtype, device=device, **kwargs)
 

@@ -1,11 +1,11 @@
 
-# uvfast: Modern Python Environment Management
+# uvfast: Modern Python Environment Management {#uvfast-modern-python-environment-management}
 
 This document provides a step-by-step guide for implementing and using the `uvfast` system in your Python projects.
 
-## Implementation Steps
+## Implementation Steps {#implementation-steps}
 
-### 1. Core Files
+### 1. Core Files {#core-files}
 
 1. *_Create the uvfast.py script__:
 
@@ -22,7 +22,7 @@ This document provides a step-by-step guide for implementing and using the `uvfa
 
    - Create `uvfast.json` in your project root with your project-specific settings
 
-### 2. Requirements Files
+### 2. Requirements Files {#requirements-files}
 
 1. **Base requirements**:
 
@@ -40,13 +40,16 @@ This document provides a step-by-step guide for implementing and using the `uvfa
 \`\`\`text\`text
 
 - `requirements-hardware-base.txt`
+
 - `requirements-hardware-acm.txt` (for Intel Arc GPUs)
+
 - `requirements-hardware-ovino.txt` (for OpenVINO)
+
 - Add any other hardware-specific configurations
 
 ```text`text
 
-### 3. Documentation
+### 3. Documentation {#documentation}
 
 1. **Update your README.md**:
 
@@ -62,7 +65,7 @@ This document provides a step-by-step guide for implementing and using the `uvfa
 
    - Create `UVFAST_CHEATSHEET.md` with common commands
 
-### 4. CI/CD Integration
+### 4. CI/CD Integration {#cicd-integration}
 
 1. **GitHub Actions**:
 
@@ -70,71 +73,73 @@ This document provides a step-by-step guide for implementing and using the `uvfa
    - Use the uvfast script to set up environments
    - Run tests and linting
 
-## Usage Guide
+## Usage Guide {#usage-guide}
 
-### Basic Commands
+### Basic Commands {#basic-commands}
 
 ```bash
 
-## Setup environment with development dependencies
+## Setup environment with development dependencies {#setup-environment-with-development-dependencies}
 
 python uvfast.py setup --dev
 
-## Show environment information
+## Show environment information {#show-environment-information}
 
 python uvfast.py info
 
-## Generate lockfiles for all hardware types
+## Generate lockfiles for all hardware types {#generate-lockfiles-for-all-hardware-types}
 
 python uvfast.py lock
 
-## Run tests
+## Run tests {#run-tests}
 
 python uvfast.py run pytest
 
-## Run linting
+## Run linting {#run-linting}
 
 python uvfast.py run ruff check .
 
-## Run type checking
+## Run type checking {#run-type-checking}
 
 python uvfast.py run mypy .
 
 ```text
-
-### Using Wrapper Scripts
+### Using
+ Wrapper Scripts {#using-wrapper-scripts}
 
 ```bash
 
-## Unix/Linux/macOS
+## Unix/Linux/macOS {#unixlinuxmacos}
 
 ./scripts/uvfast.sh setup --dev
 
-## Windows PowerShell
+## Windows PowerShell {#windows-powershell}
 
 .\scripts\uvfast.ps1 setup --dev
 
 ```text
+### Har
+dware-Specific Setup {#hardware-specific-setup}
 
-### Hardware-Specific Setup
+```bas
+h
 
-```bash
-
-## Setup for Intel Arc GPUs
+## Setup for Intel Arc GPUs {#setup-for-intel-arc-gpus}
 
 python uvfast.py setup --hardware acm --dev
 
-## Setup for OpenVINO
+## Setup for OpenVINO {#setup-for-openvino}
 
 python uvfast.py setup --hardware ovino --dev
 
 ```text
+## Im
+plementation Example {#implementation-example}
 
-## Implementation Example
+### uvfast.json {#uvfastjson}
 
-### uvfast.json
-
-```json
+```j
+son
 
 {
   "project_name": "my-project",
@@ -144,8 +149,8 @@ python uvfast.py setup --hardware ovino --dev
   "requirements": {
 
 ```text
-
-"base": "requirements.txt",
+"ba
+se": "requirements.txt",
 "dev": "requirements-dev.txt",
 "hardware": {
   "base": "requirements-hardware-base.txt",
@@ -153,14 +158,14 @@ python uvfast.py setup --hardware ovino --dev
   "ovino": "requirements-hardware-ovino.txt"
 }
 
-```text
-
+``
+`
   },
   "lockfiles": {
 
 ```text
-
-"base": "requirements.lock",
+"
+base": "requirements.lock",
 "hardware": {
   "base": "requirements-hardware-base.lock",
   "acm": "requirements-hardware-acm.lock",
@@ -168,13 +173,11 @@ python uvfast.py setup --hardware ovino --dev
 }
 
 ```text
-
   }
 }
 
 ```text
-
-## Benefits of Using uvfast
+## Benefits of Using uvfast {#benefits-of-using-uvfast}
 
 1. **Modern tooling**: Leverages `uv` for faster package installation
 
@@ -186,7 +189,7 @@ python uvfast.py setup --hardware ovino --dev
 
 1. **Developer convenience**: Simple commands for common tasks
 
-## Best Practices
+## Best Practices {#best-practices}
 
 1. **Keep configuration up to date**: Update `uvfast.json` when adding new hardware configurations
 
@@ -198,7 +201,7 @@ python uvfast.py setup --hardware ovino --dev
 
 1. **Document hardware-specific needs**: Make sure to document any hardware-specific considerations
 
-## Troubleshooting
+## Troubleshooting {#troubleshooting}
 
 1. **Environment issues**:
 

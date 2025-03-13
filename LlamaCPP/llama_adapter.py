@@ -153,7 +153,7 @@ class LlmSseAdapter:
                 {
                     "type": "error",
                     "err_type": "repositories_not_found",
-                }
+                },
             )
         # elif isinstance(ex, NotEnoughDiskSpaceException):
         #     self.put_msg(
@@ -262,7 +262,8 @@ class LlmSseAdapter:
             # like LlamaCpp also have a 'max_tokens' parameter. This inconsistency causes type errors.
             # Using type: ignore disables type checking for this line
             stream = self.llm_interface.create_chat_completion(  # type: ignore
-                full_prompt, params.max_tokens
+                full_prompt,
+                params.max_tokens,
             )
             self.stream_function(stream)
 

@@ -1,110 +1,117 @@
 
-# Python Code Linting in AI-Playground
+# Python Code Linting in AI-Playground {#python-code-linting-in-ai-playground}
 
 This document describes the linting practices used in the AI-Playground project to maintain code quality without modifying the core project structure.
 
-## Linting Standards
+## Linting Standards {#linting-standards}
 
 The project uses [Ruff](https://github.com/astral-sh/ruff) for Python code linting, with the following configuration:
 
 \`\`\`text\`bash
 
-## Standard linting configuration
+## Standard linting configuration {#standard-linting-configuration}
 
 ruff check --select=E,F --ignore=E501 --extend-exclude=.git,.github,.venv,venv,*_pycache__,build,dist --line-length=100 ./service
 
 ```text`text
 
-### Key Rules
+### Key Rules {#key-rules}
 
 - **E**: Style errors (from pycodestyle)
+
 - **F**: Logical/syntax errors and undefined names (from Pyflakes)
+
 - Line length is set to 100 characters
+
 - E501 (line too long) errors are ignored, as they are often false positives with complex ML code
 
-## Running the Linter Locally
+## Running the Linter Locally {#running-the-linter-locally}
 
-### Using the Provided Scripts
+### Using the Provided Scripts {#using-the-provided-scripts}
 
 1. For Windows users:
 
 ```text
+   .\.gi
+thub\workflows\scripts\fix_ruff_windows.ps1
 
-   .\.github\workflows\scripts\fix_ruff_windows.ps1
-
-   ```text
+   ```
 
 1. For Linux/Mac users:
 
 ```text
+   python .
+github/workflows/scripts/fix_ruff_issues_local.py
 
-   python .github/workflows/scripts/fix_ruff_issues_local.py
+   ```
 
-   ```text
-
-### Manual Linting
+### Manual Linting {#manual-linting}
 
 To run Ruff manually:
 
 ```bash
 
-## Install Ruff
+## Install Ruff {#install-ruff}
 
 pip install ruff
 
-## Check for issues
+## Check for issues {#check-for-issues}
 
 ruff check --select=E,F --ignore=E501 --line-length=100 ./service
 
-## Fix issues automatically
+## Fix issues automatically {#fix-issues-automatically}
 
 ruff check --select=E,F --ignore=E501 --line-length=100 --fix ./service
 
 ```text
+## Common
+ Issues and Fixes {#common-issues-and-fixes}
 
-## Common Issues and Fixes
-
-### Unused Imports (F401)
+### Unused Imports (F401) {#unused-imports-f401}
 
 An import that's not used in the file:
 
-```python
+```pytho
+n
 
 import os  # Unused import
 
 ```text
+**Fix**
+: Either remove the import or add a `# noqa: F401` comment if it's needed for side effects:
 
-**Fix**: Either remove the import or add a `# noqa: F401` comment if it's needed for side effects:
-
-```python
+```pyt
+hon
 
 import os  # noqa: F401
 
 ```text
-
-### Missing Whitespace (E2xx)
+### M
+issing Whitespace (E2xx) {#missing-whitespace-e2xx}
 
 Missing spaces around operators or after commas:
 
-```python
+```p
+ython
 
 x=1+2  # Missing spaces
 
 def func(a,b):  # Missing space after comma
 
 ```text
+__F
+ix_*: Add appropriate spacing:
 
-__Fix_*: Add appropriate spacing:
-
-```python
+``
+`python
 
 x = 1 + 2  # Correct spacing
 
 def func(a, b):  # Space after comma
 
 ```text
-
-## CI Integration
+#
+# CI Integration {#ci-integration}
 
 The project's CI system uses GitHub Actions to run Ruff on all Python files. The configuration is maintained in the `.github/workflows/ruff-integration.yml` file.
 
@@ -118,22 +125,21 @@ The CI will:
 
 1. Provide instructions for fixing the issues
 
-## Adding to Pre-commit Hooks
+## Adding to Pre-commit Hooks {#adding-to-pre-commit-hooks}
 
 To ensure code quality before committing, you can set up pre-commit hooks locally:
 
 ```bash
 
-## On Linux/macOS/Git Bash
+## On Linux/macOS/Git Bash {#on-linuxmacosgit-bash}
 
 ./.github/setup-hooks.sh
 
-## On Windows PowerShell
+## On Windows PowerShell {#on-windows-powershell}
 
 .\.github\setup-hooks.ps1
 
 ```text
-
 This will check your Python code for linting issues before each commit.
 
 ```text`

@@ -935,7 +935,9 @@ def inpaint(params: InpaintParams):
 
     slice_w, slice_h = slice_image.size
     out_width, out_height, out_radio = inpaint_utils.calc_out_size(
-        slice_w, slice_h, isinstance(pipe, StableDiffusionXLInpaintPipeline),
+        slice_w,
+        slice_h,
+        isinstance(pipe, StableDiffusionXLInpaintPipeline),
     )
     if out_radio != 1:
         slice_image = slice_image.resize((out_width, out_height))

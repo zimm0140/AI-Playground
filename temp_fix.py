@@ -19,7 +19,8 @@ for line in lines:
         )
     elif "[Working with LangChain](#working-with-langchain)" in line:
         line = line.replace(
-            "[Working with LangChain](#working-with-langchain)", "[Working with LangChain](#working-with-langchain)",
+            "[Working with LangChain](#working-with-langchain)",
+            "[Working with LangChain](#working-with-langchain)",
         )
     elif "[Working with Stable Diffusion](#working-with-stable-diffusion)" in line:
         line = line.replace(
@@ -35,7 +36,8 @@ for line in lines:
         line = line.replace("[Troubleshooting](#troubleshooting)", "[Troubleshooting](#troubleshooting)")
     elif "[Advanced Configuration](#advanced-configuration)" in line:
         line = line.replace(
-            "[Advanced Configuration](#advanced-configuration)", "[Advanced Configuration](#advanced-configuration)",
+            "[Advanced Configuration](#advanced-configuration)",
+            "[Advanced Configuration](#advanced-configuration)",
         )
 
     fixed_lines.append(line)

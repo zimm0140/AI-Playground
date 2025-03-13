@@ -20,7 +20,6 @@ Classes:
 Note: All non-English comments and commented-out code are preserved.
 """'''
 
-
 import cv2
 import numpy as np
 from PIL import Image
@@ -69,7 +68,8 @@ def detect_mask_valid_edge(
 
 
 def pre_input_and_mask(
-    image: Image.Image, mask: Image.Image,
+    image: Image.Image,
+    mask: Image.Image,
 ) -> tuple[Image.Image, Image.Image, tuple[int, int, int, int]]:
     """
     Preprocess and crop the input image and mask for inpainting.

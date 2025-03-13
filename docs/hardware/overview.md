@@ -1,10 +1,10 @@
 
-# Hardware Overview
+# Hardware Overview {#hardware-overview}
 
 AI-Playground is designed to work optimally across various hardware configurations, with special optimizations for Intel hardware platforms. This guide provides an overview of
 supported hardware and how the system adapts to different configurations.
 
-## Supported Hardware Platforms
+## Supported Hardware Platforms {#supported-hardware-platforms}
 
 AI-Playground supports the following hardware platforms with varying levels of optimization:
 
@@ -20,14 +20,13 @@ AI-Playground supports the following hardware platforms with varying levels of o
 | NVIDIA GPUs | - | Standard | Standard PyTorch CUDA support |
 | AMD GPUs | - | Basic | Limited support via ROCm |
 
-
-## Automatic Hardware Detection
+## Automatic Hardware Detection {#automatic-hardware-detection}
 
 AI-Playground includes a sophisticated hardware detection system that identifies your specific hardware configuration and sets up the environment accordingly:
 
 \`\`\`text\`bash
 
-## Automatic detection and setup
+## Automatic detection and setup {#automatic-detection-and-setup}
 
 python setup_hardware_env.py
 
@@ -45,67 +44,80 @@ The detection system:
 
 1. Selects the most appropriate configuration based on findings
 
-## Hardware-specific Optimizations
+## Hardware-specific Optimizations {#hardware-specific-optimizations}
 
-### Intel Arc GPUs (`acm`)
+### Intel Arc GPUs (`acm`) {#intel-arc-gpus-acm}
 
 Intel Arc GPUs receive special optimizations:
 
 - Intel Extension for PyTorch (IPEX) integration
+
 - XPU-specific kernels and operations
+
 - Optimized memory management
+
 - Hardware-aware scheduling
 
-### Intel Meteor Lake (`mtl`)
+### Intel Meteor Lake (`mtl`) {#intel-meteor-lake-mtl}
 
 Meteor Lake systems benefit from:
 
 - NPU acceleration for certain operations
+
 - Integrated GPU optimizations
+
 - CPU efficiency core utilization
+
 - Power-aware workload distribution
 
-### OpenVINO Integration (`ovino`)
+### OpenVINO Integration (`ovino`) {#openvino-integration-ovino}
 
 Systems with OpenVINO benefit from:
 
 - Model compilation for faster inference
+
 - Quantization optimizations
+
 - Multi-device execution
+
 - Hardware abstraction for portability
 
-## Manual Hardware Configuration
+## Manual Hardware Configuration {#manual-hardware-configuration}
 
 If you want to override the automatic detection, you can specify the hardware type:
 
 ```bash
 
-## Force a specific hardware configuration
+## Force a specific hardware configuration {#force-a-specific-hardware-configuration}
 
 python setup_hardware_env.py --hardware acm  # For Intel Arc GPUs
 
 ```text
-
-## Hardware-specific Dependencies
+## Hardware-specific Dependencies {#hardware-specific-dependencies}
 
 Each hardware configuration has specific dependencies:
 
 - `requirements-hardware-base.txt`: Base requirements for all platforms
+
 - `requirements-hardware-acm.txt`: Intel Arc GPU specific packages
+
 - `requirements-hardware-ovino.txt`: OpenVINO specific packages
 
 These are automatically installed based on your detected hardware.
 
-## Performance Considerations
+## Performance Considerations {#performance-considerations}
 
 Different hardware platforms have different performance characteristics:
 
 - *_Intel Arc GPUs__: Best for parallel operations and high-throughput processing
+
 - **Intel Meteor Lake**: Good balance of CPU and GPU capabilities, with NPU for AI acceleration
+
 - **NVIDIA GPUs**: Strong general-purpose GPU computing
+
 - **CPU-only**: Works everywhere but with reduced performance for compute-intensive tasks
 
-## Hardware Compatibility
+## Hardware Compatibility {#hardware-compatibility}
 
 For detailed compatibility information including recommended drivers and configurations, see the [Hardware Compatibility](compatibility.md) guide.
 
@@ -113,7 +125,6 @@ For optimization techniques specific to your hardware, see the [Hardware Optimiz
 
 ---
 **Previous**: [Migration Guide](../getting-started/migration.md) | **Next**: [Hardware Compatibility](compatibility.md) | __See also_*: [Device-Specific Guides](device-specific/)
-
 
 ```text`
 

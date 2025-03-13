@@ -1,107 +1,121 @@
 
-# Python Project Modernization: A Pragmatic Approach
+# Python Project Modernization: A Pragmatic Approach {#python-project-modernization-a-pragmatic-approach}
 
-## Overview
+## Overview {#overview}
 
 This repository contains a comprehensive implementation of a modernized Python project environment that maintains backward compatibility with traditional workflows. The
 implementation follows a pragmatic dual approach that allows both traditional and modern workflows to coexist, enabling a seamless transition for all stakeholders.
 
-## Key Features
+## Key Features {#key-features}
 
-### Fast Environment Management with uvfast
+### Fast Environment Management with uvfast {#fast-environment-management-with-uvfast}
 
 - *_10-40x faster package installation__ using `uv` instead of traditional pip
+
 - **Hardware-specific configurations** for different hardware setups
+
 - **Lockfile management** for reproducible environments
+
 - **Simple command interface** for common development tasks
+
 - **Backward compatibility** with traditional installation methods
 
-### Enhanced CI/CD Pipeline
+### Enhanced CI/CD Pipeline {#enhanced-cicd-pipeline}
 
 - **Multi-platform testing** across Ubuntu and Windows
+
 - **Multi-Python version support** for Python 3.10 and 3.11
+
 - **Dependency caching** for faster CI runs
+
 - **Automated linting and type checking**
 
-### Comprehensive Documentation
+### Comprehensive Documentation {#comprehensive-documentation}
 
 - **Implementation Guide** with step-by-step instructions
+
 - **Command Cheatsheet** for quick reference
+
 - **Updated Quickstart Guide**
+
 - **Dual approach documentation**
 
-## Quick Start
+## Quick Start {#quick-start}
 
-### Traditional Installation (Backward Compatible)
+### Traditional Installation (Backward Compatible) {#traditional-installation-backward-compatible}
 
 \`\`\`text\`bash
 
-## Install directly with pip
+## Install directly with pip {#install-directly-with-pip}
 
 pip install -e .
 
-## Install development dependencies
+## Install development dependencies {#install-development-dependencies}
 
 pip install -r requirements-dev.txt
 
 ```text`text
 
-### Modern Installation with uvfast
+### Modern Installation with uvfast {#modern-installation-with-uvfast}
 
-```bash
+```b
+ash
 
-## Setup environment with development dependencies
+## Setup environment with development dependencies {#setup-environment-with-development-dependencies}
 
 python uvfast.py setup --dev
 
-## Show environment information
+## Show environment information {#show-environment-information}
 
 python uvfast.py info
 
-## Run tests
+## Run tests {#run-tests}
 
 python uvfast.py run pytest
 
 ```text
+###
+ Using Wrapper Scripts {#using-wrapper-scripts}
 
-### Using Wrapper Scripts
+``
+`bash
 
-```bash
-
-## Unix/Linux/macOS
+## Unix/Linux/macOS {#unixlinuxmacos}
 
 ./scripts/uvfast.sh setup --dev
 
-## Windows PowerShell
+## Windows PowerShell {#windows-powershell}
 
 .\scripts\uvfast.ps1 setup --dev
 
 ```text
-
-## Hardware-Specific Setup
+#
+# Hardware-Specific Setup {#hardware-specific-setup}
 
 ```bash
 
-## Setup for Intel Arc GPUs
+## Setup for Intel Arc GPUs {#setup-for-intel-arc-gpus}
 
 python uvfast.py setup --hardware acm --dev
 
-## Setup for OpenVINO
+## Setup for OpenVINO {#setup-for-openvino}
 
 python uvfast.py setup --hardware ovino --dev
 
 ```text
-
-## Documentation
+## Documentation {#documentation}
 
 For more detailed information, please refer to the following documents:
 
 - [Implementation Guide](UVFAST_IMPLEMENTATION_GUIDE.md) - Step-by-step instructions
+
 - [Command Cheatsheet](UVFAST_CHEATSHEET.md) - Quick reference for commands
+
 - [Modernization Summary](MODERNIZATION_SUMMARY.md) - Overview of all improvements
+
 - [Final Implementation Report](FINAL_IMPLEMENTATION_REPORT.md) - Comprehensive report
 
-## Key Components
+## Key Components {#key-components}
 
 1. **Core System Files**:
 
@@ -121,36 +135,45 @@ For more detailed information, please refer to the following documents:
    - `requirements-hardware-ovino.txt` - OpenVINO requirements
    - `requirements-hardware-base.txt` - Base hardware requirements
 
-## Benefits
+## Benefits {#benefits}
 
-### For Developers
+### For Developers {#for-developers}
 
 - **Faster workflow** with rapid package installation
+
 - **Consistent environments** across development and CI
+
 - **Simple commands** for common tasks
+
 - **Hardware-specific environments** when needed
 
-### For the Project
+### For the Project {#for-the-project}
 
 - **Improved reliability** with comprehensive testing
+
 - **Enhanced collaboration** through clear documentation
+
 - **Scalable architecture** for future growth
+
 - **Maintainable codebase** with automated checks
 
-## Backward Compatibility
+## Backward Compatibility {#backward-compatibility}
 
 Throughout this implementation, we've maintained backward compatibility:
 
 - **Traditional installation** continues to work as before
+
 - **Existing scripts** and workflows continue to function
+
 - **Upstream compatibility** is preserved
+
 - __Gradual adoption_* is possible at your own pace
 
-## Contributing
+## Contributing {#contributing}
 
 We welcome contributions to further improve this modernization effort. Please see the [Implementation Guide](UVFAST_IMPLEMENTATION_GUIDE.md) for details on how to get started.
 
-## License
+## License {#license}
 
 This project is licensed under the same license as the original project. See the LICENSE file for details.
 

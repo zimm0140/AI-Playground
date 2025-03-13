@@ -252,7 +252,9 @@ def torch_bmm_32_bit(input, mat2, *, out=None):
                         )
             else:
                 hidden_states[start_idx:end_idx] = original_torch_bmm(
-                    input[start_idx:end_idx], mat2[start_idx:end_idx], out=out,
+                    input[start_idx:end_idx],
+                    mat2[start_idx:end_idx],
+                    out=out,
                 )
         torch.xpu.synchronize(input.device)
     else:

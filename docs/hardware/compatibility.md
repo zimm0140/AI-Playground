@@ -1,13 +1,13 @@
 
-# Hardware Compatibility
+# Hardware Compatibility {#hardware-compatibility}
 
 This guide provides detailed information about hardware compatibility in AI-Playground, including recommended configurations, driver requirements, and known limitations.
 
-## Supported Hardware Platforms
+## Supported Hardware Platforms {#supported-hardware-platforms}
 
 AI-Playground supports and has been tested on the following hardware platforms:
 
-### Intel Platforms
+### Intel Platforms {#intel-platforms}
 
 | Platform | Minimum Version | Recommended Version | Notes |
 |----------|----------------|-------------------|-------|
@@ -17,8 +17,7 @@ AI-Playground supports and has been tested on the following hardware platforms:
 | Intel Lunar Lake | Any | Any | Early support |
 | Intel Core (non-Ultra) | 10th Gen | 12th Gen+ | Basic performance on older generations |
 
-
-### NVIDIA Platforms
+### NVIDIA Platforms {#nvidia-platforms}
 
 | GPU Series | Compute Capability | CUDA Version | Notes |
 |------------|-------------------|-------------|-------|
@@ -28,8 +27,7 @@ AI-Playground supports and has been tested on the following hardware platforms:
 | GTX 16 Series | 7.5 | 10.0+ | Fully supported |
 | GTX 10 Series | 6.1 | 9.0+ | Supported, reduced performance |
 
-
-### Other Platforms
+### Other Platforms {#other-platforms}
 
 | Platform | Support Level | Notes |
 |----------|--------------|-------|
@@ -37,10 +35,9 @@ AI-Playground supports and has been tested on the following hardware platforms:
 | Apple Silicon | Basic | CPU-only mode, no GPU acceleration |
 | CPU-only | Full | Reduced performance for compute-intensive tasks |
 
+## Driver Requirements {#driver-requirements}
 
-## Driver Requirements
-
-### Intel Graphics Drivers
+### Intel Graphics Drivers {#intel-graphics-drivers}
 
 | Hardware | Windows | Linux | macOS |
 |----------|---------|-------|-------|
@@ -48,8 +45,7 @@ AI-Playground supports and has been tested on the following hardware platforms:
 | Meteor Lake | 31.0.101.4255+ | Mesa 23.1+ | Not supported |
 | Battlemage | 31.0.101.4521+ | Mesa 24.0+ | Not supported |
 
-
-### NVIDIA Drivers
+### NVIDIA Drivers {#nvidia-drivers}
 
 | CUDA Version | Minimum Driver | Recommended Driver |
 |--------------|----------------|-------------------|
@@ -57,8 +53,7 @@ AI-Playground supports and has been tested on the following hardware platforms:
 | CUDA 11.0 | 450.36.06 | 455.23.05+ |
 | CUDA 10.0 | 410.48 | 440.33+ |
 
-
-## Software Requirements
+## Software Requirements {#software-requirements}
 
 The following software requirements apply based on the hardware platform:
 
@@ -69,76 +64,78 @@ The following software requirements apply based on the hardware platform:
 | NVIDIA GPUs | 3.8+ | 1.10.0+ | CUDA 10.0+ required |
 | CPU-only | 3.8+ | 1.10.0+ | No special requirements |
 
+## Hardware-Specific Setup {#hardware-specific-setup}
 
-## Hardware-Specific Setup
-
-### Intel Arc GPUs
+### Intel Arc GPUs {#intel-arc-gpus}
 
 \`\`\`text\`bash
 
-## Install Intel GPU driver (Windows)
+## Install Intel GPU driver (Windows) {#install-intel-gpu-driver-windows}
 
-## Download from intel.com/graphics/drivers
+## Download from intel.com/graphics/drivers {#download-from-intelcomgraphicsdrivers}
 
-## Setup environment with Arc optimizations
+## Setup environment with Arc optimizations {#setup-environment-with-arc-optimizations}
 
 python setup_hardware_env.py --hardware acm
 
 ```text`text
 
-### NVIDIA GPUs
+### NVIDIA GPUs {#nvidia-gpus}
 
-```bash
+``
+`bash
 
-## Install NVIDIA driver and CUDA toolkit
+## Install NVIDIA driver and CUDA toolkit {#install-nvidia-driver-and-cuda-toolkit}
 
-## Download from nvidia.com/drivers
+## Download from nvidia.com/drivers {#download-from-nvidiacomdrivers}
 
-## Setup environment with standard setup
+## Setup environment with standard setup {#setup-environment-with-standard-setup}
 
 python setup_hardware_env.py
 
 ```text
+#
+# Known Issues and Limitations {#known-issues-and-limitations}
 
-## Known Issues and Limitations
-
-### Intel Arc GPUs
+### Intel Arc GPUs {#intel-arc-gpus}
 
 - Some operations may be slower than on NVIDIA counterparts
+
 - Requires specific driver versions for optimal performance
+
 - Memory usage may be higher than on NVIDIA GPUs
 
-### NVIDIA GPUs
+### NVIDIA GPUs {#nvidia-gpus}
 
 - Older GTX series GPUs have limited performance with larger models
+
 - CUDA compatibility issues with some Python packages
 
-### General Issues
+### General Issues {#general-issues}
 
 - Mixed precision training may require platform-specific settings
+
 - Large models (>6GB VRAM) may not work on lower-end GPUs
 
-## Compatibility Testing
+## Compatibility Testing {#compatibility-testing}
 
 To verify hardware compatibility on your system:
 
 ```bash
 
-## Run hardware detection
+## Run hardware detection {#run-hardware-detection}
 
 python hardware_detection.py
 
-## Run compatibility test
+## Run compatibility test {#run-compatibility-test}
 
 python service/tools/hardware_compatibility_check.py
 
 ```text
-
 This will generate a report about your hardware configuration and any potential compatibility issues.
 
 ---
 *_Previous**: [Hardware Overview](overview.md) | **Next**: [Hardware Optimization](optimization.md) | **See also_*: [Intel Arc Guide](device-specific/intel-arc.md)
-
 
 ```text`
 

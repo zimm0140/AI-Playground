@@ -1,9 +1,9 @@
 
-# Hardware Optimization Guide
+# Hardware Optimization Guide {#hardware-optimization-guide}
 
 This guide provides detailed information on optimizing AI-Playground for different hardware configurations to achieve the best performance.
 
-## General Optimization Principles
+## General Optimization Principles {#general-optimization-principles}
 
 These optimization principles apply to all hardware configurations:
 
@@ -19,21 +19,21 @@ These optimization principles apply to all hardware configurations:
 
 1. **Mixed precision**: Enable mixed precision where appropriate
 
-## Intel Arc GPUs Optimization
+## Intel Arc GPUs Optimization {#intel-arc-gpus-optimization}
 
 Intel Arc GPUs (Alchemist and newer) offer excellent performance with these optimizations:
 
-### Environment Setup
+### Environment Setup {#environment-setup}
 
 \`\`\`text\`bash
 
-## Set up environment with Arc optimizations
+## Set up environment with Arc optimizations {#set-up-environment-with-arc-optimizations}
 
 python setup_hardware_env.py --hardware acm
 
 ```text`text
 
-### Performance Tuning
+### Performance Tuning {#performance-tuning}
 
 1. **Enable Intel XPU backend**:
 
@@ -44,7 +44,7 @@ python setup_hardware_env.py --hardware acm
    import intel_extension_for_pytorch as ipex
    model = model.to("xpu")
 
-   ```text
+   ```
 
 1. **Use XPU-specific thread count**:
 
@@ -56,7 +56,7 @@ python setup_hardware_env.py --hardware acm
 
    os.environ["ZE_AFFINITY_MASK"] = "0.0"
 
-   ```text
+   ```
 
 1. **Optimize memory usage**:
 
@@ -67,7 +67,7 @@ python setup_hardware_env.py --hardware acm
    import torch
    torch.xpu.empty_cache()
 
-   ```text
+   ```
 
 1. **Enable mixed precision**:
 
@@ -79,20 +79,22 @@ python setup_hardware_env.py --hardware acm
    with torch.xpu.amp.autocast(dtype=torch.bfloat16):
 
 ```text
+   ## Your model i
+nference code
 
-   ## Your model inference code
+```text
+
+```text
+   output = mode
+
+l(input)
 
 ```text
 
 ```text
+### Arc-Speci
 
-   output = model(input)
-
-```text
-
-   ```text
-
-### Arc-Specific Settings
+fic Settings {#arc-specific-settings}
 
 | Setting | Value | Description |
 |---------|-------|-------------|
@@ -101,105 +103,110 @@ python setup_hardware_env.py --hardware acm
 | `IPEX_XPU_MAX_STREAMS` | "8" | Maximum number of streams |
 | `DPCT_SYSTEM_MEMORY_GRANULARITY_LEVEL` | "fine" | Memory granularity |
 
-
-## Intel Meteor Lake Optimization
+## Intel Meteor Lake Optimization {#intel-meteor-lake-optimization}
 
 Intel Meteor Lake CPUs with integrated GPUs benefit from these optimizations:
 
-### Environment Setup
+### Environment Setup {#environment-setup}
 
 ```bash
 
-## Set up environment with Meteor Lake optimizations
+## Set up environ
+ment with Meteor Lake optimizations {#set-up-environment-with-meteor-lake-optimizations}
 
 python setup_hardware_env.py --hardware mtl
 
 ```text
-
-### NPU Acceleration
+### NPU Acc
+eleration {#npu-acceleration}
 
 ```python
 
-## Use NPU for compatible operations
+## Use NPU for
+compatible operations {#use-npu-for-compatible-operations}
 
 os.environ["PYTORCH_MTL_NPU_MODE"] = "1"
 
 ```text
-
-### Power Management
+### Power
+ Management {#power-management}
 
 ```bash
 
-## Set high performance power plan on Windows
+## Set high p
+erformance power plan on Windows {#set-high-performance-power-plan-on-windows}
 
 powercfg /setactive 8c5e7fda-e8bf-4a96-9a85-a6e23a8c635c
 
 ```text
-
-## NVIDIA GPUs Optimization
+## NVID
+IA GPUs Optimization {#nvidia-gpus-optimization}
 
 For NVIDIA GPUs, consider these optimizations:
 
-### CUDA Optimization
+### CUDA Optimization {#cuda-optimization}
 
 ```python
 
-## Set memory allocation strategy
+## Set memo
+ry allocation strategy {#set-memory-allocation-strategy}
 
 torch.cuda.set_per_process_memory_fraction(0.8)  # Use 80% of available VRAM
 
-## Enable TF32 for better performance (RTX 30/40 series)
+## Enable TF32 for better performance (RTX 30/40 series) {#enable-tf32-for-better-performance-rtx-3040-series}
 
 torch.backends.cuda.matmul.allow_tf32 = True
 torch.backends.cudnn.allow_tf32 = True
 
 ```text
-
-### Multi-GPU Setup
+### M
+ulti-GPU Setup {#multi-gpu-setup}
 
 ```python
 
-## Use DataParallel for multiple GPUs
+## Use Da
+taParallel for multiple GPUs {#use-dataparallel-for-multiple-gpus}
 
 model = torch.nn.DataParallel(model)
 
 ```text
-
-## CPU-Only Optimization
+##
+CPU-Only Optimization {#cpu-only-optimization}
 
 For systems without GPUs:
 
 ```python
 
-## Set thread count to optimize for your CPU
+## Set
+thread count to optimize for your CPU {#set-thread-count-to-optimize-for-your-cpu}
 
 import torch
 torch.set_num_threads(8)  # Adjust based on your CPU cores
 
-## Enable MKL optimizations
+## Enable MKL optimizations {#enable-mkl-optimizations}
 
 import os
 os.environ["MKL_NUM_THREADS"] = "8"
 
 ```text
+#
+# Memory Optimization {#memory-optimization}
 
-## Memory Optimization
-
-### Reduce Memory Usage
+### Reduce Memory Usage {#reduce-memory-usage}
 
 ```python
 
-## Use gradient checkpointing
+## Us
+e gradient checkpointing {#use-gradient-checkpointing}
 
 model.gradient_checkpointing_enable()
 
-## Offload to CPU when appropriate
+## Offload to CPU when appropriate {#offload-to-cpu-when-appropriate}
 
 offload_config = {"offload_buffers": True}
 
 ```text
-
-### Optimize for Limited VRAM
+### Optimize for Limited VRAM {#optimize-for-limited-vram}
 
 For systems with limited GPU memory:
 
@@ -211,26 +218,30 @@ For systems with limited GPU memory:
 
 1. Use model splitting techniques for large models
 
-## Benchmarking and Performance Measurement
+## Benchmarking and Performance Measurement {#benchmarking-and-performance-measurement}
 
 To measure and optimize performance:
 
 ```bash
 
-## Run benchmarking tool
+##
+Run benchmarking tool {#run-benchmarking-tool}
 
 python service/tools/benchmark.py --hardware acm --model sd_xl
 
-```text
-
+``
+`
 The tool will report:
 
 - Inference time per image
+
 - Memory usage
+
 - Optimal batch size
+
 - Bottleneck analysis
 
-## Platform-Specific Recommendations
+## Platform-Specific Recommendations {#platform-specific-recommendations}
 
 | Platform | Recommended Settings |
 |----------|---------------------|
@@ -241,18 +252,17 @@ The tool will report:
 | NVIDIA GTX 1660 | FP16 precision, reduced batch size |
 | CPU-only | Thread optimization, quantized models |
 
-
-## Advanced Configuration
+## Advanced Configuration {#advanced-configuration}
 
 For advanced users, edit `/uvfast.json` to fine-tune hardware configurations:
 
 ```json
 
 {
+
   "hardware_optimizations": {
 
 ```text
-
 "acm": {
   "thread_count": 8,
   "memory_fraction": 0.8,
@@ -260,12 +270,10 @@ For advanced users, edit `/uvfast.json` to fine-tune hardware configurations:
 }
 
 ```text
-
   }
 }
 
 ```text
-
 ---
 **Previous**: [Hardware Compatibility](compatibility.md) | **Next**: [Intel Arc Guide](device-specific/intel-arc.md) | __See also_*: [Performance
 Troubleshooting](../reference/troubleshooting.md)

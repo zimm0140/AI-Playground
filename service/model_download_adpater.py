@@ -203,7 +203,8 @@ class Model_Downloader_Adapter:
                     self.file_downloader.download_file(
                         realesrgan.ESRGAN_MODEL_URL,
                         os.path.join(
-                            utils.get_model_path(item.type, item.backend), os.path.basename(realesrgan.ESRGAN_MODEL_URL),
+                            utils.get_model_path(item.type, item.backend),
+                            os.path.basename(realesrgan.ESRGAN_MODEL_URL),
                         ),
                     )
                 else:

@@ -1,25 +1,27 @@
 
-# Linting Guide
+# Linting Guide {#linting-guide}
 
 This guide outlines the linting practices used in the AI-Playground project to maintain code quality and consistency.
 
-## Linting Tools
+## Linting Tools {#linting-tools}
 
 AI-Playground primarily uses the following linting tools:
 
 - *_[Ruff](https://github.com/astral-sh/ruff)__: A fast Python linter that combines multiple linting tools
+
 - **[mypy](https://mypy.readthedocs.io/)**: A static type checker for Python
+
 - **[markdownlint](https://github.com/DavidAnson/markdownlint)**: A linter for Markdown files
 
-## Python Linting Configuration
+## Python Linting Configuration {#python-linting-configuration}
 
-### Ruff Configuration
+### Ruff Configuration {#ruff-configuration}
 
 The project uses Ruff with the following settings:
 
 \`\`\`text\`toml
 
-## in pyproject.toml
+## in pyproject.toml {#in-pyprojecttoml}
 
 [tool.ruff]
 target-version = "py310"
@@ -30,27 +32,36 @@ extend-exclude = \[".git", ".github", ".venv", "venv", "**pycache**", "build", "
 
 ```text`text
 
-#### Key Rules
+#### Key Rules {#key-rules}
 
 - **E**: Style errors (from pycodestyle)
+
 - **F**: Logical/syntax errors and undefined names (from Pyflakes)
+
 - **I**: Import sorting (from isort)
+
 - **W**: Warnings (from pycodestyle)
+
 - **N**: Naming conventions (from pep8-naming)
+
 - **B**: Bug detection (from flake8-bugbear)
+
 - **C4**: Comprehension complexity (from flake8-comprehensions)
+
 - **UP**: Python upgrade suggestions (from pyupgrade)
+
 - **T20**: Print statement detection (from flake8-print)
 
-### Type Checking with mypy
+### Type Checking with mypy {#type-checking-with-mypy}
 
 For static type checking, we use mypy with these settings:
 
 ```toml
 
-## in pyproject.toml
+## in pyproject.toml {#in-pyprojecttoml}
 
-[tool.mypy]
+[tool.mypy
+]
 python_version = "3.10"
 warn_return_any = true
 warn_unused_configs = true
@@ -62,10 +73,10 @@ no_implicit_optional = true
 strict_optional = true
 
 ```text
+## Running Linters Locally {#running-linters-locally}
 
-## Running Linters Locally
-
-### Using the Provided Scripts
+### Us
+ing the Provided Scripts {#using-the-provided-scripts}
 
 1. For Windows users:
 
@@ -73,7 +84,7 @@ strict_optional = true
 
    .\.github\workflows\scripts\fix_ruff_windows.ps1
 
-   ```text
+   ```
 
 1. For Linux/Mac users:
 
@@ -81,59 +92,61 @@ strict_optional = true
 
    python .github/workflows/scripts/fix_ruff_issues_local.py
 
-   ```text
+   ```
 
-### Manual Linting
+### Manual Linting {#manual-linting}
 
 To run Ruff manually:
 
 ```bash
 
-## Install Ruff
+## Install Ruff {#install-ruff}
 
 pip install ruff
 
-## Check for issues
+## Check for issues {#check-for-issues}
 
 ruff check .
 
-## Fix issues automatically
+## Fix issues automatically {#fix-issues-automatically}
 
 ruff check --fix .
 
 ```text
-
 To run mypy:
 
 ```bash
 
-## Install mypy
+## Install mypy {#install-mypy}
 
-pip install mypy
+pi
+p install myp
+y
 
-## Run type checking
+## Run type checking {#run-type-checking}
 
 mypy .
 
 ```text
-
 To run markdownlint on Markdown files:
 
 ```bash
 
-## Install markdownlint (requires Node.js)
+## Inst
+all markdownlint (requires Node.js) {#i
+nstall-markdownlint-requires-nodejs}
 
 npm install -g markdownlint-cli
 
-## Check Markdown files
+## Check Markdown files {#check-markdown-files}
 
 markdownlint "__/_.md"
 
 ```text
+## Common Linting Issues and Fixes {#common-linting-iss
+ues-and-fixes}
 
-## Common Linting Issues and Fixes
-
-### Unused Imports (F401)
+### Unused Imports (F401) {#unused-imports-f401}
 
 An import that's not used in the file:
 
@@ -142,16 +155,18 @@ An import that's not used in the file:
 import os  # Unused import
 
 ```text
-
-*_Fix__: Either remove the import or add a `# noqa: F401` comment if it's needed for side effects:
+*_Fix__: Ei
+ther remove the import or add a `# noqa: F
+401` comment if it's needed for side effects:
 
 ```python
 
 import os  # noqa: F401
 
 ```text
-
-### Missing Whitespace (E2xx)
+### Missing
+ Whitespace (E2xx) {#missing-whitespace-
+e2xx}
 
 Missing spaces around operators or after commas:
 
@@ -159,89 +174,100 @@ Missing spaces around operators or after commas:
 
 x=1+2  # Missing spaces
 
-def func(a,b):  # Missing space after comma
+def func(a,b):
+  # Missing space after comma
 
 ```text
-
 **Fix**: Add appropriate spacing:
 
 ```python
 
-x = 1 + 2  # Correct spacing
+x =
+ 1 + 2  # Correct spacing
 
-def func(a, b):  # Space after comma
+def fun
+c(a, b):  # Space after comma
 
 ```text
-
-### Type Annotation Issues
+### Type Annotation Issues {#type-annotation-is
+sues}
 
 Missing or incorrect type annotations:
 
 ```python
 
-def process_data(data):  # Missing type annotations
+def process_data(data):  # Missing
+type annotations
 
 ```text
-
 return data + 1
 
 ```text
 
 ```text
+**Fix**: Add pr
+oper type annota
+tions:
 
-**Fix**: Add proper type annotations:
+```p
+ython
 
-```python
-
-def process_data(data: int) -> int:
+def process_data(data: int) ->
+int:
 
 ```text
-
 return data + 1
 
 ```text
 
 ```text
-
-### Hardware-Specific Import Issues
+### Hardwa
+re-Specific Impo
+rt Issues {#h
+ardware-specific-import-issues}
 
 Importing hardware-specific modules that might not be available:
 
 ```python
 
-import intel_extension_for_pytorch  # May not be available on all systems
+import intel_extension_for_
+pytorch  # May not be available on all systems
 
 ```text
-
 **Fix**: Use conditional imports:
 
-```python
+``
+`python
 
 try:
 
 ```text
+import intel_ex
+tension_for_pytorch
 
-import intel_extension_for_pytorch
 HAS_INTEL_EXTENSION = True
 
 ```text
-
 except ImportError:
 
 ```text
+HAS_I
+NTEL_EXTENSION = False
 
-HAS_INTEL_EXTENSION = False
+```t
+ext
 
 ```text
-
-```text
-
 ## CI Integration
+{#ci-integrat
+ion}
 
 The project's CI system uses GitHub Actions to run linters on all files. The configuration is maintained in the following files:
 
 - `.github/workflows/ruff-integration.yml` (for Ruff)
+
 - `.github/workflows/type-check.yml` (for mypy)
+
 - `.github/workflows/docs-check.yml` (for markdownlint)
 
 The CI will:
@@ -254,49 +280,52 @@ The CI will:
 
 1. Provide instructions for fixing the issues
 
-## Pre-commit Hooks
+## Pre-commit Hooks {#pre-commit-hooks}
 
 To ensure code quality before committing, you can set up pre-commit hooks locally:
 
 ```bash
 
-## On Linux/macOS/Git Bash
+## On Linux/macOS/Gi
+t Bash {#on-linuxmacosgit-bash}
 
 ./.github/setup-hooks.sh
 
-## On Windows PowerShell
+## On Windows PowerShell {#on-windows-powershell}
 
 .\.github\setup-hooks.ps1
 
 ```text
+This will check your code for
+ linting issues before each commit.
 
-This will check your code for linting issues before each commit.
-
-## Temporary Disabling of Linter Rules
+## Temporary Disabling of Linter Rules {#temporary-disabling-of-linter-rules}
 
 There are cases where linter rules need to be temporarily disabled:
 
 ```python
 
-## In situations where a line is necessarily long
+## In situations
+ where a line is necessarily long {#in-situations-where-a-line-is-necessarily-long}
 
 long_url = "<https://very-long-url-that-cannot-be-split.com/path/to/resource">  # noqa: E501
 
-## When using a variable name that doesn't match conventions
+## When using a variable name that doesn't match conventions {#when-using-a-variable-name-that-doesnt-match-conventions}
 
 def connect_to_API():  # noqa: N802
 
 ```text
-
 pass
 
 ```text
 
 ```text
+Use `# n
+oqa:`
+ comments sp
+aringly and only when necessary.
 
-Use `# noqa:` comments sparingly and only when necessary.
-
-## Hardware-Specific Linting Considerations
+## Hardware-Specific Linting Considerations {#hardware-specific-linting-considerations}
 
 When writing hardware-specific code:
 
@@ -310,96 +339,100 @@ When writing hardware-specific code:
 
 ```python
 
-def optimize_for_hardware(model: torch.nn.Module, hardware_type: str) -> torch.nn.Module:
+def optimize_
+for_hardware(model: torch.nn.Module, hardware_type: str) -> torch.nn.Module:
 
 ```text
-
 """
-Optimize model for specific hardware.
+Optimize model for
+specific hardware.
 
 ```text
 
 ```text
-
 Args:
 
-```text
-
-model: The PyTorch model
+``
+`
+model: The
+ PyTor
+ch model
 hardware_type: One of "acm", "bmg", or "base"
 
 ```text
 
 ```text
-
 ```text
-
 Returns:
 
 ```text
-
-Optimized model
+Opt
+imized mo
+del
 
 ```text
-
 """
-if hardware_type == "acm":
+if hardware
+_type == "acm":
 
 ```text
-
 try:
 
 ```text
-
-import intel_extension_for_pytorch as ipex  # noqa: F401
-
-```text
+import intel_
+extension_for_pytorch as ipex  # noqa: F401
 
 ```text
 
 ```text
+```text
+
+`
+
+``
+```text
+
+```text
+model =
+ ipex.optimize(model)
+
+```text
+ex
+cept ImportError:
+
+```text
+pass
+ # Fall back to unoptimized model
+
+```t
+ext
+
+```text
+``
+
+`text
+
+```text
+r
+eturn model
 
 ```text
 
 ```text
-
-```text
-
-model = ipex.optimize(model)
-
-```text
-
-except ImportError:
-
-```text
-
-pass  # Fall back to unoptimized model
-
-```text
-
-```text
-
-```text
-
-```text
-
-return model
-
-```text
-
-```text
-
-## Additional Resources
+## Additional Resources {#additional-resources}
 
 - [Ruff Documentation](https://docs.astral.sh/ruff/)
+
 - [mypy Documentation](https://mypy.readthedocs.io/)
+
 - [markdownlint Rules](https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md)
+
 - [PEP 8 Style Guide](https://peps.python.org/pep-0008/)
+
 - [Code Quality Standards](code-quality.md)
 
 ---
 **Previous**: [Testing Guide](testing.md) | **Next**: [Project Architecture](../architecture/overview.md) | __See also_*: [Code Quality Standards](code-quality.md)
-
 
 ```text`
 

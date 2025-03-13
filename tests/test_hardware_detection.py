@@ -22,7 +22,8 @@ from hardware_detection.core import (
 )
 
 # Set in CI environment
-CI_TESTING = os.environ.get('CI_TESTING', 'false').lower() == 'true'
+CI_TESTING = os.environ.get("CI_TESTING", "false").lower() == "true"
+
 
 class TestHardwareDetection(unittest.TestCase):
     """Test cases for hardware detection module."""
@@ -127,7 +128,7 @@ class TestHardwareDetection(unittest.TestCase):
     @patch("hardware_detection.core.safe_run_command")
     @patch("platform.system")
     @patch.dict(os.environ, {"SIMULATED_HARDWARE": ""}, clear=True)
-    @unittest.skip('Skipped in CI environment')
+    @unittest.skip("Skipped in CI environment")
     def test_get_gpu_info_windows(self, mock_system, mock_run_command):
         """Test getting GPU information on Windows."""
         # Mock platform.system to return Windows
@@ -149,7 +150,7 @@ class TestHardwareDetection(unittest.TestCase):
         read_data="model name\t: Intel(R) Core(TM) i9-10900K CPU @ 3.70GHz",
     )
     @patch.dict(os.environ, {"SIMULATED_HARDWARE": ""}, clear=True)
-    @unittest.skip('Skipped in CI environment')
+    @unittest.skip("Skipped in CI environment")
     def test_get_cpu_info(self, mock_file, mock_processor, mock_system):
         """Test getting CPU information for different platforms."""
         # Skip this test if wmi module is not available on Windows

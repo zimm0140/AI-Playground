@@ -70,7 +70,6 @@ gration}
 
    powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 
-
    ```
 
 1. **Migrate existing environments**:
@@ -132,7 +131,8 @@ specific-file}
 
 python scripts/fix_type_annotations.py path/to/file.py
 
-```ba
+``
+`ba
 s
 h
 
@@ -168,7 +168,6 @@ s}
 
    def func(x: int | str) -> float | None:
 
-
    ```bash
 
    ...
@@ -202,7 +201,6 @@ sh
    ```python
 
    def func(x: int | None = None) -> str | None:
-
 
    ```bash
 
@@ -270,6 +268,7 @@ docker run -p 5000:500
 
 ```b
 a
+
 sh
 
 ### Benefits of the uv-based Dockerfile {#benefits-o {#benefits-of-the-uv-based-dockerfile-benefits-o}

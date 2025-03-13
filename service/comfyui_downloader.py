@@ -347,7 +347,9 @@ def download_custom_node(node_repo_data: ComfyUICustomNodesGithubRepoId) -> bool
     try:
         expected_git_url = f"https://github.com/{node_repo_data.username}/{node_repo_data.repoName}"
         expected_custom_node_path = os.path.join(
-            service_config.comfy_ui_root_path, "custom_nodes", node_repo_data.repoName,
+            service_config.comfy_ui_root_path,
+            "custom_nodes",
+            node_repo_data.repoName,
         )
         potential_node_requirements = os.path.join(expected_custom_node_path, "requirements.txt")
 

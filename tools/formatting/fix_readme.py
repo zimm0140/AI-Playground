@@ -10,7 +10,7 @@ from pathlib import Path
 def fix_readme():
     """Apply specific fixes to readme.md."""
     try:
-        with Path("readme.md").open( encoding="utf-8") as f:
+        with Path("readme.md").open(encoding="utf-8") as f:
             content = f.read()
 
         # Fix HTML tags for badges
@@ -105,7 +105,7 @@ def fix_readme():
         # Fix double hash in headers (# # to #)
         content = re.sub(r"^#\s+#\s+", "## ", content, flags=re.MULTILINE)
 
-        with Path("readme.md").open( "w", encoding="utf-8") as f:
+        with Path("readme.md").open("w", encoding="utf-8") as f:
             f.write(content)
 
         print("✅ Successfully fixed readme.md")

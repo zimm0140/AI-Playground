@@ -1,62 +1,77 @@
 
-# CI Workflow Improvements
+# CI Workflow Improvements {#ci-workflow-improvements}
 
 This document summarizes the key improvements made to the CI workflow.
 
-## 1. Modularized Structure
+## 1. Modularized Structure {#modularized-structure}
 
 We transformed the monolithic CI file into a modular structure:
 
 - Created a dedicated `.github/workflows/scripts/` directory
+
 - Extracted key functionality into separate, focused scripts
+
 - Added descriptive comments and documentation
 
 This structure improves maintainability and makes the CI workflow easier to understand and extend.
 
-## 2. Enhanced Testing Capabilities
+## 2. Enhanced Testing Capabilities {#enhanced-testing-capabilities}
 
 Added several new testing capabilities:
 
 - *_Multi-platform Testing__: Added Windows job to ensure cross-platform compatibility
+
 - **Test Coverage Analysis**: Integrated code coverage measurement and reporting
+
 - **Security Scanning**: Added dependency vulnerability scanning with Safety
+
 - **Shell Script Linting**: Added Shellcheck integration for shell script quality
 
-## 3. Improved Reporting
+## 3. Improved Reporting {#improved-reporting}
 
 Enhanced reporting capabilities to provide better insights:
 
 - **Cross-Platform Summary**: Added a summarize job that combines results from all platforms
+
 - **Visual Indicators**: Added badges, emoji indicators, and progress bars
+
 - **Detailed Artifacts**: Generated comprehensive artifacts for each aspect of testing
+
 - **Workflow Diagram**: Created a visual workflow diagram explaining the CI process
 
-## 4. Windows Compatibility
+## 4. Windows Compatibility {#windows-compatibility}
 
 Added Windows-specific testing:
 
 - Created a dedicated Windows job with PowerShell commands
+
 - Adapted file paths and environment variables for Windows
+
 - Simplified the Windows workflow for speed while maintaining key checks
 
-## 5. Enhanced Security
+## 5. Enhanced Security {#enhanced-security}
 
 Added security-focused improvements:
 
 - **Dependency Scanning**: Scans for known vulnerabilities in dependencies
+
 - **Compatibility Reports**: Documents platform-specific compatibility issues
+
 - **Detailed Security Reports**: Generates artifacts with security findings
 
-## 6. Documentation
+## 6. Documentation {#documentation}
 
 Improved documentation across the CI system:
 
 - **Script Documentation**: Added detailed README explaining scripts
+
 - **Workflow Diagram**: Created visual workflow documentation
+
 - **API Documentation**: Added generation of API docs from code comments
+
 - **In-Code Documentation**: Enhanced comments in all scripts
 
-## CI Workflow Structure
+## CI Workflow Structure {#ci-workflow-structure}
 
 The updated CI workflow now follows this structure:
 
@@ -72,11 +87,12 @@ The updated CI workflow now follows this structure:
 
 ├── README.md           # Scripts documentation
 
-```text
+``
+`text
 
 ```text
-
-├── analyze_test_coverage.sh
+├
+── analyze_test_coverage.sh
 ├── catalog_hardware.sh
 ├── check_code_quality.sh
 ├── check_shell_scripts.sh
@@ -93,8 +109,7 @@ The updated CI workflow now follows this structure:
 ```text
 
 ```text
-
-## Future Recommendations
+## Future Recommendations {#future-recommendations}
 
 Potential future improvements for the CI workflow:
 

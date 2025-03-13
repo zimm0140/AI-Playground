@@ -1,19 +1,25 @@
 
-# CI System Documentation
+# CI System Documentation {#ci-system-documentation}
 
 This document provides information about the CI (Continuous Integration) system used in the AI-Playground project, how to use it, and how to troubleshoot common issues.
 
-## Table of Contents
+## Table of Contents {#table-of-contents}
 
 - [Overview](#overview)
+
 - [Workflow Files](#workflow-files)
+
 - [Pre-commit Hooks](#pre-commit-hooks)
+
 - [CI Scripts](#ci-scripts)
+
 - [Best Practices](#best-practices)
+
 - [Troubleshooting](#troubleshooting)
+
 - [Contributing to CI](#contributing-to-ci)
 
-## Overview
+## Overview {#overview}
 
 The AI-Playground CI system is designed to:
 
@@ -29,7 +35,7 @@ The AI-Playground CI system is designed to:
 
 The CI system uses GitHub Actions for automation and includes pre-commit hooks for catching issues early in the development process.
 
-## Workflow Files
+## Workflow Files {#workflow-files}
 
 The main workflow files are:
 
@@ -42,44 +48,44 @@ The main workflow files are:
 | `comfyui-pr-checks.yml` | Runs checks on PRs that modify ComfyUI workflows |
 | `ruff.yml` | Runs Python linting using Ruff |
 
-
-## Pre-commit Hooks
+## Pre-commit Hooks {#pre-commit-hooks}
 
 Pre-commit hooks are used to catch issues before they're committed to the repository. They run automatically when you commit changes.
 
-### Setup
+### Setup {#setup}
 
 To set up pre-commit hooks:
 
 \`\`\`text\`bash
 
-## On Unix/Linux/macOS or Git Bash
+## On Unix/Linux/macOS or Git Bash {#on-unixlinuxmacos-or-git-bash}
 
 ./.github/setup-hooks.sh
 
-## On Windows with PowerShell
+## On Windows with PowerShell {#on-windows-with-powershell}
 
 ..github\\setup-hooks.ps1
 
 ```text`text
 
-### Available Hooks
+### Available Hooks {#available-hooks}
 
 - `pre-commit`: Runs linting checks on Python files that are being committed
   - Detects OS and runs the appropriate script (bash or PowerShell)
   - Validates code against common issues like unused imports, bad regex patterns
 
-### Skipping Hooks
+### Skipping Hooks {#skipping-hooks}
 
 In case you need to bypass hooks temporarily:
 
-```bash
+```bas
+h
 
 git commit --no-verify
 
 ```text
-
-## CI Scripts
+## CI
+ Scripts {#ci-scripts}
 
 The CI system includes several utility scripts that help maintain code quality and workflow efficiency:
 
@@ -91,8 +97,7 @@ The CI system includes several utility scripts that help maintain code quality a
 | `lint_python_files.py` | Lints Python files for common issues |
 | `remove_duplicate_sections.py` | Removes duplicate sections in workflow files |
 
-
-## Best Practices
+## Best Practices {#best-practices}
 
 To ensure smooth CI operation:
 
@@ -108,37 +113,39 @@ To ensure smooth CI operation:
 
 1. **Run pre-commit hooks locally**: Catch issues before pushing to remote
 
-## Troubleshooting
+## Troubleshooting {#troubleshooting}
 
-### Common Issues
+### Common Issues {#common-issues}
 
-#### Artifact Name Conflicts
+#### Artifact Name Conflicts {#artifact-name-conflicts}
 
 **Symptom**: CI job fails with `Error: Failed to CreateArtifact: Received non-retryable error: Failed request: (409) Conflict`
 
 **Solution**: Run the CI cleanup workflow which will ensure unique artifact names:
 
-```bash
+```b
+ash
 
-## Via GitHub Actions web UI
+## Via GitHub Actions web UI {#via-github-actions-web-ui}
 
-## Go to Actions > CI Cleanup and Optimization > Run workflow
+## Go to Actions > CI Cleanup and Optimization > Run workflow {#go-to-actions-ci-cleanup-and-optimization-run-workflow}
 
 ```text
-
-#### Linting Errors
+###
+# Linting Errors {#linting-errors}
 
 **Symptom**: Ruff or linting check fails with errors like `F401 import xxx is unused`
 
 **Solution**: Run the lint script locally to identify and fix issues:
 
-```bash
+``
+`bash
 
 python .github/workflows/scripts/lint_python_files.py path/to/file.py
 
 ```text
-
-#### Indentation Errors in Python Files
+#
+### Indentation Errors in Python Files {#indentation-errors-in-python-files}
 
 **Symptom**: CI fails with indentation errors, particularly in `try/except` blocks
 
@@ -149,14 +156,13 @@ python .github/workflows/scripts/lint_python_files.py path/to/file.py
 python .github/workflows/scripts/fix_ci_issues.py
 
 ```text
-
-#### Windows Path Issues
+#### Windows Path Issues {#windows-path-issues}
 
 **Symptom**: Backslash escaping issues in regex patterns
 
 __Solution_*: Always use raw strings (`r"pattern"`) for regex patterns and double backslashes (`\\\\`) in string templates.
 
-## Contributing to CI
+## Contributing to CI {#contributing-to-ci}
 
 When contributing to the CI system:
 
@@ -170,7 +176,7 @@ When contributing to the CI system:
 
 1. Consider cross-platform compatibility (Windows, Linux, macOS)
 
-### Adding a New Workflow
+### Adding a New Workflow {#adding-a-new-workflow}
 
 1. Use existing workflows as templates
 
@@ -184,19 +190,24 @@ When contributing to the CI system:
 
 1. Add status badges for visibility
 
-## CI Performance Metrics
+## CI Performance Metrics {#ci-performance-metrics}
 
 The CI system tracks performance metrics to help identify bottlenecks and improve efficiency over time. These metrics are available as artifacts in the CI job outputs and include:
 
 - Job duration
+
 - Step duration
+
 - Cache hit rates
+
 - Resource utilization
 
-## Further Reading
+## Further Reading {#further-reading}
 
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
+
 - [Pre-commit Hooks Guide](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks)
+
 - [Ruff Documentation](https://docs.astral.sh/ruff/)
 
 ```text`

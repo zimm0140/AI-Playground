@@ -236,11 +236,15 @@ class HardwareBenchmark:
             # Different loading based on hardware
             if self.hardware_type == "acm":
                 model = AutoModelForCausalLM.from_pretrained(
-                    model_name, torch_dtype=torch.float16, trust_remote_code=True,
+                    model_name,
+                    torch_dtype=torch.float16,
+                    trust_remote_code=True,
                 ).to(self.device)
             else:
                 model = AutoModelForCausalLM.from_pretrained(
-                    model_name, low_cpu_mem_usage=True, trust_remote_code=True,
+                    model_name,
+                    low_cpu_mem_usage=True,
+                    trust_remote_code=True,
                 ).to(self.device)
 
             tokenizer = AutoTokenizer.from_pretrained(model_name)
@@ -276,7 +280,8 @@ class HardwareBenchmark:
             return {"error": "Transformers library not available"}
 
     def benchmark_stable_diffusion(
-        self, prompt: str = "a photo of an astronaut riding a horse on mars",
+        self,
+        prompt: str = "a photo of an astronaut riding a horse on mars",
     ) -> dict[str, Any]:
         """
         Benchmark Stable Diffusion image generation
@@ -309,7 +314,8 @@ class HardwareBenchmark:
                     pipeline = StableDiffusionPipeline.from_pretrained("runwayml/stable-diffusion-v1-5").to(self.device)
             else:
                 pipeline = StableDiffusionPipeline.from_pretrained(
-                    "runwayml/stable-diffusion-v1-5", torch_dtype=torch.float32,
+                    "runwayml/stable-diffusion-v1-5",
+                    torch_dtype=torch.float32,
                 ).to(self.device)
 
             # Time image generation

@@ -1,16 +1,19 @@
 
-# Quick Start Guide
+# Quick Start Guide {#quick-start-guide}
 
 This guide will help you quickly set up and start using AI-Playground.
 
-## Prerequisites
+## Prerequisites {#prerequisites}
 
 - Python 3.10 or higher
+
 - Git
+
 - 16GB+ of RAM recommended
+
 - NVIDIA GPU or Intel GPU (optional, but recommended for better performance)
 
-## Installation
+## Installation {#installation}
 
 1. Clone the repository:
 
@@ -43,7 +46,7 @@ This guide will help you quickly set up and start using AI-Playground.
 
    ```text`
 
-## Basic Usage
+## Basic Usage {#basic-usage}
 
 1. Activate the virtual environment:
 
@@ -76,19 +79,24 @@ This guide will help you quickly set up and start using AI-Playground.
 
 1. Access the web interface by opening `<http://localhost:8000`> in your browser.
 
-## Hardware-specific Optimizations
+## Hardware-specific Optimizations {#hardware-specific-optimizations}
 
 AI-Playground automatically detects and optimizes for your hardware:
 
 - Intel Arc GPUs: Uses Intel Extension for PyTorch and Intel optimized packages
+
 - Intel Meteor Lake CPUs: Utilizes optimized NPU and GPU capabilities
+
 - NVIDIA GPUs: Standard PyTorch with CUDA acceleration
+
 - CPU-only: Optimized CPU inferencing
 
-## Next Steps
+## Next Steps {#next-steps}
 
 - [Installation Guide](installation.md) - For detailed installation instructions
+
 - [Hardware Optimization](../hardware/optimization.md) - Learn how to optimize for your specific hardware
+
 - [Example Workflows](../reference/examples.md) - Explore example workflows and use cases
 
 ***_****_****_****_****_****_****_****_****_****_****_****_****_****__

@@ -1,32 +1,39 @@
 
-# Code Quality Guide
+# Code Quality Guide {#code-quality-guide}
 
 This document outlines the code quality standards, tools, and practices implemented in the AI Playground project.
 
-## Standards and Tools
+## Standards and Tools {#standards-and-tools}
 
-### Python Code Quality
+### Python Code Quality {#python-code-quality}
 
 - *_Linting__: We use `flake8`, `pylint`, and `black` for Python code linting and formatting.
+
 - **Type Checking**: `mypy` is used for static type checking.
+
 - **Import Sorting**: `isort` ensures imports are organized consistently.
+
 - **Code Complexity**: We monitor cyclomatic complexity with `flake8-complexity`.
 
-### Markdown Documentation
+### Markdown Documentation {#markdown-documentation}
 
 - **Linting**: `markdownlint` ensures consistent and readable documentation.
+
 - **Formatting Rules**: Line length, heading spacing, list formatting, and more are enforced.
+
 - **Automation**: Custom scripts (`fix_markdown_lint.py` and `fix_readme.py`) automate fixing common issues.
 
-### CI/CD Integration
+### CI/CD Integration {#cicd-integration}
 
 - **GitHub Actions**: Automated quality checks run on every push and pull request.
+
 - **Pre-commit Hooks**: Local checks run before committing to prevent introducing issues.
+
 - **Auto-fixing**: Some issues are automatically fixed during CI runs.
 
-## Best Practices
+## Best Practices {#best-practices}
 
-### Python
+### Python {#python}
 
 1. Use type hints for all function parameters and return values.
 
@@ -38,7 +45,7 @@ This document outlines the code quality standards, tools, and practices implemen
 
 1. Use meaningful variable and function names.
 
-### Documentation
+### Documentation {#documentation}
 
 1. Keep documentation up-to-date with code changes.
 
@@ -48,14 +55,18 @@ This document outlines the code quality standards, tools, and practices implemen
 
 1. Include installation and setup instructions for developers.
 
-## Pre-commit Hooks
+## Pre-commit Hooks {#pre-commit-hooks}
 
 Pre-commit hooks are configured to run the following checks:
 
 - `black`: Format Python code
+
 - `isort`: Sort Python imports
+
 - `flake8`: Lint Python code
+
 - `mypy`: Check Python types
+
 - `markdownlint`: Lint markdown documents
 
 To set up pre-commit hooks:
@@ -66,9 +77,9 @@ pre-commit install
 
 ```text`text
 
-## Troubleshooting Common Issues
+## Troubleshooting Common Issues {#troubleshooting-common-issues}
 
-### Markdown Linting
+### Markdown Linting {#markdown-linting}
 
 Common issues and solutions:
 
@@ -78,7 +89,7 @@ Common issues and solutions:
 
 1. **List Formatting**: Ensure lists have blank lines before and after, and use consistent formatting (- for unordered, 1. for ordered).
 
-### Python Linting
+### Python Linting {#python-linting}
 
 1. **Import Issues**: Update `pyrightconfig.json` or `mypy.ini` to handle special imports.
 
@@ -86,7 +97,7 @@ Common issues and solutions:
 
 1. __Type Checking_*: Use `# type: ignore` for legitimate cases where types cannot be properly resolved.
 
-## Contact
+## Contact {#contact}
 
 For questions about code quality standards or help with resolving issues, please open an issue on GitHub or contact the project maintainers.
 

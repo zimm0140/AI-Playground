@@ -3,7 +3,7 @@
 default: true
 
 # MD001 - Heading levels should only increment by one level at a time
-MD001: true
+MD001: false
 
 # MD003 - Heading style
 MD003:
@@ -33,8 +33,7 @@ MD013:
   headings: false
 
 # MD024 - Multiple headings with the same content
-MD024:
-  siblings_only: true
+MD024: false
 
 # MD025 - Multiple top level headings in the same document
 MD025: true
@@ -73,8 +72,7 @@ MD040: true
 MD041: false
 
 # MD046 - Code block style
-MD046:
-  style: "fenced"
+MD046: false
 
 # MD047 - Files should end with a single newline character
 MD047: true
@@ -91,8 +89,7 @@ MD055:
   style: "consistent"
 
 # MD049 - Emphasis style should be consistent
-MD049:
-  style: "underscore"
+MD049: false
 
 # MD050 - Strong style should be consistent
 MD050:

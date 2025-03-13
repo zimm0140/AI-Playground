@@ -1,7 +1,7 @@
 
-# AI Playground Workflows Documentation
+# AI Playground Workflows Documentation {#ai-playground-workflows-documentation}
 
-## Structure of Workflow JSON Files
+## Structure of Workflow JSON Files {#structure-of-workflow-json-files}
 
 | Tag | Description |
 | :---- | :---- |
@@ -20,19 +20,23 @@
 | "modifiableSettings" | **Required**: Yes, if no default values need leave as empty brackets [ ] <br>**Description**: Input types you'd like the user to adjust: "resolution", "seed", prompt" "inferenceSteps", "batchSize, "cfg", "negativePrompt" <br>**Syntax**: "inputField" ie "inferenceSteps", "seed" |
 | "comfyUiApiWorkflow" | **Required**: Yes <br>**Description**: This section should be a copy and paste of the API export of the workflow created in ComfyUI. |
 
+## Instructions {#instructions}
 
-## Instructions
-
-### Creating a New An AI Playground Workflow
+### Creating a New An AI Playground Workflow {#creating-a-new-an-ai-playground-workflow}
 
 - Go to the Workflows folder under AI Playground/resources
+
 - Select an existing workflow and make a copy of it
+
 - Change the name of the workflow keeping the .json at the end
+
 - Open the workflow in a text or code editor and edit the workflow name and other tags for your new workflow needs. Follow the above guide for editing the workflow for your new workflow
+
 - In AI Playground, refresh the list of workflows to see your workflow in the list - See first row in table above
+
 - Follow the next steps to edit the "comfyUiApiWorkflow" section
 
-### Adding API data intro an AI Playground Workflow JSON
+### Adding API data intro an AI Playground Workflow JSON {#adding-api-data-intro-an-ai-playground-workflow-json}
 
 - **Paste In API Info:**
 
@@ -72,22 +76,19 @@
 "min": 1,
 "max": 4
 
-```text
-
+``
+`
   }
 
 ```text
-
-  **Example Explanation:** the batch\_Size field determines how many images will be generated at the same time. In AI Playground this value is set to "1" by default. The code
+ **Example Explanation:** the batch\_Size field determines how many images will be generated at the same time. In AI Playground this value is set to "1" by default. The code
 above adds a number slider to the settings menu with an input range from 1 to 4\. In the example image below, the batch\_size is set to 2 with a image generation number of 4,
 generating 8 total images.
 
 ```text
-
 ![image](https://github.com/user-attachments/assets/b5fb5c88-ca86-457d-8496-d182a4fcfea8)
 
 ```text
-
 **Allowed AI Playground Settings Names** for "displayedSettings" or "modifiableSettings"
 
     - "resolution",

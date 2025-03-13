@@ -332,7 +332,9 @@ def _get_simulated_hardware() -> str | None:
 
 
 def _detect_specific_hardware(
-    detection_config: dict[str, Any], gpus: list[str], cpu_info: dict[str, Any],
+    detection_config: dict[str, Any],
+    gpus: list[str],
+    cpu_info: dict[str, Any],
 ) -> str | None:
     """Check for specific hardware types based on detection configuration.
 

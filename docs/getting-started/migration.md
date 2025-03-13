@@ -1,37 +1,37 @@
 
-# Migration Guide
+# Migration Guide {#migration-guide}
 
 This guide helps users migrate from previous versions of AI-Playground to the current version, highlighting important changes and providing step-by-step instructions for a smooth
 transition.
 
-## Migrating from v1.x to v2.x
+## Migrating from v1.x to v2.x {#migrating-from-v1x-to-v2x}
 
 Version 2.x introduces significant changes to hardware detection, environment management, and workflow processing. Follow these steps to migrate your existing setup:
 
-### Step 1: Update Your Repository
+### Step 1: Update Your Repository {#step-1-update-your-repository}
 
 \`\`\`text\`bash
 git pull origin main
 
 ```text`text
 
-### Step 2: Clean Your Environment
+### Step 2: Clean Your Environment {#step-2-clean-your-environment}
 
 It's recommended to create a fresh environment for v2.x:
 
 ```bash
 
-## Remove old environment
+## Remove old environment {#remove-old-environment}
 
 rm -rf .venv
 
-## Set up new environment with hardware detection
+## Set up new environment with hardware detection {#set-up-new-environment-with-hardware-detection}
 
 python setup_hardware_env.py --clean
 
 ```text
-
-### Step 3: Update Configuration Files
+### Ste
+p 3: Update Configuration Files {#step-3-update-configuration-files}
 
 Configuration files have changed format in v2.x. If you have custom configuration files, you'll need to update them:
 
@@ -42,8 +42,8 @@ Configuration files have changed format in v2.x. If you have custom configuratio
    {
 
 ```text
-
- "project_name": "ai-playground",
+ "
+project_name": "ai-playground",
  "python_version": "3.10",
  "hardware_types": ["base", "acm", "bmg", "mtl", "lnl", "ovino", "arl_h"],
  "default_hardware": "base",
@@ -53,20 +53,18 @@ Configuration files have changed format in v2.x. If you have custom configuratio
    "hardware": {
 
 ```text
-
- "base": "requirements-hardware-base.txt",
+ "bas
+e": "requirements-hardware-base.txt",
  "acm": "requirements-hardware-acm.txt"
 
 ```text
-
    }
  }
 
 ```text
+}
 
-   }
-
-   ```text
+   ```
 
 1. Workflows now use the new format in `v2.x`. To migrate existing workflows:
 
@@ -76,9 +74,9 @@ Configuration files have changed format in v2.x. If you have custom configuratio
 
    python service/tools/convert_workflow.py --input old_workflow.json --output new_workflow.json
 
-   ```text
+   ```
 
-### Step 4: API Changes
+### Step 4: API Changes {#step-4-api-changes}
 
 If you're using the API, note these changes:
 
@@ -90,20 +88,21 @@ If you're using the API, note these changes:
 
 Example of updated API calls:
 
-```python
+``
+`python
 
-## Old v1.x API call
+## Old v1.x API call {#old-v1x-api-call}
 
 response = requests.post("<http://localhost:8000/api/v1/workflow",> json=workflow_data)
 
-## New v2.x API call
+## New v2.x API call {#new-v2x-api-call}
 
 headers = {"X-API-Key": "your_api_key"}
 response = requests.post("<http://localhost:8000/api/v2/workflow",> headers=headers, json=workflow_data)
 
 ```text
-
-### Step 5: Hardware Optimization Changes
+#
+## Step 5: Hardware Optimization Changes {#step-5-hardware-optimization-changes}
 
 Hardware detection is now more advanced:
 
@@ -120,8 +119,7 @@ To manually set hardware type:
 python setup_hardware_env.py --hardware acm
 
 ```text
-
-## Breaking Changes
+## Breaking Changes {#breaking-changes}
 
 Be aware of these breaking changes in v2.x:
 
@@ -135,7 +133,7 @@ Be aware of these breaking changes in v2.x:
 
 1. Hardware detection now uses a different approach
 
-## Troubleshooting Migration Issues
+## Troubleshooting Migration Issues {#troubleshooting-migration-issues}
 
 If you encounter issues during migration:
 
@@ -149,7 +147,6 @@ For further assistance, please [open an issue](https://github.com/intel/AI-Playg
 
 ---
 **Previous**: [Installation Guide](installation.md) | **Next**: [Hardware Overview](../hardware/overview.md) | __See also_*: [Troubleshooting](../reference/troubleshooting.md)
-
 
 ```text`
 

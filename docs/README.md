@@ -1,9 +1,9 @@
 
-# Documentation Directory
+# Documentation Directory {#documentation-directory}
 
 This directory contains all documentation for the AI Playground project.
 
-## Directory Structure
+## Directory Structure {#directory-structure}
 
 - *_development/__: Development-related documentation
 
@@ -29,11 +29,11 @@ This directory contains all documentation for the AI Playground project.
   - CI/CD workflow documentation
   - Requirements and reports
 
-## Documentation Format
+## Documentation Format {#documentation-format}
 
 Most documentation is written in Markdown format and can be viewed directly on GitHub or through the project's documentation site generated with MkDocs.
 
-## Building Documentation
+## Building Documentation {#building-documentation}
 
 The documentation site can be built using MkDocs:
 
@@ -42,39 +42,47 @@ The documentation site can be built using MkDocs:
 mkdocs build
 
 ```text
-
 To serve the documentation locally:
 
 ```text
-
 mkdocs serve
 
 ```text
-
 See the `mkdocs.yml` file in the root directory for configuration details.
 
-## Documentation Structure
+## Documentation Structure {#documentation-structure}
 
 The documentation is organized into the following sections:
 
 - `getting-started/`: Guides for new users to get started with AI-Playground
+
 - `hardware/`: Hardware compatibility and optimization guides
+
 - `development/`: Guides for contributors and developers
+
 - `architecture/`: Documentation on system architecture and design
+
 - `reference/`: API references and configuration documentation
+
 - `examples/`: Example code and usage patterns
+
 - `troubleshooting/`: Guides for resolving common issues
+
 - `community/`: Community guidelines and support information
+
 - `releases/`: Release notes and version history
+
 - `maintenance/`: Documentation about maintaining the documentation itself
 
-## Key Files
+## Key Files {#key-files}
 
 - `index.md`: Main entry point for documentation
+
 - `documentation-overview.md`: Comprehensive overview of all documentation
+
 - `mkdocs.yml`: Configuration for the MkDocs documentation generator (in project root)
 
-## Documentation Standards
+## Documentation Standards {#documentation-standards}
 
 All documentation follows these standards:
 
@@ -88,7 +96,7 @@ All documentation follows these standards:
 
 - Images stored in the `assets/` directory
 
-## Contributing to Documentation
+## Contributing to Documentation {#contributing-to-documentation}
 
 Contributions to documentation are welcome! Please follow these guidelines:
 
@@ -102,21 +110,23 @@ Contributions to documentation are welcome! Please follow these guidelines:
 
 For more details, see [Contributing to Documentation](development/contributing.md).
 
-## Related Tools
+## Related Tools {#related-tools}
 
 Documentation tools and scripts are located in:
 
 - `tools/linting/fix_markdown_lint.py`: Script to fix common markdown linting issues
+
 - `tools/fix_markdown_advanced.py`: Advanced script for fixing markdown linting issues
+
 - `tools/formatting/fix_readme.py`: Script to fix README formatting issues
 
-## Configuration
+## Configuration {#configuration}
 
 Documentation linting is configured in:
 
 - `config/.markdownlint.yaml`: Configuration for markdown linting
 
-## Contact
+## Contact {#contact}
 
 If you have questions about the documentation, please open an issue or contact the maintainers at <example@example.com>.
 

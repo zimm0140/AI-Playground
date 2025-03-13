@@ -1,62 +1,83 @@
 
-# ComfyUI Workflow Repository
+# ComfyUI Workflow Repository {#comfyui-workflow-repository}
 
 This directory contains curated and validated ComfyUI workflows that have been tested and verified for compatibility with our system.
 
-## Workflow Validation System
+## Workflow Validation System {#workflow-validation-system}
 
 All workflows in this repository undergo a comprehensive validation process to ensure quality, compatibility, and proper documentation. Our CI system includes:
 
-### 1. Structural Validation
+### 1. Structural Validation {#structural-validation}
 
 - Schema validation for proper ComfyUI JSON format
+
 - Node syntax checking
+
 - Connection validation between nodes
+
 - Required input checking
 
-### 2. Requirements Analysis
+### 2. Requirements Analysis {#requirements-analysis}
 
 - Model dependency detection (checkpoints, VAEs, LoRAs)
+
 - Extension dependency detection
+
 - Hardware requirements estimation (VRAM, CPU, disk space)
+
 - Python package dependency analysis
 
-### 3. Execution Simulation
+### 3. Execution Simulation {#execution-simulation}
 
 - Pathway analysis for workflow execution
+
 - Execution order validation
+
 - Error detection in workflow logic
+
 - Dead node identification (nodes that don't contribute to output)
 
-### 4. Model Simulation
+### 4. Model Simulation {#model-simulation}
 
 - Tensor-based simulation without requiring full models
+
 - Runtime error detection with specific debugging information
+
 - Data flow validation through the execution pipeline
+
 - Resource usage estimation
 
-### 5. Version Tracking
+### 5. Version Tracking {#version-tracking}
 
 - Automatic version incrementation for modified workflows
+
 - Breaking change detection
+
 - Feature addition/removal tracking
+
 - Compatibility matrices across versions
 
-### 6. Dashboard Generation
+### 6. Dashboard Generation {#dashboard-generation}
 
 - Comprehensive workflow dashboard with key metrics
+
 - Status indicators for validation, analysis, and simulation
+
 - Resource requirement visualization
+
 - Compatibility information
 
-### 7. PR Integration
+### 7. PR Integration {#pr-integration}
 
 - Automatic PR checks for workflow modifications
+
 - Detailed comments with validation results
+
 - Recommendations for fixing issues
+
 - Breaking change warnings
 
-## Using Workflows
+## Using Workflows {#using-workflows}
 
 Each workflow is provided as a JSON file that can be imported directly into ComfyUI. To use a workflow:
 
@@ -68,11 +89,11 @@ Each workflow is provided as a JSON file that can be imported directly into Comf
 
 1. Select "Load" and choose the downloaded JSON file
 
-## Required Models
+## Required Models {#required-models}
 
 Most workflows require specific checkpoint models, VAEs, or LoRAs. Check the dashboard or workflow documentation for specific requirements.
 
-## Contributing Workflows
+## Contributing Workflows {#contributing-workflows}
 
 To contribute a new workflow:
 
@@ -88,6 +109,6 @@ To contribute a new workflow:
 
 1. Once all checks pass, your workflow will be reviewed for merging
 
-## Documentation
+## Documentation {#documentation}
 
 For more detailed information about the workflow validation system, see [docs/comfyui_workflow_validation.md](../../docs/comfyui_workflow_validation.md)

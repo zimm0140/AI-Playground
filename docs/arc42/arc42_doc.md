@@ -1,14 +1,14 @@
 
-# AI Playground arc42 documentation
+# AI Playground arc42 documentation {#ai-playground-arc42-documentation}
 
-## Introduction and Goals
+## Introduction and Goals {#introduction-and-goals}
 
 Intel AI-Playground is a standalone application that enables users with Intel graphics cards to interact with generative
 AI via a graphical user interface on their PC. It allows model inference to be executed directly on Intel-specific
 hardware, eliminating the need for external setup steps. The application supports popular generative AI functionalities,
 including image generation and conversational AI.
 
-### Requirements Overview
+### Requirements Overview {#requirements-overview}
 
 - **Generative AI with Intel Graphics Cards**
 
@@ -27,11 +27,11 @@ including image generation and conversational AI.
   Users can fetch new workflows published by Intel directly from within AI Playground. These updates are provided
   without requiring new installations or releases, allowing users to stay up to date with the latest offerings.
 
-### Quality Goals
+### Quality Goals {#quality-goals}
 
 TBD
 
-## Context and Scope
+## Context and Scope {#context-and-scope}
 
 ![AI Playground Context View](AI-PG_ContextView.svg)
 
@@ -41,8 +41,7 @@ TBD
 | AI Playground Repository | Github repositories of AI Playground. Additional workflows are released by intel and pushed to this repository. The application may update their workflow definitions by the intel source |
 | Model Repositories | The models used for inference need to be downloaded from external sources, e.g. huggingface.com |
 
-
-## Building Block View
+## Building Block View {#building-block-view}
 
 ![AI Playground Component View](AI-PG_ComponentView.svg)
 
@@ -63,9 +62,9 @@ libraries are wrapped in webservices. Their API may then be called from the wind
 long living subprocesses below the main process. From perspective of the main process, these webservices follow the
 interface of an "apiService", which especially specifies the set up steps needed to perform a full installation.
 
-## Risk and Technical Debt
+## Risk and Technical Debt {#risk-and-technical-debt}
 
-### Technical Debt
+### Technical Debt {#technical-debt}
 
 <table>
 <thead>

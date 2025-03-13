@@ -15,7 +15,6 @@ This module serves as a contract between the client and server, ensuring that
 requests conform to the expected structure before being processed by the service.
 """
 
-
 import marshmallow_dataclass
 from marshmallow import EXCLUDE  # Used to ignore unknown fields in requests
 

@@ -1,14 +1,14 @@
 
-# Code Quality Guidelines
+# Code Quality Guidelines {#code-quality-guidelines}
 
 This document outlines the code quality standards and tools used in this project.
 
-## Linting and Formatting
+## Linting and Formatting {#linting-and-formatting}
 
 We use [Ruff](https://github.com/astral-sh/ruff) for Python linting and formatting. Ruff is a fast Python linter
 written in Rust that combines the functionality of multiple Python linting tools.
 
-### Common Linting Issues
+### Common Linting Issues {#common-linting-issues}
 
 1. *_Unused Imports (F401)__
 
@@ -26,11 +26,11 @@ written in Rust that combines the functionality of multiple Python linting tools
    - Keep all imports at the top of the file.
    - If you need to modify environment variables before importing, add `# noqa: E402` to the imports.
 
-## Pre-commit Hooks
+## Pre-commit Hooks {#pre-commit-hooks}
 
 We use [pre-commit](https://pre-commit.com/) to run checks before each commit. This helps catch issues early.
 
-### Setup
+### Setup {#setup}
 
 1. Install pre-commit:
 
@@ -41,21 +41,23 @@ pip install pre-commit
 
 1. Install the hooks:
 
-```bash
+```b
+ash
 
 pre-commit install
 
 ```text
+1.
+Run against all files:
 
-1. Run against all files:
-
-```bash
+``
+`bash
 
 pre-commit run --all-files
 
 ```text
-
-## CI/CD Checks
+#
+# CI/CD Checks {#cicd-checks}
 
 Our GitHub Actions workflow runs the following checks:
 
@@ -67,7 +69,7 @@ Our GitHub Actions workflow runs the following checks:
 
 1. **Pre-commit**: Ensures all pre-commit hooks pass.
 
-## Fixing Linting Issues
+## Fixing Linting Issues {#fixing-linting-issues}
 
 We've created helper scripts to fix common linting issues:
 
@@ -83,8 +85,7 @@ python check_linting.py
 python fix_unused_variables.py
 
 ```text
-
-## Best Practices
+## Best Practices {#best-practices}
 
 1. **Run pre-commit before pushing**: This catches issues before they reach CI.
 
@@ -96,7 +97,7 @@ python fix_unused_variables.py
 
 1. __Write tests_*: Aim for high test coverage, especially for critical code paths.
 
-## Troubleshooting
+## Troubleshooting {#troubleshooting}
 
 If you encounter CI failures:
 

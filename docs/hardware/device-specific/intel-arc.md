@@ -1,9 +1,9 @@
 
-# Intel Arc GPUs Guide
+# Intel Arc GPUs Guide {#intel-arc-gpus-guide}
 
 This guide provides detailed information for users running AI-Playground on Intel Arc GPUs.
 
-## Supported Arc GPU Models
+## Supported Arc GPU Models {#supported-arc-gpu-models}
 
 AI-Playground supports all Intel Arc GPU models:
 
@@ -15,29 +15,30 @@ AI-Playground supports all Intel Arc GPU models:
 | A380 | 6GB | Small to medium models | Good |
 | A310 | 4GB | Small models only | Basic |
 
+## Hardware Requirements {#hardware-requirements}
 
-## Hardware Requirements
-
-### Driver Requirements
+### Driver Requirements {#driver-requirements}
 
 | OS | Minimum Driver Version | Recommended Driver |
 |----|------------------------|-------------------|
 | Windows | 31.0.101.4255 | Latest available |
 | Linux | Mesa 23.1 | Mesa 23.3+ |
 
-
-### System Requirements
+### System Requirements {#system-requirements}
 
 - PCIe 4.0 x8 or x16 slot
+
 - 350W+ power supply (450W+ recommended for A770)
+
 - External power connectors (for models A580 and above)
+
 - 16GB+ system RAM
 
-## Installation and Setup
+## Installation and Setup {#installation-and-setup}
 
-### Driver Installation
+### Driver Installation {#driver-installation}
 
-#### Windows
+#### Windows {#windows}
 
 1. Download the latest driver from [Intel's download center](https://downloadcenter.intel.com/product/226793/Intel-Arc-A-series-Graphics)
 
@@ -53,9 +54,9 @@ AI-Playground supports all Intel Arc GPU models:
 
    python hardware_detection.py
 
-   ```text
+   ```
 
-#### Linux
+#### Linux {#linux}
 
 1. Update your system:
 
@@ -63,7 +64,7 @@ AI-Playground supports all Intel Arc GPU models:
 
    sudo apt update && sudo apt upgrade
 
-   ```text
+   ```
 
 1. Install required packages:
 
@@ -71,7 +72,7 @@ AI-Playground supports all Intel Arc GPU models:
 
    sudo apt install mesa-utils
 
-   ```text
+   ```
 
 1. Verify installation:
 
@@ -79,28 +80,32 @@ AI-Playground supports all Intel Arc GPU models:
 
    glxinfo | grep "OpenGL renderer"
 
-   ```text
+   ```
 
-### Environment Setup
+### Environment Setup {#environment-setup}
 
 ```bash
 
-# Setup environment optimized for Arc GPUs
+#
+ Setup environment optimized for Arc GPUs {#setup-environment-optimized-for-arc-gpus}
 
 python setup_hardware_env.py --hardware acm
 
 ```text
-
-This will install the required dependencies including:
+This will
+install the required dependencies including:
 
 - Intel Extension for PyTorch (IPEX)
+
 - Intel Neural Compressor
+
 - oneDNN optimizations
+
 - XPU backend libraries
 
-## Optimizing for Arc GPUs
+## Optimizing for Arc GPUs {#optimizing-for-arc-gpus}
 
-### XPU-specific Code
+### XPU-specific Code {#xpu-specific-code}
 
 Use the "xpu" device in your code:
 
@@ -109,61 +114,62 @@ Use the "xpu" device in your code:
 import torch
 import intel_extension_for_pytorch as ipex
 
-# Move model to XPU
+# Move model to XPU {#move-model-to-xpu}
 
 model = model.to("xpu")
 
-# Move input tensors to XPU
+# Move input tensors to XPU {#move-input-tensors-to-xpu}
 
 input_tensor = input_tensor.to("xpu")
 
-# Run inference
+# Run inference {#run-inference}
 
 with torch.xpu.amp.autocast(dtype=torch.bfloat16):
     output = model(input_tensor)
 
 ```text
-
-### Environment Variables
+### Envi
+ronment Variables {#environment-variables}
 
 Set these environment variables for optimal performance:
 
 ```bash
 
-# Windows (PowerShell)
+# Windows (PowerShell) {#windows-powershell}
 
 $env:ZE_AFFINITY_MASK = "0.0"
 $env:SYCL_CACHE_PERSISTENT = "1"
 $env:IPEX_XPU_MAX_STREAMS = "8"
 
-# Linux (Bash)
+# Linux (Bash) {#linux-bash}
 
 export ZE_AFFINITY_MASK="0.0"
 export SYCL_CACHE_PERSISTENT="1"
 export IPEX_XPU_MAX_STREAMS="8"
 
 ```text
-
-### Memory Management
+### Me
+mory Management {#memory-management}
 
 Arc GPUs benefit from careful memory management:
 
-```python
+```py
+thon
 
-# Clear XPU cache when needed
+# Clear XPU cache when needed {#clear-xpu-cache-when-needed}
 
 torch.xpu.empty_cache()
 
-# Monitor memory usage
+# Monitor memory usage {#monitor-memory-usage}
 
 print(f"Memory allocated: {torch.xpu.memory_allocated() / 1e9:.2f} GB")
 print(f"Memory reserved: {torch.xpu.memory_reserved() / 1e9:.2f} GB")
 
 ```text
+## T
+roubleshooting Arc-Specific Issues {#troubleshooting-arc-specific-issues}
 
-## Troubleshooting Arc-Specific Issues
-
-### Common Issues and Solutions
+### Common Issues and Solutions {#common-issues-and-solutions}
 
 | Issue | Solution |
 |-------|----------|
@@ -172,24 +178,24 @@ print(f"Memory reserved: {torch.xpu.memory_reserved() / 1e9:.2f} GB")
 | Performance lower than expected | Check power limits and thermal throttling |
 | System crash during inference | Update drivers and reduce workload size |
 
+### Debugging Tools {#debugging-tools}
 
-### Debugging Tools
+```text
+bash
 
-```bash
-
-# Check GPU information
+# Check GPU information {#check-gpu-information}
 
 python -c "import torch; import intel_extension_for_pytorch as ipex; print(torch.xpu.get_device_properties(0))"
 
-# Run diagnostic tool
+# Run diagnostic tool {#run-diagnostic-tool}
 
 python service/tools/intel_gpu_diagnostics.py
 
 ```text
+##
+ Performance Tuning {#performance-tuning}
 
-## Performance Tuning
-
-### Model Optimization
+### Model Optimization {#model-optimization}
 
 1. **Quantization**:
 
@@ -206,7 +212,7 @@ python service/tools/intel_gpu_diagnostics.py
 
    quantized_model = convert(prepared_model)
 
-   ```text
+   ```
 
 1. **BF16 Mixed Precision**:
 
@@ -215,15 +221,16 @@ python service/tools/intel_gpu_diagnostics.py
    with torch.xpu.amp.autocast(dtype=torch.bfloat16):
        output = model(input_tensor)
 
-   ```text
+   ```
 
-### Batch Size Optimization
+### Batch Size Optimization {#batch-size-optimization}
 
 Test different batch sizes to find the optimal value for your specific Arc GPU model:
 
-```python
+`
+``python
 
-# Example batch size benchmark
+# Example batch size benchmark {#example-batch-size-benchmark}
 
 batch_sizes = [1, 2, 4, 8, 16]
 results = {}
@@ -235,14 +242,15 @@ for bs in batch_sizes:
     # Record timing information
 
 ```text
-
 Typical optimal batch sizes:
 
 - A770: 8-16
+
 - A750: 4-8
+
 - A380: 2-4
 
-## Comparing with Other GPUs
+## Comparing with Other GPUs {#comparing-with-other-gpus}
 
 | Task | Arc A770 | RTX 3070 | Notes |
 |------|----------|----------|-------|
@@ -250,11 +258,12 @@ Typical optimal batch sizes:
 | LoRA Training | ~0.9 it/s | ~1.2 it/s | Similar memory usage |
 | LLM Inference | ~22 tok/s | ~28 tok/s | Arc benefits from BF16 |
 
-
-## Additional Resources
+## Additional Resources {#additional-resources}
 
 - [Intel Developer Documentation](https://developer.intel.com/arctgpu)
+
 - [Intel Extension for PyTorch Documentation](https://intel.github.io/intel-extension-for-pytorch/)
+
 - [XPU Migration Guide](https://github.com/intel/intel-extension-for-pytorch/blob/xpu-main/docs/tutorials/xpu_migration_guide.md)
 
 ---

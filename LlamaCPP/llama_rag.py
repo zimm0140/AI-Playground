@@ -68,7 +68,7 @@ class EmbeddingWrapper:
         start = time.time()
         print(f"******* loading {model_path} start ")
         self.model = LlamaCppEmbeddings(model_path=model_path)
-        print("******* loading {} finish. cost {:3f}s".format(model_path, time.time() - start))
+        print(f"******* loading {model_path} finish. cost {time.time() - start:3f}s")
 
     def embed_documents(self, texts: List[str]) -> List[List[float]]:
         """
@@ -142,7 +142,9 @@ class EmbeddingDatabase:
         index_json = os.path.join(INDEX_DATABASE_PATH, "index.json")
         self.index_list = self.__load_exists_index(index_json) if os.path.exists(index_json) else list()
         self.text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=CHUNK_SIZE, chunk_overlap=CHUNK_OVERLAP, length_function=len
+            chunk_size=CHUNK_SIZE,
+            chunk_overlap=CHUNK_OVERLAP,
+            length_function=len,
         )
 
     def __load_exists_index(self, index_json: str):
@@ -156,7 +158,7 @@ class EmbeddingDatabase:
             List of indexed file metadata or empty list on error
         """
         try:
-            with open(index_json, "r") as f:
+            with open(index_json) as f:
                 return json.load(f)
         except Exception as e:
             print(f"load index.json error: {e}")
@@ -233,7 +235,7 @@ class EmbeddingDatabase:
 
         docs = self.text_splitter.split_documents(raw_documents)
         if docs:
-            print("Analyze {} got {} index files.".format(file_base_name, len(docs)))
+            print(f"Analyze {file_base_name} got {len(docs)} index files.")
             self.__add_documents(file_base_name, docs, md5)
         else:
             raise Exception(f"Cannot analyze {file_base_name}")

@@ -1,69 +1,77 @@
 
-# Installation Guide
+# Installation Guide {#installation-guide}
 
 This guide provides detailed instructions for installing and configuring AI-Playground for different environments and hardware configurations.
 
-## System Requirements
+## System Requirements {#system-requirements}
 
-### Minimum Requirements
+### Minimum Requirements {#minimum-requirements}
 
 - Python 3.10 or higher
+
 - 8GB RAM
+
 - 10GB disk space
 
-### Recommended Requirements
+### Recommended Requirements {#recommended-requirements}
 
 - Python 3.10 or 3.11
+
 - 16GB+ RAM
+
 - NVIDIA GPU with 6GB+ VRAM or Intel Arc GPU
+
 - SSD with 20GB+ free space
 
-### Supported Operating Systems
+### Supported Operating Systems {#supported-operating-systems}
 
 - Windows 10/11 (64-bit)
+
 - Ubuntu 20.04/22.04 LTS
+
 - macOS 11.0 or newer (limited GPU acceleration)
 
-## Installation Methods
+## Installation Methods {#installation-methods}
 
-### Method 1: Automatic Setup (Recommended)
+### Method 1: Automatic Setup (Recommended) {#method-1-automatic-setup-recommended}
 
 The `setup_hardware_env.py` script automatically detects your hardware and sets up the appropriate environment:
 
 \`\`\`text\`bash
 
-## Clone the repository
+## Clone the repository {#clone-the-repository}
 
 git clone <https://github.com/intel/AI-Playground.git>
 cd AI-Playground
 
-## Run the automatic setup
+## Run the automatic setup {#run-the-automatic-setup}
 
 python setup_hardware_env.py
 
 ```text`text
 
-#### Additional Options
+#### Additional Options {#additional-options}
 
-```bash
+```b
+ash
 
-## Include development dependencies
+## Include development dependencies {#include-development-dependencies}
 
 python setup_hardware_env.py --dev
 
-## Force a specific hardware configuration
+## Force a specific hardware configuration {#force-a-specific-hardware-configuration}
 
 python setup_hardware_env.py --hardware acm  # For Intel Arc GPUs
 
 python setup_hardware_env.py --hardware mtl  # For Intel Meteor Lake CPUs
 
-## Clean existing environment before setup
+## Clean existing environment before setup {#clean-existing-environment-before-setup}
 
 python setup_hardware_env.py --clean
 
 ```text
-
-### Method 2: Manual Setup
+###
+ Method 2: Manual Setup {#method-2-manual-setup}
 
 If you prefer to set up the environment manually:
 
@@ -85,7 +93,7 @@ If you prefer to set up the environment manually:
 
    source .venv/bin/activate
 
-   ```text
+   ```
 
 1. Install dependencies based on your hardware:
 
@@ -103,27 +111,28 @@ If you prefer to set up the environment manually:
 
    pip install -r requirements-dev.txt
 
-   ```text
+   ```
 
-## Docker Installation
+## Docker Installation {#docker-installation}
 
 For containerized deployment:
 
-```bash
+``
+`bash
 
-## Build the Docker image
+## Build the Docker image {#build-the-docker-image}
 
 docker build -t ai-playground .
 
-## Run the container
+## Run the container {#run-the-container}
 
 docker run -p 8000:8000 ai-playground
 
 ```text
+#
+# Troubleshooting Installation {#troubleshooting-installation}
 
-## Troubleshooting Installation
-
-### Common Issues
+### Common Issues {#common-issues}
 
 1. *_Package installation failures__
 
@@ -133,7 +142,7 @@ docker run -p 8000:8000 ai-playground
 
    pip install --upgrade pip setuptools wheel
 
-   ```text
+   ```
 
 1. **GPU not detected**
 
@@ -145,33 +154,31 @@ docker run -p 8000:8000 ai-playground
 
 For more troubleshooting help, see the [Troubleshooting Guide](../reference/troubleshooting.md).
 
-## Verifying Installation
+## Verifying Installation {#verifying-installation}
 
 To verify that your installation is working correctly:
 
 ```bash
 
-## Activate the virtual environment if not already activated
+## Activate the virtual environment if not already activated {#activate-the-virtual-environment-if-not-already-activated}
 
-## Windows
+## Windows {#windows}
 
 .venv\Scripts\activate
 
-## Linux/macOS
+## Linux/macOS {#linuxmacos}
 
 source .venv/bin/activate
 
-## Run the verification script
+## Run the verification script {#run-the-verification-script}
 
 python test_venv.py
 
 ```text
-
 This will check that all required dependencies are installed and that your hardware is properly detected.
 
 ---
 **Previous**: [Quick Start Guide](quickstart.md) | **Next**: [Migration Guide](migration.md) | __See also_*: [Hardware Compatibility](../hardware/compatibility.md)
-
 
 ```text`
 

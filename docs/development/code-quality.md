@@ -1,24 +1,30 @@
 
-# Code Quality Standards
+# Code Quality Standards {#code-quality-standards}
 
 This document outlines the code quality standards for the AI-Playground project. Adhering to these standards ensures maintainable, readable, and robust code.
 
-## General Principles
+## General Principles {#general-principles}
 
 - *_Readability__: Write code that is easy to read and understand
+
 - **Simplicity**: Prefer simple solutions over complex ones
+
 - **Maintainability**: Design code to be maintainable in the long term
+
 - **Testability**: Structure code to be easily testable
+
 - **Documentation**: Document all public-facing code
 
-## Python Style Guide
+## Python Style Guide {#python-style-guide}
 
-### PEP 8 Compliance
+### PEP 8 Compliance {#pep-8-compliance}
 
 All Python code should adhere to [PEP 8](https://peps.python.org/pep-0008/), with the following specifics:
 
 - **Line Length**: Maximum line length is 100 characters
+
 - **Indentation**: 4 spaces per indentation level (no tabs)
+
 - **Imports**: Group imports in the following order:
 
 1. Standard library imports
@@ -28,238 +34,285 @@ All Python code should adhere to [PEP 8](https://peps.python.org/pep-0008/), wit
 1. Local application/library-specific imports
 
 - **Whitespace**: Use whitespace consistently as specified in PEP 8
+
 - **Comments**: Use complete sentences in comments
+
 - **Naming Conventions**:
 
 \`\`\`text\`text
 
 - `snake_case` for functions, methods, and variables
+
 - `PascalCase` for class names
+
 - `UPPER_CASE` for constants
 
 ```text`text
 
-### Type Hints
+### Type Hints {#type-hints}
 
 Use type hints for all function parameters and return values:
 
 ```python
 
-def process_data(input_data: list[str], max_items: int = 10) -> dict[str, any]:
+def process_data(input_data:
+list[str], max_items: int = 10) -> dict[str, any]:
 
 ```text
-
-"""Process the input data and return results."""
+"""Process the input data and return re
+sults."""
 ...
 
 ```text
 
 ```text
+### Docstrings {#docstri
+ngs}
 
-### Docstrings
-
-All modules, classes, and functions should have docstrings:
+All mod
+ules, classes, and functions should have docstrings:
 
 ```python
 
-def validate_config(config: dict) -> bool:
+def validate_config(confi
+g: dict) -> bool:
 
 ```text
-
 """
-Validate the configuration dictionary.
+Validate the configuration dict
+ionary.
 
 ```text
 
 ```text
-
 Args:
 
 ```text
-
-config: The configuration dictionary to validate
-
-```text
-
-```text
+config: Th
+e configurat
+ion di
+ctionary to validate
 
 ```text
 
+```text
+```text
 Returns:
 
 ```text
+True if
 
-True if the configuration is valid, False otherwise
+the con
+figuratio
+n is valid, False otherwise
 
 ```text
 
 ```text
-
 ```text
-
 Raises:
 
 ```text
+Value
 
-ValueError: If the configuration is missing required fields
+Error:
+If the c
+onfiguration is missing required fields
 
 ```text
-
 """
 ...
 
 ```text
 
 ```text
+## Code
+Organization
+{#code-organization}
 
-## Code Organization
-
-### Module Structure
+### Module Structure {#module-structure}
 
 - Each module should have a single, well-defined responsibility
+
 - Related functionality should be grouped together
+
 - Keep modules reasonably sized (aim for <1000 lines)
+
 - Maintain a clear separation of concerns
 
-### Class Design
+### Class Design {#class-design}
 
 - Follow the Single Responsibility Principle
+
 - Use composition over inheritance when appropriate
+
 - Keep classes focused and cohesive
+
 - Minimize public API surface
 
-### Function Design
+### Function Design {#function-design}
 
 - Functions should do one thing and do it well
+
 - Keep functions short (aim for <50 lines)
+
 - Limit the number of parameters (aim for ≤5)
+
 - Use default parameter values for optional parameters
 
-## Error Handling
+## Error Handling {#error-handling}
 
 - Use exceptions for exceptional conditions
+
 - Handle errors at appropriate levels
+
 - Provide informative error messages
+
 - Don't suppress exceptions without good reason
+
 - Use custom exception classes when appropriate
 
 ```python
 
-class ConfigurationError(Exception):
+class Con
+figurationError(Exception):
 
 ```text
-
-"""Raised when there is an error in the configuration."""
+"""Raised when ther
+e is an error in the configuration."""
 pass
 
 ```text
 
 ```text
+## T
+esting Standa
+rds {#testing-standards}
 
-## Testing Standards
-
-### Test Coverage
+### Test Coverage {#test-coverage}
 
 - Aim for at least 80% code coverage
+
 - Test all public-facing functions and methods
+
 - Include edge cases and error conditions in tests
+
 - Use parameterized tests for multiple similar test cases
 
-### Test Structure
+### Test Structure {#test-structure}
 
 - Follow the Arrange-Act-Assert pattern
+
 - Keep tests independent and idempotent
+
 - Use descriptive test names
+
 - Group related tests in test classes
 
 ```python
 
-def test_hardware_detection_with_arc_gpu():
+def t
+est_hardware_detection_with_arc_gpu():
 
 ```text
-
-## Arrange
-
-```text
-
-```text
-
-mock_gpu_info = ["Intel(R) Arc(TM) A770 Graphics"]
+## Arrange {#ar
+range}
 
 ```text
 
 ```text
-
-## Act
-
-```text
-
-```text
-
-with patch("hardware_detection.get_gpu_info", return_value=mock_gpu_info):
-
-```text
-
-result = hardware_detection.detect_hardware_type()
+m
+ock_gpu_info
+ = ["Intel(R) Arc(TM) A770 Graphics"]
 
 ```text
 
 ```text
+## Act {#ac
+t}
 
 ```text
 
-## Assert
+`
+``
+with patc
+h("hardware_detection.get_gpu_info", return_value=mock_gpu_info):
+
+```text
+resu
+lt = hardware_detection.detect_hardware_type()
 
 ```text
 
 ```text
+``
 
-assert result == "acm"
+`
+
+## As
+sert {#assert}
+
+```t
+ext
 
 ```text
+ass
+ert result == "acm"
+
+``
+`text
 
 ```text
-
-## Code Quality Tools
+#
+# Code Quality Tools {#code-quality-tools}
 
 The project uses several automated tools to maintain code quality:
 
-### Linting Tools
+### Linting Tools {#linting-tools}
 
 - **Ruff**: Fast Python linter with extensive rule set
+
 - **mypy**: Static type checking
+
 - **markdownlint**: Markdown linting
 
-### Formatting Tools
+### Formatting Tools {#formatting-tools}
 
 - **Black**: Code formatter with opinionated style
+
 - **isort**: Import statement organizer
 
-### Pre-commit Hooks
+### Pre-commit Hooks {#pre-commit-hooks}
 
 All commits should pass the pre-commit hooks, which include:
 
 - Code linting
+
 - Type checking
+
 - Format checking
+
 - Doc string validation
 
-## Configuration
+## Configuration {#configuration}
 
-### Tool Configuration
+### Tool Configuration {#tool-configuration}
 
 Configuration for code quality tools is stored in:
 
 - `pyproject.toml` (for Black, isort, and pytest)
+
 - `.ruff.toml` or `pyproject.toml` (for Ruff)
+
 - `mypy.ini` (for mypy)
+
 - `.markdownlint.yaml` (for markdownlint)
 
-### Example Settings
+### Example Settings {#example-settings}
 
 ```toml
 
-## pyproject.toml example
+## pyproject.toml example {#pyprojecttoml-example}
 
 [tool.ruff]
 target-version = "py310"
@@ -275,15 +328,17 @@ disallow_untyped_defs = true
 disallow_incomplete_defs = true
 
 ```text
-
-## Continuous Integration
+## Continuous Integration {#continuous-integration}
 
 - All pull requests must pass CI checks
+
 - CI runs all linters and tests
+
 - CI enforces code coverage thresholds
+
 - CI validates documentation
 
-## Hardware-Specific Code Quality
+## Hardware-Specific Code Quality {#hardware-specific-code-quality}
 
 When working with hardware-specific code:
 
@@ -295,19 +350,22 @@ When working with hardware-specific code:
 
 1. Include fallback implementations for unsupported hardware
 
-## Documentation Quality
+## Documentation Quality {#documentation-quality}
 
 Documentation should be:
 
 - Clear and concise
+
 - Up-to-date with the current code
+
 - Comprehensive without being verbose
+
 - Include usage examples
+
 - Highlight hardware requirements
 
 ---
 **Previous**: [Contributing Guide](contributing.md) | **Next**: [Testing Guide](testing.md) | __See also_*: [Linting](linting.md)
-
 
 ```text`
 

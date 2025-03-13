@@ -1,9 +1,9 @@
 
-# Testing Guide
+# Testing Guide {#testing-guide}
 
 This guide explains how to run and write tests for AI-Playground, helping developers ensure their changes maintain code quality and functionality.
 
-## Testing Philosophy
+## Testing Philosophy {#testing-philosophy}
 
 Tests in AI-Playground should:
 
@@ -17,20 +17,25 @@ Tests in AI-Playground should:
 
 1. **Cover edge cases**: Test normal operation and exceptional conditions
 
-## Test Structure
+## Test Structure {#test-structure}
 
 The tests are organized as follows:
 
 - `tests/conftest.py`: Contains pytest fixtures shared across tests
+
 - `tests/test_hardware_detection.py`: Tests for the hardware detection module
+
 - `tests/test_uvfast.py`: Tests for the main uvfast.py module
+
 - `tests/test_setup_hardware_env.py`: Tests for the setup_hardware_env.py module
+
 - `tests/test_coverage.py`: Tests to assess and monitor test coverage
+
 - `tests/utils/test_workflow_parser.py`: Tests for the workflow parser utilities
 
-## Running Tests
+## Running Tests {#running-tests}
 
-### Running All Tests
+### Running All Tests {#running-all-tests}
 
 To run all tests:
 
@@ -39,7 +44,7 @@ pytest
 
 ```text`text
 
-### Running Tests with Detailed Output
+### Running Tests with Detailed Output {#running-tests-with-detailed-output}
 
 To run tests with detailed output:
 
@@ -48,8 +53,9 @@ To run tests with detailed output:
 pytest -v
 
 ```text
-
-### Running a Specific Test File
+### Running a Specific Test File {#ru
+nning-a-specific-test-fi
+le}
 
 To run tests from a specific file:
 
@@ -58,18 +64,20 @@ To run tests from a specific file:
 pytest tests/test_hardware_detection.py
 
 ```text
-
-### Running a Specific Test Function
+### R
+unning a Specific Test Function {#running-a-specific-t
+est-function}
 
 To run a specific test function:
 
 ```bash
 
-pytest tests/test_hardware_detection.py::TestHardwareDetection::test_detect_arc_gpu
+pytest tests/test_hardware_detection.py::TestHard
+wareDetection::test_detect_arc_gpu
 
 ```text
-
-### Running Tests with Coverage Report
+### Running Tests with Coverage Report {#running-tests-wi
+th-coverage-report}
 
 To run tests with a coverage report:
 
@@ -78,26 +86,29 @@ To run tests with a coverage report:
 pytest --cov=. tests/
 
 ```text
-
-For a more detailed coverage report:
+For a more detailed
+coverage report:
 
 ```bash
 
-pytest --cov=. --cov-report=html tests/
+pytest -
+-cov=. --cov-report=html tests/
 
 ```text
+This will generate an HTML coverage report in the `ht
+mlcov` directory.
 
-This will generate an HTML coverage report in the `htmlcov` directory.
+## Writing Tests {#writing-tests}
 
-## Writing Tests
-
-### Test File Naming
+### Test File Naming {#test-file-naming}
 
 - Test files should be named `test__.py`
+
 - Test functions should be named `test__`
+
 - Test classes should be named `Test_`
 
-### Test Function Structure
+### Test Function Structure {#test-function-structure}
 
 A good test function should:
 
@@ -114,154 +125,165 @@ Example:
 def test_detect_arc_gpu():
 
 ```text
-
-## Arrange
-
-```text
-
-```text
-
-mock_gpu_info = ["Intel(R) Arc(TM) A770 Graphics"]
+## Arran
+ge {#arrange}
 
 ```text
 
 ```text
-
-## Act
-
-```text
-
-```text
-
-with patch("hardware_detection.get_gpu_info", return_value=mock_gpu_info):
-
-```text
-
-result = hardware_detection.detect_hardware_type()
+mock_gpu_info =
+ ["Intel(R) Arc(TM) A77
+0 Graphics"]
 
 ```text
 
 ```text
-
-```text
-
-## Assert
-
-```text
-
-```text
-
-assert result == "acm"
+## Act {#act}
 
 ```text
 
 ```text
+with pa
+tch("hardware
+_detection.get
+_gpu_info",
+return_value=mock_gpu_info):
 
-### Using Fixtures
+```text
+result = hardware_detection.detect_hardwa
+re_type()
+
+```text
+
+```text
+```text
+## Assert {#assert}
+
+```text
+
+```text
+assert r
+esult == "acm"
+
+```t
+ext
+
+```text
+##
+# Using Fixtures {#usin
+g-fixtures}
 
 Fixtures are a powerful way to reuse test setup code:
 
 ```python
 
 @pytest.fixture
-def sample_config():
+def sample
+_config():
 
 ```text
-
-"""Fixture providing a sample configuration."""
+"""Fixture providing a sample config
+uration."""
 return {
 
 ```text
-
-"hardware_types": ["base", "acm"],
+"hardware_types": ["base", "acm
+"],
 "default_hardware": "base",
 
 ```text
-
 }
 
 ```text
-
-def test_hardware_detection(sample_config):
+def test_hardware_detection
+(s
+ample_config):
 
 ```text
-
 ## Use the sample_config fixture
+ {#use-the-sample_config-fixture}
 
 ```text
 
 ```text
-
-with patch("hardware_detection.load_config", return_value=sample_config):
-
-```text
-
-## Test code here
+with patch("hardwa
+re_detection
+.load_config", return_value=sample_config):
 
 ```text
-
-```text
+## Test code here {#test
+-code-here}
 
 ```text
 
 ```text
+```text
 
+```text
 pass
 
-```text
+```te
+
+xt
 
 ```text
-
 ```text
+### Mocking {#m
 
-### Mocking
+ocking}
 
 Use mocking to isolate the code being tested:
 
 ```python
 
-@patch("hardware_detection.get_gpu_info")
+@patch("har
+dware_detection.get_gpu_info")
 def test_gpu_detection(mock_get_gpu_info):
 
 ```text
-
 ## Configure the mock
+ {#configure-the-mock}
 
 ```text
 
 ```text
-
-mock_get_gpu_info.return_value = ["Intel(R) Arc(TM) A770 Graphics"]
-
-```text
-
-```text
-
-## Test code that uses get_gpu_info
+mock_ge
+t_gpu_info.r
+eturn_value = ["Intel(R) Arc(TM) A770 Graphics"]
 
 ```text
 
 ```text
-
-result = hardware_detection.detect_hardware_type()
-
-```text
-
-```text
-
-## Verify results
+## T
+est code that
+ uses get_gpu_info {#test-code-that-uses-get_gpu_info}
 
 ```text
 
 ```text
-
-assert result == "acm"
+res
+ult = hardwa
+re_detection.detect_hardware_type()
 
 ```text
 
 ```text
+## Verify res
+ults {#verify-results}
 
-### Testing Hardware-Specific Code
+```text
+
+```text
+assert resu
+lt == "acm"
+
+```text
+
+`
+``
+
+### Testi
+ng Hardware-Specific Code {#testing-hardware-specific-code}
 
 When testing hardware-specific functionality:
 
@@ -275,37 +297,38 @@ When testing hardware-specific functionality:
 
 Example:
 
-```python
+```pytho
+n
 
 @pytest.mark.parametrize("gpu_info,expected_type", [
 
 ```text
-
-(["Intel(R) Arc(TM) A770 Graphics"], "acm"),
+(["Inte
+l(R) Arc(TM) A770 Graphics"], "acm"),
 (["Intel(R) Battlemage(TM) B770 Graphics"], "bmg"),
 (["NVIDIA GeForce RTX 3080"], "base"),
 
 ```text
-
 ])
+
 def test_multiple_hardware_types(gpu_info, expected_type):
 
 ```text
-
-with patch("hardware_detection.get_gpu_info", return_value=gpu_info):
+with
+patch("hardware_detection.get_gpu_info", return_value=gpu_info):
 
 ```text
-
 result = hardware_detection.detect_hardware_type()
 assert result == expected_type
 
 ```text
 
-```text
+``
 
+`
 ```text
-
-## Testing Best Practices
+#
+# Testing Best Practices {#testing-best-practices}
 
 1. **Test the public API**: Focus on testing public interfaces, not implementation details
 
@@ -321,7 +344,7 @@ assert result == expected_type
 
 1. **Don't modify production code for testing**: Use mocks and dependency injection instead
 
-## Test Coverage Assessment
+## Test Coverage Assessment {#test-coverage-assessment}
 
 The `test_coverage.py` file provides utilities to assess test coverage without additional tools:
 
@@ -330,38 +353,44 @@ The `test_coverage.py` file provides utilities to assess test coverage without a
 pytest tests/test_coverage.py -v
 
 ```text
-
 This will show which core modules have tests and which functions might lack coverage, helping you identify areas that need more testing.
 
-## Testing Strategies for Different Types of Code
+## Testing Strategies for Different Types of Code {#testing-strategies-for-different-types-of-code}
 
-### Unit Testing
+### Unit Testing {#unit-testing}
 
 - Test individual functions and classes in isolation
+
 - Mock dependencies
+
 - Focus on code behavior, not implementation details
 
-### Integration Testing
+### Integration Testing {#integration-testing}
 
 - Test how components work together
+
 - Focus on interfaces between components
+
 - Minimize mocking when testing integration points
 
-### Hardware-Aware Testing
+### Hardware-Aware Testing {#hardware-aware-testing}
 
 - Use parameterized tests for different hardware configurations
+
 - Mock hardware detection to test all supported hardware
+
 - Include tests that verify hardware-specific optimization code paths
 
-## Additional Resources
+## Additional Resources {#additional-resources}
 
 - [pytest Documentation](https://docs.pytest.org/)
+
 - [unittest.mock Documentation](https://docs.python.org/3/library/unittest.mock.html)
+
 - [pytest-cov Documentation](https://pytest-cov.readthedocs.io/)
 
 ---
 **Previous**: [Code Quality Standards](code-quality.md) | **Next**: [Linting](linting.md) | __See also_*: [Contributing Guide](contributing.md)
-
 
 ```text`
 

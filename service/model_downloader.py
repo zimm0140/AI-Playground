@@ -363,16 +363,21 @@ class HFPlaygroundDownloader:
             else:
                 # sd model ignore root .safetensors .pt .ckpt files
                 if (
-                    model_type == 1
-                    and is_root
-                    and (name.endswith(".safetensors") or name.endswith(".pt") or name.endswith(".ckpt"))
-                ) or model_type == 5 and (name.endswith(".safetensors") or name.endswith(".onnx")) or (
-                    name.endswith(".png")
-                    or name.endswith(".gitattributes")
-                    or name.endswith(".md")
-                    or name.endswith(".jpg")
-                    or name.endswith(".pdf")
-                    or name.endswith(".html")
+                    (
+                        model_type == 1
+                        and is_root
+                        and (name.endswith(".safetensors") or name.endswith(".pt") or name.endswith(".ckpt"))
+                    )
+                    or model_type == 5
+                    and (name.endswith(".safetensors") or name.endswith(".onnx"))
+                    or (
+                        name.endswith(".png")
+                        or name.endswith(".gitattributes")
+                        or name.endswith(".md")
+                        or name.endswith(".jpg")
+                        or name.endswith(".pdf")
+                        or name.endswith(".html")
+                    )
                 ):
                     continue
 

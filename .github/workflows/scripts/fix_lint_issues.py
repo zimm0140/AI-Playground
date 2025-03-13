@@ -63,15 +63,23 @@ def run_isort(file_path):
 
 
 def run_ruff_format(file_path):
-    """Run ruff format on the given file to fix formatting issues."""
+    """Run ruff format on the given file."""
     try:
+        # First run ruff check --fix to fix fixable issues
+        subprocess.run(
+            [sys.executable, "-m", "ruff", "check", "--fix", file_path],
+            check=False,
+            capture_output=True,
+        )
+
+        # Then run ruff format to ensure consistent formatting
         subprocess.run(
             [sys.executable, "-m", "ruff", "format", file_path],
-            check=True,
+            check=False,
             capture_output=True,
         )
         return True
-    except subprocess.CalledProcessError:
+    except (subprocess.CalledProcessError, FileNotFoundError):
         return False
 
 
@@ -136,33 +144,34 @@ def find_python_files():
 
 def main():
     """Find and fix linting issues in Python files."""
-    python_files = find_python_files()
-    print(f"Found {len(python_files)} Python files to process")
+    py_files = find_python_files()
+    print(f"Found {len(py_files)} Python files to process")
 
-    fixed_count = 0
-    for file_path in python_files:
-        # Apply whitespace fixes first
-        whitespace_fixed = fix_whitespace_issues(file_path)
+    # First run the fixes in order of simplicity/safety
+    whitespace_count = 0
+    isort_count = 0
+    ruff_count = 0
+    line_count = 0
 
-        # Try to run isort and ruff format if available
-        isort_fixed = run_isort(file_path)
-        ruff_fixed = run_ruff_format(file_path)
+    for file_path in py_files:
+        # Run fixes in order of simplicity/safety
+        if run_ruff_format(file_path):
+            ruff_count += 1
 
-        # Try to fix long lines
-        long_lines_fixed = fix_long_lines(file_path)
+        if run_isort(file_path):
+            isort_count += 1
 
-        if whitespace_fixed or isort_fixed or ruff_fixed or long_lines_fixed:
-            fixed_count += 1
-            print(f"✅ Fixed issues in {file_path}")
-        else:
-            print(f"✓ No fixable issues in {file_path}")
+        if fix_whitespace_issues(file_path):
+            whitespace_count += 1
 
-    print(f"\n✅ Fixed issues in {fixed_count} files")
-    print("\nNote: Some issues require manual fixing:")
-    print("1. C901: Function complexity - refactor complex functions into smaller ones")
-    print("2. F841/F401: Unused variables/imports - remove or use them appropriately")
-    print("3. F811: Redefined variables - fix naming conflicts")
-    print("4. Custom imports or logic issues - review and fix manually")
+        if fix_long_lines(file_path):
+            line_count += 1
+
+    print(f"\n✅ Fixed issues in {len(py_files)} files:")
+    print(f"- Ruff fixes: {ruff_count}")
+    print(f"- Import sorting: {isort_count}")
+    print(f"- Whitespace fixes: {whitespace_count}")
+    print(f"- Line length fixes: {line_count}")
 
 
 if __name__ == "__main__":
