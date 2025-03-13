@@ -19,8 +19,9 @@ RUN if [ ! -d "/app/hardware_detection/tests" ]; then \
     echo 'def test_import():\n    import hardware_detection\n    assert hardware_detection' > /app/hardware_detection/tests/test_import.py; \
     fi
 
-# Install Python dependencies
+# Install Python dependencies and the package itself
 RUN pip install --no-cache-dir pytest pytest-cov
+RUN pip install -e .
 
 # Set environment variables
 ENV PYTHONPATH=/app

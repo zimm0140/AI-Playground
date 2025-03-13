@@ -40,23 +40,16 @@ AI-Playground supports all Intel Arc GPU models:
 
 1. Download the latest driver from [Intel's download center](https://downloadcenter.intel.com/product/226793/Intel-Arc-A-series-Graphics)
 
-1. Install the driver package
+2. Install the driver package
 
-1. Restart your system
+3. Restart your system
 
-1. Verify installation with:
+4. Verify installation with:
 
    ```bash
-   ## Run hardware detection
-
+   # Run hardware detection
    python hardware_detection.py
    ```
-
-   ````text
-
-   ```text`
-
-   ````
 
 #### Linux
 
@@ -66,35 +59,24 @@ AI-Playground supports all Intel Arc GPU models:
    sudo apt update && sudo apt upgrade
    ```
 
-1. Install required packages:
+2. Install required packages:
 
    ```bash
    sudo apt install mesa-utils
    ```
 
-   ```text`
-
-   ````
-
-1. Verify installation:
+3. Verify installation:
 
    ```bash
    glxinfo | grep "OpenGL renderer"
    ```
 
-   ```text`
-
-   ````
-
 ### Environment Setup
 
 ```bash
-
-## Setup environment optimized for Arc GPUs
-
+# Setup environment optimized for Arc GPUs
 python setup_hardware_env.py --hardware acm
-
-```text
+```
 
 This will install the required dependencies including:
 
@@ -113,62 +95,45 @@ Use the "xpu" device in your code:
 import torch
 import intel_extension_for_pytorch as ipex
 
-## Move model to XPU
-
+# Move model to XPU
 model = model.to("xpu")
 
-## Move input tensors to XPU
-
+# Move input tensors to XPU
 input_tensor = input_tensor.to("xpu")
 
-## Run inference
-
+# Run inference
 with torch.xpu.amp.autocast(dtype=torch.bfloat16):
-
-```text
-
-output = model(input_tensor)
-
-```text
-
-```text
+    output = model(input_tensor)
+```
 
 ### Environment Variables
 
 Set these environment variables for optimal performance:
 
 ```bash
-
-## Windows (PowerShell)
-
+# Windows (PowerShell)
 $env:ZE_AFFINITY_MASK = "0.0"
 $env:SYCL_CACHE_PERSISTENT = "1"
 $env:IPEX_XPU_MAX_STREAMS = "8"
 
-## Linux (Bash)
-
+# Linux (Bash)
 export ZE_AFFINITY_MASK="0.0"
 export SYCL_CACHE_PERSISTENT="1"
 export IPEX_XPU_MAX_STREAMS="8"
-
-```text
+```
 
 ### Memory Management
 
 Arc GPUs benefit from careful memory management:
 
 ```python
-
-## Clear XPU cache when needed
-
+# Clear XPU cache when needed
 torch.xpu.empty_cache()
 
-## Monitor memory usage
-
+# Monitor memory usage
 print(f"Memory allocated: {torch.xpu.memory_allocated() / 1e9:.2f} GB")
 print(f"Memory reserved: {torch.xpu.memory_reserved() / 1e9:.2f} GB")
-
-```text
+```
 
 ## Troubleshooting Arc-Specific Issues
 
@@ -185,74 +150,50 @@ print(f"Memory reserved: {torch.xpu.memory_reserved() / 1e9:.2f} GB")
 ### Debugging Tools
 
 ```bash
-
-## Check GPU information
-
+# Check GPU information
 python -c "import torch; import intel_extension_for_pytorch as ipex; print(torch.xpu.get_device_properties(0))"
 
-## Run diagnostic tool
-
+# Run diagnostic tool
 python service/tools/intel_gpu_diagnostics.py
-
-```text
+```
 
 ## Performance Tuning
 
 ### Model Optimization
 
-1. *_Quantization__:
+1. **Quantization**:
 
    ```python
    from intel_extension_for_pytorch.quantization import prepare, convert
 
-   ## Prepare model for quantization
-
+   # Prepare model for quantization
    qconfig = ipex.quantization.default_static_qconfig
    prepared_model = prepare(model, qconfig, example_inputs=example_inputs)
 
-   ## Convert to quantized model
-
+   # Convert to quantized model
    quantized_model = convert(prepared_model)
-   ```text
+   ```
 
-1. __BF16 Mixed Precision__:
+2. **BF16 Mixed Precision**:
 
    ```python
    with torch.xpu.amp.autocast(dtype=torch.bfloat16):
-
-```text
-
-   output = model(input_tensor)
-
-```text
-   ```text
+       output = model(input_tensor)
+   ```
 
 ### Batch Size Optimization
 
 Test different batch sizes to find the optimal value for your specific Arc GPU model:
 
 ```python
-
-## Example batch size benchmark
-
+# Example batch size benchmark
 batch_sizes = [1, 2, 4, 8, 16]
 results = {}
 
 for bs in batch_sizes:
-
-```text
-
-## Test inference speed with batch size bs
-
-```text
-
-```text
-
-## Record timing information
-
-```text
-
-```text
+    # Test inference speed with batch size bs
+    # Record timing information
+```
 
 Typical optimal batch sizes:
 
@@ -276,7 +217,7 @@ Typical optimal batch sizes:
 - [XPU Migration Guide](https://github.com/intel/intel-extension-for-pytorch/blob/xpu-main/docs/tutorials/xpu_migration_guide.md)
 
 ---
-__Previous__: [Hardware Optimization](../optimization.md) | __See also_*: [Meteor Lake Guide](intel-meteor-lake.md)
-```text`
+**Previous**: [Hardware Optimization](../optimization.md) | **See also**: [Meteor Lake Guide](intel-meteor-lake.md)
+
 ```
 

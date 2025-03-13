@@ -9,7 +9,7 @@ including image generation and conversational AI.
 
 ### Requirements Overview
 
-- *_Generative AI with Intel Graphics Cards__
+- **Generative AI with Intel Graphics Cards**
 
   The AI Playground enables model inference specifically on Intel devices. Users can interact with chat models, image
   generation, and image modification models, all via configurable generation pipelines ("workflows"). Different models
@@ -21,7 +21,7 @@ including image generation and conversational AI.
   dependencies necessary for execution, ensuring a seamless experience for users. Various inference libraries are
   offered to the user, most of them fully optional and only installed on explicit approval by the user.
 
-- __Dynamic Workflow Updates_*
+- **Dynamic Workflow Updates**
 
   Users can fetch new workflows published by Intel directly from within AI Playground. These updates are provided
   without requiring new installations or releases, allowing users to stay up to date with the latest offerings.
@@ -68,98 +68,49 @@ interface of an "apiService", which especially specifies the set up steps needed
 
 <table>
 <thead>
-
-\`\`\`text\`text
-
 <th>Debt</th>
 <th>Description</th>
 <th>Impact</th>
-
-````text
 </thead>
   <tr>
-
-```text
-<!--- Default AI Playground backend is not only performing inference --->
 <td>Default AI Playground backend is required for other inference backends</td>
 <td>
-
-```text
 The default inference backend historically has been the only backend and has been used to perform both: model
 inference as well as huggingface repository interactions. When additional inference backends had been introduced and
 generalized, this was not corrected.<br>
 As other inference backends also rely on the downloading of models, the other services depend on the default backend.
-
-```text
 </td>
 <td>
-
-```text
 The different backends are all actively relying on the default backend being available to perform model downloading.
 This is a considerable constraint, as we try to restart/stop unused inference backend in order to safe resources
 graphic cards.
-
-```text
 </td>
-
-```text
   </tr>
-  <!--- Workflow definitions are not fully descriptive on their own --->
   <tr>
-
-```text
 <td>Workflow definitions are not fully descriptive on their own</td>
 <td>
-
-```text
 AI Playground offers pre-configured workflows for image generating AI. For ComfyUI workflows, an approach was
 chosen to make the workflow definition contain all relevant pieces of data. For the workflows in the default
 Backend, important information may only be computed at later stages in the code, as this is the case for the
 model terms URL.
-
-```text
 </td>
 <td>
-
-```text
 Publishing of workflows post release is heavily restricted. For ComfyUI flows, a broader range of workflows may
 be published without further assumptions. For default workflows, one may only rely on models already known to AI
 Playground.
-
-```text
 </td>
-
-```text
   </tr>
-<!--- Current Inference Backend Abstraction is missing --->
   <tr>
-
-```text
 <td>"Current Inference" Abstraction is missing</td>
 <td>
-
-```text
 AI Playground support multiple backends to be chosen. Generation depends heavily on the selected backend. There
 is no abstraction or proxy around the current inference backend. The different tabs in the application instead
 rely on ifs and string identifiers to select the backend themselves and at different places
-
-```text
 </td>
 <td>
-
-```text
 Code is more convoluted than needed, seemingly simple changes are not safe from side effects or suddenly expensive to
 implement. This was increasingly notable during en- and disabling of certain inference features in order to safe
 computational resources.
-
-```text
 </td>
-
-```text
   </tr>
 </table>
-
-```text`
-
-````
-

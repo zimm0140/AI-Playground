@@ -6,12 +6,12 @@ This document describes the API design for AI-Playground, covering both the REST
 
 The AI-Playground APIs are designed with the following principles:
 
-1. *_Consistency__: APIs follow consistent patterns and naming conventions
-2. __Simplicity__: Common operations are simple and intuitive
-3. __Flexibility__: Advanced options are available when needed
-4. __Documentation__: All APIs are well-documented with examples
-5. __Versioning__: APIs are versioned to ensure backward compatibility
-6. __Error handling__: Clear error messages and appropriate status codes
+1. **Consistency**: APIs follow consistent patterns and naming conventions
+2. **Simplicity**: Common operations are simple and intuitive
+3. **Flexibility**: Advanced options are available when needed
+4. **Documentation**: All APIs are well-documented with examples
+5. **Versioning**: APIs are versioned to ensure backward compatibility
+6. **Error handling**: Clear error messages and appropriate status codes
 
 ## REST API
 
@@ -19,10 +19,9 @@ The REST API provides HTTP endpoints for interacting with AI-Playground services
 
 ### Base URL
 
-\`\`\`text\`text
+```
 https://<server>:<port>/api/v1
-
-````text
+```
 
 ### Authentication
 
@@ -30,8 +29,7 @@ The API supports token-based authentication:
 
 ```http
 Authorization: Bearer <api_token>
-
-```text
+```
 
 ### Endpoints
 
@@ -90,8 +88,7 @@ Content-Type: application/json
   "temperature": 0.7,
   "hardware_profile": "arc-optimized"
 }
-
-```text
+```
 
 Response:
 
@@ -103,36 +100,20 @@ Content-Type: application/json
   "id": "infer-123456",
   "result": "Once upon a time in a distant kingdom, there lived a wise old king...",
   "usage": {
-
-```text
-
-"prompt_tokens": 4,
-"generated_tokens": 100,
-"total_tokens": 104
-
-```text
+    "prompt_tokens": 4,
+    "generated_tokens": 100,
+    "total_tokens": 104
   },
   "hardware_info": {
-
-```text
-
-"device": "Intel Arc A770",
-"optimizations": ["mixed_precision", "graph_optimization"]
-
-```text
+    "device": "Intel Arc A770",
+    "optimizations": ["mixed_precision", "graph_optimization"]
   },
   "performance": {
-
-```text
-
-"duration_ms": 1250,
-"tokens_per_second": 80
-
-```text
+    "duration_ms": 1250,
+    "tokens_per_second": 80
   }
 }
-
-```text
+```
 
 #### Batch Processing
 
@@ -144,18 +125,12 @@ Content-Type: application/json
 
 {
   "inputs": [
-
-```text
-
-{"image_url": "<https://example.com/image1.jpg"},>
-{"image_url": "<https://example.com/image2.jpg"}>
-
-```text
+    {"image_url": "https://example.com/image1.jpg"},
+    {"image_url": "https://example.com/image2.jpg"}
   ],
   "hardware_profile": "auto"
 }
-
-```text
+```
 
 Response:
 
@@ -166,57 +141,31 @@ Content-Type: application/json
 {
   "id": "batch-789012",
   "results": [
-
-```text
-
-{
-  "image_id": 0,
-  "classifications": [
-
-```text
-
-{"label": "dog", "confidence": 0.92},
-{"label": "golden retriever", "confidence": 0.85}
-
-```text
-  ]
-},
-{
-  "image_id": 1,
-  "classifications": [
-
-```text
-
-{"label": "cat", "confidence": 0.97},
-{"label": "tabby", "confidence": 0.82}
-
-```text
-  ]
-}
-
-```text
+    {
+      "image_id": 0,
+      "classifications": [
+        {"label": "dog", "confidence": 0.92},
+        {"label": "golden retriever", "confidence": 0.85}
+      ]
+    },
+    {
+      "image_id": 1,
+      "classifications": [
+        {"label": "cat", "confidence": 0.97},
+        {"label": "tabby", "confidence": 0.82}
+      ]
+    }
   ],
   "hardware_info": {
-
-```text
-
-"device": "Intel Arc A770",
-"optimizations": ["batched_execution", "mixed_precision"]
-
-```text
+    "device": "Intel Arc A770",
+    "optimizations": ["batched_execution", "mixed_precision"]
   },
   "performance": {
-
-```text
-
-"duration_ms": 350,
-"images_per_second": 5.7
-
-```text
+    "duration_ms": 350,
+    "images_per_second": 5.7
   }
 }
-
-```text
+```
 
 ### Error Handling
 
@@ -228,22 +177,16 @@ Content-Type: application/json
 
 {
   "error": {
-
-```text
-
-"code": "invalid_parameter",
-"message": "Parameter 'max_tokens' must be a positive integer",
-"details": {
-  "parameter": "max_tokens",
-  "value": -10,
-  "constraint": "Must be greater than 0"
-}
-
-```text
+    "code": "invalid_parameter",
+    "message": "Parameter 'max_tokens' must be a positive integer",
+    "details": {
+      "parameter": "max_tokens",
+      "value": -10,
+      "constraint": "Must be greater than 0"
+    }
   }
 }
-
-```text
+```
 
 Common status codes:
 
@@ -263,8 +206,7 @@ The Python API provides a programmatic interface for integrating AI-Playground i
 
 ```bash
 pip install ai-playground
-
-```text
+```
 
 ### Client Initialization
 
@@ -278,17 +220,11 @@ client = AIPlayground()
 ## Or with custom settings
 
 client = AIPlayground(
-
-```text
-
-api_key="your-api-key",
-api_url="<http://localhost:8000/api/v1",>
-hardware_profile="arc-optimized"
-
-```text
+  api_key="your-api-key",
+  api_url="<http://localhost:8000/api/v1",
+  hardware_profile="arc-optimized"
 )
-
-```text
+```
 
 ### Model Management
 
@@ -309,18 +245,12 @@ model_info = model.get_info()
 ## Upload a model
 
 client.upload_model(
-
-```text
-
-name="my-custom-model",
-path="/path/to/model.onnx",
-model_type="text-generation",
-metadata={"author": "Example User"}
-
-```text
+  name="my-custom-model",
+  path="/path/to/model.onnx",
+  model_type="text-generation",
+  metadata={"author": "Example User"}
 )
-
-```text
+```
 
 ### Inference
 
@@ -333,27 +263,17 @@ result = model.generate(prompt="Tell me a story about a dragon")
 ## With parameters
 
 result = model.generate(
-
-```text
-
-prompt="Tell me a story about a dragon",
-max_tokens=200,
-temperature=0.8,
-top_p=0.9
-
-```text
+  prompt="Tell me a story about a dragon",
+  max_tokens=200,
+  temperature=0.8,
+  top_p=0.9
 )
 
 ## Batch inference
 
 results = model.generate_batch(
-
-```text
-
-prompts=["Tell me about dragons", "Tell me about unicorns"],
-max_tokens=100
-
-```text
+  prompts=["Tell me about dragons", "Tell me about unicorns"],
+  max_tokens=100
 )
 
 ## Async inference
@@ -363,14 +283,8 @@ job = model.generate_async(prompt="Write a long essay about AI")
 ## Check status later
 
 if job.is_complete():
-
-```text
-
-result = job.get_result()
-
-```text
-
-```text
+  result = job.get_result()
+```
 
 ### Hardware Management
 
@@ -387,29 +301,18 @@ client.set_hardware(device_type="arc")
 ## Create hardware profile
 
 client.create_hardware_profile(
-
-```text
-
-name="low-memory",
-settings={
-
-```text
-
-"precision": "int8",
-"batch_size": 1,
-"dynamic_shape": True
-
-```text
-}
-
-```text
+  name="low-memory",
+  settings={
+    "precision": "int8",
+    "batch_size": 1,
+    "dynamic_shape": True
+  }
 )
 
 ## Use hardware profile
 
 model.set_hardware_profile("low-memory")
-
-```text
+```
 
 ### Error Handling
 
@@ -417,44 +320,19 @@ model.set_hardware_profile("low-memory")
 from ai_playground.exceptions import ModelNotFoundError, HardwareNotSupportedError
 
 try:
-
-```text
-
-model = client.load_model("nonexistent-model")
-
-```text
+  model = client.load_model("nonexistent-model")
 except ModelNotFoundError as e:
-
-```text
-
-print(f"Model not found: {e}")
-
-```text
+  print(f"Model not found: {e}")
 
 try:
-
-```text
-
-client.set_hardware(device_type="unknown")
-
-```text
+  client.set_hardware(device_type="unknown")
 except HardwareNotSupportedError as e:
-
-```text
-
-print(f"Hardware not supported: {e}")
+  print(f"Hardware not supported: {e}")
 
 ## Fall back to CPU
 
-```text
-
-```text
-
 client.set_hardware(device_type="cpu")
-
-```text
-
-```text
+```
 
 ## CLI Interface
 
@@ -479,8 +357,7 @@ ai-playground infer --model text-generation --prompt "Hello, world" --output out
 ## Get hardware info
 
 ai-playground hardware info
-
-```text
+```
 
 ### Advanced Usage
 
@@ -497,8 +374,7 @@ ai-playground infer-batch --model classifier --input-file images.txt --output re
 ## Create hardware profile
 
 ai-playground hardware create-profile --name arc-optimized --precision fp16 --batch-size 4
-
-```text
+```
 
 ## WebSocket API
 
@@ -514,17 +390,11 @@ socket.onopen = () => {
 
   // Authentication
   socket.send(JSON.stringify({
-
-```text
-
-type: 'auth',
-api_key: 'your-api-key'
-
-```text
+    type: 'auth',
+    api_key: 'your-api-key'
   }));
 };
-
-```text
+```
 
 ### Streaming Inference
 
@@ -534,14 +404,9 @@ socket.send(JSON.stringify({
   type: 'inference',
   model_id: 'text-generation',
   params: {
-
-```text
-
-prompt: 'Write a story about',
-max_tokens: 100,
-stream: true
-
-```text
+    prompt: 'Write a story about',
+    max_tokens: 100,
+    stream: true
   }
 }));
 
@@ -550,39 +415,23 @@ socket.onmessage = (event) => {
   const data = JSON.parse(event.data);
 
   if (data.type === 'token') {
-
-```text
-
-console.log('New token:', data.token);
-// Append token to UI
-
-```text
+    console.log('New token:', data.token);
+    // Append token to UI
   } else if (data.type === 'completion') {
-
-```text
-
-console.log('Inference complete');
-// Update UI to show completion
-
-```text
+    console.log('Inference complete');
+    // Update UI to show completion
   } else if (data.type === 'error') {
-
-```text
-
-console.error('Error:', data.message);
-
-```text
+    console.error('Error:', data.message);
   }
 };
-
-```text
+```
 
 ## API Versioning
 
 AI-Playground APIs are versioned to ensure backward compatibility:
 
-1. __REST API__: Version in URL path (e.g., `/api/v1/models`)
-2. __Python API__: Version in package (e.g., `from ai_playground.v1 import AIPlayground`)
+1. **REST API**: Version in URL path (e.g., `/api/v1/models`)
+2. **Python API**: Version in package (e.g., `from ai_playground.v1 import AIPlayground`)
 
 When breaking changes are necessary, a new version is released with:
 
@@ -595,11 +444,11 @@ When breaking changes are necessary, a new version is released with:
 
 The API implements several security measures:
 
-1. __Authentication__: Token-based auth for all API calls
-2. __Authorization__: Role-based access control for sensitive operations
-3. __Rate limiting__: Prevents abuse of the API
-4. __Input validation__: Thoroughly validates all input data
-5. __TLS encryption__: All API traffic is encrypted
+1. **Authentication**: Token-based auth for all API calls
+2. **Authorization**: Role-based access control for sensitive operations
+3. **Rate limiting**: Prevents abuse of the API
+4. **Input validation**: Thoroughly validates all input data
+5. **TLS encryption**: All API traffic is encrypted
 
 ## Additional Resources
 
@@ -609,6 +458,7 @@ The API implements several security measures:
 - [WebSocket Examples](../examples/websocket.md): Examples for WebSocket API usage
 
 ---
-__Previous__: [Architecture Overview](overview.md) | __Next__: [Hardware Integration](hardware-integration.md) | __See also_*: [Python API Reference](../reference/python-api.md)
-````
+**Previous**: [Architecture Overview](overview.md) | **Next**: [Hardware Integration](hardware-integration.md) | __See also_*: [Python API Reference](../reference/python-api.md)
+
+```
 
