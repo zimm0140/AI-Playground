@@ -2,75 +2,57 @@ name: Markdown Linting
 
 on:
   push:
-    branches: [main, develop]
     paths:
-      - "**.md"
+      - "**/*.md"
+      - ".markdownlint.yaml"
+      - ".github/workflows/markdown-lint.yml"
+      - "tools/scripts/fix_markdown_files.py"
   pull_request:
-    branches: [main, develop]
     paths:
-      - "**.md"
-  workflow_dispatch:
+      - "**/*.md"
+      - ".markdownlint.yaml"
+      - ".github/workflows/markdown-lint.yml"
+      - "tools/scripts/fix_markdown_files.py"
 
 jobs:
   fix-and-lint-markdown:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v4
         with:
-          python-version: "3.12"
+          python-version: "3.10"
 
-      - name: Run automated markdown fixes
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Install dependencies
         run: |
-          # Direct string replacement for problematic link fragments
-          find . -type f -name "*.md" | grep -v "node_modules\|.git\|.venv\|venv" | xargs -I{} sed -i 's/\[Using the AI Framework Integration\](#using-the-ai-framework-integration)/[Using the AI Framework Integration](#using-the-ai-framework-integration)/g' {}
-          find . -type f -name "*.md" | grep -v "node_modules\|.git\|.venv\|venv" | xargs -I{} sed -i 's/\[Working with LangChain\](#working-with-langchain)/[Working with LangChain](#working-with-langchain)/g' {}
-          find . -type f -name "*.md" | grep -v "node_modules\|.git\|.venv\|venv" | xargs -I{} sed -i 's/\[Working with Stable Diffusion\](#working-with-stable-diffusion)/[Working with Stable Diffusion](#working-with-stable-diffusion)/g' {}
-          find . -type f -name "*.md" | grep -v "node_modules\|.git\|.venv\|venv" | xargs -I{} sed -i 's/\[Performance Benchmarking\](#performance-benchmarking)/[Performance Benchmarking](#performance-benchmarking)/g' {}
-          find . -type f -name "*.md" | grep -v "node_modules\|.git\|.venv\|venv" | xargs -I{} sed -i 's/\[Troubleshooting\](#troubleshooting)/[Troubleshooting](#troubleshooting)/g' {}
-          find . -type f -name "*.md" | grep -v "node_modules\|.git\|.venv\|venv" | xargs -I{} sed -i 's/\[Advanced Configuration\](#advanced-configuration)/[Advanced Configuration](#advanced-configuration)/g' {}
+          npm install -g markdownlint-cli2
 
-          # Fix other common issues
-          find . -type f -name "*.md" | grep -v "node_modules\|.git\|.venv\|venv" | xargs -I{} sed -i 's/__\([^_]*\)__/**\1**/g' {}  # Fix strong style
-          find . -type f -name "*.md" | grep -v "node_modules\|.git\|.venv\|venv" | xargs -I{} sed -i 's/```\s*$/```text/g' {}        # Fix language-less code blocks
-
-          # Run our Python fix script for more complex issues
-          python .github/workflows/scripts/fix_markdown_all.py
-
-          # Ensure problematic files are directly fixed
-          python .github/workflows/scripts/fix_specific_fragments.py docs/hardware/HARDWARE_OPTIMIZATION_GUIDE.md docs/development/MIGRATION.md
-
-      - name: Normalize ordered lists for documents
+      - name: Fix and lint Markdown
         run: |
-          # Ensure first item in lists use "1." for continuity
-          find . -type f -name "*.md" | grep -v "node_modules\|.git\|.venv\|venv" | xargs -I{} sed -i '/^[2-9]\. /s/^[2-9]\. /1. /g' {}
+          chmod +x .github/workflows/fix-markdown.sh
+          .github/workflows/fix-markdown.sh
 
-          # Fix specific troubleshooting section in hardware guide (manually adjust numbering)
-          sed -i 's/^10\. /1. /g; s/^11\. /2. /g; s/^4\. /3. /g' docs/hardware/HARDWARE_OPTIMIZATION_GUIDE.md
-
-      - name: Check for changes
-        id: diff-check
+      - name: Commit changes if needed
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git diff --quiet || echo "changes=true" >> $GITHUB_OUTPUT
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
 
-      - name: Commit changes
-        if: steps.diff-check.outputs.changes == 'true'
-        run: |
-          git add .
+          # Check if there are changes
+          if git diff --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+
+          git add -A
           git commit -m "Auto-fix markdown issues [skip ci]"
           git push
-
-      - name: Install markdownlint-cli2
-        run: npm install -g markdownlint-cli2
-
-      - name: Run markdownlint
-        run: markdownlint-cli2 "**/*.md" --config .markdownlint.yaml --ignore "node_modules/**" --ignore ".git/**" --ignore ".github/workflows-archive/**"
