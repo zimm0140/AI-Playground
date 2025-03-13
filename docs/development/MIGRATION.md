@@ -5,51 +5,35 @@ This guide helps you migrate to the modern Python development workflow using uv 
 
 ## Table of Contents
 
-1. [Migrating from pip to uv](#migrating-from-pip-to-uv)
-
-
-1. [Updating Type Annotations for Python 3.10+](#updating-type-annotations-for-python-310)
-
-
-1. [Using Lockfiles for Reproducible Environments](#using-lockfiles-for-reproducible-environments)
-
-
-1. [Working with Docker](#working-with-docker)
-
-
-1. [CI/CD Pipeline Updates](#cicd-pipeline-updates)
-
-
-1. [Migration FAQs](#migration-faqs)
-
-1. [Migrating from pip to uv](#migrating-from-pip-to-uv)
-
-
-1. [Updating Type Annotations for Python 3.10+](#updating-type-annotations-for-python-310)
-
-
-1. [Scan the entire project](#scan-the-entire-project)
-
-
-10. [Scan a specific file](#scan-a-specific-file)
-
-
-11. [Using Lockfiles for Reproducible Environments](#using-lockfiles-for-reproducible-environments)
-
-
-12. [Working with Docker](#working-with-docker)
-
-
-13. [Build and run the development image](#build-and-run-the-development-image)
-
-
-14. [Build and run the production image](#build-and-run-the-production-image)
-
-
-15. [CI/CD Pipeline Updates](#cicd-pipeline-updates)
-
-
-16. [Migration FAQs](#migration-faqs)
+- [Migration Guide for AI Playground](#migration-guide-for-ai-playground)
+    - [Table of Contents](#table-of-contents)
+    - [Migrating from pip to uv {#migrating-from-pip-to-uv}](#migrating-from-pip-to-uv-migrating-from-pip-to-uv)
+        - [Why Migrate to uv?](#why-migrate-to-uv)
+        - [Step-by-Step Migration](#step-by-step-migration)
+    - [Unix/Linux/macOS](#unixlinuxmacos)
+    - [Windows](#windows)
+    - [Generate lockfiles from your existing requirements](#generate-lockfiles-from-your-existing-requirements)
+    - [Create a new environment using uv](#create-a-new-environment-using-uv)
+    - [Install using lockfiles](#install-using-lockfiles)
+    - [Run tests](#run-tests)
+    - [Run linters](#run-linters)
+    - [Updating Type Annotations for Python 3.10+ {#updating-type-annotations-for-python-310}](#updating-type-annotations-for-python-310-updating-type-annotations-for-python-310)
+    - [Scan the entire project {#scan-the-entire-project}](#scan-the-entire-project-scan-the-entire-project)
+    - [Scan a specific file {#scan-a-specific-file}](#scan-a-specific-file-scan-a-specific-file)
+        - [Common Type Annotation Updates](#common-type-annotation-updates)
+    - [Using Lockfiles for Reproducible Environments {#using-lockfiles-for-reproducible-environments}](#using-lockfiles-for-reproducible-environments-using-lockfiles-for-reproducible-environments)
+    - [Working with Docker {#working-with-docker}](#working-with-docker-working-with-docker)
+    - [Build and run the development image {#build-and-run-the-development-image}](#build-and-run-the-development-image-build-and-run-the-development-image)
+    - [Build and run the production image {#build-and-run-the-production-image}](#build-and-run-the-production-image-build-and-run-the-production-image)
+        - [Benefits of the uv-based Dockerfile](#benefits-of-the-uv-based-dockerfile)
+    - [CI/CD Pipeline Updates {#cicd-pipeline-updates}](#cicd-pipeline-updates-cicd-pipeline-updates)
+    - [Migration FAQs {#migration-faqs}](#migration-faqs-migration-faqs)
+        - [Q: Do I need to uninstall pip?](#q-do-i-need-to-uninstall-pip)
+        - [Q: Will my existing scripts still work?](#q-will-my-existing-scripts-still-work)
+        - [Q: How do I add a new dependency?](#q-how-do-i-add-a-new-dependency)
+        - [Q: Can I still use requirements.txt?](#q-can-i-still-use-requirementstxt)
+        - [Q: Will these changes affect existing installations?](#q-will-these-changes-affect-existing-installations)
+        - [Q: What if I encounter type checking errors after migration?](#q-what-if-i-encounter-type-checking-errors-after-migration)
 
 
 ## Migrating from pip to uv {#migrating-from-pip-to-uv}
@@ -63,6 +47,7 @@ This guide helps you migrate to the modern Python development workflow using uv 
 - **Features**: Better support for modern Python packaging standards
 
 - **Lockfiles**: Native support for lockfile generation and updating
+
 ### Step-by-Step Migration
 
 1. **Install uv**:
