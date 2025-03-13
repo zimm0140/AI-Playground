@@ -44,7 +44,7 @@ class LockfileManager:
         """Load configuration from config file"""
         if self.config_file.exists():
             try:
-                with Path(self.config_fil).open(e) as f:
+                with Path(self.config_file).open() as f:
                     return json.load(f)
             except json.JSONDecodeError:
                 print(f"Error: Invalid JSON in {self.config_file}")

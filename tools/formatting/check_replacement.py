@@ -7,6 +7,6 @@ content = content.replace(
 )
 print(content)
 
-with Path("test_output.txt").open(, "w") as f:
+with Path("test_output.txt").open( "w") as f:
     f.write(content)
 print("Written to test_output.txt")

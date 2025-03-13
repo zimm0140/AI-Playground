@@ -13,10 +13,11 @@ def main():
     # Try to import installed packages
     for package in ["mypy", "pytest", "ruff", "pre_commit"]:
         try:
-            module = __import__(package)
+            __import__(package)
             print(f"{package} is installed")
         except ImportError:
             print(f"{package} is not installed")
+
 
 if __name__ == "__main__":
     main()

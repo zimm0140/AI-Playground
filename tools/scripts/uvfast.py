@@ -98,7 +98,7 @@ class UVFast:
         config_path = Path("uvfast.json")
         if config_path.exists():
             try:
-                with Path(config_pat).open(h) as f:
+                with Path(config_path).open() as f:
                     config = json.load(f)
                 return config
             except (json.JSONDecodeError, OSError) as e:
@@ -117,7 +117,8 @@ class UVFast:
                 output = subprocess.run(
                     ["wmic", "path", "win32_VideoController", "get", "Name"],
                     capture_output=True,
-                    text=True, check=False,
+                    text=True,
+                    check=False,
                 ).stdout
                 gpu_names = [line.strip() for line in output.split("\n")[1:] if line.strip()]
 
@@ -138,7 +139,8 @@ class UVFast:
             subprocess.run(
                 [sys.executable, "-c", "import openvino"],
                 capture_output=True,
-                text=True, check=False,
+                text=True,
+                check=False,
             )
             return "ovino"
         except (subprocess.SubprocessError, FileNotFoundError):
@@ -345,10 +347,7 @@ class UVFast:
             return 1
 
         # Get the hardware types to process
-        if args.all:
-            hardware_types = HARDWARE_TYPES
-        else:
-            hardware_types = [args.hardware or self.hardware_type]
+        hardware_types = HARDWARE_TYPES if args.all else [args.hardware or self.hardware_type]
 
         for hw_type in hardware_types:
             logging.info(f"Generating lockfile for hardware type: {hw_type}")

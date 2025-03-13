@@ -23,7 +23,7 @@ def remove_compatibility_report_job():
     new_content = content[:job_start_pos].rstrip()
 
     # Write back to the file
-    with Path(ci_file).open(, "w") as f:
+    with Path(ci_file).open( "w") as f:
         f.write(new_content)
 
     print(f"Successfully removed compatibility_report job from {ci_file}")

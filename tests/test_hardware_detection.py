@@ -1,24 +1,26 @@
 #!/usr/bin/env python3
-"""Unit tests for hardware detection module."""
+"""Unit tests for hardware_detection.py module."""
 
-import os
 import sys
 import unittest
+from pathlib import Path
 from unittest.mock import MagicMock, mock_open, patch
 
 # Add parent directory to path so we can import from the root
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 # Try to import from tools.hardware first, then fall back to root import
 try:
     # Check if tools directory exists and add it to path
-    tools_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "tools")
-    if os.path.exists(tools_dir):
-        sys.path.append(tools_dir)
+    tools_dir = Path(__file__).resolve().parent.parent / "tools"
+    if tools_dir.exists():
+        sys.path.append(str(tools_dir))
     from tools.hardware import hardware_detection
-except ImportError:
-    # Fall back to root import
-    import hardware_detection
+except (ImportError, ModuleNotFoundError):
+    try:
+        import hardware_detection
+    except (ImportError, ModuleNotFoundError):
+        print("Warning: hardware_detection module not found")
 
 
 class TestHardwareDetection(unittest.TestCase):
@@ -136,7 +138,9 @@ class TestHardwareDetection(unittest.TestCase):
     def test_get_gpu_info_linux(self, mock_check_output):
         """Test getting GPU information on Linux."""
         # Mock subprocess for Linux
-        mock_check_output.return_value = "00:02.0 VGA compatible controller: Intel Corporation Device 56a0 (rev 0c) (prog-if 00 [VGA controller])"
+        mock_check_output.return_value = (
+            "00:02.0 VGA compatible controller: Intel Corporation Device 56a0 (rev 0c) (prog-if 00 [VGA controller])"
+        )
 
         # Test
         result = hardware_detection.get_gpu_info_linux()
@@ -182,7 +186,7 @@ class TestHardwareDetection(unittest.TestCase):
         # Test unsupported platform
         mock_system.return_value = "Unknown"
         result = hardware_detection.get_gpu_info()
-        self.assertEqual(result, []
+        self.assertEqual(result, [])
 
     @patch("platform.system")
     @patch("platform.processor")
@@ -236,9 +240,7 @@ class TestHardwareDetection(unittest.TestCase):
     @patch("hardware_detection.load_config")
     @patch("hardware_detection.get_gpu_info")
     @patch("hardware_detection.get_cpu_info")
-    def test_detect_with_openvino(
-        self, mock_get_cpu_info, mock_get_gpu_info, mock_load_config, mock_is_openvino
-    ):
+    def test_detect_with_openvino(self, mock_get_cpu_info, mock_get_gpu_info, mock_load_config, mock_is_openvino):
         """Test detection with OpenVINO available."""
         # Mock config
         mock_load_config.return_value = self.sample_config
@@ -303,12 +305,11 @@ class TestHardwareDetection(unittest.TestCase):
             mock_print.assert_called()  # Assert that print was called
 
         # Test with verbose
-        with patch("builtins.print") as mock_print:
-            with patch("hardware_detection.load_config") as mock_load_config:
-                mock_load_config.return_value = self.sample_config
-                hardware_detection.print_hardware_info(verbose=True)
-                # Check that print was called more times with verbose flag
-                self.assertGreater(mock_print.call_count, 7)  # At least 7 calls
+        with patch("builtins.print") as mock_print, patch("hardware_detection.load_config") as mock_load_config:
+            mock_load_config.return_value = self.sample_config
+            hardware_detection.print_hardware_info(verbose=True)
+            # Check that print was called more times with verbose flag
+            self.assertGreater(mock_print.call_count, 7)  # At least 7 calls
 
 
 if __name__ == "__main__":

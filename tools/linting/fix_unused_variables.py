@@ -17,7 +17,7 @@ def fix_unused_variable(file_path):
     1. Change assignments to use '_' variable for unused values
     2. Comment out the assignment
     """
-    with Path(file_path).open(, encoding="utf-8") as f:
+    with Path(file_path).open( encoding="utf-8") as f:
         content = f.read()
 
     # Find lines with variable assignments that are never used
@@ -46,7 +46,7 @@ def fix_unused_variable(file_path):
 
     # If we made changes, write them back to the file
     if fixed_content != content:
-        with Path(file_path).open(, "w", encoding="utf-8") as f:
+        with Path(file_path).open( "w", encoding="utf-8") as f:
             f.write(fixed_content)
         print(f"✅ Fixed unused variables in {file_path}")
         return True
@@ -82,14 +82,14 @@ def main():
     # Also handle the F401 (unused import) in custom_test_runner.py
     custom_test_runner = Path(scripts_dir) / "custom_test_runner.py"
     if Path(custom_test_runner).exists():
-        with Path(custom_test_runner).open(, encoding="utf-8") as f:
+        with Path(custom_test_runner).open( encoding="utf-8") as f:
             content = f.read()
 
         # Comment out or modify the unused import
         modified = re.sub(r"(from tests import test_api)", r"# \1  # noqa: F401", content)
 
         if modified != content:
-            with Path(custom_test_runner).open(, "w", encoding="utf-8") as f:
+            with Path(custom_test_runner).open( "w", encoding="utf-8") as f:
                 f.write(modified)
             print(f"✅ Fixed unused import in {custom_test_runner}")
 

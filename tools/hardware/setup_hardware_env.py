@@ -64,8 +64,7 @@ def is_uv_available():
     try:
         subprocess.run(
             ["uv", "--version"],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
+            capture_output=True,
             check=True,
         )
         return True
@@ -131,11 +130,11 @@ def install_requirements(python_executable, hardware_type, dev=False, use_uv=Fal
         if use_uv and is_uv_available():
             # Use uv for faster installation
             cmd = [str(python_executable), "-m", "pip", "install", "--upgrade", "uv"]
-            result = subprocess.run(cmd, check=True)
+            subprocess.run(cmd, check=True)
         else:
             # Use pip
             cmd = [str(python_executable), "-m", "pip", "install", "-r", req_file]
-            result = subprocess.run(cmd, check=True)
+            subprocess.run(cmd, check=True)
 
     logging.info("Requirements installation completed successfully")
 
@@ -167,12 +166,11 @@ def main():
     logging.info(f"Setting up environment for hardware type: {hardware_type}")
 
     # Check hardware availability
-    if not args.skip_hardware_check:
-        if not check_hardware_availability(hardware_type):
-            user_input = input("Continue anyway? (y/n): ")
-            if user_input.lower() != "y":
-                logging.info("Aborting setup")
-                sys.exit(1)
+    if not args.skip_hardware_check and not check_hardware_availability(hardware_type):
+        user_input = input("Continue anyway? (y/n): ")
+        if user_input.lower() != "y":
+            logging.info("Aborting setup")
+            sys.exit(1)
 
     # Check venv availability
     if not is_venv_available():
@@ -180,7 +178,7 @@ def main():
         sys.exit(1)
 
     # Create virtual environment
-    venv_path = create_venv(args.venv_dir, args.clean)
+    create_venv(args.venv_dir, args.clean)
     python_executable = get_python_executable(args.venv_dir)
 
     # Install requirements

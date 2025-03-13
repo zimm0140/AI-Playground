@@ -80,11 +80,7 @@ def fix_file(file_path: str) -> bool:
 
 def main():
     """Main function."""
-    if len(sys.argv) > 1:
-        files = sys.argv[1:]
-    else:
-        # Default to fixing all Python files in the tools directory
-        files = list(Path("tools").rglob("*.py"))
+    files = sys.argv[1:] if len(sys.argv) > 1 else list(Path("tools").rglob("*.py"))
 
     fixed_count = 0
     for file_path in files:

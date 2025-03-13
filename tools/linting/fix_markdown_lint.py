@@ -171,7 +171,7 @@ def ensure_trailing_newline(content):
 def fix_markdown_file(file_path):
     """Apply all fixes to a markdown file."""
     try:
-        with Path(file_path).open(, encoding="utf-8") as f:
+        with Path(file_path).open( encoding="utf-8") as f:
             content = f.read()
 
         original_content = content
@@ -188,7 +188,7 @@ def fix_markdown_file(file_path):
 
         # Write changes if needed
         if content != original_content:
-            with Path(file_path).open(, "w", encoding="utf-8") as f:
+            with Path(file_path).open( "w", encoding="utf-8") as f:
                 f.write(content)
             print(f"✅ Fixed linting issues in {file_path}")
             return True
