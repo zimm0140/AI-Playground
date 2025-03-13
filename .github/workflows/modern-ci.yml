@@ -227,7 +227,7 @@ jobs:
   lint:
     name: Linting
     runs-on: windows-latest
-    continue-on-error: true # Don't fail the whole CI run on linting issues
+    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
 
@@ -247,78 +247,96 @@ jobs:
       - name: Auto-fix formatting issues
         run: |
           echo "Running automatic formatting fixes"
-          python .github/workflows/scripts/fix_lint_issues.py
-          python .github/workflows/scripts/fix_markdown_issues.py
+          # Create summary file
+          echo "# Linting Results" > $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Run fixers and capture output
+          echo "## Auto-fixes Applied" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          python .github/workflows/scripts/fix_lint_issues.py 2>&1 | Tee-Object -Append -FilePath $GITHUB_STEP_SUMMARY
+          python .github/workflows/scripts/fix_markdown_issues.py 2>&1 | Tee-Object -Append -FilePath $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
           # Show what files were changed
-          git diff --name-only
+          echo "## Files Changed" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          git diff --name-only | Tee-Object -Append -FilePath $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+          # Always succeed
+          exit 0
         shell: pwsh
 
       - name: Lint Python
         run: |
-          ruff check . || echo "Ruff issues found, but continuing"
-          ruff format --check . || echo "Format issues found, but continuing"
-          mypy hardware_detection || echo "Type issues found, but continuing"
-          echo "::warning::Linting issues detected, but pipeline will continue"
-          # Force success for now as we're gradually fixing issues
+          echo "## Python Linting Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Run Ruff and capture output
+          echo "### Ruff Check" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          ruff check . 2>&1 | Tee-Object -Append -FilePath $GITHUB_STEP_SUMMARY || echo "Ruff issues found"
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+          # Run Ruff format check
+          echo "### Ruff Format" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          ruff format --check . 2>&1 | Tee-Object -Append -FilePath $GITHUB_STEP_SUMMARY || echo "Format issues found"
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+          # Run mypy
+          echo "### Type Checking" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          mypy hardware_detection 2>&1 | Tee-Object -Append -FilePath $GITHUB_STEP_SUMMARY || echo "Type issues found"
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+          echo "::notice::Linting completed with warnings - see job summary for details"
+          # Always succeed since we want to see the results in the summary
           exit 0
         shell: pwsh
 
-      # Skip TypeScript linting completely to avoid dependency conflicts
       - name: Skip TypeScript Linting
         run: |
-          echo "TypeScript linting is skipped to avoid dependency conflicts"
-          echo "To run locally: cd WebUI && npm install --legacy-peer-deps && npm run lint:check"
+          echo "## TypeScript Linting" >> $GITHUB_STEP_SUMMARY
+          echo "TypeScript linting is skipped to avoid dependency conflicts" >> $GITHUB_STEP_SUMMARY
+          echo "To run locally: cd WebUI && npm install --legacy-peer-deps && npm run lint:check" >> $GITHUB_STEP_SUMMARY
           exit 0
-        shell: pwsh
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "16" # Use a stable version
-          cache: "npm"
-          cache-dependency-path: WebUI/package-lock.json
-
-      - name: Install Node.js dependencies
-        run: |
-          cd WebUI
-          npm ci --legacy-peer-deps || echo "npm install had issues, but continuing"
-        shell: pwsh
-
-      - name: Check for .eslintrc.js
-        run: |
-          cd WebUI
-          if (Test-Path .eslintrc.js) {
-            echo ".eslintrc.js exists"
-            Get-Content .eslintrc.js | Select-Object -First 10
-          } else {
-            echo ".eslintrc.js does not exist"
-            echo "Creating minimal .eslintrc.js..."
-            @'
-            module.exports = {
-              root: true,
-              env: { node: true },
-              extends: ['eslint:recommended'],
-              rules: { 'no-console': 'off' }
-            }
-            '@ | Out-File -Encoding utf8 .eslintrc.js
-          }
         shell: pwsh
 
       - name: Check markdown files
         run: |
-          pip install mdformat
-          echo "Running automatic fixes for markdown files..."
-          # Fix code blocks without language specifiers
-          python .github/workflows/scripts/fix_markdown_code_blocks.py
-          # Fix invalid link fragments
-          python .github/workflows/scripts/fix_markdown_link_fragments.py
-          # Fix API reference markdown
-          python .github/workflows/scripts/fix_api_markdown.py
-          # Then run mdformat to fix other issues
-          mdformat .
-          # Ignore errors for now to allow CI to pass
+          echo "## Markdown Linting" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Run markdown fixes
+          echo "### Auto-fixes Applied" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          python .github/workflows/scripts/fix_markdown_code_blocks.py 2>&1 | Tee-Object -Append -FilePath $GITHUB_STEP_SUMMARY
+          python .github/workflows/scripts/fix_markdown_link_fragments.py 2>&1 | Tee-Object -Append -FilePath $GITHUB_STEP_SUMMARY
+          python .github/workflows/scripts/fix_api_markdown.py 2>&1 | Tee-Object -Append -FilePath $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+          # Run mdformat
+          echo "### MDFormat Results" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          mdformat . 2>&1 | Tee-Object -Append -FilePath $GITHUB_STEP_SUMMARY || echo "Markdown format issues found"
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+          # Always succeed
           exit 0
         shell: pwsh
+
+      - name: Upload linting artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: linting-results
+          path: |
+            ${{ github.workspace }}/**/*.ruff
+            ${{ github.workspace }}/**/*.mypy_cache
+            ${{ github.workspace }}/**/typecheck.txt
+          if-no-files-found: ignore
 
   audit:
     name: Security Audit
