@@ -47,7 +47,6 @@ This guide helps you migrate to the modern Python development workflow using uv 
 - **Features**: Better support for modern Python packaging standards
 
 - **Lockfiles**: Native support for lockfile generation and updating
-
 ### Step-by-Step Migration
 
 1. **Install uv**:
@@ -190,7 +189,6 @@ For detailed guidance on type compatibility issues and solutions, see the [Type 
 
 
    ```bash
-
 ## Using Lockfiles for Reproducible Environments {#using-lockfiles-for-reproducible-environments}
 
 The project now uses lockfiles to ensure reproducible environments:
