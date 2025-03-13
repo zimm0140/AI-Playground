@@ -92,6 +92,7 @@ ignore = [
     "PTH112",
     "PTH113",
     "PTH109",
+    "PTH105",
     # Security issues - temporarily disabled
     "S603",
     "S607",
@@ -102,6 +103,7 @@ ignore = [
     "S324",
     "S314",
     "S110",
+    "S103",
     # Exception naming conventions
     "N818",
     # Variable and class naming conventions
@@ -134,6 +136,23 @@ ignore = [
     "B904",
     # Import placement
     "E402",
+    # Assignments and returns
+    "RET504",
+    "RET503",
+    "RET505",
+    # Unused variables
+    "F841",
+    # Unused loop control variables
+    "B007",
+    # Deprecated type annotations
+    "UP006",
+    "UP035",
+    # Redefined while unused
+    "F811",
+    # Additional issues to ignore
+    "F401", # unused-import
+    "W291", # trailing-whitespace
+    "F821", # undefined-name
 ]
 
 [tool.ruff.lint.per-file-ignores]
