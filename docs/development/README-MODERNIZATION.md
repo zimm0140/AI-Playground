@@ -43,7 +43,7 @@ pip install -e .
 
 pip install -r requirements-dev.txt
 
-````text
+```text`text
 
 ### Modern Installation with uvfast
 
@@ -152,4 +152,4 @@ This project is licensed under the same license as the original project. See the
 
 ```text`
 
-````
+```text`

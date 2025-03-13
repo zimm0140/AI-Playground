@@ -36,7 +36,7 @@ We use [pre-commit](https://pre-commit.com/) to run checks before each commit. T
 \`\`\`text\`bash
 pip install pre-commit
 
-````text
+```text`text
 1. Install the hooks:
 
 ```bash
@@ -94,4 +94,4 @@ If you encounter CI failures:
 
 ```text`
 
-````
+```text`

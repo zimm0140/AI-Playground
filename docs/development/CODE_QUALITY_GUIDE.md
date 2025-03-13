@@ -56,7 +56,7 @@ To set up pre-commit hooks:
 pip install pre-commit
 pre-commit install
 
-````text
+```text`text
 
 ## Troubleshooting Common Issues
 
@@ -81,4 +81,4 @@ For questions about code quality standards or help with resolving issues, please
 
 ```text`
 
-````
+```text`

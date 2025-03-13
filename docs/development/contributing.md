@@ -31,7 +31,7 @@ conda activate ai-playground-env
 
 pip install -r requirements.txt
 
-````text
+```text`text
 1. __Verify the environment__:
 
 ```bash
@@ -256,4 +256,4 @@ Again, thanks for your interest in contributing to this project. We appreciate y
 
 ```text`
 
-````
+```text`

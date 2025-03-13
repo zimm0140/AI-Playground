@@ -30,7 +30,7 @@ AI-Playground includes a sophisticated hardware detection system that identifies
 
 python setup_hardware_env.py
 
-````text
+```text`text
 
 The detection system:
 
@@ -112,4 +112,4 @@ __Previous__: [Migration Guide](../getting-started/migration.md) | __Next__: [Ha
 
 ```text`
 
-````
+```text`

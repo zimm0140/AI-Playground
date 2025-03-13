@@ -56,7 +56,7 @@ To set up pre-commit hooks:
 
 ..github\\setup-hooks.ps1
 
-````text
+```text`text
 
 ### Available Hooks
 
@@ -179,4 +179,4 @@ The CI system tracks performance metrics to help identify bottlenecks and improv
 
 ```text`
 
-````
+```text`

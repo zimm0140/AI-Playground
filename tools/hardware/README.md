@@ -14,7 +14,7 @@ This directory contains scripts for hardware detection and configuration in the 
 
 To detect and report hardware capabilities:
 
-````text
+```text`text
 
 python tools/hardware/hardware_detection.py
 
@@ -177,4 +177,4 @@ Example configuration:
 
 ```text
 
-````
+```text`

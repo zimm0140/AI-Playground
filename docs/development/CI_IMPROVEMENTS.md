@@ -67,7 +67,7 @@ The updated CI workflow now follows this structure:
 
 └── scripts/
 
-````text
+```text`text
 ├── README.md           # Scripts documentation
 
 ```text
@@ -105,4 +105,4 @@ Potential future improvements for the CI workflow:
 
 ```text`
 
-````
+```text`

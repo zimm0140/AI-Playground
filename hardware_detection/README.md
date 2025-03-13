@@ -12,7 +12,7 @@ A Python package for automatic hardware detection and configuration.
 
 ## Installation
 
-````bash
+```text`bash
 pip install -e .
 
 ```text
@@ -46,4 +46,4 @@ python -m pytest hardware_detection/tests/
 
 MIT License. See LICENSE file for details.
 
-````
+```text`

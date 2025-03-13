@@ -12,7 +12,7 @@ A Python package for detecting and managing hardware configurations.
 
 ## Installation
 
-````bash
+```text`bash
 pip install -e .
 
 ```text
@@ -42,4 +42,4 @@ gpu_info = get_gpu_info()
 
 MIT
 
-````
+```text`

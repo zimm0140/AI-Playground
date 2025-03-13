@@ -12,7 +12,7 @@ Version 2.x introduces significant changes to hardware detection, environment ma
 \`\`\`text\`bash
 git pull origin main
 
-````text
+```text`text
 
 ### Step 2: Clean Your Environment
 
@@ -135,4 +135,4 @@ __Previous__: [Installation Guide](installation.md) | __Next__: [Hardware Overvi
 
 ```text`
 
-````
+```text`

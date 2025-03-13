@@ -9,7 +9,7 @@ The module is included in the project and requires no additional installation st
 
 If using from another project, you can install directly:
 
-````bash
+```text`bash
 
 ## From the repository root
 
@@ -214,4 +214,4 @@ The new package structure provides:
    hardware_type = detect_hardware_type()
    ```text
 
-````
+```text`

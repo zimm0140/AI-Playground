@@ -23,7 +23,7 @@ Cross-platform wrapper scripts for running commands with `uv`:
 
 .\\scripts\\run_with_uv.ps1 [command]
 
-````text
+```text`text
 
 #### Available Commands
 
@@ -124,4 +124,4 @@ When adding new helper scripts to this directory:
 
 ```text`
 
-````
+```text`

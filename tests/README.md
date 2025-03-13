@@ -22,7 +22,7 @@ To run all tests:
 \`\`\`text\`bash
 pytest
 
-````text
+```text`text
 
 ### Running Tests with Detailed Output
 
@@ -104,4 +104,4 @@ When adding tests:
 
 ```text`
 
-````
+```text`

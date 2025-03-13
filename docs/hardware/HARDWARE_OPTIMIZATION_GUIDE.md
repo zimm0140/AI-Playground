@@ -5,14 +5,14 @@ This guide explains how to optimize your AI applications for Intel hardware usin
 ## Table of Contents
 
 1. [Overview](#overview)
-2. [Hardware Detection](#hardware-detection)
-3. [Model Optimization](#model-optimization)
-4. [Performance Benchmarking](#performance-benchmarking)
-5. [Precision Settings](#precision-settings)
-6. [Memory Management](#memory-management)
-7. [Troubleshooting](#troubleshooting)
-8. [References](#references)
-9. [FAQ](#faq)
+2. [Hardware Types](#hardware-types)
+3. [Environment Setup](#environment-setup)
+4. [Using the AI Framework Integration](#using-the-ai-framework-integration)
+5. [Working with LangChain](#working-with-langchain)
+6. [Working with Stable Diffusion](#working-with-stable-diffusion)
+7. [Performance Benchmarking](#performance-benchmarking)
+8. [Troubleshooting](#troubleshooting)
+9. [Advanced Configuration](#advanced-configuration)
 
 ## Overview
 
@@ -57,7 +57,7 @@ python uvfast.py setup --hardware ovino
 
 python uvfast.py setup --dev
 
-```
+```text
 
 ### Using Lockfiles for Reproducible Environments
 
@@ -81,7 +81,7 @@ python uvfast.py lock --all
 
 python uvfast.py sync
 
-```
+```text
 
 ## Using the AI Framework Integration
 
@@ -106,7 +106,7 @@ llm = setup_langchain_model(device, hardware_type)
 response = llm("Explain quantum computing in simple terms.")
 print(response)
 
-```
+```text
 
 ## Working with LangChain
 
@@ -135,7 +135,7 @@ llm = setup_langchain_model(
 response = llm("Explain the theory of relativity in simple terms.")
 print(response)
 
-```
+```text
 
 ### Advanced Configuration
 
@@ -168,7 +168,7 @@ chain = LLMChain(llm=llm, prompt=prompt)
 
 response = chain.run(topic="quantum computing", question="What is quantum entanglement?")
 
-```
+```text
 
 ## Working with Stable Diffusion
 
@@ -194,7 +194,7 @@ conditioned_prompt = compel(prompt)
 image = pipeline(prompt_embeds=conditioned_prompt).images[0]
 image.save("astronaut_on_mars.png")
 
-```
+```text
 
 ### Optimizing for Speed
 
@@ -216,7 +216,7 @@ image = pipeline(
     width=512
 ).images[0]
 
-```
+```text
 
 ### Optimizing for Quality
 
@@ -234,7 +234,7 @@ image = pipeline(
     width=768
 ).images[0]
 
-```
+```text
 
 ## Performance Benchmarking
 
@@ -258,7 +258,7 @@ python benchmarks/hardware_benchmark.py --sd      # Stable Diffusion only
 
 python benchmarks/hardware_benchmark.py --iterations 10 --output results.json
 
-```
+```text
 
 ### Interpreting Benchmark Results
 
@@ -285,7 +285,7 @@ If your Intel Arc GPU is not detected:
 
    ```bash
    pip install intel-extension-for-pytorch
-   ```
+   ```text
 
 #### OpenVINO Issues
 
@@ -318,7 +318,7 @@ def detect_hardware_type():
 
     return "acm"  # or "ovino", "base"
 
-```
+```text
 
 ### Environment Variables
 
@@ -336,7 +336,7 @@ export IPEX_XPU_ONEDNN_LAYOUT=1  # Optimize memory layout
 
 export SYCL_PI_LEVEL_ZERO_USE_IMMEDIATE_COMMANDLISTS=1  # Improve performance
 
-```
+```text
 
 #### For OpenVINO
 
@@ -348,7 +348,7 @@ export OPENVINO_THREADING=TBB  # Use TBB threading
 
 export OMP_NUM_THREADS=8  # Control number of OpenMP threads
 
-```
+```text
 
 ### Configuring uvfast.json
 
@@ -383,10 +383,9 @@ You can create a `uvfast.json` file in your project root to customize behavior:
   }
 }
 
-```
+```text
 
 This configuration allows for customized settings per hardware type, including environment variables and additional packages.
 
-```
-
-```
+```text
+```text

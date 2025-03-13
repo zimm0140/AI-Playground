@@ -16,7 +16,7 @@ This directory contains scripts for linting and fixing common code quality issue
 
 To fix markdown linting issues:
 
-````text
+```text`text
 
 python tools/linting/fix_markdown_lint.py [directory_or_file]
 
@@ -68,4 +68,4 @@ These tools use configuration files from the `config` directory:
 
 Note: Copies of these configuration files are also available in the project root directory for compatibility with tools that expect them there.
 
-````
+```text`

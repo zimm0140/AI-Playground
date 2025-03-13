@@ -21,7 +21,7 @@ The hardware integration consists of several layers:
 │ Application Layer │
 └────────────────────────────────────────────────────────────────┘
 
-````text
+```text`text
 
 ```text
 
@@ -1648,4 +1648,4 @@ return {
 
 ```text`
 
-````
+```text`

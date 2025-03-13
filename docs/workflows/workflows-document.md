@@ -40,7 +40,9 @@
     - Select all and copy
     - Open the AI PLayground JSON file and paste that after the colon of the "comfyUiApiWorkflow" tag. There will be one additional backet "}" at the end of what was pasted.
 
-- **Edit Clip Nodes**: To connect the Prompt or Negative Prompt fields of AI Playground into the respective Clip nodes you'll need to edit the positive and negative clips as follows. Clip nodes are usuall numbered 6 and 7 and will have the class type "CLIPTextEncode",
+- **Edit Clip Nodes**: To connect the Prompt or Negative Prompt fields of AI Playground
+  into the respective Clip nodes you'll need to edit the positive and negative clips as follows.
+  Clip nodes are usuall numbered 6 and 7 and will have the class type "CLIPTextEncode",
 
     - Edit the clip node used for the positive prompt <br>"\_meta": {"title": "CLIP Text Encode (Prompt)" } <br>To<br> "\_meta": {"title": "prompt" }
     - Edit the clip node used for the negative prompt <br>"\_meta": {"title": "CLIP Text Encode (Prompt)" } <br>To<br> "\_meta": {"title": "negativePrompt" }
@@ -95,6 +97,8 @@ generating 8 total images.
 Input image default value:
 "defaultValue":
 "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAZMElEQVR4nO3daXMTZ9aA4aPFFl6wDdgQ2xAChAEya/7/T0hmMkvlTZFJUiSYxYDBOCAv2t4PlKmEAWy1JUutc11fZoqopce2pL776a3y9ddf9
+IASKU66gEAAKdPAABAQgIAABISAACQkAAAgIQEAAAkJAAAICEBAAAJCQAASEgAAEBCAgAAEhIAAJCQAACAhAQAACQkAAAgIQEAAAkJAABISAAAQEICAAASEgAAkJAAAICEBAAAJCQAACAhAQAACQkAAEhIAABAQgIAABISAACQkAAAgIQEAAAkJAAAICEB
+AAJCQAASEgAAEBCAgAAEhIAAJCQAACAhAQAACQkAAAgIQEAAAkJAABISAAAQEICAAASEgAAkJAAAICEBAAAJCQAACAhAQAACQkAAEhIAABAQgIAABISAACQkAAAgIQEAAAkJAAAICEBAAAJCQAASEgAAEBCAgAAEhIAAJCQAACAhAQAACQkAAAgIQEAAAkJAABISAAAQEICAAASEgAAkJAAAICEBAAAJCQAACAhAQAACQkAAEhIAABAQgIAABISAACQkAAAgIQEAAAkJAAAICEB
 IASKU66gEAAKdPAABAQgIAABISAACQkAAAgIQEAAAkJAAAICEBAAAJCQAASEgAAEBCAgAAEhIAAJCQAACAhAQAACQkAAAgIQEAAAkJAABISAAAQEICAAASEgAAkJAAAICEBAAAJCQAACAhAQAACQkAAAgIQEAAAkJAABISAAAQEICAAASEgAA
 kJAAAICEBAAAJCQAASEgAAEBCAgAAEhIAAJCQAACAhAQAACQkAAAgIQEAAAkJAABISAAAQEICAAASEgAAkJAAAICEBAAAJCQAACAhAQAACQkAAEhIAABAQgIAABISAACQkAAAgIQEAAAkJAABISAAAQEICAAASEgAA
 kJAAAICEBAAAJCQAASEgAAEBCAgAAEhIAAJCQAACAhAQAACQkAAAgIQEAAAkJAABISAAAQEICAAASEgAAkJAAAICEBAAAJCQAACAhAQAACQkAAEhIAABAQgIAABISAACQkAAAgIQEAAAkJAABISAAAQEICAAASEgAA
@@ -771,4 +775,4 @@ U5ErkJggg=="
 
 ```text`
 
-````
+```text`

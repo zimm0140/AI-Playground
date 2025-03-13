@@ -16,7 +16,7 @@ This directory contains scripts for formatting code and documentation in the AI 
 
 To fix README formatting issues:
 
-````text
+```text`text
 
 python tools/formatting/fix_readme.py [file]
 
@@ -48,4 +48,4 @@ These tools use configuration files from the `config` directory:
 
 Note: Copies of these configuration files are also available in the project root directory for compatibility with tools that expect them there.
 
-````
+```text`

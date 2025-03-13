@@ -29,6 +29,11 @@ jobs:
           python .github/workflows/scripts/fix_markdown_code_blocks.py
         shell: bash
 
+      - name: Fix invalid link fragments
+        run: |
+          python .github/workflows/scripts/fix_markdown_link_fragments.py
+        shell: bash
+
       - name: Fix API reference markdown
         run: |
           python .github/workflows/scripts/fix_api_markdown.py

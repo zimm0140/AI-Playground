@@ -23,7 +23,7 @@ these key principles:
 │ └─────────────┘ └─────────────┘ └─────────────┘ └──────────┘ │
 └────────────────────────────────────────────────────────────────┘
 
-````text
+```text`text
 
 ```text
 
@@ -406,4 +406,4 @@ __Previous__: [Linting Guide](../development/linting.md) | __Next__: [API Design
 
 ```text`
 
-````
+```text`

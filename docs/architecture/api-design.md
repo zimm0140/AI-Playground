@@ -19,11 +19,11 @@ The REST API provides HTTP endpoints for interacting with AI-Playground services
 
 ### Base URL
 
-```
+```text
 
 https://<server>:<port>/api/v1
 
-```
+```text
 
 ### Authentication
 
@@ -32,7 +32,7 @@ The API supports token-based authentication:
 ```http
 Authorization: Bearer <api_token>
 
-```
+```text
 
 ### Endpoints
 
@@ -92,7 +92,7 @@ Content-Type: application/json
   "hardware_profile": "arc-optimized"
 }
 
-```
+```text
 
 Response:
 
@@ -118,7 +118,7 @@ Content-Type: application/json
   }
 }
 
-```
+```text
 
 #### Batch Processing
 
@@ -136,7 +136,7 @@ Content-Type: application/json
   "hardware_profile": "auto"
 }
 
-```
+```text
 
 Response:
 
@@ -172,7 +172,7 @@ Content-Type: application/json
   }
 }
 
-```
+```text
 
 ### Error Handling
 
@@ -194,7 +194,7 @@ Content-Type: application/json
   }
 }
 
-```
+```text
 
 Common status codes:
 
@@ -215,7 +215,7 @@ The Python API provides a programmatic interface for integrating AI-Playground i
 ```bash
 pip install ai-playground
 
-```
+```text
 
 ### Client Initialization
 
@@ -234,7 +234,7 @@ client = AIPlayground(
   hardware_profile="arc-optimized"
 )
 
-```
+```text
 
 ### Model Management
 
@@ -261,7 +261,7 @@ client.upload_model(
   metadata={"author": "Example User"}
 )
 
-```
+```text
 
 ### Inference
 
@@ -296,7 +296,7 @@ job = model.generate_async(prompt="Write a long essay about AI")
 if job.is_complete():
   result = job.get_result()
 
-```
+```text
 
 ### Hardware Management
 
@@ -325,7 +325,7 @@ client.create_hardware_profile(
 
 model.set_hardware_profile("low-memory")
 
-```
+```text
 
 ### Error Handling
 
@@ -346,7 +346,7 @@ except HardwareNotSupportedError as e:
 
 client.set_hardware(device_type="cpu")
 
-```
+```text
 
 ## CLI Interface
 
@@ -372,7 +372,7 @@ ai-playground infer --model text-generation --prompt "Hello, world" --output out
 
 ai-playground hardware info
 
-```
+```text
 
 ### Advanced Usage
 
@@ -390,7 +390,7 @@ ai-playground infer-batch --model classifier --input-file images.txt --output re
 
 ai-playground hardware create-profile --name arc-optimized --precision fp16 --batch-size 4
 
-```
+```text
 
 ## WebSocket API
 
@@ -411,7 +411,7 @@ socket.onopen = () => {
   }));
 };
 
-```
+```text
 
 ### Streaming Inference
 
@@ -442,7 +442,7 @@ socket.onmessage = (event) => {
   }
 };
 
-```
+```text
 
 ## API Versioning
 
@@ -479,6 +479,6 @@ The API implements several security measures:
 **Previous**: [Architecture Overview](overview.md) | **Next**: [Hardware Integration](hardware-integration.md) | __See also_*: [Python API Reference](../reference/python-api.md)
 
 
-```
+```text
 
-````
+```text`

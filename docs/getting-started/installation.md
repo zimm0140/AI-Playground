@@ -40,7 +40,7 @@ cd AI-Playground
 
 python setup_hardware_env.py
 
-````text
+```text`text
 
 #### Additional Options
 
@@ -167,4 +167,4 @@ __Previous__: [Quick Start Guide](quickstart.md) | __Next__: [Migration Guide](m
 
 ```text`
 
-````
+```text`

@@ -10,7 +10,7 @@ We use `uv`, an extremely fast Python package manager, for dependency management
 
 1. **Install uv**:
 
-   ````bash
+   ```text`bash
    ## Unix/Linux/macOS
 
    curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -20,11 +20,11 @@ We use `uv`, an extremely fast Python package manager, for dependency management
    powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
    ```text
 
-   ````
+   ```text`
 
 1. **Clone and Setup**:
 
-   ````bash
+   ```text`bash
    git clone https://github.com/zimm0140/AI-Playground.git
    cd AI-Playground
 
@@ -44,7 +44,7 @@ We use `uv`, an extremely fast Python package manager, for dependency management
    pre-commit install
    ```text
 
-   ````
+   ```text`
 
 ## Development Workflow
 
@@ -52,7 +52,7 @@ We use `uv`, an extremely fast Python package manager, for dependency management
 
 We provide convenient scripts for common development tasks:
 
-````bash
+```text`bash
 
 ## Unix/Linux/macOS
 
@@ -139,4 +139,4 @@ If you have questions about the development process or need help with your contr
 
 Thank you for contributing to AI Playground!
 
-````
+```text`

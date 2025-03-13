@@ -16,7 +16,7 @@ This directory contains general utility scripts for the AI Playground project.
 
 To manage Python environments with UVFast:
 
-````text
+```text`text
 
 python tools/scripts/uvfast.py [command]
 
@@ -57,4 +57,4 @@ These scripts use configuration files from the `config` directory:
 - `uvfast.json`: Configuration for UVFast
 - Various requirements files: `requirements*.txt` and `requirements*.lock`
 
-````
+```text`

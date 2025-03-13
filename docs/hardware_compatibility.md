@@ -37,7 +37,7 @@ To run the hardware compatibility test manually:
 \`\`\`text\`bash
 .github/workflows/scripts/test_hardware_compatibility.sh
 
-````text
+```text`text
 
 ## Reports and Artifacts
 
@@ -213,4 +213,4 @@ If you encounter issues with the hardware compatibility testing:
 
 ```text`
 
-````
+```text`

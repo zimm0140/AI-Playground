@@ -32,7 +32,7 @@ To run all tests:
 \`\`\`text\`bash
 pytest
 
-````text
+```text`text
 
 ### Running Tests with Detailed Output
 
@@ -337,4 +337,4 @@ __Previous__: [Code Quality Standards](code-quality.md) | __Next__: [Linting](li
 
 ```text`
 
-````
+```text`

@@ -35,11 +35,11 @@ This guide helps you migrate to the modern Python development workflow using uv 
    powershell -ExecutionPolicy ByPass -c "irm <https://astral.sh/uv/install.ps1> | iex"
 
 
-   ````text
+   ```text`text
 
    ```text`
 
-   ````
+   ```text`
 
 1. __Migrate existing environments__:
 
@@ -58,11 +58,11 @@ This guide helps you migrate to the modern Python development workflow using uv 
 
    uv pip sync requirements.lock requirements-dev.lock
 
-   ````text
+   ```text`text
 
    ```text`
 
-   ````
+   ```text`
 
 1. __Use the helper scripts__:
 
@@ -78,11 +78,11 @@ This guide helps you migrate to the modern Python development workflow using uv 
 
    ./scripts/run_with_uv.sh lint
 
-   ````text
+   ```text`text
 
    ```text`
 
-   ````
+   ```text`
 
 ## Updating Type Annotations for Python 3.10+
 
@@ -98,7 +98,7 @@ python scripts/fix_type_annotations.py .
 
 python scripts/fix_type_annotations.py path/to/file.py
 
-````text
+```text`text
 
 For detailed guidance on type compatibility issues and solutions, see the [Type Compatibility Guide](TYPE_COMPATIBILITY.md).
 
@@ -238,4 +238,4 @@ A: Use the `scripts/fix_type_annotations.py` script to help identify and fix typ
 
 ```text`
 
-````
+```text`

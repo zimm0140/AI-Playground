@@ -50,7 +50,7 @@ AI-Playground supports all Intel Arc GPU models:
    # Run hardware detection
 
    python hardware_detection.py
-   ```
+   ```text
 
 #### Linux
 
@@ -58,19 +58,19 @@ AI-Playground supports all Intel Arc GPU models:
 
    ```bash
    sudo apt update && sudo apt upgrade
-   ```
+   ```text
 
 2. Install required packages:
 
    ```bash
    sudo apt install mesa-utils
-   ```
+   ```text
 
 3. Verify installation:
 
    ```bash
    glxinfo | grep "OpenGL renderer"
-   ```
+   ```text
 
 ### Environment Setup
 
@@ -80,7 +80,7 @@ AI-Playground supports all Intel Arc GPU models:
 
 python setup_hardware_env.py --hardware acm
 
-```
+```text
 
 This will install the required dependencies including:
 
@@ -112,7 +112,7 @@ input_tensor = input_tensor.to("xpu")
 with torch.xpu.amp.autocast(dtype=torch.bfloat16):
     output = model(input_tensor)
 
-```
+```text
 
 ### Environment Variables
 
@@ -132,7 +132,7 @@ export ZE_AFFINITY_MASK="0.0"
 export SYCL_CACHE_PERSISTENT="1"
 export IPEX_XPU_MAX_STREAMS="8"
 
-```
+```text
 
 ### Memory Management
 
@@ -149,7 +149,7 @@ torch.xpu.empty_cache()
 print(f"Memory allocated: {torch.xpu.memory_allocated() / 1e9:.2f} GB")
 print(f"Memory reserved: {torch.xpu.memory_reserved() / 1e9:.2f} GB")
 
-```
+```text
 
 ## Troubleshooting Arc-Specific Issues
 
@@ -175,7 +175,7 @@ python -c "import torch; import intel_extension_for_pytorch as ipex; print(torch
 
 python service/tools/intel_gpu_diagnostics.py
 
-```
+```text
 
 ## Performance Tuning
 
@@ -194,14 +194,14 @@ python service/tools/intel_gpu_diagnostics.py
    # Convert to quantized model
 
    quantized_model = convert(prepared_model)
-   ```
+   ```text
 
 2. **BF16 Mixed Precision**:
 
    ```python
    with torch.xpu.amp.autocast(dtype=torch.bfloat16):
        output = model(input_tensor)
-   ```
+   ```text
 
 ### Batch Size Optimization
 
@@ -219,7 +219,7 @@ for bs in batch_sizes:
 
     # Record timing information
 
-```
+```text
 
 Typical optimal batch sizes:
 
@@ -245,8 +245,5 @@ Typical optimal batch sizes:
 ---
 **Previous**: [Hardware Optimization](../optimization.md) | **See also**: [Meteor Lake Guide](intel-meteor-lake.md)
 
-```
-
-```text`
-
-```
+```markdown
+```text

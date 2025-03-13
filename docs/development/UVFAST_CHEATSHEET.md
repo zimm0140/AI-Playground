@@ -26,7 +26,7 @@ python uvfast.py setup --hardware mtl
 
 python uvfast.py setup --no-lockfile
 
-````text
+```text`text
 
 ### Show Environment Information
 
@@ -168,4 +168,4 @@ Edit `uvfast.json` to customize settings:
 
 ```text`
 
-````
+```text`

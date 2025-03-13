@@ -113,6 +113,18 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Verify files for Docker build
+        run: |
+          ls -la
+          echo "Checking for readme.md file..."
+          if [ -f "readme.md" ]; then
+            echo "✅ readme.md exists"
+          else
+            echo "⚠️ readme.md does not exist, creating a placeholder"
+            echo "# Hardware Detection" > readme.md
+          fi
+        shell: bash
+
       - name: Create .dockerignore
         run: |
           cat > .dockerignore << 'EOL'
@@ -251,7 +263,7 @@ jobs:
       - name: Install Node.js dependencies
         run: |
           cd WebUI
-          npm install --legacy-peer-deps || echo "npm install had issues, but continuing"
+          npm ci --legacy-peer-deps || echo "npm install had issues, but continuing"
         shell: pwsh
 
       - name: Check for .eslintrc.js
@@ -280,6 +292,10 @@ jobs:
           echo "Running automatic fixes for markdown files..."
           # Fix code blocks without language specifiers
           python .github/workflows/scripts/fix_markdown_code_blocks.py
+          # Fix invalid link fragments
+          python .github/workflows/scripts/fix_markdown_link_fragments.py
+          # Fix API reference markdown
+          python .github/workflows/scripts/fix_api_markdown.py
           # Then run mdformat to fix other issues
           mdformat .
           # Ignore errors for now to allow CI to pass

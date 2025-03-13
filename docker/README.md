@@ -13,7 +13,7 @@ This directory contains Docker configuration files for the AI Playground project
 
 To build the Docker image:
 
-````text
+```text`text
 
 cd docker
 docker build -t ai-playground .
@@ -64,4 +64,4 @@ You can customize the Docker environment by:
 1. Updating the `docker-compose.yml` file to change volume mounts or network settings
 1. Creating a `.env` file in the same directory as `docker-compose.yml` to override environment variables
 
-````
+```text`

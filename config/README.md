@@ -34,7 +34,7 @@ These configuration files are used by various tools and scripts in the project. 
 
 For example, the markdown linting configuration is used by the markdown linting scripts:
 
-````text
+```text`text
 
 python tools/linting/fix_markdown_lint.py
 
@@ -42,4 +42,4 @@ python tools/linting/fix_markdown_lint.py
 
 Some configuration files may need to be symlinked or copied to the project root when used by tools that don't support custom configuration paths.
 
-````
+```text`

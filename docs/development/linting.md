@@ -27,7 +27,7 @@ select = ["E", "F", "I", "W", "N", "B", "C4", "UP", "T20"]
 ignore = ["E501"]
 extend-exclude = \[".git", ".github", ".venv", "venv", "__pycache__", "build", "dist"\]
 
-````text
+```text`text
 
 #### Key Rules
 
@@ -380,4 +380,4 @@ __Previous__: [Testing Guide](testing.md) | __Next__: [Project Architecture](../
 
 ```text`
 
-````
+```text`

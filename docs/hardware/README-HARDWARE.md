@@ -64,7 +64,7 @@ The implementation combines modern Python packaging practices with hardware dete
 git clone <repository-url>
 cd <project-directory>
 
-````text
+```text`text
 
 1. Run the setup command to create an environment for your hardware:
 
@@ -234,4 +234,4 @@ You can customize the hardware detection and environment configuration by modify
 
 ```text`
 
-````
+```text`

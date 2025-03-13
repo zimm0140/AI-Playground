@@ -33,7 +33,7 @@ Each component follows this standard format:
 "type": "image_loader|text_encoder|sampler|output_processor|etc",
 "inputs": \[
 
-````text
+```text`text
 
 {
   "name": "input_1",
@@ -138,4 +138,4 @@ To create a new component:
 
 ```text`
 
-````
+```text`

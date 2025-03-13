@@ -196,7 +196,7 @@ python .github/workflows/scripts/generate_workflow_dashboard.py
 
 python .github/workflows/scripts/comment_on_workflow_pr.py --changed-files path/to/changed/file1.json,path/to/changed/file2.json
 
-````text
+```text`text
 Each script supports additional arguments:
 
 - `--output-dir`: Directory to store validation results
@@ -214,4 +214,4 @@ Planned improvements to the workflow validation process:
 
 ```text`
 
-````
+```text`

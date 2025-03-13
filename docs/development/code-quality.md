@@ -34,7 +34,7 @@ All Python code should adhere to [PEP 8](https://peps.python.org/pep-0008/), wit
 - `PascalCase` for class names
 - `UPPER_CASE` for constants
 
-````text
+```text`text
 
 ### Type Hints
 
@@ -300,4 +300,4 @@ __Previous__: [Contributing Guide](contributing.md) | __Next__: [Testing Guide](
 
 ```text`
 
-````
+```text`

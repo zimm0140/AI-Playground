@@ -43,7 +43,7 @@ This document provides a step-by-step guide for implementing and using the `uvfa
 - `requirements-hardware-ovino.txt` (for OpenVINO)
 - Add any other hardware-specific configurations
 
-````text
+```text`text
 
 ### 3. Documentation
 
@@ -201,4 +201,4 @@ python uvfast.py setup --hardware ovino --dev
 
 ```text`
 
-````
+```text`

@@ -15,7 +15,7 @@ from typing import Union
 
 def process_data(data: Union[dict, list]) -> Union\[str, None\]:
 
-````text
+```text`text
 
 ...
 
@@ -346,4 +346,4 @@ compatibility.
 
 ```text`
 
-````
+```text`

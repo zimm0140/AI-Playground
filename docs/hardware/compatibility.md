@@ -83,7 +83,7 @@ The following software requirements apply based on the hardware platform:
 
 python setup_hardware_env.py --hardware acm
 
-````text
+```text`text
 
 ### NVIDIA GPUs
 
@@ -141,4 +141,4 @@ This will generate a report about your hardware configuration and any potential 
 
 ```text`
 
-````
+```text`

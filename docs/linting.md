@@ -12,7 +12,7 @@ The project uses [Ruff](https://github.com/astral-sh/ruff) for Python code linti
 
 ruff check --select=E,F --ignore=E501 --extend-exclude=.git,.github,.venv,venv,*_pycache__,build,dist --line-length=100 ./service
 
-````text
+```text`text
 
 ### Key Rules
 
@@ -122,4 +122,4 @@ This will check your Python code for linting issues before each commit.
 
 ```text`
 
-````
+```text`
