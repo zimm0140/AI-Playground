@@ -109,6 +109,7 @@ The updated CI workflow now follows this structure:
 ```text
 
 ```text
+
 ## Future Recommendations {#future-recommendations}
 
 Potential future improvements for the CI workflow:

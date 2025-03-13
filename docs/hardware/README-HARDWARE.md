@@ -86,6 +86,7 @@ nvironment:
 ```bash
 
 ## On Windows
+
 {#on-windows}
 
 .venv\Scripts\activate
@@ -104,7 +105,9 @@ python uvfast
 .py run pytest
 
 ```text
+
 ### Manual Hardware S
+
 election {#manual-hardware-selection}
 
 If you want to specify a hardware type explicitly:
@@ -163,7 +166,9 @@ nstall -e ".[acm]"  # For Intel Arc GPUs
 pip install -e ".[ovino]"  # For OpenVINO
 
 ```text
+
 ## Lockfile M
+
 anagement {#lockfile-management}
 
 Generate lockfiles for reproducible environments:
@@ -189,7 +194,9 @@ p
 ython uvfast.py setup --use-lockfile
 
 ```text
+
 ## Enviro
+
 nment Information {#environment-information}
 
 Display information about the current hardware and environment:
@@ -208,7 +215,9 @@ h
 python uvfast.py info --verbose
 
 ```text
+
 ## Ha
+
 rdware-Specific Development {#hardware-specific-development}
 
 The examples directory contains a sample script demonstrating how to use hardware detection with PyTorch:
@@ -259,6 +268,7 @@ docker-compose --profile acm up
 docker-compose --profile openvino up
 
 ```text
+
 ## Advanced Configuration {#advanced-configuration}
 
 You can customize the hardware detection and environment configuration by modifying the `uvfast.json` file. This allows you to:

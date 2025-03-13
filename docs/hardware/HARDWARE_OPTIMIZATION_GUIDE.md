@@ -102,6 +102,7 @@ The system recognizes the following hardware types:
 | `ovino` | Intel CPUs with OpenVINO | OpenVINO runtime optimizations |
 | `base` | Standard hardware | Standard PyTorch CPU operations |
 
+
 ## Environment Setup {#environmen {#environment-setup-environmen}
 
 t-setup}
@@ -115,6 +116,7 @@ To set up your environment for the detected hardware
 ```bash
 
 # Set up for
+
 {#set-up-for}
 
 a
@@ -139,7 +141,9 @@ python uvfast.py
 setup --dev
 
 ```text
+
 ### Using Lockf {#usin
+
  {#using-lockf-usin}
 
 g
@@ -154,6 +158,7 @@ ockfiles:
 ```bash
 
 # Generate
+
 {#generate}
 
 l
@@ -193,6 +198,7 @@ ized performance:
 ```python
 
 # Example of hardwar
+
  {#example-of-hardwar}
 
 e
@@ -223,7 +229,9 @@ simple terms.")
 print(respo```text
 
 ```text
+
 ## Work {# {#w
+
 ork-}
 
 work
@@ -271,7 +279,9 @@ tivity in simple terms.")
 print(re```textse)
 
 ```text
+
 ### Adva {#a
+
 dva}
 
 nc {
@@ -323,7 +333,9 @@ response = chain.run(topic="quantum co
 mputing", question="What is quantum entan```textent?")
 
 ```text
+
 ## Wor {#w
+
 or}
 
 k {#
@@ -383,6 +395,7 @@ For faster inference with reduced quality:
 ```python
 
 # For Intel
+
 {#for-intel}
 
 A
@@ -408,7 +421,9 @@ ault 50
 ).images[0]
 
 ```text
+
 ## # O
+
 p {#-op}
 
 t {#opt}
@@ -421,6 +436,7 @@ ation time:
 ```python
 
 # Higher q
+
  {#higher-q}
 
 u
@@ -437,7 +453,9 @@ s=50,
 ).images[0]
 
 ```text
+
 ## P
+
  {#p}
 
 er {#per}
@@ -451,6 +469,7 @@ To benchmark your hardware and
 ```bash
 
 # Run al
+
  {#run-al}
 
 l
@@ -603,6 +622,7 @@ Environment Variables {#environment-variables}
 ```bash
 
 # Im
+
  {#im}
 
 p

@@ -20,6 +20,7 @@ Maximum memory needed: 8GB
 | 7 | 6 |
 | 8 | 2 |
 
+
 ## Model Usage {#model-usage}
 
 | Model | Workflows |
@@ -29,11 +30,13 @@ Maximum memory needed: 8GB
 | latent-consistency---lcm-lora-sdxl\\pytorch_lora_weights.safetensors (lora) | FaceSwapHD.json, Line2ImageHD-Fast.json |
 | stabilityai---control-lora\\control-LoRAs-rank128\\control-lora-canny-rank128.safetensors (controlnet) | Line2ImageHD-Fast.json, Line2ImageHD-Quality.json |
 
+
 ## Custom Node Extensions {#custom-node-extensions}
 
 | Extension | Workflows |
 | --------- | --------- |
 | comfyui-face-swap | CopyFace.json, FaceSwapHD.json |
+
 
 ## Python Package Requirements {#python-package-requirements}
 
@@ -42,6 +45,7 @@ Maximum memory needed: 8GB
 | opencv-python | CopyFace.json, FaceSwapHD.json |
 | insightface | CopyFace.json, FaceSwapHD.json |
 | onnxruntime-gpu | CopyFace.json, FaceSwapHD.json |
+
 
 ## Individual Workflow Details {#individual-workflow-details}
 

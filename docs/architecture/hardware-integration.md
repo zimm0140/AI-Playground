@@ -31,6 +31,7 @@ The hardware integration consists of several layers:
 ```text
 
 ```text
+
 ```text
 │                 │
 ▼                 ▼
@@ -38,6 +39,7 @@ The hardware integration consists of several layers:
 ```text
 
 ```text
+
 ```text
 
 ```text
@@ -48,6 +50,7 @@ The hardware integration consists of several layers:
 ```text
 
 ```text
+
 ```text
 
 ```text
@@ -57,6 +60,7 @@ The hardware integration consists of several layers:
 ```text
 
 ```text
+
 ```text
 
 ```text
@@ -112,6 +116,7 @@ allback   │
 └──────────────┘ └──────────┘ └────────────┘ └────────────────┘
 
 ```text
+
 ### 1. Application Layer {#application-layer}
 
 The top-level in
@@ -133,6 +138,7 @@ Chooses the appropriate backend based on:
 - Performance profiles
 
 ### 3. Hardware Abstraction Layer (HAL) {#hardware-abst
+
 raction-layer-hal}
 
 Provides a unified interface to different hardware backends through:
@@ -186,6 +192,7 @@ available_devices = []
 ```text
 
 ```text
+
 ## Check for Intel Arc GPUs {#check-for-intel-arc-gpus}
 
 ```text
@@ -230,11 +237,14 @@ le_devices.append({
 t
 
 ```text
+
 ```tex
 t
 
 ```text
+
 ## Check for NVIDIA GPUs {#check-for-nvidia-gpus
+
 }
 
 ```text
@@ -263,6 +273,7 @@ available_devices.append({
 ```text
 
 ```text
+
 ```text
 
 ``
@@ -297,8 +308,11 @@ eural Processing Unit",
 ```text
 
 ```text
+
 ```text
+
 ## Always add CPU as fallba
+
 ck {#always-add-cpu-as-fall
 back}
 
@@ -327,6 +341,7 @@ ackend": "cpu"
 ``
 
 ## Sort
+
 by priority (highest first) {#sort-by-priority-
 highest-first}
 
@@ -339,7 +354,9 @@ return
 ```text
 
 ```text
+
 ## Envir
+
 onment Setup {#
 
 environm
@@ -350,6 +367,7 @@ nvironment i
 s set up:
 
 ### Intel Arc G
+
 PU (XPU) Environment {#intel-arc-gpu-xpu-environment}
 
 ```python
@@ -391,7 +409,9 @@ print("Intel Extension for PyTorch not found, running with limited optimizations
 ```text
 
 ```text
+
 ```text
+
 ### Intel NPU Environment {#intel-npu-environment}
 
 ```python
@@ -430,7 +450,9 @@ ited NPU optimizations")
 ```text
 
 ```text
+
 ```text
+
 ### NVIDIA GPU Environment {#nvidia-gpu-environment}
 
 ```python
@@ -475,12 +497,15 @@ print("PyTorch with CUDA not found")
 ext
 
 ```text
+
 ```text
+
 ## Model Optimization {#model-optimization}
 
 The hardware integration includes model optimization for each backend:
 
 ### XPU Opti
+
 mizat
 ion {#xpu-optimization}
 
@@ -500,6 +525,7 @@ import torch
 ```text
 
 ```text
+
 ## Convert
 
  to XPU
@@ -513,6 +539,7 @@ model = model.to("xpu")
 ```text
 
 ```text
+
 ## Apply IPEX optimizations {#apply-ipex-optimizations}
 
 ```text
@@ -554,13 +581,16 @@ e}")
 ```text
 
 ```text
+
 ```text
 return model
 
 ```text
 
 ```text
+
 ### NPU Opti
+
 mization {#npu-optimization}
 
 ```python
@@ -577,7 +607,9 @@ from neural_compressor.experimental import Quantization, common
 ```text
 
 ```text
+
 ## Initialize quanti
+
 zation {#initialize-qua
 ntization}
 
@@ -595,7 +627,9 @@ del = model
 ```text
 
 ```text
+
 ## Define calib
+
 ration dataloader {#define-calibration-dataloader}
 
 ```text
@@ -627,6 +661,7 @@ return quantized_model
 ``text
 
 ```text
+
 ### CUDA Optimization {#cuda-optimization}
 
 ```python
@@ -642,7 +677,9 @@ import torch
 ```text
 
 ```text
+
 ## Move
+
  to CUDA {#move-to-cuda}
 
 ```text
@@ -655,7 +692,9 @@ model
 ```text
 
 ```text
+
 ## Enable C
+
 UDA optimiza
 tion {#enable-cuda-opti
 mization}
@@ -674,8 +713,11 @@ model = model.half()
 ```text
 
 ```text
+
 ```text
+
 ## Trace and comp
+
 ile the model
  if possible {#trace-and-compile
 -the-model-i
@@ -707,13 +749,16 @@ g failed
 ```text
 
 ```text
+
 ```text
 return model
 
 ```text
 
 ```text
+
 ## Memory Management {#memory-ma
+
 nagement}
 
 E
@@ -740,6 +785,7 @@ ion_for_pytorch as ipex
 ```text
 
 ```text
+
 ## Get available memory {#get-available-memory}
 
 ```text
@@ -755,7 +801,9 @@ free_mem = total_mem - reserved_mem
 ```text
 
 ```text
+
 ## Calculate
+
 optimal batch
  size based on available memory {#calculate-opti
 mal-batch-si
@@ -776,6 +824,7 @@ h_memory))
 ``text
 
 ```text
+
 ## Set up memory pool {#set-up-memory-pool}
 
 ```text
@@ -793,7 +842,9 @@ h_size
 ```text
 
 ```text
+
 ### CUDA Memory Management {#cuda-me
+
 mory-managem
 ent}
 
@@ -810,7 +861,9 @@ import torch
 ```text
 
 ```text
+
 ## Get avail
+
 able memory {#get-availa
 ble-memory}
 
@@ -850,6 +903,7 @@ ed_batch_memory))
 ```text
 
 ```text
+
 ## Set up memory pool {#set-up-memory-pool}
 
 ```text
@@ -866,7 +920,9 @@ return optimal_batch_size
 ```text
 
 ```text
+
 ## Hardware-Spe
+
 cific Config
 urations {#hardware-specific-configurations}
 
@@ -875,6 +931,7 @@ figurations t
 o optimize performance:
 
 ### Intel Arc Conf
+
 iguration {#
 intel-arc-configuration}
 
@@ -927,7 +984,9 @@ e
 }
 
 ```text
+
 ### NPU Con
+
 figuration {#npu-configuration}
 
 ```json
@@ -977,7 +1036,9 @@ e
 }
 
 ```text
+
 ## Hardware A
+
 bstraction Interface {#hardware-ab
 straction-interface}
 
@@ -1009,6 +1070,7 @@ self.device_type
 t
 
 ```text
+
 ```text
 def setup(self):
 
@@ -1022,6 +1084,7 @@ e NotImplementedError
 ```text
 
 ```text
+
 ```text
 def is_available(self):
 
@@ -1035,6 +1098,7 @@ dError
 ```text
 
 ```text
+
 ```text
 def optimize_model(self, model):
 
@@ -1049,6 +1113,7 @@ raise
 `text
 
 ```text
+
 ```text
 def run_inference(self, model, inputs, __kwargs):
 
@@ -1063,6 +1128,7 @@ dError
 ```text
 
 ```text
+
 ```text
 def get_memory_info(self):
 
@@ -1077,6 +1143,7 @@ raise NotImplementedError
 xt
 
 ```text
+
 ```text
 def cleanup(self):
 
@@ -1125,6 +1192,7 @@ self.device_type = "xpu"
 ```text
 
 ```text
+
 ```text
 def s
 etup(self):
@@ -1134,11 +1202,13 @@ etup(self):
 onment."""
 
 ## Set environment variables {#s
+
 et-environment-variables}
 
 ```text
 
 ```text
+
 ```text
 
 ```text
@@ -1152,9 +1222,11 @@ _ZERO_USE_IMMEDIATE_COMMANDLISTS"] = "1"
 ```text
 
 ```text
+
 ```text
 
 ```text
+
 ## Import required libraries {#import
 
 -required-l
@@ -1164,6 +1236,7 @@ ibraries}
 ```text
 
 ```text
+
 ```text
 
 ```text
@@ -1195,6 +1268,7 @@ return False
 ```text
 
 ```text
+
 ```text
 
 ```text
@@ -1225,6 +1299,7 @@ return False
 ```text
 
 ```text
+
 ```text
 
 ```text
@@ -1256,6 +1331,7 @@ U {#move-model-to-xpu}
 
 `
 ``
+
 ```text
 
 ```text
@@ -1264,10 +1340,13 @@ model = model.to("xpu")
 ```text
 
 ```text
+
 ```text
 
 ```text
+
 ## Apply IP
+
 EX optimiza
 
 tions {#app
@@ -1277,6 +1356,7 @@ ly-ipex-optimizations}
 ```text
 
 ```text
+
 ```text
 
 ```text
@@ -1307,9 +1387,11 @@ model = self.ipex.optimize(model)
 ```text
 
 ```text
+
 ```text
 
 ```text
+
 ```text
 retur
 n model
@@ -1317,6 +1399,7 @@ n model
 ```text
 
 ```text
+
 ```text
 def run_inference(self, model, inp
 uts, __kwargs)
@@ -1332,6 +1415,7 @@ nce(inputs,
  dict):
 
 ```text
+
 ## Convert
 
 input d
@@ -1341,9 +1425,11 @@ pu}
 ```text
 
 ```text
+
 ```text
 
 ```text
+
 ```text
 
 ```text
@@ -1372,17 +1458,21 @@ outputs = model(__inputs)
 else:
 
 ```text
+
 ## Convert inputs to XPU {#c
+
 onvert-input
 s-to-xpu}
 
 ```text
 
 ```text
+
 ```text
 text
 
 ```text
+
 ```text
 
 ```text
@@ -1408,13 +1498,17 @@ ts)
 ```text
 
 ```text
+
 ```text
 
 ```text
+
 ```text
 
 ```text
+
 ## Convert outp
+
 uts back to CPU if needed {
 #convert-outputs-back-to-cpu-if-neede
 
@@ -1423,6 +1517,7 @@ d}
 ```text
 
 ```text
+
 ```te
 
 xt
@@ -1449,6 +1544,7 @@ outputs = {k
 ```text
 
 ```text
+
 ```text
 elif hasattr(outputs, "to"):
 
@@ -1460,9 +1556,11 @@ utputs.to("cpu")
 ```text
 
 ```text
+
 ```text
 
 ```text
+
 ```text
 
 ```text
@@ -1471,6 +1569,7 @@ return outputs
 ```text
 
 ```text
+
 ```text
 def get_memory_info(self):
 
@@ -1494,9 +1593,11 @@ return {"error
 ```text
 
 ```text
+
 ```text
 
 ```text
+
 ```text
 device = self.t
 orch.xpu.current_device()
@@ -1513,6 +1614,7 @@ free_mem = total_mem - reserved_mem
 ```text
 
 ```text
+
 ```text
 
 ```text
@@ -1534,6 +1636,7 @@ return {
 ```text
 
 ```text
+
 ```text
 def cleanup(self):
 
@@ -1552,10 +1655,13 @@ orch.xpu.empty_cache()
 ```text
 
 ```text
+
 ```text
 
 ```text
+
 ## Adding N
+
 ew Hardware Support {#adding-
 new-hardwar
 
@@ -1577,6 +1683,7 @@ o add support for a new hardware platform:
 ```python
 
 ## Example: Adding support for a new hardware type
+
 {#example-adding-support-for-a-new-hardware-type}
 
 ## 1. Create backend class {#create-backend-class}
@@ -1602,7 +1709,9 @@ re"
 ```text
 
 ```text
+
 ```text
+
 ## Implement required methods {#implement-requir
 
 ed-metho
@@ -1619,11 +1728,13 @@ t for new ha
 rdware."""
 
 ## S
+
 etup code {#setup-code}
 
 ```text
 
 ```text
+
 ```text
 
 ```text
@@ -1632,6 +1743,7 @@ return True
 ```text
 
 ```text
+
 ```text
 def
 
@@ -1650,6 +1762,7 @@ ardware is available."""
 ```text
 
 ```text
+
 ```text
 
 ```text
@@ -1660,14 +1773,18 @@ return has_new_hardware()
 `
 
 ``
+
 ```text
+
 ## ... implement other methods
 
  {#-impl
 ement-other-methods}
 
 ```text
+
 ## 2. Add detection logic {#add-
+
 detection-logic}
 
 def detect_new_hardware():
@@ -1686,7 +1803,9 @@ dware_found(
 ) else False
 
 ```text
+
 ## 3. Register backend {#reg
+
 ister-backend}
 
 def register_new_hardware():
@@ -1699,7 +1818,9 @@ backend_registry.register("new_hardware", NewHardwareBackend)
 ```text
 
 ```text
+
 ## Performance Mo
+
 nitoring {#pe
 rformance-monitoring}
 
@@ -1732,6 +1853,7 @@ iterations: Number of iterations to run
 ```text
 
 ```text
+
 ```text
 Returns:
 
@@ -1746,6 +1868,7 @@ cs
 """
 
 ## Warm-up run
+
  {#warm-up-run}
 
 ```text
@@ -1784,6 +1907,7 @@ ime.time()
 `
 
 ## Get mem
+
 ory usage {#get-memory-usage}
 
 ```text
@@ -1795,7 +1919,9 @@ nfo = backend.get_memory_info()
 ```text
 
 ```text
+
 ## Cal
+
 culate metrics {#calculate-metrics}
 
 ```te
@@ -1828,6 +1954,7 @@ turn {
 ```text
 
 ```text
+
 ## Additional Resources {#additional-resources}
 
 - [Hardware Compatibility Guide](../hardware/compatibility.md)
@@ -1842,6 +1969,7 @@ turn {
 
 ---
 *_Previous**: [API Design](api-design.md) | **Next**: [Data Flow](data-flow.md) | **See also_*: [Architecture Overview](overview.md)
+
 
 ```text`
 

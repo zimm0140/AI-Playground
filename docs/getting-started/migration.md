@@ -30,7 +30,9 @@ rm -rf .venv
 python setup_hardware_env.py --clean
 
 ```text
+
 ### Ste
+
 p 3: Update Configuration Files {#step-3-update-configuration-files}
 
 Configuration files have changed format in v2.x. If you have custom configuration files, you'll need to update them:
@@ -102,6 +104,7 @@ response = requests.post("<http://localhost:8000/api/v2/workflow",> headers=head
 
 ```text
 #
+
 ## Step 5: Hardware Optimization Changes {#step-5-hardware-optimization-changes}
 
 Hardware detection is now more advanced:
@@ -119,6 +122,7 @@ To manually set hardware type:
 python setup_hardware_env.py --hardware acm
 
 ```text
+
 ## Breaking Changes {#breaking-changes}
 
 Be aware of these breaking changes in v2.x:
@@ -147,6 +151,7 @@ For further assistance, please [open an issue](https://github.com/intel/AI-Playg
 
 ---
 **Previous**: [Installation Guide](installation.md) | **Next**: [Hardware Overview](../hardware/overview.md) | __See also_*: [Troubleshooting](../reference/troubleshooting.md)
+
 
 ```text`
 

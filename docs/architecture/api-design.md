@@ -30,7 +30,9 @@ https://<server>:<port>/api/
 v1
 
 ```text
+
 ### Authentication {#authentica
+
 tion}
 
 The API supports token-based authentication:
@@ -41,9 +43,11 @@ Authorization: Bearer
  <api_token>
 
 ```text
+
 ### Endpoints {#endpoints}
 
 #
+
 ### Model Management {#model-management}
 
 | Endpoint | Method | Description |
@@ -52,6 +56,7 @@ Authorization: Bearer
 | `/models/{model_id}` | GET | Get model details |
 | `/models/upload` | POST | Upload a model |
 | `/models/{model_id}` | DELETE | Delete a model |
+
 
 #### Inference {#inference}
 
@@ -62,6 +67,7 @@ Authorization: Bearer
 | `/inference/async/{model_id}` | POST | Start async inference job |
 | `/inference/jobs/{job_id}` | GET | Get async job status/results |
 
+
 #### Hardware Management {#hardware-management}
 
 | Endpoint | Method | Description |
@@ -71,6 +77,7 @@ Authorization: Bearer
 | `/hardware/profile` | POST | Create hardware profile |
 | `/hardware/profiles` | GET | List hardware profiles |
 
+
 #### System {#system}
 
 | Endpoint | Method | Description |
@@ -78,6 +85,7 @@ Authorization: Bearer
 | `/system/status` | GET | Get system status |
 | `/system/metrics` | GET | Get performance metrics |
 | `/system/logs` | GET | Get system logs |
+
 
 ### Request Examples {#request-examples}
 
@@ -127,7 +135,9 @@ ontent-Type: application/json
 }
 
 ```text
+
 #### Batch Processing {#b
+
 atch-processing}
 
 Request:
@@ -185,7 +195,9 @@ Content-Type: application/json
 }
 
 ```text
+
 ### Error Handling {#
+
 error-handling}
 
 Errors are returned as JSON with appropriate HTTP status codes:
@@ -238,7 +250,9 @@ pip insta
 ll ai-playground
 
 ```text
+
 ### Client Initia
+
 lization {#client-initialization}
 
 ```python
@@ -259,7 +273,9 @@ client = AIPlayground(
 )
 
 ```text
+
 ### Model Manag
+
 ement {#model-management}
 
 ```python
@@ -287,7 +303,9 @@ client.upload_model(
 )
 
 ```text
+
 ### Inference
+
  {#inference}
 
 ```python
@@ -322,7 +340,9 @@ if job.is_complete():
   result = job.get_result()
 
 ```text
+
 ### Hardwar
+
 e Management {#hardware-management}
 
 ```python
@@ -351,7 +371,9 @@ client.create_hardware_profile(
 model.set_hardware_profile("low-memory")
 
 ```text
+
 ### Error
+
  Handling {#error-handling}
 
 ```pytho
@@ -374,7 +396,9 @@ except HardwareNotSupportedError as e:
 client.set_hardware(device_type="cpu")
 
 ```text
+
 ## CLI
+
 Interface {#cli-interface}
 
 The command-line interface provides a way to interact with AI-Playground from the terminal.
@@ -401,7 +425,9 @@ ai-playground infer --model text-generation --prompt "Hello, world" --output out
 ai-playground hardware info
 
 ```text
+
 ### A
+
 dvanced Usage {#advanced-usage}
 
 ```b
@@ -444,6 +470,7 @@ socket.onopen = () => {
 
 ```text
 #
+
 ## Streaming Inference {#streaming-inference}
 
 ```javascript
@@ -475,6 +502,7 @@ socket.onmessage = (event) => {
 };
 
 ```text
+
 ## API Versioning {#api-versioning}
 
 AI-Playground APIs are versioned to ensure backward compatibility:
@@ -519,6 +547,7 @@ The API implements several security measures:
 
 ---
 **Previous**: [Architecture Overview](overview.md) | **Next**: [Hardware Integration](hardware-integration.md) | __See also_*: [Python API Reference](../reference/python-api.md)
+
 
 ```text
 

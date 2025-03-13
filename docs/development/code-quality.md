@@ -66,7 +66,9 @@ sults."""
 ```text
 
 ```text
+
 ### Docstrings {#docstri
+
 ngs}
 
 All mod
@@ -96,6 +98,7 @@ ctionary to validate
 ```text
 
 ```text
+
 ```text
 Returns:
 
@@ -109,6 +112,7 @@ n is valid, False otherwise
 ```text
 
 ```text
+
 ```text
 Raises:
 
@@ -126,7 +130,9 @@ onfiguration is missing required fields
 ```text
 
 ```text
+
 ## Code
+
 Organization
 {#code-organization}
 
@@ -185,7 +191,9 @@ pass
 ```text
 
 ```text
+
 ## T
+
 esting Standa
 rds {#testing-standards}
 
@@ -215,7 +223,9 @@ def t
 est_hardware_detection_with_arc_gpu():
 
 ```text
+
 ## Arrange {#ar
+
 range}
 
 ```text
@@ -228,7 +238,9 @@ ock_gpu_info
 ```text
 
 ```text
+
 ## Act {#ac
+
 t}
 
 ```text
@@ -250,6 +262,7 @@ lt = hardware_detection.detect_hardware_type()
 `
 
 ## As
+
 sert {#assert}
 
 ```t
@@ -264,6 +277,7 @@ ert result == "acm"
 
 ```text
 #
+
 # Code Quality Tools {#code-quality-tools}
 
 The project uses several automated tools to maintain code quality:
@@ -328,6 +342,7 @@ disallow_untyped_defs = true
 disallow_incomplete_defs = true
 
 ```text
+
 ## Continuous Integration {#continuous-integration}
 
 - All pull requests must pass CI checks
@@ -366,6 +381,7 @@ Documentation should be:
 
 ---
 **Previous**: [Contributing Guide](contributing.md) | **Next**: [Testing Guide](testing.md) | __See also_*: [Linting](linting.md)
+
 
 ```text`
 

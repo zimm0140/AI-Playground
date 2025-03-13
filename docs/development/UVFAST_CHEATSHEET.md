@@ -34,17 +34,21 @@ python uvfast.py setup --no-lockfile
 ```bash
 
 ## Dis
+
 play hardware detection and environment info {#display-hardware-detection-and-environment-info}
 
 python uvfast.py info
 
 ```text
+
 ### Generate Lo
+
 ckfiles {#generate-lockfiles}
 
 ```bash
 
 ## G
+
 enerate lockfiles for all hardware types {#generate-lockfiles-for-all-hardware-types}
 
 python uvfast.py lockfiles --all
@@ -55,7 +59,9 @@ python uvfast.py lockfiles --hardware acm
 python uvfast.py lockfiles --hardware acm --dev
 
 ```text
+
 ### Run Comma
+
 nds {#run-commands}
 
 ```bash
@@ -83,7 +89,9 @@ python uvfast.py run mypy
 python uvfast.py run python -m your_module
 
 ```text
+
 ### Legacy
+
 Installation {#legacy-installation}
 
 ```bash
@@ -93,7 +101,9 @@ Installation {#legacy-installation}
 python uvfast.py legacy-install --dev
 
 ```text
+
 ## Using
+
 Wrapper Scripts {#using-wrapper-scripts}
 
 ### Linux/macOS {#linuxmacos}
@@ -110,7 +120,9 @@ chmod +x scripts/uvfast.sh
 ./scripts/uvfast.sh run pytest
 
 ```text
+
 ### Win
+
 dows {#windows}
 
 ```pow
@@ -122,7 +134,9 @@ ershell
 .\scripts\uvfast.ps1 run pytest
 
 ```text
+
 ## Ha
+
 rdware-Specific Tips {#hardware-specific-tips}
 
 ### Intel Arc GPUs (acm) {#intel-arc-gpus-acm}
@@ -155,6 +169,7 @@ python uvfast.py run pytest tests/openvino/
 
 ```text
 #
+
 # Configuration {#configuration}
 
 Edit `uvfast.json` to customize settings:
