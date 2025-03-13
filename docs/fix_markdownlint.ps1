@@ -1,7 +1,7 @@
 # PowerShell script to fix common markdown linting issues
 
 # Function to fix ordered lists (MD029)
-function Fix-OrderedLists {
+function Update-OrderedLists {
     param (
         [string]$content
     )
@@ -39,7 +39,7 @@ function Fix-OrderedLists {
 }
 
 # Function to fix strong style (MD050)
-function Fix-StrongStyle {
+function Update-StrongStyle {
     param (
         [string]$content
     )
@@ -51,7 +51,7 @@ function Fix-StrongStyle {
 }
 
 # Function to fix emphasis style (MD049)
-function Fix-EmphasisStyle {
+function Update-EmphasisStyle {
     param (
         [string]$content
     )
@@ -63,7 +63,7 @@ function Fix-EmphasisStyle {
 }
 
 # Function to add alt text to images (MD045)
-function Fix-ImageAltText {
+function Update-ImageAltText {
     param (
         [string]$content
     )
@@ -82,10 +82,10 @@ foreach ($file in $mdFiles) {
     $content = Get-Content -Path $file.FullName -Raw
     
     # Apply fixes
-    $content = Fix-OrderedLists -content $content
-    $content = Fix-StrongStyle -content $content
-    $content = Fix-EmphasisStyle -content $content
-    $content = Fix-ImageAltText -content $content
+    $content = Update-OrderedLists -content $content
+    $content = Update-StrongStyle -content $content
+    $content = Update-EmphasisStyle -content $content
+    $content = Update-ImageAltText -content $content
     
     # Save back to file
     Set-Content -Path $file.FullName -Value $content
