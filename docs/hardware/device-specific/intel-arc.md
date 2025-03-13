@@ -48,6 +48,7 @@ AI-Playground supports all Intel Arc GPU models:
 
    ```bash
    # Run hardware detection
+
    python hardware_detection.py
    ```
 
@@ -74,8 +75,11 @@ AI-Playground supports all Intel Arc GPU models:
 ### Environment Setup
 
 ```bash
+
 # Setup environment optimized for Arc GPUs
+
 python setup_hardware_env.py --hardware acm
+
 ```
 
 This will install the required dependencies including:
@@ -96,14 +100,18 @@ import torch
 import intel_extension_for_pytorch as ipex
 
 # Move model to XPU
+
 model = model.to("xpu")
 
 # Move input tensors to XPU
+
 input_tensor = input_tensor.to("xpu")
 
 # Run inference
+
 with torch.xpu.amp.autocast(dtype=torch.bfloat16):
     output = model(input_tensor)
+
 ```
 
 ### Environment Variables
@@ -111,15 +119,19 @@ with torch.xpu.amp.autocast(dtype=torch.bfloat16):
 Set these environment variables for optimal performance:
 
 ```bash
+
 # Windows (PowerShell)
+
 $env:ZE_AFFINITY_MASK = "0.0"
 $env:SYCL_CACHE_PERSISTENT = "1"
 $env:IPEX_XPU_MAX_STREAMS = "8"
 
 # Linux (Bash)
+
 export ZE_AFFINITY_MASK="0.0"
 export SYCL_CACHE_PERSISTENT="1"
 export IPEX_XPU_MAX_STREAMS="8"
+
 ```
 
 ### Memory Management
@@ -127,12 +139,16 @@ export IPEX_XPU_MAX_STREAMS="8"
 Arc GPUs benefit from careful memory management:
 
 ```python
+
 # Clear XPU cache when needed
+
 torch.xpu.empty_cache()
 
 # Monitor memory usage
+
 print(f"Memory allocated: {torch.xpu.memory_allocated() / 1e9:.2f} GB")
 print(f"Memory reserved: {torch.xpu.memory_reserved() / 1e9:.2f} GB")
+
 ```
 
 ## Troubleshooting Arc-Specific Issues
@@ -150,11 +166,15 @@ print(f"Memory reserved: {torch.xpu.memory_reserved() / 1e9:.2f} GB")
 ### Debugging Tools
 
 ```bash
+
 # Check GPU information
+
 python -c "import torch; import intel_extension_for_pytorch as ipex; print(torch.xpu.get_device_properties(0))"
 
 # Run diagnostic tool
+
 python service/tools/intel_gpu_diagnostics.py
+
 ```
 
 ## Performance Tuning
@@ -167,10 +187,12 @@ python service/tools/intel_gpu_diagnostics.py
    from intel_extension_for_pytorch.quantization import prepare, convert
 
    # Prepare model for quantization
+
    qconfig = ipex.quantization.default_static_qconfig
    prepared_model = prepare(model, qconfig, example_inputs=example_inputs)
 
    # Convert to quantized model
+
    quantized_model = convert(prepared_model)
    ```
 
@@ -186,13 +208,17 @@ python service/tools/intel_gpu_diagnostics.py
 Test different batch sizes to find the optimal value for your specific Arc GPU model:
 
 ```python
+
 # Example batch size benchmark
+
 batch_sizes = [1, 2, 4, 8, 16]
 results = {}
 
 for bs in batch_sizes:
     # Test inference speed with batch size bs
+
     # Record timing information
+
 ```
 
 Typical optimal batch sizes:
