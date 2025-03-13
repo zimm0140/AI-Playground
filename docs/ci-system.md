@@ -48,6 +48,7 @@ The main workflow files are:
 | `comfyui-pr-checks.yml` | Runs checks on PRs that modify ComfyUI workflows |
 | `ruff.yml` | Runs Python linting using Ruff |
 
+
 ## Pre-commit Hooks {#pre-commit-hooks}
 
 Pre-commit hooks are used to catch issues before they're committed to the repository. They run automatically when you commit changes.
@@ -84,7 +85,9 @@ h
 git commit --no-verify
 
 ```text
+
 ## CI
+
  Scripts {#ci-scripts}
 
 The CI system includes several utility scripts that help maintain code quality and workflow efficiency:
@@ -96,6 +99,7 @@ The CI system includes several utility scripts that help maintain code quality a
 | `optimize_ci.py` | Optimizes CI workflow files for better performance |
 | `lint_python_files.py` | Lints Python files for common issues |
 | `remove_duplicate_sections.py` | Removes duplicate sections in workflow files |
+
 
 ## Best Practices {#best-practices}
 
@@ -132,6 +136,7 @@ ash
 
 ```text
 ###
+
 # Linting Errors {#linting-errors}
 
 **Symptom**: Ruff or linting check fails with errors like `F401 import xxx is unused`
@@ -145,6 +150,7 @@ python .github/workflows/scripts/lint_python_files.py path/to/file.py
 
 ```text
 #
+
 ### Indentation Errors in Python Files {#indentation-errors-in-python-files}
 
 **Symptom**: CI fails with indentation errors, particularly in `try/except` blocks
@@ -156,6 +162,7 @@ python .github/workflows/scripts/lint_python_files.py path/to/file.py
 python .github/workflows/scripts/fix_ci_issues.py
 
 ```text
+
 #### Windows Path Issues {#windows-path-issues}
 
 **Symptom**: Backslash escaping issues in regex patterns

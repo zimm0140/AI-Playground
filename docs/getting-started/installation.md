@@ -130,6 +130,7 @@ docker run -p 8000:8000 ai-playground
 
 ```text
 #
+
 # Troubleshooting Installation {#troubleshooting-installation}
 
 ### Common Issues {#common-issues}
@@ -179,6 +180,7 @@ This will check that all required dependencies are installed and that your hardw
 
 ---
 **Previous**: [Quick Start Guide](quickstart.md) | **Next**: [Migration Guide](migration.md) | __See also_*: [Hardware Compatibility](../hardware/compatibility.md)
+
 
 ```text`
 

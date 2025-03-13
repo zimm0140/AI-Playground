@@ -64,7 +64,9 @@ ruff check --select=E,F --ignore=E501 --line-length=100 ./service
 ruff check --select=E,F --ignore=E501 --line-length=100 --fix ./service
 
 ```text
+
 ## Common
+
  Issues and Fixes {#common-issues-and-fixes}
 
 ### Unused Imports (F401) {#unused-imports-f401}
@@ -86,7 +88,9 @@ hon
 import os  # noqa: F401
 
 ```text
+
 ### M
+
 issing Whitespace (E2xx) {#missing-whitespace-e2xx}
 
 Missing spaces around operators or after commas:
@@ -111,6 +115,7 @@ def func(a, b):  # Space after comma
 
 ```text
 #
+
 # CI Integration {#ci-integration}
 
 The project's CI system uses GitHub Actions to run Ruff on all Python files. The configuration is maintained in the `.github/workflows/ruff-integration.yml` file.

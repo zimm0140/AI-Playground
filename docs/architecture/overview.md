@@ -33,6 +33,7 @@ these key principles:
 ```text
 
 ```text
+
 ```text
 │                 │
 ▼                 ▼
@@ -40,6 +41,7 @@ these key principles:
 ```text
 
 ```text
+
 ```text
 text
 
@@ -61,6 +63,7 @@ text
 ```text
 
 ```text
+
 ```text
 
 ```text
@@ -70,6 +73,7 @@ text
 ```text
 
 ```text
+
 ```text
 
 ```text
@@ -88,6 +92,7 @@ text
 ```text
 
 ```text
+
 ```text
 
 ```text
@@ -99,6 +104,7 @@ text
 ``text
 
 ```text
+
 ```text
 
 ```text
@@ -115,9 +121,11 @@ text
 └────────────────────────────────────────────────────────────────┘
 
 ```text
+
 ## Key Components {#key-components}
 
 ### API Layer {
+
 #api-layer}
 
 The API layer provides multiple interfaces for interacting with AI-Playground:
@@ -238,8 +246,11 @@ pu"
 ```text
 
 ```text
+
 ```text
+
 ### M
+
 odule Structure {#module-
 
 structur
@@ -296,7 +307,9 @@ precision": "mixed",
 }
 
 ```text
+
 ## Code Examples {
+
 #code-examples}
 
 ### Hardware Detection {#hardware-detection}
@@ -345,9 +358,11 @@ return "nvidia"
 t
 
 ```text
+
 ```text
 
 ```text
+
 ## Che
 
 ck for NPU {#
@@ -366,7 +381,9 @@ return "npu"
 ```text
 
 ```text
+
 ```text
+
 ## De
 
 fault to
@@ -384,6 +401,7 @@ e"
 ``
 
 ### Envir
+
 onment Setup {#environment-setup}
 
 ```pytho
@@ -420,7 +438,9 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 ```text
 
 ```text
+
 ```text
+
 ## Performance Considerations {#performance-considerations}
 
 ### Memory Management {#memory-management}
@@ -471,6 +491,7 @@ Planned architectural improvements include:
 
 ---
 **Previous**: [Linting Guide](../development/linting.md) | **Next**: [API Design](api-design.md) | __See also_*: [Hardware Overview](../hardware/overview.md)
+
 
 ```text`
 

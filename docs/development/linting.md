@@ -73,9 +73,11 @@ no_implicit_optional = true
 strict_optional = true
 
 ```text
+
 ## Running Linters Locally {#running-linters-locally}
 
 ### Us
+
 ing the Provided Scripts {#using-the-provided-scripts}
 
 1. For Windows users:
@@ -133,6 +135,7 @@ To run markdownlint on Markdown files:
 ```bash
 
 ## Inst
+
 all markdownlint (requires Node.js) {#i
 nstall-markdownlint-requires-nodejs}
 
@@ -143,7 +146,9 @@ npm install -g markdownlint-cli
 markdownlint "__/_.md"
 
 ```text
+
 ## Common Linting Issues and Fixes {#common-linting-iss
+
 ues-and-fixes}
 
 ### Unused Imports (F401) {#unused-imports-f401}
@@ -157,6 +162,7 @@ import os  # Unused import
 ```text
 *_Fix__: Ei
 ther remove the import or add a `# noqa: F
+
 401` comment if it's needed for side effects:
 
 ```python
@@ -164,7 +170,9 @@ ther remove the import or add a `# noqa: F
 import os  # noqa: F401
 
 ```text
+
 ### Missing
+
  Whitespace (E2xx) {#missing-whitespace-
 e2xx}
 
@@ -189,7 +197,9 @@ def fun
 c(a, b):  # Space after comma
 
 ```text
+
 ### Type Annotation Issues {#type-annotation-is
+
 sues}
 
 Missing or incorrect type annotations:
@@ -197,6 +207,7 @@ Missing or incorrect type annotations:
 ```python
 
 def process_data(data):  # Missing
+
 type annotations
 
 ```text
@@ -221,7 +232,9 @@ return data + 1
 ```text
 
 ```text
+
 ### Hardwa
+
 re-Specific Impo
 rt Issues {#h
 ardware-specific-import-issues}
@@ -258,7 +271,9 @@ NTEL_EXTENSION = False
 ext
 
 ```text
+
 ## CI Integration
+
 {#ci-integrat
 ion}
 
@@ -287,6 +302,7 @@ To ensure code quality before committing, you can set up pre-commit hooks locall
 ```bash
 
 ## On Linux/macOS/Gi
+
 t Bash {#on-linuxmacosgit-bash}
 
 ./.github/setup-hooks.sh
@@ -306,6 +322,7 @@ There are cases where linter rules need to be temporarily disabled:
 ```python
 
 ## In situations
+
  where a line is necessarily long {#in-situations-where-a-line-is-necessarily-long}
 
 long_url = "<https://very-long-url-that-cannot-be-split.com/path/to/resource">  # noqa: E501
@@ -321,6 +338,7 @@ pass
 
 ```text
 Use `# n
+
 oqa:`
  comments sp
 aringly and only when necessary.
@@ -362,6 +380,7 @@ hardware_type: One of "acm", "bmg", or "base"
 ```text
 
 ```text
+
 ```text
 Returns:
 
@@ -385,11 +404,13 @@ extension_for_pytorch as ipex  # noqa: F401
 ```text
 
 ```text
+
 ```text
 
 `
 
 ``
+
 ```text
 
 ```text
@@ -419,6 +440,7 @@ eturn model
 ```text
 
 ```text
+
 ## Additional Resources {#additional-resources}
 
 - [Ruff Documentation](https://docs.astral.sh/ruff/)
@@ -433,6 +455,7 @@ eturn model
 
 ---
 **Previous**: [Testing Guide](testing.md) | **Next**: [Project Architecture](../architecture/overview.md) | __See also_*: [Code Quality Standards](code-quality.md)
+
 
 ```text`
 

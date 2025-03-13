@@ -23,12 +23,14 @@ def process_data(data: Union[dict, list]) -> Union\[str, None\]:
 ```text
 
 ```text
+
 #### After (Python 3.10+) {#after-python-310}
 
 ```python
 
 def process_d
 ata(data: dict | list) -> str | None:
+
 
 ```text
 ..
@@ -37,6 +39,7 @@ ata(data: dict | list) -> str | None:
 ```text
 
 ```text
+
 #### Migration Approach {#migration-approach}
 
 For
@@ -57,6 +60,7 @@ dict, list]) -> Union[str, None]:
 ```text
 
 ```text
+
 ### 2. Optional Types {#optional-types}
 
 `Opti
@@ -79,7 +83,9 @@ Optional[int] = None) -> Optional[dict]:
 ```text
 
 ```text
+
 #### After (Python 3.10+) {#after-python-3
+
 10}
 
 ```python
@@ -88,13 +94,16 @@ d
 ef get_user(user_id: int | None = None) -> dic
 t | None:
 
+
 ```text
 ...
 
 ```text
 
 ```text
+
 #### Migration Approach {#migration-ap
+
 proa
 ch}
 
@@ -114,6 +123,7 @@ er_id: Optional[int] = None) -> Optional[dict]:
 ```text
 
 ```text
+
 ### 3. Type Aliases {#type-aliases}
 
 Py
@@ -130,6 +140,7 @@ JS
 ONValue = Union[str, int, float, bool, None, Dict[str, 'JSONValue'], List['JSONValue']]
 
 ```text
+
 #### After (Python 3.10+) {#after-python-310}
 
 ```text
@@ -140,7 +151,9 @@ from typing import TypeAlias
 JSONValu
 e: TypeAlias = str | int | float | bool | None | dict[str, 'JSONValue'] | list['JSONValue']
 
+
 ```text
+
 #### Migration Approach {#migration-approach}
 
 F
@@ -155,6 +168,7 @@ from typing import Dict, List, Union
 JSONValue = Union[str, int, float, bool, None, Dict[str, 'JSONValue'], List['JSONValue']]
 
 ```text
+
 ### 4. Generic Types {#generic-types}
 
 Python
@@ -175,7 +189,9 @@ def
 ```text
 
 ```text
+
 #### After (Python 3.9+)
+
 {#aft
 er-python-39}
 
@@ -190,7 +206,9 @@ def process_data(data: dict[str
 ```text
 
 ```text
+
 #### Migration Approac
+
 h {#
 migration-app
 roach}
@@ -210,7 +228,9 @@ def process_data(data: Dict[str, List[int]]) -> None:
 ```text
 
 ```text
+
 ## Using the Type
+
 Anno
 tation Fix To
 ol {#using-the-type-annotation-fix-tool}
@@ -220,6 +240,7 @@ We've provided a tool to help identify type annotation issues:
 ```bash
 
 ## Scan the entire proje
+
 ct {#scan-the-entire-project}
 
 python scripts/fix_type_annotations.py .
@@ -237,7 +258,9 @@ python scripts/fix_type_annotations.py --dry-run .
 python scripts/fix_type_annotations.py --verbose .
 
 ```text
+
 ## Common Runtime Type Errors {#c
+
 ommon-runtime-type-errors}
 
 ### 1. None Handling {#none-handling}
@@ -247,6 +270,7 @@ When dealing with potentially `None` values, always add explicit checks:
 ```python
 
 ## Problematic {#pro
+
 blematic}
 
 def process_path(path: Optional[str]) -> str:
@@ -256,6 +280,7 @@ return os.path.join(path, "subd
 ir")  # TypeError if path is None
 
 ```text
+
 ## Fixed {#fixed}
 
 def pr
@@ -276,7 +301,9 @@ subdir")
 ```text
 
 ```text
+
 ### 2. Colle
+
 ction Type Ch
 ecking {#collection-type-checking}
 
@@ -285,6 +312,7 @@ When checking collection types:
 ```python
 
 ## Problemat
+
 ic {#problematic}
 
 def process_data(data: Union[dict, list]) -> None:
@@ -294,12 +322,15 @@ if isinstance(data, dic
 t):
 
 ```text
+
 ## dict processin
+
 g {#dict-processing}
 
 ```text
 
 ```text
+
 ```text
 elif isinsta
 
@@ -307,12 +338,15 @@ nce(dat
 a, list):
 
 ```text
+
 ## list proce
+
 ssing {#list-processing}
 
 ```text
 
 ```text
+
 ```text
 else:
 
@@ -326,6 +360,7 @@ eError(f"Expected dict or list, got {type(data)}")
 ```text
 
 ```text
+
 ## Bett
 
 er {#better}
@@ -337,23 +372,28 @@ if isinstan
 ce(data, dict):
 
 ```text
+
 ## di
+
 ct processing {#dict-processing}
 
 ```text
 
 ```text
+
 ```text
 elif is
 instance(data, list):
 
 ```text
 #
+
 # list processing {#list-processing}
 
 ```text
 
 ```text
+
 ```text
 els
 e:
@@ -366,7 +406,9 @@ raise ValueError(f"Expected one of {acceptable_types}, got {type(data)}")
 ```text
 
 ```text
+
 ```text
+
 ## IDE Support {#ide-support}
 
 Modern IDEs like VS Code with Pylance, PyCharm, or tools like mypy can help identify type annotation issues. Ensure your IDE is configured to check types with Python 3.10+

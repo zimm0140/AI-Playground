@@ -53,7 +53,9 @@ To run tests with detailed output:
 pytest -v
 
 ```text
+
 ### Running a Specific Test File {#ru
+
 nning-a-specific-test-fi
 le}
 
@@ -64,7 +66,9 @@ To run tests from a specific file:
 pytest tests/test_hardware_detection.py
 
 ```text
+
 ### R
+
 unning a Specific Test Function {#running-a-specific-t
 est-function}
 
@@ -76,7 +80,9 @@ pytest tests/test_hardware_detection.py::TestHard
 wareDetection::test_detect_arc_gpu
 
 ```text
+
 ### Running Tests with Coverage Report {#running-tests-wi
+
 th-coverage-report}
 
 To run tests with a coverage report:
@@ -125,7 +131,9 @@ Example:
 def test_detect_arc_gpu():
 
 ```text
+
 ## Arran
+
 ge {#arrange}
 
 ```text
@@ -138,6 +146,7 @@ mock_gpu_info =
 ```text
 
 ```text
+
 ## Act {#act}
 
 ```text
@@ -156,7 +165,9 @@ re_type()
 ```text
 
 ```text
+
 ```text
+
 ## Assert {#assert}
 
 ```text
@@ -170,7 +181,9 @@ ext
 
 ```text
 ##
+
 # Using Fixtures {#usin
+
 g-fixtures}
 
 Fixtures are a powerful way to reuse test setup code:
@@ -200,7 +213,9 @@ def test_hardware_detection
 ample_config):
 
 ```text
+
 ## Use the sample_config fixture
+
  {#use-the-sample_config-fixture}
 
 ```text
@@ -211,12 +226,15 @@ re_detection
 .load_config", return_value=sample_config):
 
 ```text
+
 ## Test code here {#test
+
 -code-here}
 
 ```text
 
 ```text
+
 ```text
 
 ```text
@@ -227,7 +245,9 @@ pass
 xt
 
 ```text
+
 ```text
+
 ### Mocking {#m
 
 ocking}
@@ -241,7 +261,9 @@ dware_detection.get_gpu_info")
 def test_gpu_detection(mock_get_gpu_info):
 
 ```text
+
 ## Configure the mock
+
  {#configure-the-mock}
 
 ```text
@@ -254,7 +276,9 @@ eturn_value = ["Intel(R) Arc(TM) A770 Graphics"]
 ```text
 
 ```text
+
 ## T
+
 est code that
  uses get_gpu_info {#test-code-that-uses-get_gpu_info}
 
@@ -268,7 +292,9 @@ re_detection.detect_hardware_type()
 ```text
 
 ```text
+
 ## Verify res
+
 ults {#verify-results}
 
 ```text
@@ -283,6 +309,7 @@ lt == "acm"
 ``
 
 ### Testi
+
 ng Hardware-Specific Code {#testing-hardware-specific-code}
 
 When testing hardware-specific functionality:
@@ -326,8 +353,10 @@ assert result == expected_type
 ``
 
 `
+
 ```text
 #
+
 # Testing Best Practices {#testing-best-practices}
 
 1. **Test the public API**: Focus on testing public interfaces, not implementation details
@@ -391,6 +420,7 @@ This will show which core modules have tests and which functions might lack cove
 
 ---
 **Previous**: [Code Quality Standards](code-quality.md) | **Next**: [Linting](linting.md) | __See also_*: [Contributing Guide](contributing.md)
+
 
 ```text`
 

@@ -104,7 +104,9 @@ python uvfast.py run ruff check .
 python uvfast.py run mypy .
 
 ```text
+
 ### Using
+
  Wrapper Scripts {#using-wrapper-scripts}
 
 ```bash
@@ -118,7 +120,9 @@ python uvfast.py run mypy .
 .\scripts\uvfast.ps1 setup --dev
 
 ```text
+
 ### Har
+
 dware-Specific Setup {#hardware-specific-setup}
 
 ```bas
@@ -133,7 +137,9 @@ python uvfast.py setup --hardware acm --dev
 python uvfast.py setup --hardware ovino --dev
 
 ```text
+
 ## Im
+
 plementation Example {#implementation-example}
 
 ### uvfast.json {#uvfastjson}
@@ -177,6 +183,7 @@ base": "requirements.lock",
 }
 
 ```text
+
 ## Benefits of Using uvfast {#benefits-of-using-uvfast}
 
 1. **Modern tooling**: Leverages `uv` for faster package installation

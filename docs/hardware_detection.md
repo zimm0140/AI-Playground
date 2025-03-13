@@ -17,7 +17,9 @@ If using from another project, you can install directly:
 pip install -e .
 
 ```text
+
 ## Usag
+
 e {#usage}
 
 ### Recommended Usage {#recommended-usage}
@@ -27,6 +29,7 @@ Import directly from the `hardware_detection` package:
 ```python
 
 ## Import f
+
 rom the hardware_detection package (recommended) {#import-from-the-hardware_detection-package-recommended}
 
 from hardware_detection import detect_hardware_type, get_gpu_info, get_hardware_info
@@ -46,7 +49,9 @@ elif hardware_type == "arl_h":  # AMD GPU
     pass
 
 ```text
+
 ### L
+
 egacy Usage (Deprecated) {#legacy-usage-deprecated}
 
 The module can also be imported from the legacy location, but this approach is deprecated:
@@ -54,6 +59,7 @@ The module can also be imported from the legacy location, but this approach is d
 ```python
 
 ## Legacy
+
  import (deprecated) {#legacy-import-deprecated}
 
 from tools.hardware import hardware_detection
@@ -94,6 +100,7 @@ print(f"Detected hardware: {hardware}")
 
 ```text
 #
+
 ### `get_gpu_info() -> List[str]` {#get_gpu_info---liststr}
 
 Get information about available GPUs.
@@ -112,6 +119,7 @@ gpus = get_gpu_info()
 print(f"Available GPUs: {gpus}")
 
 ```text
+
 #### `get_cpu_info() -> Dict[str, Any]` {#get_cpu_info---dictstr-any}
 
 Get information about the CPU.
@@ -160,6 +168,7 @@ info = get_hardware_info()
 print(json.dumps(info, indent=2))
 
 ```text
+
 #### `print_hardware_info(verbose: bool = False) -> None` {#print_hardware_infoverbose-bool-false---none}
 
 Print information about the system hardware.
@@ -176,6 +185,7 @@ from hardware_detection import print_hardware_info
 print_hardware_info(verbose=True)
 
 ```text
+
 ## Environment Variables {#environment-variables}
 
 The module supports these environment variables for testing and CI:

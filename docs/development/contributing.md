@@ -39,6 +39,7 @@ pip install -r requirements.txt
 ```bash
 
 ## Check w
+
 hich Python is being used (should point to your conda environment) {#check-which-python-is-being-used-should-point-to-your-conda-environment}
 
 python -c "import sys; print(sys.executable)"
@@ -48,7 +49,9 @@ python -c "import sys; print(sys.executable)"
 python -c "import jsonschema; print(f'jsonschema version: {jsonschema.**version**}')"
 
 ```text
+
 ### Option 2: Using
+
  venv {#option-2-using-venv}
 
 1. **Create and activate the environment**:
@@ -56,6 +59,7 @@ python -c "import jsonschema; print(f'jsonschema version: {jsonschema.**version*
 ```bash
 
 ## On Wi
+
 ndows {#on-windows}
 
 python -m venv .venv
@@ -71,7 +75,9 @@ source .venv/bin/activate
 pip install -r requirements.txt
 
 ```text
+
 ## Environment Ma
+
 nagement Best Practices {#environment-management-best-practices}
 
 1. **Always activate your environment before working on the project**:
@@ -79,6 +85,7 @@ nagement Best Practices {#environment-management-best-practices}
 ```bash
 
 ## For
+
  Conda {#for-conda}
 
 conda activate ai-playground-env
@@ -100,6 +107,7 @@ When adding a new package, update the requirements.txt file:
 ```bash
 
 ## A
+
 fter installing a new package {#after-installing-a-new-package}
 
 pip freeze > requirements.txt
@@ -127,7 +135,9 @@ To validate JSON files against schemas:
 python validate_colorize.py
 
 ```text
+
 ## Addition
+
 al Guidelines {#additional-guidelines}
 
 ## Code of Conduct {#code-of-conduct}

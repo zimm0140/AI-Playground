@@ -20,6 +20,7 @@ AI-Playground supports the following hardware platforms with varying levels of o
 | NVIDIA GPUs | - | Standard | Standard PyTorch CUDA support |
 | AMD GPUs | - | Basic | Limited support via ROCm |
 
+
 ## Automatic Hardware Detection {#automatic-hardware-detection}
 
 AI-Playground includes a sophisticated hardware detection system that identifies your specific hardware configuration and sets up the environment accordingly:
@@ -93,6 +94,7 @@ If you want to override the automatic detection, you can specify the hardware ty
 python setup_hardware_env.py --hardware acm  # For Intel Arc GPUs
 
 ```text
+
 ## Hardware-specific Dependencies {#hardware-specific-dependencies}
 
 Each hardware configuration has specific dependencies:
@@ -125,6 +127,7 @@ For optimization techniques specific to your hardware, see the [Hardware Optimiz
 
 ---
 **Previous**: [Migration Guide](../getting-started/migration.md) | **Next**: [Hardware Compatibility](compatibility.md) | __See also_*: [Device-Specific Guides](device-specific/)
+
 
 ```text`
 
