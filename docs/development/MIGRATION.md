@@ -6,22 +6,50 @@ This guide helps you migrate to the modern Python development workflow using uv 
 ## Table of Contents
 
 1. [Migrating from pip to uv](#migrating-from-pip-to-uv)
-2. [Updating Type Annotations for Python 3.10+](#updating-type-annotations-for-python-310)
-3. [Using Lockfiles for Reproducible Environments](#using-lockfiles-for-reproducible-environments)
-4. [Working with Docker](#working-with-docker)
-5. [CI/CD Pipeline Updates](#cicd-pipeline-updates)
-6. [Migration FAQs](#migration-faqs)
+
+
+1. [Updating Type Annotations for Python 3.10+](#updating-type-annotations-for-python-310)
+
+
+1. [Using Lockfiles for Reproducible Environments](#using-lockfiles-for-reproducible-environments)
+
+
+1. [Working with Docker](#working-with-docker)
+
+
+1. [CI/CD Pipeline Updates](#cicd-pipeline-updates)
+
+
+1. [Migration FAQs](#migration-faqs)
 
 1. [Migrating from pip to uv](#migrating-from-pip-to-uv)
-4. [Updating Type Annotations for Python 3.10+](#updating-type-annotations-for-python-310)
-5. [Scan the entire project](#scan-the-entire-project)
-6. [Scan a specific file](#scan-a-specific-file)
-8. [Using Lockfiles for Reproducible Environments](#using-lockfiles-for-reproducible-environments)
-9. [Working with Docker](#working-with-docker)
-10. [Build and run the development image](#build-and-run-the-development-image)
-11. [Build and run the production image](#build-and-run-the-production-image)
-13. [CI/CD Pipeline Updates](#cicd-pipeline-updates)
-14. [Migration FAQs](#migration-faqs)
+
+
+1. [Updating Type Annotations for Python 3.10+](#updating-type-annotations-for-python-310)
+
+
+1. [Scan the entire project](#scan-the-entire-project)
+
+
+10. [Scan a specific file](#scan-a-specific-file)
+
+
+11. [Using Lockfiles for Reproducible Environments](#using-lockfiles-for-reproducible-environments)
+
+
+12. [Working with Docker](#working-with-docker)
+
+
+13. [Build and run the development image](#build-and-run-the-development-image)
+
+
+14. [Build and run the production image](#build-and-run-the-production-image)
+
+
+15. [CI/CD Pipeline Updates](#cicd-pipeline-updates)
+
+
+16. [Migration FAQs](#migration-faqs)
 
 
 ## Migrating from pip to uv {#migrating-from-pip-to-uv}
@@ -35,7 +63,6 @@ This guide helps you migrate to the modern Python development workflow using uv 
 - **Features**: Better support for modern Python packaging standards
 
 - **Lockfiles**: Native support for lockfile generation and updating
-
 ### Step-by-Step Migration
 
 1. **Install uv**:
@@ -178,7 +205,6 @@ For detailed guidance on type compatibility issues and solutions, see the [Type 
 
 
    ```bash
-
 ## Using Lockfiles for Reproducible Environments {#using-lockfiles-for-reproducible-environments}
 
 The project now uses lockfiles to ensure reproducible environments:

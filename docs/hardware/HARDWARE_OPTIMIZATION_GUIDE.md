@@ -6,24 +6,56 @@ This guide explains how to optimize your AI applications for Intel hardware usin
 ## Table of Contents
 
 1. [Overview](#overview)
-2. [Hardware Types](#hardware-types)
-3. [Environment Setup](#environment-setup)
-4. [Using the AI Framework Integration](#using-the-ai-framework-integration)
-5. [Working with LangChain](#working-with-langchain)
-6. [Working with Stable Diffusion](#working-with-stable-diffusion)
-7. [Performance Benchmarking](#performance-benchmarking)
-8. [Troubleshooting](#troubleshooting)
-9. [Advanced Configuration](#advanced-configuration)
+
+
+1. [Hardware Types](#hardware-types)
+
+
+1. [Environment Setup](#environment-setup)
+
+
+1. [Using the AI Framework Integration](#using-the-ai-framework-integration)
+
+
+1. [Working with LangChain](#working-with-langchain)
+
+
+1. [Working with Stable Diffusion](#working-with-stable-diffusion)
+
+
+1. [Performance Benchmarking](#performance-benchmarking)
+
+
+1. [Troubleshooting](#troubleshooting)
+
+
+1. [Advanced Configuration](#advanced-configuration)
 
 1. [Overview](#overview)
+
+
 2. [Hardware Types](#hardware-types)
-3. [Environment Setup](#environment-setup)
-6. [Using the AI Framework Integration](#using-the-ai-framework-integration)
-7. [Working with LangChain](#working-with-langchain)
-10. [Working with Stable Diffusion](#working-with-stable-diffusion)
-14. [Performance Benchmarking](#performance-benchmarking)
-16. [Troubleshooting](#troubleshooting)
-21. [Advanced Configuration](#advanced-configuration)
+
+
+12. [Environment Setup](#environment-setup)
+
+
+13. [Using the AI Framework Integration](#using-the-ai-framework-integration)
+
+
+14. [Working with LangChain](#working-with-langchain)
+
+
+15. [Working with Stable Diffusion](#working-with-stable-diffusion)
+
+
+16. [Performance Benchmarking](#performance-benchmarking)
+
+
+17. [Troubleshooting](#troubleshooting)
+
+
+18. [Advanced Configuration](#advanced-configuration)
 
 
 ## Overview {#overview}
@@ -299,7 +331,7 @@ Lower times indicate better performance. Compare results across hardware types t
 
 If your Intel Arc GPU is not detected:
 
-1. Ensure you have the latest Intel GPU drivers installed
+22. Ensure you have the latest Intel GPU drivers installed
 
 1. Check that the environment variable `XPU_VISIBLE_DEVICES` is set correctly
 
