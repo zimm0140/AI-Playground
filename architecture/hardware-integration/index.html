@@ -1,1 +1,2329 @@
-<!doctype html><html lang=en class=no-js> <head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="Documentation for the AI-Playground project"><meta name=author content="AI-Playground Team"><link href=https://intel.github.io/AI-Playground/architecture/hardware-integration/ rel=canonical><link rel=icon href=../../assets/images/favicon.png><meta name=generator content="mkdocs-1.6.1, mkdocs-material-9.6.7"><title>Hardware Integration Architecture - AI-Playground Documentation</title><link rel=stylesheet href=../../assets/stylesheets/main.8608ea7d.min.css><link rel=stylesheet href=../../assets/stylesheets/palette.06af60db.min.css><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback"><style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style><link rel=stylesheet href=../../stylesheets/extra.css><script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script></head> <body dir=ltr data-md-color-scheme=default data-md-color-primary=indigo data-md-color-accent=blue> <input class=md-toggle data-md-toggle=drawer type=checkbox id=__drawer autocomplete=off> <input class=md-toggle data-md-toggle=search type=checkbox id=__search autocomplete=off> <label class=md-overlay for=__drawer></label> <div data-md-component=skip> <a href=#hardware-integration-architecture class=md-skip> Skip to content </a> </div> <div data-md-component=announce> </div> <div data-md-color-scheme=default data-md-component=outdated hidden> </div> <header class=md-header data-md-component=header> <nav class="md-header__inner md-grid" aria-label=Header> <a href=../.. title="AI-Playground Documentation" class="md-header__button md-logo" aria-label="AI-Playground Documentation" data-md-component=logo> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg> </a> <label class="md-header__button md-icon" for=__drawer> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg> </label> <div class=md-header__title data-md-component=header-title> <div class=md-header__ellipsis> <div class=md-header__topic> <span class=md-ellipsis> AI-Playground Documentation </span> </div> <div class=md-header__topic data-md-component=header-topic> <span class=md-ellipsis> Hardware Integration Architecture </span> </div> </div> </div> <label class="md-header__button md-icon" for=__search> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg> </label> <div class=md-search data-md-component=search role=dialog> <label class=md-search__overlay for=__search></label> <div class=md-search__inner role=search> <form class=md-search__form name=search> <input type=text class=md-search__input name=query aria-label=Search placeholder=Search autocapitalize=off autocorrect=off autocomplete=off spellcheck=false data-md-component=search-query required> <label class="md-search__icon md-icon" for=__search> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg> </label> <nav class=md-search__options aria-label=Search> <button type=reset class="md-search__icon md-icon" title=Clear aria-label=Clear tabindex=-1> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg> </button> </nav> <div class=md-search__suggest data-md-component=search-suggest></div> </form> <div class=md-search__output> <div class=md-search__scrollwrap tabindex=0 data-md-scrollfix> <div class=md-search-result data-md-component=search-result> <div class=md-search-result__meta> Initializing search </div> <ol class=md-search-result__list role=presentation></ol> </div> </div> </div> </div> </div> <div class=md-header__source> <a href=https://github.com/intel/AI-Playground title="Go to repository" class=md-source data-md-component=source> <div class="md-source__icon md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 496 512"><!-- Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg> </div> <div class=md-source__repository> intel/AI-Playground </div> </a> </div> </nav> </header> <div class=md-container data-md-component=container> <nav class=md-tabs aria-label=Tabs data-md-component=tabs> <div class=md-grid> <ul class=md-tabs__list> <li class=md-tabs__item> <a href=../.. class=md-tabs__link> Home </a> </li> <li class=md-tabs__item> <a href=../../getting-started/quickstart/ class=md-tabs__link> Getting Started </a> </li> <li class=md-tabs__item> <a href=../../hardware/overview/ class=md-tabs__link> Hardware </a> </li> <li class=md-tabs__item> <a href=../../development/contributing/ class=md-tabs__link> Development </a> </li> <li class=md-tabs__item> <a href=../overview/ class=md-tabs__link> Architecture </a> </li> <li class=md-tabs__item> <a href=../../reference/configuration.md class=md-tabs__link> Reference </a> </li> </ul> </div> </nav> <main class=md-main data-md-component=main> <div class="md-main__inner md-grid"> <div class="md-sidebar md-sidebar--primary" data-md-component=sidebar data-md-type=navigation> <div class=md-sidebar__scrollwrap> <div class=md-sidebar__inner> <nav class="md-nav md-nav--primary md-nav--lifted" aria-label=Navigation data-md-level=0> <label class=md-nav__title for=__drawer> <a href=../.. title="AI-Playground Documentation" class="md-nav__button md-logo" aria-label="AI-Playground Documentation" data-md-component=logo> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg> </a> AI-Playground Documentation </label> <div class=md-nav__source> <a href=https://github.com/intel/AI-Playground title="Go to repository" class=md-source data-md-component=source> <div class="md-source__icon md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 496 512"><!-- Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg> </div> <div class=md-source__repository> intel/AI-Playground </div> </a> </div> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../.. class=md-nav__link> <span class=md-ellipsis> Home </span> </a> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle " type=checkbox id=__nav_2> <label class=md-nav__link for=__nav_2 id=__nav_2_label tabindex=0> <span class=md-ellipsis> Getting Started </span> <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav data-md-level=1 aria-labelledby=__nav_2_label aria-expanded=false> <label class=md-nav__title for=__nav_2> <span class="md-nav__icon md-icon"></span> Getting Started </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../getting-started/quickstart/ class=md-nav__link> <span class=md-ellipsis> Quick Start </span> </a> </li> <li class=md-nav__item> <a href=../../getting-started/installation/ class=md-nav__link> <span class=md-ellipsis> Installation </span> </a> </li> <li class=md-nav__item> <a href=../../getting-started/migration/ class=md-nav__link> <span class=md-ellipsis> Migration </span> </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle " type=checkbox id=__nav_3> <label class=md-nav__link for=__nav_3 id=__nav_3_label tabindex=0> <span class=md-ellipsis> Hardware </span> <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav data-md-level=1 aria-labelledby=__nav_3_label aria-expanded=false> <label class=md-nav__title for=__nav_3> <span class="md-nav__icon md-icon"></span> Hardware </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../hardware/overview/ class=md-nav__link> <span class=md-ellipsis> Overview </span> </a> </li> <li class=md-nav__item> <a href=../../hardware/compatibility/ class=md-nav__link> <span class=md-ellipsis> Compatibility </span> </a> </li> <li class=md-nav__item> <a href=../../hardware/optimization/ class=md-nav__link> <span class=md-ellipsis> Optimization </span> </a> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle " type=checkbox id=__nav_3_4> <label class=md-nav__link for=__nav_3_4 id=__nav_3_4_label tabindex=0> <span class=md-ellipsis> Device-Specific </span> <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav data-md-level=2 aria-labelledby=__nav_3_4_label aria-expanded=false> <label class=md-nav__title for=__nav_3_4> <span class="md-nav__icon md-icon"></span> Device-Specific </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../hardware/device-specific/intel-arc/ class=md-nav__link> <span class=md-ellipsis> Intel Arc </span> </a> </li> </ul> </nav> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle " type=checkbox id=__nav_4> <label class=md-nav__link for=__nav_4 id=__nav_4_label tabindex=0> <span class=md-ellipsis> Development </span> <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav data-md-level=1 aria-labelledby=__nav_4_label aria-expanded=false> <label class=md-nav__title for=__nav_4> <span class="md-nav__icon md-icon"></span> Development </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../development/contributing/ class=md-nav__link> <span class=md-ellipsis> Contributing </span> </a> </li> <li class=md-nav__item> <a href=../../development/code-quality/ class=md-nav__link> <span class=md-ellipsis> Code Quality </span> </a> </li> <li class=md-nav__item> <a href=../../development/testing/ class=md-nav__link> <span class=md-ellipsis> Testing </span> </a> </li> <li class=md-nav__item> <a href=../../development/linting/ class=md-nav__link> <span class=md-ellipsis> Linting </span> </a> </li> <li class=md-nav__item> <a href=../../development/workflows.md class=md-nav__link> <span class=md-ellipsis> CI/CD </span> </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle " type=checkbox id=__nav_5> <label class=md-nav__link for=__nav_5 id=__nav_5_label tabindex=0> <span class=md-ellipsis> Architecture </span> <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav data-md-level=1 aria-labelledby=__nav_5_label aria-expanded=false> <label class=md-nav__title for=__nav_5> <span class="md-nav__icon md-icon"></span> Architecture </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../overview/ class=md-nav__link> <span class=md-ellipsis> Overview </span> </a> </li> <li class=md-nav__item> <a href=../components.md class=md-nav__link> <span class=md-ellipsis> Components </span> </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle " type=checkbox id=__nav_6> <label class=md-nav__link for=__nav_6 id=__nav_6_label tabindex=0> <span class=md-ellipsis> Reference </span> <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav data-md-level=1 aria-labelledby=__nav_6_label aria-expanded=false> <label class=md-nav__title for=__nav_6> <span class="md-nav__icon md-icon"></span> Reference </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../reference/configuration.md class=md-nav__link> <span class=md-ellipsis> Configuration </span> </a> </li> <li class=md-nav__item> <a href=../../reference/troubleshooting.md class=md-nav__link> <span class=md-ellipsis> Troubleshooting </span> </a> </li> <li class=md-nav__item> <a href=../../reference/api/index.md class=md-nav__link> <span class=md-ellipsis> API </span> </a> </li> </ul> </nav> </li> </ul> </nav> </div> </div> </div> <div class="md-sidebar md-sidebar--secondary" data-md-component=sidebar data-md-type=toc> <div class=md-sidebar__scrollwrap> <div class=md-sidebar__inner> <nav class="md-nav md-nav--secondary" aria-label="Table of contents"> <label class=md-nav__title for=__toc> <span class="md-nav__icon md-icon"></span> Table of contents </label> <ul class=md-nav__list data-md-component=toc data-md-scrollfix> <li class=md-nav__item> <a href=#overview class=md-nav__link> <span class=md-ellipsis> Overview </span> </a> </li> <li class=md-nav__item> <a href=#hardware-support-layers class=md-nav__link> <span class=md-ellipsis> Hardware Support Layers </span> </a> <nav class=md-nav aria-label="Hardware Support Layers"> <ul class=md-nav__list> <li class=md-nav__item> <a href=#application-layer class=md-nav__link> <span class=md-ellipsis> 1. Application Layer </span> </a> </li> <li class=md-nav__item> <a href=#device-selector class=md-nav__link> <span class=md-ellipsis> 2. Device Selector </span> </a> </li> <li class=md-nav__item> <a href=#3-hardware-abstraction-layer-hal-hardware-abst class=md-nav__link> <span class=md-ellipsis> 3. Hardware Abstraction Layer (HAL) {#hardware-abst </span> </a> </li> <li class=md-nav__item> <a href=#hardware-specific-backends class=md-nav__link> <span class=md-ellipsis> 4. Hardware-Specific Backends </span> </a> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=#hardware-detection-process class=md-nav__link> <span class=md-ellipsis> Hardware Detection Process </span> </a> <nav class=md-nav aria-label="Hardware Detection Process"> <ul class=md-nav__list> <li class=md-nav__item> <a href=#detection-implementation class=md-nav__link> <span class=md-ellipsis> Detection Implementation </span> </a> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=#check-for-intel-arc-gpus class=md-nav__link> <span class=md-ellipsis> Check for Intel Arc GPUs </span> </a> </li> <li class=md-nav__item> <a href=#check-for-nvidia-gpus-check-for-nvidia-gpus class=md-nav__link> <span class=md-ellipsis> Check for NVIDIA GPUs {#check-for-nvidia-gpus </span> </a> </li> <li class=md-nav__item> <a href=#check-for-npu class=md-nav__link> <span class=md-ellipsis> Check for NPU </span> </a> </li> <li class=md-nav__item> <a href=#always-add-cpu-as-fallba class=md-nav__link> <span class=md-ellipsis> Always add CPU as fallba </span> </a> </li> <li class=md-nav__item> <a href=#sort class=md-nav__link> <span class=md-ellipsis> Sort </span> </a> </li> <li class=md-nav__item> <a href=#envir class=md-nav__link> <span class=md-ellipsis> Envir </span> </a> <nav class=md-nav aria-label=Envir> <ul class=md-nav__list> <li class=md-nav__item> <a href=#intel-arc-g class=md-nav__link> <span class=md-ellipsis> Intel Arc G </span> </a> </li> <li class=md-nav__item> <a href=#intel-npu-environment class=md-nav__link> <span class=md-ellipsis> Intel NPU Environment </span> </a> </li> <li class=md-nav__item> <a href=#nvidia-gpu-environment class=md-nav__link> <span class=md-ellipsis> NVIDIA GPU Environment </span> </a> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=#model-optimization class=md-nav__link> <span class=md-ellipsis> Model Optimization </span> </a> <nav class=md-nav aria-label="Model Optimization"> <ul class=md-nav__list> <li class=md-nav__item> <a href=#xpu-opti class=md-nav__link> <span class=md-ellipsis> XPU Opti </span> </a> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=#convert class=md-nav__link> <span class=md-ellipsis> Convert </span> </a> </li> <li class=md-nav__item> <a href=#apply-ipex-optimizations class=md-nav__link> <span class=md-ellipsis> Apply IPEX optimizations </span> </a> </li> <li class=md-nav__item> <a href=#_1 class=md-nav__link> <span class=md-ellipsis> </span> </a> <nav class=md-nav aria-label> <ul class=md-nav__list> <li class=md-nav__item> <a href=#npu-opti class=md-nav__link> <span class=md-ellipsis> NPU Opti </span> </a> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=#initialize-quanti class=md-nav__link> <span class=md-ellipsis> Initialize quanti </span> </a> </li> <li class=md-nav__item> <a href=#define-calib class=md-nav__link> <span class=md-ellipsis> Define calib </span> </a> </li> <li class=md-nav__item> <a href=#quantize-the-model class=md-nav__link> <span class=md-ellipsis> Quantize the model </span> </a> <nav class=md-nav aria-label="Quantize the model"> <ul class=md-nav__list> <li class=md-nav__item> <a href=#cuda-optimization class=md-nav__link> <span class=md-ellipsis> CUDA Optimization </span> </a> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=#move class=md-nav__link> <span class=md-ellipsis> Move </span> </a> </li> <li class=md-nav__item> <a href=#enable-c class=md-nav__link> <span class=md-ellipsis> Enable C </span> </a> </li> <li class=md-nav__item> <a href=#trace-and-comp class=md-nav__link> <span class=md-ellipsis> Trace and comp </span> </a> </li> <li class=md-nav__item> <a href=#memory-management-memory-ma class=md-nav__link> <span class=md-ellipsis> Memory Management {#memory-ma </span> </a> <nav class=md-nav aria-label="Memory Management {#memory-ma"> <ul class=md-nav__list> <li class=md-nav__item> <a href=#xpu-memory-management class=md-nav__link> <span class=md-ellipsis> XPU Memory Management </span> </a> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=#get-available-memory class=md-nav__link> <span class=md-ellipsis> Get available memory </span> </a> </li> <li class=md-nav__item> <a href=#calculate class=md-nav__link> <span class=md-ellipsis> Calculate </span> </a> </li> <li class=md-nav__item> <a href=#set-up-memory-pool class=md-nav__link> <span class=md-ellipsis> Set up memory pool </span> </a> <nav class=md-nav aria-label="Set up memory pool"> <ul class=md-nav__list> <li class=md-nav__item> <a href=#cuda-memory-management-cuda-me class=md-nav__link> <span class=md-ellipsis> CUDA Memory Management {#cuda-me </span> </a> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=#get-avail class=md-nav__link> <span class=md-ellipsis> Get avail </span> </a> </li> <li class=md-nav__item> <a href=#_2 class=md-nav__link> <span class=md-ellipsis> </span> </a> </li> <li class=md-nav__item> <a href=#set-up-memory-pool class=md-nav__link> <span class=md-ellipsis> Set up memory pool </span> </a> </li> <li class=md-nav__item> <a href=#hardware-spe class=md-nav__link> <span class=md-ellipsis> Hardware-Spe </span> </a> <nav class=md-nav aria-label=Hardware-Spe> <ul class=md-nav__list> <li class=md-nav__item> <a href=#intel-arc-conf class=md-nav__link> <span class=md-ellipsis> Intel Arc Conf </span> </a> </li> <li class=md-nav__item> <a href=#npu-con class=md-nav__link> <span class=md-ellipsis> NPU Con </span> </a> </li> </ul> </nav> </li> <li class=md-nav__item> <a href=#hardware-a class=md-nav__link> <span class=md-ellipsis> Hardware A </span> </a> </li> <li class=md-nav__item> <a href=#backend-implementation-example class=md-nav__link> <span class=md-ellipsis> Backend Implementation Example </span> </a> </li> <li class=md-nav__item> <a href=#set-environment-variables-s class=md-nav__link> <span class=md-ellipsis> Set environment variables {#s </span> </a> </li> <li class=md-nav__item> <a href=#import-required-libraries-import class=md-nav__link> <span class=md-ellipsis> Import required libraries {#import </span> </a> </li> <li class=md-nav__item> <a href=#move_1 class=md-nav__link> <span class=md-ellipsis> Move </span> </a> </li> <li class=md-nav__item> <a href=#apply-ip class=md-nav__link> <span class=md-ellipsis> Apply IP </span> </a> </li> <li class=md-nav__item> <a href=#convert_1 class=md-nav__link> <span class=md-ellipsis> Convert </span> </a> </li> <li class=md-nav__item> <a href=#convert-inputs-to-xpu-c class=md-nav__link> <span class=md-ellipsis> Convert inputs to XPU {#c </span> </a> </li> <li class=md-nav__item> <a href=#convert-outp class=md-nav__link> <span class=md-ellipsis> Convert outp </span> </a> </li> </ul> </nav> </div> </div> </div> <div class=md-content data-md-component=content> <article class="md-content__inner md-typeset"> <h1 id=hardware-integration-architecture>Hardware Integration Architecture<a class=headerlink href=#hardware-integration-architecture title="Permanent link">&para;</a></h1> <p>This document explains how AI-Playground integrates with different hardware platforms to provide optimized performance across various devices.</p> <h2 id=overview>Overview<a class=headerlink href=#overview title="Permanent link">&para;</a></h2> <p>AI-Playground's hardware integration architecture is designed to:</p> <ol> <li> <p>*<em>Abstract hardware differences_</em>: Shield users from hardware-specific implementation details</p> </li> <li> <p><strong>Maximize performance</strong>: Leverage hardware-specific optimizations when available</p> </li> <li> <p><strong>Provide graceful fallbacks</strong>: Work even when optimal hardware is unavailable</p> </li> <li> <p><strong>Support seamless transitions</strong>: Allow easy switching between hardware options</p> </li> <li> <p><strong>Enable extensibility</strong>: Make it easy to add support for new hardware</p> </li> </ol> <h2 id=hardware-support-layers>Hardware Support Layers<a class=headerlink href=#hardware-support-layers title="Permanent link">&para;</a></h2> <p>The hardware integration consists of several layers:</p> <p>```text`text ┌────────────────────────────────────────────────────────────────┐ │ Application Layer │ └────────────────────────────────────────────────────────────────┘</p> <p><code>``text</code>text</p> <p>```text</p> <p><code>text</code>text │ │ ▼ ▼</p> <p>```text</p> <p><code>text</code>text</p> <p>```text ┌────────────────────────────────────────────────────────────────┐ │ Device Selector │ └────────────────────────────────────────────────────────────────┘</p> <p>```text</p> <p><code>text</code>text</p> <p>```text │ │ ▼ ▼</p> <p>```text</p> <p><code>text</code>text</p> <p>```text ┌────────────────────────────────────────────────────────────────┐ │ H</p> <p>ardware Abstraction Layer │ └──────</p> <p>───────────</p> <p>───────────────────────────────────────────────┘</p> <p>```text</p> <p>```text │ │ │ │ ▼ ▼ ▼ ▼</p> <p>```text</p> <p>```text ┌──────────────┐ ┌──────────┐ ┌───────────</p> <p>─┐ ┌───────</p> <p>─────────┐ │ Intel XPU │ │ Intel NPU│ │ NVIDIA CU</p> <p>DA│ │ CPU F</p> <p>allback │ │ Backend │ │ Backend │ │ Backend │ │ Backend │ └──────────────┘ └──────────┘ └────────────┘ └────────────────┘</p> <p>```text</p> <p>```text │ │ │ │ ▼</p> <p>▼ ▼ ▼</p> <p>```text</p> <p>```text ┌──────────────┐ ┌──────────┐ ┌────────────┐ ┌───────────</p> <p>─────┐ │ Intel │ │ Intel │ │ NVIDIA │ │ CPU Only │ │ Arc GPUs │ │ NPU │ │ GPUs │ │ Systems │ └──────────────┘ └──────────┘ └────────────┘ └────────────────┘</p> <p>```text</p> <h3 id=application-layer>1. Application Layer<a class=headerlink href=#application-layer title="Permanent link">&para;</a></h3> <p>The top-level in</p> <p>terface for models and services. This layer is hardware-agnostic and interacts with the hardware integrati</p> <p>on through the device selector.</p> <h3 id=device-selector>2. Device Selector<a class=headerlink href=#device-selector title="Permanent link">&para;</a></h3> <p>Chooses the appropriate backend based on:</p> <ul> <li> <p>Available hardware</p> </li> <li> <p>Model requirements</p> </li> <li> <p>User preferences</p> </li> <li> <p>Performance profiles</p> </li> </ul> <h3 id=3-hardware-abstraction-layer-hal-hardware-abst>3. Hardware Abstraction Layer (HAL) {#hardware-abst<a class=headerlink href=#3-hardware-abstraction-layer-hal-hardware-abst title="Permanent link">&para;</a></h3> <p>raction-layer-hal}</p> <p>Provides a unified interface to different hardware backends through:</p> <ul> <li> <p>Common API for all backends</p> </li> <li> <p>Hardware-specific optimizers</p> </li> <li> <p>Memory management adapters</p> </li> <li> <p>Performance monitoring tools</p> </li> </ul> <h3 id=hardware-specific-backends>4. Hardware-Specific Backends<a class=headerlink href=#hardware-specific-backends title="Permanent link">&para;</a></h3> <p>Implements hardware-specific optimizations:</p> <ul> <li> <p>Intel XPU Backend (for Intel Arc GPUs)</p> </li> <li> <p>Intel NPU Backend (for integrated Neural Processing Units)</p> </li> <li> <p>NVIDIA CUDA Backend (for NVIDIA GPUs)</p> </li> <li> <p>CPU Fallback Backend (for systems without specialized hardware)</p> </li> </ul> <h2 id=hardware-detection-process>Hardware Detection Process<a class=headerlink href=#hardware-detection-process title="Permanent link">&para;</a></h2> <p>The hardware detection process consists of the following steps:</p> <ol> <li> <p><strong>System Probing</strong>: Query the system for available hardware</p> </li> <li> <p><strong>Capability Assessment</strong>: Determine the capabilities of detected hardware</p> </li> <li> <p><strong>Driver Validation</strong>: Check for required drivers and their versions</p> </li> <li> <p><strong>Feature Verification</strong>: Test for specific hardware features</p> </li> <li> <p><strong>Priority Assignment</strong>: Assign priorities to available hardware options</p> </li> </ol> <h3 id=detection-implementation>Detection Implementation<a class=headerlink href=#detection-implementation title="Permanent link">&para;</a></h3> <p>```python</p> <p>def detect_hardware():</p> <p>```text """ Detect available hardware and return prioritized list of device types. """ available_devices = []</p> <p>```text</p> <p>```text</p> <h2 id=check-for-intel-arc-gpus>Check for Intel Arc GPUs<a class=headerlink href=#check-for-intel-arc-gpus title="Permanent link">&para;</a></h2> <p>```text</p> <p>```text gpu_info = get_gpu_info() for gpu in gpu_info:</p> <p>```text if "Intel(R) Arc(TM)" in gpu:</p> <p>```text available_devices.append({</p> <p>```text "type": "arc", "name": gpu, "priority": 100, "backend": "xpu"</p> <p>```text })</p> <p>```text elif "Intel(R ) Battlemage(TM)" in gpu:</p> <p>```text availab le_devices.append({</p> <p>```text "type": "bmg", "name": gpu, "priority": 100, "backend": "xpu"</p> <p>```text })</p> <p>```tex t</p> <p><code>text</code>tex t</p> <p>```text</p> <h2 id=check-for-nvidia-gpus-check-for-nvidia-gpus>Check for NVIDIA GPUs {#check-for-nvidia-gpus<a class=headerlink href=#check-for-nvidia-gpus-check-for-nvidia-gpus title="Permanent link">&para;</a></h2> <p>}</p> <p>```text</p> <p>```text for gpu in gpu_info:</p> <p>```text if "NVIDIA" in gp u:</p> <p>```text available_devices.append({</p> <p><code>`</code> "type": "nvidia", "name": gpu, "priority": 90, "backend": "cuda"</p> <p>```text })</p> <p>```text</p> <p><code>text</code>text</p> <p><code>`</code></p> <h2 id=check-for-npu>Check for NPU<a class=headerlink href=#check-for-npu title="Permanent link">&para;</a></h2> <p>```text</p> <p>```text if has_dptf_driver() an d has_npu_capability():</p> <p>```text available_devices.append({</p> <p>```text "type": " npu ", "name":</p> <p>"Integrated N eural Processing Unit", "priority": 80, "backend": "npu"</p> <p>```text })</p> <p>```text</p> <p><code>text</code>text</p> <h2 id=always-add-cpu-as-fallba>Always add CPU as fallba<a class=headerlink href=#always-add-cpu-as-fallba title="Permanent link">&para;</a></h2> <p>ck {#always-add-cpu-as-fall back}</p> <p>```text</p> <p>```text available_devices.append({</p> <dl> <dt>```text</dt> <dt>"type": "cpu",</dt> <dt>"name"</dt> <dd>" CPU", "prio</dd> </dl> <p>rity": 10, "b ackend": "cpu"</p> <p>```text })</p> <p>```text</p> <p>` ``</p> <h2 id=sort>Sort<a class=headerlink href=#sort title="Permanent link">&para;</a></h2> <p>by priority (highest first) {#sort-by-priority- highest-first}</p> <p>```text</p> <p>```text return sorted(available_devices, key=lambda x: x["priority"], reverse=True)</p> <p>```text</p> <p>```text</p> <h2 id=envir>Envir<a class=headerlink href=#envir title="Permanent link">&para;</a></h2> <p>onment Setup {#</p> <p>environm ent-setup}</p> <p>Once the hardware is detected, the appropriate e nvironment i s set up:</p> <h3 id=intel-arc-g>Intel Arc G<a class=headerlink href=#intel-arc-g title="Permanent link">&para;</a></h3> <p>PU (XPU) Environment {#intel-arc-gpu-xpu-environment}</p> <p>```python</p> <p>def s etu p_arc_environ ment():</p> <p>```text """Set up environment for Intel Arc GPUs.""" os.environ[" SYCL_CACHE_P ERSISTENT"] = "1" os.environ["SYCL_PI_LEVEL_ZERO_USE_IMMEDIATE_COMMANDLISTS" ] = "1" os.en viron["ENABLE_L0_PROGRAM_CREATION_CACHE"] = "1" os.environ["ONEAPI_DEVICE_SELECTOR"] = "level_zero:gpu"</p> <p>```text</p> <p>```text try:</p> <p>```text import intel_extension_for_pytorch as ipex torch.xpu.set _device(0) print("Intel Extension for PyTorc h and XPU backend enabled")</p> <p>```text except ImportError:</p> <p>```text print("Intel Extension for PyTorch not found, running with limited optimizations")</p> <p>```text</p> <p><code>text</code>text</p> <h3 id=intel-npu-environment>Intel NPU Environment<a class=headerlink href=#intel-npu-environment title="Permanent link">&para;</a></h3> <p>```python</p> <p>def setup_npu_environment():</p> <p>```text """Se t up environ ment for Intel NPU.""" os.environ["DNNL_DEFAULT_FPMATH_MODE"] = "BF16" os.environ["ONEDNN_MAX_CPU_ISA"] = "AVX512_CORE_AMX"</p> <p>```text</p> <p>```text try :</p> <p>```text import neural _compressor print("Neural Compressor found, NPU optimizations enabled")</p> <p>```text except ImportError</p> <p>:</p> <p>```text p rint("Neural Compressor not found, running with lim ited NPU optimizations")</p> <p>```text</p> <p><code>text</code>text</p> <h3 id=nvidia-gpu-environment>NVIDIA GPU Environment<a class=headerlink href=#nvidia-gpu-environment title="Permanent link">&para;</a></h3> <p>```python</p> <p>def setup_nvidia_environment():</p> <p>```text """Set up environment for NVIDIA GPUs." "" os.enviro n["CU DA_VISIBLE_DEVICES"] = "0" os.environ["TF_FORCE_GPU_ALLOW_GROWTH"] = "true"</p> <p>```text</p> <p>```text try :</p> <p>```text import torch</p> <p>if torch.cuda.is_available():</p> <p>```text torch.cuda.set_device(0) print(f"CUDA enabled: {torch.</p> <p>cuda.get _device_name(0)}")</p> <p>```text</p> <p>```text except ImportError:</p> <p>```text print("PyTorch with CUDA not found")</p> <p>```t ext</p> <p><code>text</code>text</p> <h2 id=model-optimization>Model Optimization<a class=headerlink href=#model-optimization title="Permanent link">&para;</a></h2> <p>The hardware integration includes model optimization for each backend:</p> <h3 id=xpu-opti>XPU Opti<a class=headerlink href=#xpu-opti title="Permanent link">&para;</a></h3> <p>mizat ion {#xpu-optimization}</p> <p>```python</p> <p>def optimize_mo del_for_xpu(model):</p> <p>```text """Optimize a PyTorch model for Intel XPU (Arc GPU)."""</p> <p>import intel _extension_for_pytor ch as ipex import torch</p> <p>```text</p> <p>```text</p> <h2 id=convert>Convert<a class=headerlink href=#convert title="Permanent link">&para;</a></h2> <p id=convert-to-xpu>to XPU</p> <p>```text</p> <p>```text model = model.to("xpu")</p> <p>```text</p> <p>```text</p> <h2 id=apply-ipex-optimizations>Apply IPEX optimizations<a class=headerlink href=#apply-ipex-optimizations title="Permanent link">&para;</a></h2> <p>```text</p> <p>```text model = ipex.optim ize(model, dtype=torch.float16)</p> <p>```text</p> <p>```text</p> <h2 id=_1><a class=headerlink href=#_1 title="Permanent link">&para;</a></h2> <p>Trace the model if possible {#trace-the-model-if-possible}</p> <p>```text</p> <p>```text try:</p> <p>```text example_input = torch.rand(1, 3, 224, 224) .to("xpu") model = torch.jit.trace(m odel, exampl e_input) model = torch.j it.freeze(mod el)</p> <p>```text except Exception as e:</p> <p>```text print(f"Model traci ng failed: { e}")</p> <p>```text</p> <p><code>text</code>text return model</p> <p>```text</p> <p>```text</p> <h3 id=npu-opti>NPU Opti<a class=headerlink href=#npu-opti title="Permanent link">&para;</a></h3> <p>mization {#npu-optimization}</p> <p>```python</p> <p>def optimize_model_fo r_npu(model) :</p> <p><code>`</code> """Optimize a model for Intel NPU.""" from neural_compressor.experimental import Quantization, common</p> <p>```text</p> <p>```text</p> <h2 id=initialize-quanti>Initialize quanti<a class=headerlink href=#initialize-quanti title="Permanent link">&para;</a></h2> <p>zation {#initialize-qua ntization}</p> <p>```text</p> <p>```text quantizer = Quantizatio</p> <p>n("npu_ config.yaml")</p> <p>quantizer.mo del = model</p> <p>```text</p> <p>```text</p> <h2 id=define-calib>Define calib<a class=headerlink href=#define-calib title="Permanent link">&para;</a></h2> <p>ration dataloader {#define-calibration-dataloader}</p> <p>```text</p> <p>```text calibration_data = get_calibration_data() quantizer.calib_dataloader = calibration_data</p> <p>```text</p> <p><code>`</code></p> <h2 id=quantize-the-model>Quantize the model<a class=headerlink href=#quantize-the-model title="Permanent link">&para;</a></h2> <p>```tex t</p> <p>```text quant ized_model = quantizer.fit()</p> <p>```text</p> <p>```text return quantized_model</p> <p>` ``text</p> <p>```text</p> <h3 id=cuda-optimization>CUDA Optimization<a class=headerlink href=#cuda-optimization title="Permanent link">&para;</a></h3> <p>```python</p> <p>def optimiz e_model_for_ cuda(model):</p> <p>```text """Optimize a PyTorch model for NVIDIA CUDA.""" import torch</p> <p>```text</p> <p>```text</p> <h2 id=move>Move<a class=headerlink href=#move title="Permanent link">&para;</a></h2> <p>to CUDA {#move-to-cuda}</p> <p>```text</p> <p>```text model = model.to( "cuda")</p> <p>```text</p> <p>```text</p> <h2 id=enable-c>Enable C<a class=headerlink href=#enable-c title="Permanent link">&para;</a></h2> <p>UDA optimiza tion {#enable-cuda-opti mization}</p> <p><code>`</code>text</p> <p>```text if hasattr(model, "half") and to rch.cuda.is_available():</p> <p>```text model = model.half() # Use FP16 if available</p> <p>```text</p> <p><code>text</code>text</p> <h2 id=trace-and-comp>Trace and comp<a class=headerlink href=#trace-and-comp title="Permanent link">&para;</a></h2> <p>ile the model if possible {#trace-and-compile -the-model-i f-possible}</p> <p>```text</p> <p>```text try:</p> <p>```text ex ample_input = torch.rand(1, 3, 224, 224).to("cuda") mode l = torch.ji t.trace(model, example_input) model = torch.jit.freeze(mo del)</p> <p>```text except Exception as e:</p> <p>```text print(f"Model tracin</p> <dl> <dt>g failed</dt> <dd>{e}")</dd> </dl> <p>```text</p> <p><code>text</code>text return model</p> <p>```text</p> <p>```text</p> <h2 id=memory-management-memory-ma>Memory Management {#memory-ma<a class=headerlink href=#memory-management-memory-ma title="Permanent link">&para;</a></h2> <p>nagement}</p> <p>E ach h ardware backend has its own memory management strategy:</p> <h3 id=xpu-memory-management>XPU Memory Management<a class=headerlink href=#xpu-memory-management title="Permanent link">&para;</a></h3> <p>```python</p> <p>def manage_xpu_memo ry(batch_size, model_si ze):</p> <p>```text """Manage memory for XPU execution."""</p> <p>import torch import intel_extens ion_for_pytorch as ipex</p> <p>```text</p> <p>```text</p> <h2 id=get-available-memory>Get available memory<a class=headerlink href=#get-available-memory title="Permanent link">&para;</a></h2> <p>```text</p> <p>```text total_mem = torch.xpu.get_device_properties(0).total_memo ry reserved_mem = torch.xpu.memory_reserved(0) allocated_mem = torch.xpu.memory_allocated(0) free_mem = total_mem - reserved_mem</p> <p>```text</p> <p>```text</p> <h2 id=calculate>Calculate<a class=headerlink href=#calculate title="Permanent link">&para;</a></h2> <p>optimal batch size based on available memory {#calculate-opti mal-batch-si ze-based-on-available-memory}</p> <p>```text</p> <p>```text estimated_batch_memory = model_size _ 4 # Rough estimate</p> <p>```text</p> <p>```text optimal_batch_size = min(batch_size, max(1, free_mem // estimated_batc h_memory))</p> <p>` ``text</p> <p>```text</p> <h2 id=set-up-memory-pool>Set up memory pool<a class=headerlink href=#set-up-memory-pool title="Permanent link">&para;</a></h2> <p>```text</p> <p>```text torch.xpu.empty_cache()</p> <p>```text</p> <p>```text return optimal_batc h_size</p> <p>```text</p> <p>```text</p> <h3 id=cuda-memory-management-cuda-me>CUDA Memory Management {#cuda-me<a class=headerlink href=#cuda-memory-management-cuda-me title="Permanent link">&para;</a></h3> <p>mory-managem ent}</p> <p>```python</p> <p>def manage_cuda_memory(batch_size, model_size):</p> <p>```text """Manage m emory for CUD A execution.""" import torch</p> <p>```text</p> <p>```text</p> <h2 id=get-avail>Get avail<a class=headerlink href=#get-avail title="Permanent link">&para;</a></h2> <p>able memory {#get-availa ble-memory}</p> <p>```text</p> <p>```text total_mem = torch.cuda.ge t_device_properties(0).total_memory reserved_mem = to rch.cuda.memory_reserved(0) allocated_mem = torch.cuda.memory_a llocated(0) free_mem = total_mem - reserved_mem</p> <p>```t ext</p> <p>```text</p> <h2 id=_2><a class=headerlink href=#_2 title="Permanent link">&para;</a></h2> <p>Calculate optimal batch size based on available memory {#cal culate-optimal-batch-size-based-on-available-memory}</p> <p>```text</p> <p>```text estimated_batch_memory = model_size _ 4 # Rough estimate</p> <p>```text</p> <p>```text optimal_batch_size = min(batch_size, max(1, free_m em // estimat ed_batch_memory))</p> <p>```text</p> <p>```text</p> <h2 id=set-up-memory-pool>Set up memory pool<a class=headerlink href=#set-up-memory-pool title="Permanent link">&para;</a></h2> <p>```text</p> <p>```text torch.cuda.empty_cache()</p> <p>```text</p> <p><code>`</code> return optimal_batch_size</p> <p>```text</p> <p>```text</p> <h2 id=hardware-spe>Hardware-Spe<a class=headerlink href=#hardware-spe title="Permanent link">&para;</a></h2> <p>cific Config urations {#hardware-specific-configurations}</p> <p>Each hardware type has specific con figurations t o optimize performance:</p> <h3 id=intel-arc-conf>Intel Arc Conf<a class=headerlink href=#intel-arc-conf title="Permanent link">&para;</a></h3> <p>iguration {# intel-arc-configuration}</p> <p>```json</p> <p>{</p> <p>"hardware": "arc", "me mory": {</p> <p>```text "max_batch_size": "auto", "preallocate": true, "offload_to_host": true</p> <p>```text }, "execution": {</p> <p>```text "precision": "mixed", "preferred_format": "bf16", "optimize_for_inference": true, "max_compile_tim e_seconds": 60</p> <p>```text }, "optimizations": {</p> <p>```text "enable_concurrent_execution": true, "enable_tensor_parallelism": true , "enable_kernel_caching": tru e</p> <p>```text }, "environment_variables": {</p> <p>```text "SYCL_CACHE_PERSISTENT": "1", "ONEAPI_DEVICE_SELECTOR": "level_zero :gpu"</p> <p>```text } }</p> <p>```text</p> <h3 id=npu-con>NPU Con<a class=headerlink href=#npu-con title="Permanent link">&para;</a></h3> <p>figuration {#npu-configuration}</p> <p>```json</p> <p>{ "hardware": "npu", "memory": {</p> <p>```text "max_batch_size": 1, "preallocate": false</p> <p>```text }, "execu tion": {</p> <p>```text "precision": "bf16", "preferred_format": "bf16", "optimize_ for_inference": true</p> <p>```text }, "optimizations": {</p> <p>```text " enable_winograd": true, "enable_layer_fusion": tru e</p> <p>```text }, "environment_variables": {</p> <dl> <dt>```text</dt> <dt>"DNNL_DEFAULT_FPMATH_MODE"</dt> <dd>"BF16", "ONEDNN_MAX_CPU_ISA": "AVX512_CORE_AMX"</dd> </dl> <p>```text } }</p> <p>```text</p> <h2 id=hardware-a>Hardware A<a class=headerlink href=#hardware-a title="Permanent link">&para;</a></h2> <p>bstraction Interface {#hardware-ab straction-interface}</p> <p>The Hardware Abstraction Layer provides a unified interface for all backe nds:</p> <p>```python</p> <p>class HardwareBackend:</p> <p>```text """Interface for hardware backe nds."""</p> <p>```tex t</p> <p>```text def <strong>init</strong>(self, config=None):</p> <p>```text """Initialize the backend with optional configuration.""" self.config = config or {} self.device_type = "cpu" # Default device type</p> <p>```tex t</p> <p><code>text</code>text def setup(self):</p> <p>```text """Set up the envi ronment for this backend.""" rais e NotImplementedError</p> <p>```text</p> <p><code>text</code>text def is_available(self):</p> <p>```text """Check if this backend is available on the current system.""" raise NotImp</p> <p>lemente dError</p> <p>```text</p> <p><code>text</code>text def optimize_model(self, model):</p> <p>```text """Optimize a model for this backend.""</p> <p>" raise NotImplementedError</p> <p><code>`</code>text</p> <p><code>text</code>text def run_inference(self, model, inputs, __kwargs):</p> <p>```text """Run inference with the given</p> <p>model a nd inputs.""" raise NotImplemente dError</p> <p>```text</p> <p><code>text</code>text def get_memory_info(self):</p> <p>```text """Get memory informat</p> <p>ion for this backend.""" raise NotImplementedError</p> <p>```te xt</p> <p><code>text</code>text def cleanup(self):</p> <p>```text """Clean up resources used by this backend.""" raise No</p> <p>tImplem entedError</p> <p>```text</p> <p><code>`text</code> `</p> <h2 id=backend-implementation-example>Backend Implementation Example<a class=headerlink href=#backend-implementation-example title="Permanent link">&para;</a></h2> <p>Here's an exa</p> <p>mple of implementing the X PU backend:</p> <p>```python</p> <p>class XPUBackend(HardwareBackend):</p> <p>```text """Backend for Intel</p> <p>XPU (Arc GPUs)."""</p> <p>```text</p> <p>```text def <strong>init</strong>(self, config=None):</p> <p>```text """Initialize the XPU backend.""" super().<strong>init</strong>(config ) self.device_type = "xpu"</p> <p>```text</p> <p><code>text</code>text def s etup(self):</p> <p>```text """Set up the XPU envir onment."""</p> <h2 id=set-environment-variables-s>Set environment variables {#s<a class=headerlink href=#set-environment-variables-s title="Permanent link">&para;</a></h2> <p>et-environment-variables}</p> <p>```text</p> <p><code>text</code>text</p> <p>```text os.environ["SYCL_CACHE_PERSISTENT"] = "1" o</p> <p>s.envir on["SYCL_PI_LEVEL _ZERO_USE_IMMEDIATE_COMMANDLISTS"] = "1"</p> <p>```text</p> <p><code>text</code>text</p> <p>```text</p> <h2 id=import-required-libraries-import>Import required libraries {#import<a class=headerlink href=#import-required-libraries-import title="Permanent link">&para;</a></h2> <p>-required-l</p> <p>ibraries}</p> <p>```text</p> <p><code>text</code>text</p> <p>```text try:</p> <p>```text import intel_extension_for_pytorch as ipex import torch self.torch = torc</p> <p>h self.ipex</p> <p>= ipex return True</p> <p>```text except ImportError:</p> <p>```text print("Intel Extensio</p> <p>n for PyTor</p> <p>ch not found" ) return False</p> <p>```text</p> <p><code>text</code>text</p> <p>```text def is_available(self):</p> <p>```text """Check if XPU is available."""</p> <p>try:</p> <p>```text import intel_exten sion_for_pytorch as ipex import torch return hasattr(torch, "xpu") and</p> <p>torch.xpu.is _available()</p> <p>```text except ImportError:</p> <p>```text return False</p> <p>```text</p> <p><code>text</code>text</p> <p>```text def optimize_model(self, model):</p> <p>```text """Optimize model for XPU.""" if not self.is_available():</p> <p>```text return model</p> <p>```text</p> <p><code>`text `</code>text</p> <p><code>`text `</code></p> <h2 id=move_1>Move<a class=headerlink href=#move_1 title="Permanent link">&para;</a></h2> <p>model to XP U {#move-model-to-xpu}</p> <p>```text</p> <p>` `` ```text</p> <p>```text model = model.to("xpu")</p> <p>```text</p> <p><code>text</code>text</p> <p>```text</p> <h2 id=apply-ip>Apply IP<a class=headerlink href=#apply-ip title="Permanent link">&para;</a></h2> <p>EX optimiza</p> <p>tions {#app</p> <p>ly-ipex-optimizations}</p> <p>```text</p> <p><code>text</code>text</p> <p>```text preci</p> <p>sion = self</p> <p>.config.get("precision", "mixed") if</p> <p>precision</p> <p>== "mixed" or precision == "fp16":</p> <p>```text model = self.ipex.optimize(mo</p> <p>del, dtype=</p> <p>self.torch.float16)</p> <p>```text else:</p> <p>```text model = self.ipex.optimize(model)</p> <p>```text</p> <p><code>text</code>text</p> <p><code>text</code>text retur n model</p> <p>```text</p> <p><code>text</code>text def run_inference(self, model, inp uts, __kwargs) :</p> <p>```text """Run inference on XPU."""</p> <p>if isinsta</p> <p>nce(inputs,</p> <p>dict):</p> <p>```text</p> <h2 id=convert_1>Convert<a class=headerlink href=#convert_1 title="Permanent link">&para;</a></h2> <p>input d ict values to XPU {#convert-input-dict-values-to-x pu}</p> <p>```text</p> <p><code>text</code>text</p> <p><code>text</code>text</p> <p>```text inputs = {k: v.to("xpu ") if hasattr(v, "to") else v</p> <p>```text</p> <p>```text for k, v in inputs.items()}</p> <p>```text</p> <p>```text with se</p> <p>lf.torch.no_ grad():</p> <p>```text outputs = model(__inputs)</p> <p>```text</p> <p>```text else:</p> <p>```text</p> <h2 id=convert-inputs-to-xpu-c>Convert inputs to XPU {#c<a class=headerlink href=#convert-inputs-to-xpu-c title="Permanent link">&para;</a></h2> <p>onvert-input s-to-xpu}</p> <p>```text</p> <p><code>text</code>text text</p> <p><code>text</code>text</p> <p>```text if hasattr(inpu</p> <p>ts, "to"):</p> <p>```text inputs = inputs.to("xpu")</p> <p>```text with self.torch.no _grad():</p> <p>`</p> <p>`` outputs</p> <p>= model(inpu ts)</p> <p>```text</p> <p><code>text</code>text</p> <p><code>text</code>text</p> <p>```text</p> <h2 id=convert-outp>Convert outp<a class=headerlink href=#convert-outp title="Permanent link">&para;</a></h2> <p>uts back to CPU if needed {</p> <h1 id=convert-outputs-back-to-cpu-if-neede>convert-outputs-back-to-cpu-if-neede<a class=headerlink href=#convert-outputs-back-to-cpu-if-neede title="Permanent link">&para;</a></h1> <p>d}</p> <p>```text</p> <p><code>text</code>te</p> <p>xt</p> <p>```text if kwargs.get("return_cpu", True):</p> <p>```text if isinstance(outputs, dict):</p> <dl> <dt>```text</dt> <dt>outputs = {k</dt> <dd> <p>v.to("cpu</p> </dd> </dl> <p>") if hasattr(v, "to") else v</p> <p>```text</p> <p>```text for k, v in outputs.items() }</p> <p>```text</p> <p><code>text</code>text elif hasattr(outputs, "to"):</p> <p>```text outputs = o</p> <p>utputs.to("cpu")</p> <p>```text</p> <p><code>text</code>text</p> <p><code>text</code>text</p> <p>```text return outputs</p> <p>```text</p> <p><code>text</code>text def get_memory_info(self):</p> <p>``</p> <p>` """Get XP</p> <p>U memory in</p> <p>formation.""" if not self.i</p> <p>s_avail able():</p> <p>```text return {"error ": "XPU not available"}</p> <p>```text</p> <p><code>text</code>text</p> <p><code>text</code>text device = self.t orch.xpu.current_device() total_mem = self.torch.</p> <p>xpu.get_dev</p> <p>ice_properties(device).total_memory reserved_mem = self.torch.xpu.memory_reserved(device) allocated_mem = self.torch.xpu.memory_allocated(device) free_mem = total_mem - reserved_mem</p> <p>```text</p> <p><code>text</code>text</p> <p>```text return {</p> <p>```text "total": total_mem, "reserved": reserved_mem,</p> <dl> <dt>"allocated"</dt> <dd> <p>allocated_mem,</p> </dd> </dl> <p>"free": free_mem</p> <p>```text }</p> <p>```text</p> <p><code>text</code>text def cleanup(self):</p> <p>```text """Clean up XPU resources .""" if self.i</p> <p>s_avail able():</p> <p>```text self.t orch.xpu.empty_cache()</p> <p>```text</p> <p><code>text</code>text</p> <p>```text</p> <h2 id=adding-n>Adding N<a class=headerlink href=#adding-n title="Permanent link">&para;</a></h2> <p>ew Hardware Support {#adding- new-hardwar</p> <p>e-support}</p> <p>T o add support for a new hardware platform:</p> <ol> <li> <p><strong>Create a new backend class</strong> inheriting from <code>HardwareBackend</code></p> </li> <li> <p><strong>Implement required methods</strong> for the new hardware</p> </li> <li> <p><strong>Add detection logic</strong> to identify the new hardware</p> </li> <li> <p><strong>Create optimization profiles</strong> for the new hardware</p> </li> <li> <p><strong>Register the backend</strong> with the hardware abstraction layer</p> </li> </ol> <p>```python</p> <h2 id=example-adding-support-for-a-new-hardware-type>Example: Adding support for a new hardware type<a class=headerlink href=#example-adding-support-for-a-new-hardware-type title="Permanent link">&para;</a></h2> <p>{#example-adding-support-for-a-new-hardware-type}</p> <h2 id=create-backend-class>1. Create backend class<a class=headerlink href=#create-backend-class title="Permanent link">&para;</a></h2> <p>class NewHardwareBackend(HardwareBackend):</p> <p>```text """Backend for new hardware type."""</p> <p>```text</p> <p>```text def *<em>init</em> *(self, config=None):</p> <p>```text super().** init**(confi g) self.device_type = "new_hardwa re"</p> <p>```text</p> <p><code>text</code>text</p> <h2 id=implement-required-methods-implement-requir>Implement required methods {#implement-requir<a class=headerlink href=#implement-required-methods-implement-requir title="Permanent link">&para;</a></h2> <p>ed-metho ds}</p> <p>```text</p> <p>```text def setup(self):</p> <p>```text """Set up environmen t for new ha rdware."""</p> <h2 id=s>S<a class=headerlink href=#s title="Permanent link">&para;</a></h2> <p>etup code {#setup-code}</p> <p>```text</p> <p><code>text</code>text</p> <p>```text return True</p> <p>```text</p> <p><code>text</code>text def</p> <p>is_availabl</p> <p>e(self):</p> <p>```text """Check i</p> <p>f new h ardware is available."""</p> <h2 id=detection-code>Detection code<a class=headerlink href=#detection-code title="Permanent link">&para;</a></h2> <p>```text</p> <p><code>text</code>text</p> <p>```text return has_new_hardware()</p> <p>```text</p> <p>`</p> <p>`` ```text</p> <h2 id=implement-other-methods>... implement other methods<a class=headerlink href=#implement-other-methods title="Permanent link">&para;</a></h2> <p>{#-impl ement-other-methods}</p> <p>```text</p> <h2 id=2-add-detection-logic-add->2. Add detection logic {#add-<a class=headerlink href=#2-add-detection-logic-add- title="Permanent link">&para;</a></h2> <p>detection-logic}</p> <p>def detect_new_hardware():</p> <p>```text """Detect if new hardware is availab le."""</p> <h2 id=detection-code>Detection code<a class=headerlink href=#detection-code title="Permanent link">&para;</a></h2> <p>```text</p> <p>```text return True if new_har dware_found( ) else False</p> <p>```text</p> <h2 id=3-register-backend-reg>3. Register backend {#reg<a class=headerlink href=#3-register-backend-reg title="Permanent link">&para;</a></h2> <p>ister-backend}</p> <p>def register_new_hardware():</p> <p>```text """Register new hardware backend .""" backend_registry.register("new_hardware", NewHardwareBackend)</p> <p>```text</p> <p>```text</p> <h2 id=performance-mo>Performance Mo<a class=headerlink href=#performance-mo title="Permanent link">&para;</a></h2> <p>nitoring {#pe rformance-monitoring}</p> <p>The hardware integration includes performance monitoring capabilities:</p> <p>```python</p> <p>def monitor_hardwa re_performance(backend, model, inputs, iterations=10):</p> <p>```text """ Monitor and benchmark ha rdware performance.</p> <p>```text</p> <p>```text Args:</p> <p>```text bac kend: Hardwa re bac kend to use model: Model to benchmark inputs: Inputs for the model iterations: Number of iterations to run</p> <p>```text</p> <p><code>text</code>text Returns:</p> <p>```text P</p> <p>erforma nce metri cs</p> <p>```text """</p> <h2 id=warm-up-run>Warm-up run<a class=headerlink href=#warm-up-run title="Permanent link">&para;</a></h2> <p>{#warm-up-run}</p> <p>```text</p> <p>```text backen d.run_infere nce(model, inputs)</p> <p>```text</p> <p>```text</p> <h2 id=_3><a class=headerlink href=#_3 title="Permanent link">&para;</a></h2> <p>Measure infer ence time {#measure-inference-time}</p> <p>```text</p> <p>```text st art_time = t ime.time() for _ in range(iterations):</p> <p>```text backend.r un_inference(model, inputs)</p> <p>```text end_time = t ime.time()</p> <p>```text</p> <p><code>`</code></p> <h2 id=get-mem>Get mem<a class=headerlink href=#get-mem title="Permanent link">&para;</a></h2> <p>ory usage {#get-memory-usage}</p> <p>```text</p> <p>```text memory_i nfo = backend.get_memory_info()</p> <p>```text</p> <p>```text</p> <h2 id=cal>Cal<a class=headerlink href=#cal title="Permanent link">&para;</a></h2> <p>culate metrics {#calculate-metrics}</p> <p>```te xt</p> <p>```text tota l_time = end_time - start_time avg_time = total_time / iterations throughput = iterations / total_time</p> <p>```text text</p> <p>```text re turn {</p> <p><code>`</code> "backend": backend.device_type, "avg_inference_time_ms": avg_time _ 1000, "throughput_per_second": throughput, "iterations": iterations, "memory": memory_info</p> <p>```text }</p> <p>```text</p> <p>```text</p> <h2 id=additional-resources>Additional Resources<a class=headerlink href=#additional-resources title="Permanent link">&para;</a></h2> <ul> <li> <p><a href=../../hardware/compatibility/ >Hardware Compatibility Guide</a></p> </li> <li> <p><a href=../../hardware/optimization/ >Hardware Optimization Guide</a></p> </li> <li> <p><a href=../../hardware/device-specific/intel-arc/ >Intel Arc GPU Guide</a></p> </li> <li> <p><a href=../hardware/device-specific/intel-npu.md>NPU Integration Guide</a></p> </li> <li> <p><a href=../hardware/device-specific/nvidia.md>NVIDIA GPU Guide</a></p> </li> </ul> <hr> <p><em>_Previous<strong>: <a href=../api-design/ >API Design</a> | **Next</strong>: <a href=data-flow.md>Data Flow</a> | **See also_</em>: <a href=../overview/ >Architecture Overview</a></p> <p><code>``text</code></p> <p><code>``text</code></p> </article> </div> <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script> <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script> </div> <button type=button class="md-top md-icon" data-md-component=top hidden> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg> Back to top </button> </main> <footer class=md-footer> <div class="md-footer-meta md-typeset"> <div class="md-footer-meta__inner md-grid"> <div class=md-copyright> Made with <a href=https://squidfunk.github.io/mkdocs-material/ target=_blank rel=noopener> Material for MkDocs </a> </div> <div class=md-social> <a href=https://github.com/intel/AI-Playground target=_blank rel=noopener title=github.com class=md-social__link> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 496 512"><!-- Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg> </a> </div> </div> </div> </footer> </div> <div class=md-dialog data-md-component=dialog> <div class="md-dialog__inner md-typeset"></div> </div> <script id=__config type=application/json>{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.instant", "navigation.tracking", "navigation.top", "search.suggest", "search.highlight", "content.tabs.link", "content.code.copy"], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script> <script src=../../assets/javascripts/bundle.c8b220af.min.js></script> </body> </html>
+<!doctype html><html lang=en class=no-js> <head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="Documentation for the AI-Playground project"><meta name=author content="AI-Playground Team"><link href=https://intel.github.io/AI-Playground/architecture/hardware-integration/ rel=canonical><link rel=icon href=../../assets/images/favicon.png><meta name=generator content="mkdocs-1.6.1, mkdocs-material-9.6.7"><title>Hardware Integration Architecture - AI-Playground Documentation</title><link rel=stylesheet href=../../assets/stylesheets/main.8608ea7d.min.css><link rel=stylesheet href=../../assets/stylesheets/palette.06af60db.min.css><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback"><style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style><link rel=stylesheet href=../../stylesheets/extra.css><script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script></head> <body dir=ltr data-md-color-scheme=default data-md-color-primary=indigo data-md-color-accent=blue> <input class=md-toggle data-md-toggle=drawer type=checkbox id=__drawer autocomplete=off> <input class=md-toggle data-md-toggle=search type=checkbox id=__search autocomplete=off> <label class=md-overlay for=__drawer></label> <div data-md-component=skip> <a href=#hardware-integration-architecture class=md-skip> Skip to content </a> </div> <div data-md-component=announce> </div> <div data-md-color-scheme=default data-md-component=outdated hidden> </div> <header class=md-header data-md-component=header> <nav class="md-header__inner md-grid" aria-label=Header> <a href=../.. title="AI-Playground Documentation" class="md-header__button md-logo" aria-label="AI-Playground Documentation" data-md-component=logo> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg> </a> <label class="md-header__button md-icon" for=__drawer> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg> </label> <div class=md-header__title data-md-component=header-title> <div class=md-header__ellipsis> <div class=md-header__topic> <span class=md-ellipsis> AI-Playground Documentation </span> </div> <div class=md-header__topic data-md-component=header-topic> <span class=md-ellipsis> Hardware Integration Architecture </span> </div> </div> </div> <label class="md-header__button md-icon" for=__search> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg> </label> <div class=md-search data-md-component=search role=dialog> <label class=md-search__overlay for=__search></label> <div class=md-search__inner role=search> <form class=md-search__form name=search> <input type=text class=md-search__input name=query aria-label=Search placeholder=Search autocapitalize=off autocorrect=off autocomplete=off spellcheck=false data-md-component=search-query required> <label class="md-search__icon md-icon" for=__search> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg> </label> <nav class=md-search__options aria-label=Search> <button type=reset class="md-search__icon md-icon" title=Clear aria-label=Clear tabindex=-1> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg> </button> </nav> <div class=md-search__suggest data-md-component=search-suggest></div> </form> <div class=md-search__output> <div class=md-search__scrollwrap tabindex=0 data-md-scrollfix> <div class=md-search-result data-md-component=search-result> <div class=md-search-result__meta> Initializing search </div> <ol class=md-search-result__list role=presentation></ol> </div> </div> </div> </div> </div> <div class=md-header__source> <a href=https://github.com/intel/AI-Playground title="Go to repository" class=md-source data-md-component=source> <div class="md-source__icon md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 496 512"><!-- Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg> </div> <div class=md-source__repository> intel/AI-Playground </div> </a> </div> </nav> </header> <div class=md-container data-md-component=container> <nav class=md-tabs aria-label=Tabs data-md-component=tabs> <div class=md-grid> <ul class=md-tabs__list> <li class=md-tabs__item> <a href=../.. class=md-tabs__link> Home </a> </li> <li class=md-tabs__item> <a href=../../getting-started/quickstart/ class=md-tabs__link> Getting Started </a> </li> <li class=md-tabs__item> <a href=../../hardware/overview/ class=md-tabs__link> Hardware </a> </li> <li class=md-tabs__item> <a href=../../development/contributing/ class=md-tabs__link> Development </a> </li> <li class=md-tabs__item> <a href=../overview/ class=md-tabs__link> Architecture </a> </li> <li class=md-tabs__item> <a href=../../reference/configuration.md class=md-tabs__link> Reference </a> </li> </ul> </div> </nav> <main class=md-main data-md-component=main> <div class="md-main__inner md-grid"> <div class="md-sidebar md-sidebar--primary" data-md-component=sidebar data-md-type=navigation> <div class=md-sidebar__scrollwrap> <div class=md-sidebar__inner> <nav class="md-nav md-nav--primary md-nav--lifted" aria-label=Navigation data-md-level=0> <label class=md-nav__title for=__drawer> <a href=../.. title="AI-Playground Documentation" class="md-nav__button md-logo" aria-label="AI-Playground Documentation" data-md-component=logo> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg> </a> AI-Playground Documentation </label> <div class=md-nav__source> <a href=https://github.com/intel/AI-Playground title="Go to repository" class=md-source data-md-component=source> <div class="md-source__icon md-icon"> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 496 512"><!-- Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg> </div> <div class=md-source__repository> intel/AI-Playground </div> </a> </div> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../.. class=md-nav__link> <span class=md-ellipsis> Home </span> </a> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle " type=checkbox id=__nav_2> <label class=md-nav__link for=__nav_2 id=__nav_2_label tabindex=0> <span class=md-ellipsis> Getting Started </span> <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav data-md-level=1 aria-labelledby=__nav_2_label aria-expanded=false> <label class=md-nav__title for=__nav_2> <span class="md-nav__icon md-icon"></span> Getting Started </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../getting-started/quickstart/ class=md-nav__link> <span class=md-ellipsis> Quick Start </span> </a> </li> <li class=md-nav__item> <a href=../../getting-started/installation/ class=md-nav__link> <span class=md-ellipsis> Installation </span> </a> </li> <li class=md-nav__item> <a href=../../getting-started/migration/ class=md-nav__link> <span class=md-ellipsis> Migration </span> </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle " type=checkbox id=__nav_3> <label class=md-nav__link for=__nav_3 id=__nav_3_label tabindex=0> <span class=md-ellipsis> Hardware </span> <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav data-md-level=1 aria-labelledby=__nav_3_label aria-expanded=false> <label class=md-nav__title for=__nav_3> <span class="md-nav__icon md-icon"></span> Hardware </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../hardware/overview/ class=md-nav__link> <span class=md-ellipsis> Overview </span> </a> </li> <li class=md-nav__item> <a href=../../hardware/compatibility/ class=md-nav__link> <span class=md-ellipsis> Compatibility </span> </a> </li> <li class=md-nav__item> <a href=../../hardware/optimization/ class=md-nav__link> <span class=md-ellipsis> Optimization </span> </a> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle " type=checkbox id=__nav_3_4> <label class=md-nav__link for=__nav_3_4 id=__nav_3_4_label tabindex=0> <span class=md-ellipsis> Device-Specific </span> <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav data-md-level=2 aria-labelledby=__nav_3_4_label aria-expanded=false> <label class=md-nav__title for=__nav_3_4> <span class="md-nav__icon md-icon"></span> Device-Specific </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../hardware/device-specific/intel-arc/ class=md-nav__link> <span class=md-ellipsis> Intel Arc </span> </a> </li> </ul> </nav> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle " type=checkbox id=__nav_4> <label class=md-nav__link for=__nav_4 id=__nav_4_label tabindex=0> <span class=md-ellipsis> Development </span> <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav data-md-level=1 aria-labelledby=__nav_4_label aria-expanded=false> <label class=md-nav__title for=__nav_4> <span class="md-nav__icon md-icon"></span> Development </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../development/contributing/ class=md-nav__link> <span class=md-ellipsis> Contributing </span> </a> </li> <li class=md-nav__item> <a href=../../development/code-quality/ class=md-nav__link> <span class=md-ellipsis> Code Quality </span> </a> </li> <li class=md-nav__item> <a href=../../development/testing/ class=md-nav__link> <span class=md-ellipsis> Testing </span> </a> </li> <li class=md-nav__item> <a href=../../development/linting/ class=md-nav__link> <span class=md-ellipsis> Linting </span> </a> </li> <li class=md-nav__item> <a href=../../development/workflows.md class=md-nav__link> <span class=md-ellipsis> CI/CD </span> </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle " type=checkbox id=__nav_5> <label class=md-nav__link for=__nav_5 id=__nav_5_label tabindex=0> <span class=md-ellipsis> Architecture </span> <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav data-md-level=1 aria-labelledby=__nav_5_label aria-expanded=false> <label class=md-nav__title for=__nav_5> <span class="md-nav__icon md-icon"></span> Architecture </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../overview/ class=md-nav__link> <span class=md-ellipsis> Overview </span> </a> </li> <li class=md-nav__item> <a href=../components.md class=md-nav__link> <span class=md-ellipsis> Components </span> </a> </li> </ul> </nav> </li> <li class="md-nav__item md-nav__item--nested"> <input class="md-nav__toggle md-toggle " type=checkbox id=__nav_6> <label class=md-nav__link for=__nav_6 id=__nav_6_label tabindex=0> <span class=md-ellipsis> Reference </span> <span class="md-nav__icon md-icon"></span> </label> <nav class=md-nav data-md-level=1 aria-labelledby=__nav_6_label aria-expanded=false> <label class=md-nav__title for=__nav_6> <span class="md-nav__icon md-icon"></span> Reference </label> <ul class=md-nav__list data-md-scrollfix> <li class=md-nav__item> <a href=../../reference/configuration.md class=md-nav__link> <span class=md-ellipsis> Configuration </span> </a> </li> <li class=md-nav__item> <a href=../../reference/troubleshooting.md class=md-nav__link> <span class=md-ellipsis> Troubleshooting </span> </a> </li> <li class=md-nav__item> <a href=../../reference/api/index.md class=md-nav__link> <span class=md-ellipsis> API </span> </a> </li> </ul> </nav> </li> </ul> </nav> </div> </div> </div> <div class="md-sidebar md-sidebar--secondary" data-md-component=sidebar data-md-type=toc> <div class=md-sidebar__scrollwrap> <div class=md-sidebar__inner> <nav class="md-nav md-nav--secondary" aria-label="Table of contents"> <label class=md-nav__title for=__toc> <span class="md-nav__icon md-icon"></span> Table of contents </label> <ul class=md-nav__list data-md-component=toc data-md-scrollfix> <li class=md-nav__item> <a href=#overview class=md-nav__link> <span class=md-ellipsis> Overview </span> </a> </li> <li class=md-nav__item> <a href=#hardware-support-layers class=md-nav__link> <span class=md-ellipsis> Hardware Support Layers </span> </a> </li> </ul> </nav> </div> </div> </div> <div class=md-content data-md-component=content> <article class="md-content__inner md-typeset"> <h1 id=hardware-integration-architecture>Hardware Integration Architecture<a class=headerlink href=#hardware-integration-architecture title="Permanent link">&para;</a></h1> <p>This document explains how AI-Playground integrates with different hardware platforms to provide optimized performance across various devices.</p> <h2 id=overview>Overview<a class=headerlink href=#overview title="Permanent link">&para;</a></h2> <p>AI-Playground's hardware integration architecture is designed to:</p> <ol> <li> <p>*<em>Abstract hardware differences_</em>: Shield users from hardware-specific implementation details</p> </li> <li> <p><strong>Maximize performance</strong>: Leverage hardware-specific optimizations when available</p> </li> <li> <p><strong>Provide graceful fallbacks</strong>: Work even when optimal hardware is unavailable</p> </li> <li> <p><strong>Support seamless transitions</strong>: Allow easy switching between hardware options</p> </li> <li> <p><strong>Enable extensibility</strong>: Make it easy to add support for new hardware</p> </li> </ol> <h2 id=hardware-support-layers>Hardware Support Layers<a class=headerlink href=#hardware-support-layers title="Permanent link">&para;</a></h2> <p>The hardware integration consists of several layers:</p> <p>```text`text ┌────────────────────────────────────────────────────────────────┐ │ Application Layer │ └────────────────────────────────────────────────────────────────┘</p> <div class=highlight><pre><span></span><code>```
+
+```
+```
+│                 │
+▼                 ▼
+
+```
+
+```
+```
+
+```
+┌────────────────────────────────────────────────────────────────┐
+│                       Device Selector                          │
+└────────────────────────────────────────────────────────────────┘
+
+```
+
+```
+```
+
+```
+│                 │
+▼                 ▼
+
+```
+
+```
+```
+
+```
+┌────────────────────────────────────────────────────────
+────────┐
+│
+
+          H
+
+ardware Abstraction Layer
+
+     │
+└───
+
+───
+
+───────────
+
+───────────────────────────────────────────────┘
+
+```
+
+```
+│             │              │               │
+▼             ▼              ▼               ▼
+
+```
+
+```
+┌──────────────┐ ┌──────
+
+────┐ ┌────
+
+───────
+
+─┐ ┌───────
+
+─────────┐
+│ Intel XPU    │ │
+
+Intel NPU│
+
+│ NVIDIA CU
+
+DA│ │ CPU F
+
+allback   │
+│ Backend      │ │ Backend  │ │ Backend    │ │ Backend        │
+└──────────────┘ └──────────┘ └────────────┘ └────────────────┘
+
+```
+
+```
+│             │              │
+
+               │
+▼
+
+  ▼              ▼               ▼
+
+```
+
+```
+┌──────────────┐ ┌──────────┐ ┌──────
+
+──────┐ ┌───────────
+
+─────┐
+│ Intel        │ │ Intel    │ │ NVIDIA     │ │ CPU Only       │
+│ Arc GPUs     │ │ NPU      │ │ GPUs       │ │ Systems        │
+└──────────────┘ └──────────┘ └────────────┘ └────────────────┘
+
+```
+
+### 1. Application Layer {#application-layer}
+
+Th
+
+e top-level in
+
+terface for models and services. This layer is hardware-agnostic and interacts wi
+
+th the hardware integrati
+
+on through the device selector.
+
+### 2. Device Selector {#device-selector}
+
+Chooses the appropriate backend based on:
+
+- Available hardware
+
+- Model requirements
+
+- User preferences
+
+- Performance profiles
+
+### 3. Hardware Abstraction
+
+ Layer (HAL) {#hardware-abst {#hardware-abstraction-layer-hal-hardware-abst}
+
+raction-layer-hal}
+
+Provides a unified interface to different hardware backends through:
+
+- Common API for all backends
+
+- Hardware-specific optimizers
+
+- Memory management adapters
+
+- Performance monitoring tools
+
+### 4. Hardware-Specific Backends {#hardware-specific-backends}
+
+Implements hardware-specific optimizations:
+
+- Intel XPU Backend (for Intel Arc GPUs)
+
+- Intel NPU Backend (for integrated Neural Processing Units)
+
+- NVIDIA CUDA Backend (for NVIDIA GPUs)
+
+- CPU Fallback Backend (for systems without specialized hardware)
+
+## Hardware Detection Process {#hardware-detection-process}
+
+The hardware detection process consists of the following steps:
+
+1. **System Probing**: Query the system for available hardware
+
+1. **Capability Assessment**: Determine the capabilities of detected hardware
+
+1. **Driver Validation**: Check for required drivers and their versions
+
+1. **Feature Verification**: Test for specific hardware features
+
+1. **Priority Assignment**: Assign priorities to available hardware options
+
+### Detection Implementation {#detection-implementation}
+
+```python
+
+def detect_hardware():
+
+```
+&quot;&quot;&quot;
+Detect available hardware and return prioritized list of device types.
+&quot;&quot;&quot;
+available_devices = []
+
+```
+
+```
+
+## Check for Intel Arc GPUs {#check-for-intel-arc-gpus}
+
+```
+
+```
+gpu_info = get_gpu_info()
+for gpu in gpu_info:
+
+```
+if &quot;Intel(R) Arc(TM)&quot; in gpu:
+
+```
+available_devices.append({
+
+```
+&quot;type&quot;: &quot;arc&quot;,
+&quot;name&quot;: gpu,
+&quot;priority&quot;: 100,
+&quot;backend&quot;: &quot;xpu&quot;
+
+```
+})
+
+```
+elif &quot;Intel(R
+) Battlemage(TM)
+&quot; in gpu:
+
+```
+availab
+le_devices.append({
+
+```
+&quot;type&quot;: &quot;bmg&quot;,
+&quot;name&quot;: gpu,
+&quot;priority&quot;: 100,
+&quot;backend&quot;
+: &quot;xpu&quot;
+
+```
+})
+
+```tex
+t
+
+```
+
+```tex
+t
+
+```
+
+## Check for NVIDI
+
+A GPUs {#che
+
+ck-for-nvidia-gpus-check-for-nvidia-gpus}
+
+```t
+ext
+
+```
+for gpu in gpu_info:
+
+```
+if
+&quot;NVIDIA&quot; in gp
+u:
+
+```
+avai
+lable_devices.append({
+
+``
+`
+&quot;type&quot;: &quot;nvidia&quot;,
+&quot;name&quot;:
+ gpu,
+&quot;priority
+&quot;:
+90,
+&quot;backend&quot;: &quot;cuda&quot;
+
+```
+})
+
+```
+
+```
+```
+``
+`
+
+## Check for NPU {#ch
+
+eck-for-npu}
+
+```
+
+```
+if has_dptf_driver() an
+d has_npu_capabilit
+y()
+:
+
+```
+available_
+
+devices.append
+({
+
+```
+&quot;type&quot;: &quot;
+npu
+&quot;,
+&quot;name&quot;:
+
+&quot;Integrated N
+eural Processing Unit&quot;,
+
+&quot;priority&quot;:
+80,
+&quot;backend&quot;:
+ &quot;npu&quot;
+
+```
+})
+
+```
+
+```
+```
+
+#
+# Always add CPU as fallba {#always-add-cpu-as-fallba}
+
+ck {#always-add-cpu-as-fall
+
+back}
+
+```
+
+```
+available_
+
+devices
+.append({
+
+```
+&quot;type&quot;: &quot;cpu&quot;,
+&quot;name&quot;
+: &quot;
+
+CPU&quot;,
+&quot;prio
+
+rity&quot;: 10,
+&quot;b
+ackend&quot;: &quot;cpu&quot;
+
+```
+})
+
+```
+`
+``
+
+## Sort {#sort}
+
+by priority (hig
+hest first) {#sort-by-priority-
+
+highest-first}
+
+```
+
+```
+return
+ sorted(available_devices, key
+=lambda x: x[&quot;p
+
+riority&quot;
+], reverse=True)
+
+```
+
+```
+
+## Envir {#envir}
+
+onment Setup {#
+
+environm
+ent-setup}
+
+On
+ce the hardw
+are is detected, the approp
+riate e
+nvironment i
+s set up:
+
+### Intel Arc G {#intel-arc-g}
+
+PU (XPU) En
+vir
+onment {#intel-arc-gpu-xpu-environment}
+
+```python
+
+def s
+etu
+p_arc_environ
+ment():
+
+```
+&quot;&quot;&quot;Set up
+
+environment for Intel Arc GPUs.&quot;&quot;&quot;
+os.environ[&quot;
+SYCL_CACHE_P
+ERSISTENT&quot;] = &quot;1&quot;
+os.environ
+
+[&quot;SYCL_PI_LEVEL_ZERO_USE_IMMEDIATE_COMMANDLISTS&quot;
+] = &quot;1&quot;
+os.en
+viron[&quot;ENABLE_L0_PROGRAM_CREATION_CACHE&quot;] = &quot;1&quot;
+os.environ[&quot;ONEAPI_DEVICE_SELECTOR&quot;] = &quot;level_zero:gpu&quot;
+
+```
+
+```
+try:
+
+```
+import intel_extension_for_pytorch as ipex
+
+torch.xpu.set
+_device(0)
+print(
+&quot;Intel Extension for PyTorc
+h and XPU backend enabled&quot;)
+
+```
+except ImportError:
+
+```
+print(&quot;Intel Extension for PyTorch not found, running with limited optimizations&quot;)
+
+```
+
+```
+```
+
+### Intel NPU Environment {#intel-npu-environment}
+
+```python
+
+def setup_npu_environment()
+
+:
+
+```
+&quot;&quot;&quot;Se
+
+t up environ
+ment
+for Intel NPU.&quot;&quot;&quot;
+os.environ[&quot;DNNL_DEFAULT_FPMATH_MODE&quot;] = &quot;BF16&quot;
+os.environ[&quot;ONEDNN_MAX_CPU_ISA&quot;] = &quot;AVX512_COR
+E_AMX&quot;
+
+```
+
+```
+try
+:
+
+```
+import neural
+_compressor
+print(&quot;Neural Compressor found, NPU optimizations ena
+bled&quot;)
+
+```
+except ImportError
+
+:
+
+```
+p
+rint(&quot;Neural Compressor not found, ru
+nning with lim
+ited NPU optim
+izations&quot;)
+
+```
+
+```
+```
+
+### NVIDIA GPU Environment {#nvidia-gpu-environment}
+
+```python
+
+def setup_nvidia_environment():
+
+```
+&quot;&quot;&quot;Set up environment f
+
+or NVIDIA GPUs
+.&quot;
+&quot;&quot;
+os.enviro
+n[&quot;CU
+DA_VISIBLE_DEVICES&quot;] = &quot;0&quot;
+os.environ[&quot;TF_FORCE_GPU_ALLOW_GROWTH&quot;
+] = &quot;true&quot;
+
+```
+
+```
+try
+:
+
+```
+import torch
+
+if torch.cuda.is_available():
+
+```
+torch.cuda.set_device(0)
+
+print(f&quot;CU
+
+DA enabled: {torch.
+
+cuda.get
+_device_name(0)}&quot;)
+
+```
+
+```
+except
+ ImportError:
+
+```
+print(&quot;PyTorc
+h with CUDA not found&quot;)
+
+```t
+ext
+
+```
+
+```
+
+## Model Optimization {#model-optimization}
+
+The hardware integration includes model optimization
+
+for each backe
+nd:
+
+### XPU Opti {#xpu-opti}
+
+mizat
+ion {#
+xpu-optimization}
+
+```python
+
+def optimize_mo
+del_for_xpu(model):
+
+```
+&quot;&quot;&quot;Optimize a PyTorch mod
+
+el for Intel XPU (Arc GPU).&quot;
+&quot;&quot;
+
+import intel
+_extension_for_pytor
+
+ch as ipex
+impor
+
+t torch
+
+```
+
+```
+
+## Convert {#convert}
+
+ to XPU
+{#convert-to-xpu}
+
+```
+
+```
+model = model.to(&quot;xpu&quot;)
+
+```
+
+```
+
+## Apply IPEX optimizations {#apply-ipex-optimizations}
+
+```
+
+```
+model = ipex.optim
+ize(model, d
+type=torch.float16)
+
+```
+
+```
+
+##
+
+Trace the model if possible {#trace-the-model-if-possible}
+
+```
+
+```
+try:
+
+```
+exampl
+
+e_input = torch.rand(1,
+ 3, 224, 224)
+.to(&quot;xpu&quot;)
+model = torch
+
+.jit.trace(m
+odel, exampl
+e_input)
+m
+
+odel = torch.j
+it.freeze(mod
+el)
+
+```
+except Exception as e:
+
+```
+pri
+
+nt(f&quot;Model traci
+ng failed: {
+e}&quot;)
+
+```
+
+```
+```
+return mod
+
+el
+
+```
+
+```
+
+### NPU Opti {#npu-opti}
+
+mization {#npu-optimization}
+
+`
+
+``python
+
+def
+ optimize_model_fo
+r_npu(model)
+:
+
+``
+`
+&quot;&quot;&quot;Optimize a model for Intel NPU.&quot;&quot;&quot;
+from neural_compressor.experimental import Quantization, co
+mmon
+
+```
+
+```
+
+## Initiali
+
+ze quanti {#initialize-quanti}
+
+zation
+ {#initializ
+
+e-qua
+ntization}
+
+```
+
+```
+quantizer = Quantizatio
+
+n(&quot;npu_
+config.yaml&quot;)
+
+quantizer.mo
+del
+= model
+
+```
+
+```
+
+## Define calib {#define-calib}
+
+ration dataloader {#define-calibration-dataloader}
+
+```
+
+```
+calibration_data = get_c
+alibration_da
+ta()
+quantizer.calib_dataloader = calibration_data
+
+```
+``
+`
+
+## Quantize the
+
+ model {#qua
+
+ntize-the-model}
+
+```tex
+t
+
+```
+quant
+ized_model = quantizer.fit()
+
+```te
+xt
+
+```
+retur
+n quantized_model
+
+`
+``text
+
+```
+
+### CUDA Optimization {#cuda-optimization}
+
+```pyt
+hon
+
+def opt
+imiz
+e_model_for_
+cuda(model):
+
+```
+&quot;&quot;&quot;Optimize a PyTorch model for NVIDIA CUDA.&quot;&quot;&quot;
+impo
+rt torch
+
+```
+
+```
+
+## Move {#move}
+
+ to CUDA {#move-to-cu
+
+da
+}
+
+```
+
+```
+model
+ = model.to(
+&quot;cuda&quot;)
+
+```
+text
+
+```
+
+## Enable C {#enable-c}
+
+UDA op
+timiza
+tion {#enable-cuda-opti
+
+mization}
+
+`
+`
+`text
+
+```
+if hasattr(model, &quot;half&quot;) and to
+rch.cud
+a.is_available():
+
+```
+model = model.half()
+ # Use FP16 if av
+
+ailable
+
+```t
+ext
+
+```
+```
+
+## Trace and comp {#trace-an
+
+d-comp}
+
+ile
+ the model
+ if possible {#t
+
+race-and-comp
+ile
+-the-model-i
+f-possible}
+
+```
+
+```
+try:
+
+```
+ex
+ample_input = torch.rand(1
+, 3, 224, 224).to(&quot;cuda&quot;)
+mode
+l = torch.ji
+t.trace(model, example
+_input)
+model = torch.jit.freeze(mo
+del)
+
+```
+except Exce
+
+ption as e:
+
+```
+print(f&quot;Model tracin
+
+g failed
+: {e}&quot;)
+
+```
+
+```
+```
+return model
+
+```
+
+```
+
+## Memory Management
+
+ {#memory-ma
+
+{#memory-management-memory-ma}
+
+nagement}
+
+E
+ach h
+ardware backend has its own memory management strategy:
+
+### XPU Memory Management {
+
+#xpu-memory-management}
+
+```pyt
+hon
+
+def manage_xpu_memo
+ry(batch_size,
+ model_si
+z
+
+e):
+
+```
+&quot;&quot;&quot;Manage memory
+
+ for XPU execution.&quot;&quot;&quot;
+
+import
+ torch
+import
+ intel_extens
+ion_for_pytorch as ipex
+
+```
+
+```
+
+## Get available memory {#get-available-memory}
+
+```
+
+```
+total_mem = torch.xpu.get_device_properties(0).to
+tal_memo
+ry
+reserved_mem = torch.xpu.memory_reser
+ved(0)
+allocated_mem =
+ torch.xpu.memory_allocated(0)
+free_mem = total_mem - reserved_mem
+
+```
+
+```
+
+## Cal
+
+culate {#calculate}
+
+optimal batch
+ size based on available m
+
+emory {#calculate-opti
+
+mal-batch-si
+ze-based-on-available-memory}
+
+```
+
+```
+estimated_batch_memory = model_size _ 4  # Rough estimate
+
+```
+
+```
+optimal_batch_size = min(batch_size, max(1, free
+
+_mem // estimated_batc
+h_memory))
+
+`
+``text
+
+```
+
+## Set up memory pool {#set-up-memory-pool}
+
+```
+
+```
+torch.xpu.empty_cache()
+
+```
+
+```
+return
+optimal_batc
+h_size
+
+```
+
+```
+
+### CUDA Memory Management {
+
+#cuda-me {#cuda-memory-management-cuda-me}
+
+mory-managem
+ent}
+
+```python
+
+def manage_cuda_memory(batc
+h_size, model_size):
+
+```
+&quot;&quot;&quot;Manage m
+emory
+for CUD
+A ex
+ecution.&quot;&quot;&quot;
+import torch
+
+```
+
+`
+``
+
+## Get avail {#get-avai
+
+l}
+
+able memo
+ry {#get-availa
+
+ble-memory}
+
+```
+
+```
+total_mem =
+torch.cuda.ge
+t_device_properties(0)
+.total_memory
+reserved_mem = to
+rch.cuda.memory_reserved(0)
+all
+ocated_mem = torch.cuda.memory_a
+llocated(0)
+free_mem =
+ total_mem -
+reserved_mem
+
+```t
+ext
+
+```
+
+## Calculate optimal batch size bas
+
+ed on availa
+ble {#calculate-optimal-batch-size-based-on-available}
+
+memory {#cal
+
+culate-optimal-batch-size-based-on-available-memory}
+
+```
+
+```
+estimated_batch_memory = model_size _ 4  # Rough estimat
+
+e
+
+```
+
+``
+`
+optimal_batch_size = min(batch_size, max(1, free_m
+em // estimat
+ed_batch_memory))
+
+```
+
+```
+
+## Set up memory pool {#set-up-memory-pool}
+
+```
+
+```
+torch.cuda.
+empty_cache(
+)
+
+```
+``
+`
+return optimal_batch_size
+
+```
+
+```
+
+## Ha
+
+rdware-Spe {
+#hardware-spe}
+
+cific Config
+urations {#hardware-specific-configurations}
+
+Each har
+dware type ha
+s specific con
+figurations t
+o optimize perf
+ormance:
+
+#
+
+## Intel Arc Conf {#intel
+
+-arc-conf}
+
+iguration {#
+intel-arc-configur
+
+ation}
+
+```json
+
+{
+
+  &quot;hardware&quot;: &quot;arc&quot;,
+  &quot;me
+mory&quot;: {
+
+```
+&quot;max_batch_size&quot;: &quot;auto&quot;,
+&quot;preallocate&quot;: true,
+&quot;offload_to_host&quot;: true
+
+```
+  },
+  &quot;execution&quot;: {
+
+```
+&quot;precision&quot;: &quot;mixed&quot;,
+&quot;preferred_format&quot;: &quot;bf16&quot;,
+&quot;optimize_for_inference&quot;: true,
+&quot;max_compile
+_tim
+e_seconds&quot;: 60
+
+```
+  },
+  &quot;optimi
+zations&quot;: {
+
+```
+&quot;enable_concurrent_execution&quot;: true,
+&quot;enable_tensor_parallelis
+m&quot;: true
+,
+&quot;enable_ker
+nel_caching&quot;: tru
+e
+
+```
+  },
+  &quot;environment_variables&quot;: {
+
+```
+&quot;SYCL_CACHE_PERSISTENT&quot;: &quot;1&quot;,
+&quot;ONEAPI_DEVICE_SELECTOR&quot;: &quot;l
+evel_zero
+:gpu&quot;
+
+```
+  }
+}
+
+```
+
+### NPU Con {#npu-con}
+
+figuration {#npu-configuration}
+
+```json
+
+{
+  &quot;hardware&quot;: &quot;npu&quot;,
+  &quot;memory&quot;: {
+
+`
+``
+&quot;max_batch_size&quot;:
+1,
+&quot;prealloca
+te&quot;: false
+
+```
+  },
+  &quot;execu
+tion&quot;: {
+
+```
+&quot;precision&quot;: &quot;bf16&quot;,
+&quot;preferred_format
+&quot;: &quot;bf
+16&quot;,
+&quot;optimize_
+for_inference&quot;:
+ true
+
+```
+  },
+  &quot;optimizations&quot;: {
+
+```
+&quot;
+enable_winograd&quot;: true,
+&quot;enable
+_layer_fusion&quot;: tru
+e
+
+```
+  },
+  &quot;environment_var
+iables&quot;: {
+
+```
+&quot;DNNL_D
+EFAULT_FPMATH_MODE&quot;
+: &quot;BF16&quot;,
+&quot;ONEDNN_MAX_CPU_ISA&quot;: &quot;AVX512_CORE_AMX&quot;
+
+```
+  }
+}
+
+```
+
+##
+
+Hardware A {#hardware-a}
+
+bstraction Interface {#hardware-ab
+
+straction-interface}
+
+The Ha
+rdware Abstraction Layer
+provides
+a unified interface for all backe
+nds:
+
+```python
+
+class HardwareBackend:
+
+```
+&quot;&quot;&quot;Int
+erface
+ for hardware backe
+nds.&quot;&quot;&quot;
+
+```tex
+t
+
+```
+def **init**(self, config=None):
+
+```
+&quot;&quot;&quot;Initialize the backend with optional configuration.&quot;&quot;&quot;
+self.config = config or {}
+self.device_typ
+e
+= &quot;cpu&quot;  # Default de
+
+vice type
+
+```tex
+t
+
+```
+
+```
+def setup(self):
+
+`
+``
+&quot;&quot;&quot;Set
+ up the envi
+ronment for this b
+ackend.&quot;&quot;&quot;
+rais
+e NotImplementedError
+
+```
+
+```
+```
+def is_available(self):
+
+```
+&quot;&quot;&quot;Check if this backend is available on the cur
+rent system.&quot;&quot;&quot;
+r
+
+aise NotImp
+
+lemente
+dErr
+or
+
+```
+
+```
+```
+def optimize_model(self, model):
+
+```
+&quot;&quot;&quot;Optimize a mod
+el for this
+
+ backend.&quot;&quot;
+
+&quot;
+raise
+ NotImpleme
+ntedError
+
+``
+`text
+
+```
+
+```
+def run_inference(self, model, inputs, __kwargs):
+
+```
+&quot;&quot;&quot;R
+un inferenc
+
+e with the given
+
+model a
+nd inputs.&quot;&quot;&quot;
+r
+aise NotImplemente
+dError
+
+```
+
+```
+```
+def get_memory_info(self):
+
+```
+&quot;&quot;&quot;G
+et memory in
+format
+
+ion for
+ this backend.&quot;&quot;&quot;
+raise NotImpleme
+ntedError
+
+```te
+xt
+
+```
+
+```
+def cleanup(self):
+
+```
+&quot;&quot;&quot;Clean up resources used by this b
+
+ackend.
+&quot;&quot;&quot;
+raise No
+
+tImplem
+ented
+Error
+
+```
+
+```
+``
+`
+
+## Backend Implementation Example {#backend-implementation-
+
+exa
+mple}
+
+Here&#39;
+s an exa
+
+mple of
+
+implementing the X
+PU backend:
+
+```python
+
+class XPUBackend(HardwareBackend):
+
+```
+&quot;&quot;&quot;Ba
+
+ckend for Intel
+
+XPU (Arc
+ GPUs).&quot;&quot;&quot;
+
+```
+
+```
+def **init**(self, config=None):
+
+```
+&quot;&quot;&quot;Initialize the XPU backend.&quot;&quot;&quot;
+super().**init**(config
+
+)
+self.device_type = &quot;xpu&quot;
+
+```tex
+t
+
+```
+```
+def s
+etup(self):
+
+```
+&quot;&quot;&quot;Set up the XPU en
+
+vir
+onment.&quot;&quot;&quot;
+
+## Set environment varia
+
+bles {#s {#set-environment-variables-s}
+
+et-environment-variables}
+
+```
+
+```
+```t
+ext
+
+```
+os
+
+.environ[&quot;SYCL_CACHE_PERSI
+STENT&quot;] = &quot;1&quot;
+o
+
+s.envir
+on[&quot;SYCL_PI_LEVEL
+_ZERO_USE_IMMEDIATE_COMMANDLISTS&quot;] = &quot;1&quot;
+
+```
+
+```
+```
+
+```
+
+## Import requir
+
+ed librarie
+
+s {#import {
+
+#import-required-libraries-import}
+
+-required-l
+
+ibraries}
+
+```
+
+```
+```
+
+```
+try:
+
+```
+import intel_ext
+ension_for_
+
+pytorch as ip
+ex
+import torch
+self.torch = torc
+
+h
+self.ipex
+
+ = ipex
+return True
+
+```
+except ImportError:
+
+```
+print(&quot;Inte
+
+l Extensio
+
+n for
+ PyTor
+
+ch not found&quot;
+)
+return False
+
+```
+
+```
+```
+
+```
+def is_available(self):
+
+```
+&quot;&quot;&quot;Check if XPU is avai
+lable.&quot;&quot;&quot;
+
+try:
+
+```
+import intel_exten
+sion_for_pytorch as ipex
+import torch
+return hasattr(torch,
+
+&quot;xpu&quot;) and
+
+torch.xpu.is
+_available()
+
+```
+except
+ ImportError:
+
+```
+return False
+
+```
+
+```
+```
+
+```
+def optimize_model(self, model):
+
+```
+&quot;&quot;&quot;Optimize model for XPU.&quot;&quot;&quot;
+if not self.is_available():
+
+```
+return model
+
+```
+text
+
+```
+`
+``text
+
+```
+`
+
+``
+
+## Mo
+
+ve {#move}
+
+ model to XP
+U {#move-model-t
+
+o-xpu}
+
+```
+`
+``
+
+```
+
+```
+model = model.to(&quot;xpu&quot;)
+
+``
+`text
+
+```
+```
+
+```
+
+## Apply IP {#app
+
+ly-ip}
+
+EX optimiza
+
+tions {#app
+
+ly-ipex-optimizations}
+
+``
+`text
+
+```
+```tex
+
+t
+
+```
+preci
+
+sion = self
+
+.config.g
+
+et(&quot;precisi
+
+on&quot;, &quot;mixed&quot;)
+if
+
+ precision
+
+== &quot;mixed&quot; or precision == &quot;fp16&quot;:
+
+```
+model = self.ipex
+
+.optimize(m
+
+o
+
+del, dtype=
+
+self.torch.float16)
+
+```
+else:
+
+```
+model = self.ipex.optimize(model)
+
+```
+
+```
+```
+
+```
+```
+retur
+n model
+
+```
+
+```
+```
+def run_inference(self, mode
+l, inp
+uts, __
+kwargs)
+:
+
+```
+&quot;&quot;&quot;Run inference on
+ XPU.&quot;&quot;&quot;
+
+i
+
+f isinsta
+
+nce(inputs,
+
+ dict):
+
+```
+
+## Con
+
+vert {#convert}
+
+input d
+ict values to XPU {#convert
+
+-input-dict-values-to-x
+pu}
+
+```
+
+```
+```
+
+```
+```
+
+```
+inp
+uts = {k: v.to(&quot;xpu
+&quot;) if hasattr(v, &quot;to&quot;) else v
+
+```
+
+```
+ for k, v in inputs.it
+ems()}
+
+```
+text
+
+```
+w
+
+ith se
+
+lf.t
+orch.no_
+grad():
+
+```
+outputs = model(__inputs)
+
+```t
+ext
+
+```
+els
+e:
+
+```
+
+## Convert inputs to
+
+ XPU {#c {#c
+
+onvert-inputs-to-xpu-c}
+
+onver
+t-input
+s-to-xpu}
+
+```
+
+```
+```
+te
+
+xt
+
+```
+
+``
+`
+```
+if hasattr(inpu
+
+ts, &quot;to&quot;):
+
+```
+inputs = inputs.to(&quot;xpu&quot;)
+
+```
+with self.
+torch.no
+_g
+
+rad():
+
+`
+
+``
+out
+
+puts
+
+=
+ model(inpu
+ts)
+
+```
+
+``
+`
+```
+
+```
+```
+
+```
+
+## Co
+
+nvert outp {#convert-outp}
+
+uts back to CPU if needed {
+#conv
+
+ert-outputs
+
+-back-to-cpu
+
+-if-neede
+
+d}
+
+```
+
+```
+```te
+
+xt
+
+```
+if kwargs.get(&quot;return_cpu&quot;, True):
+
+```
+if isinstance(outputs, dict):
+
+``
+`
+outputs =
+
+ {k
+
+: v.to(&quot;c
+pu
+
+&quot;) if hasattr(v, &quot;to&quot;) else v
+
+```
+
+```
+  for k, v in outputs.ite
+ms()
+}
+
+```
+
+```
+```
+elif hasattr(outputs, &quot;to&quot;):
+
+```
+outputs = o
+
+utputs.to(&quot;cpu&quot;)
+
+```
+
+```
+```
+
+`
+
+``
+```
+
+```
+return outputs
+
+```te
+xt
+
+```
+```
+def get_memory_inf
+o(self):
+
+`
+
+`
+
+`
+&quot;&quot;&quot;Get
+
+ XP
+
+U memor
+y in
+
+formation
+.&quot;&quot;&quot;
+if not
+
+ self.i
+
+s_avail
+able():
+
+```
+return {&quot;error
+&quot;: &quot;XPU not available&quot;}
+
+```
+
+```
+```
+
+```
+```
+device = se
+lf.t
+orch.xpu.current_device()
+total_me
+m =
+self.to
+
+rch.
+
+xpu.g
+
+et_dev
+
+ice_properties(device).total_memory
+reserved_mem = self.torch.xpu.memory_reserved(device)
+allocated_mem = self.torch.xpu.memory_allocated(device)
+free_mem = total_mem - reserved_mem
+
+```
+
+```
+```
+
+```
+return {
+
+```
+&quot;total&quot;: total_mem,
+&quot;reserved&quot;: reserved_me
+
+m,
+
+&quot;alloca
+
+ted&quot;
+
+: allocated
+_mem,
+
+&quot;free&quot;: free_mem
+
+```
+}
+
+```
+
+```
+```
+def cleanup(self):
+
+```
+&quot;&quot;&quot;Clean up XPU resour
+ces
+.&quot;&quot;&quot;
+if se
+
+lf.i
+
+s
+_avail
+able():
+
+```
+self.t
+orch.xpu.empty_cache()
+
+```
+
+```
+```
+
+```
+
+## Addi
+
+ng N {#adding-n}
+
+ew Hardware
+Support {#a
+
+dding-
+new-ha
+rdwar
+
+e-support}
+
+T
+o add support for a new hardware platform:
+
+1. **Create a new backend class** inheriting from `HardwareBackend`
+
+1. **Implement required methods** for the new hardware
+
+1. **Add detection logic** to identify the new hardware
+
+1. **Create optimization profiles** for the new hardware
+
+1. **Register the backend** with the hardware abstraction layer
+
+```python
+
+## Example: Adding support for a new hardware ty
+
+pe
+
+{#example-adding-support-for-a-new-hardware-type}
+
+## 1. Create backend class {#create-backend-class}
+
+class NewHardwareBackend(HardwareBackend):
+
+```
+&quot;&quot;&quot;Backend for new hardware type.&quot;&quot;&quot;
+
+```
+
+```
+def **in
+it*
+*(self, config=None):
+
+```
+super(
+).**
+init**(
+confi
+g)
+self.device_type = &quot;new_h
+ardwa
+re&quot;
+
+```
+
+```
+```
+
+## Implement required methods {#implement-req
+
+uir {#im
+
+plement-required-methods-implement-requir}
+
+ed-metho
+ds}
+
+```
+
+```
+def setup(self):
+
+```
+&quot;&quot;&quot;Set up environ
+men
+t for ne
+w ha
+rdware.&quot;&quot;&quot;
+
+## S {#s}
+
+etup code {#setup-code}
+
+```
+
+```
+```
+
+```
+return True
+
+```
+
+```
+```
+d
+
+ef
+
+is_avai
+
+labl
+
+e(self):
+
+```
+&quot;&quot;&quot;C
+
+heck i
+
+f new h
+ardware is availab
+le.&quot;&quot;&quot;
+
+## Detection code {#detection-code}
+
+```
+
+```
+```
+
+```
+return has_new_hardware
+
+()
+
+```
+`
+
+``
+
+```
+
+## ... implement other me
+
+thods
+{#-implement-other-methods}
+
+ {#-impl
+
+ement-other-methods}
+
+```
+
+## 2. Add detection logic {#add- {#
+
+add-detection-logic-add-}
+
+detection-logic}
+
+def detect_new_hardware():
+
+```
+&quot;&quot;&quot;Detect if new hardware is a
+vailab
+le.&quot;&quot;&quot;
+
+## Detection code {#detection-code}
+
+```
+
+```
+return True if new_har
+dware
+
+_found(
+) else False
+
+```
+
+## 3. Register backend {#reg {#
+
+register-backend-reg}
+
+ister-backend}
+
+def register_new_hardware():
+
+```
+&quot;&quot;&quot;Register new hardware b
+ackend
+.&quot;&quot;&quot;
+backend_registry.register(&quot;new_hardware&quot;, NewHardwareBackend)
+
+```
+
+```
+
+## Performance Mo {#per
+
+formance-mo}
+
+nitoring {#pe
+
+rformance-monitoring}
+
+The hardware integration includes performance monitoring capabilities:
+
+```python
+
+def monitor_hardwa
+re_perfo
+rmance(backend, model, inputs, iterations=10):
+
+```
+&quot;&quot;&quot;
+Monitor and benchm
+ark ha
+rdware performance.
+
+```
+
+```
+Args:
+
+```
+bac
+kend:
+
+ Hardwa
+re bac
+
+kend to use
+model: Model to benchmark
+inputs: Inputs for the model
+iterations: Number of iterations to run
+
+```
+
+```
+```
+Retur
+ns:
+
+```
+P
+
+erforma
+nce metr
+i
+cs
+
+```
+&quot;&quot;&quot;
+
+## Warm-
+
+up run
+
+ {#warm-up-run}
+
+```
+
+```
+backen
+d.run
+
+_infere
+nce(model, inputs)
+
+```
+
+```
+
+## Measur
+
+e infer {#measure-infer}
+
+ence time {#measure-inference-time}
+
+```
+
+```
+st
+art_t
+
+ime = t
+ime.time()
+for _ in range(iterations):
+
+```
+backend.r
+u
+n_inference(model, inputs)
+
+```
+end_ti
+me = t
+ime.time()
+
+```
+``
+`
+
+##
+
+ Get mem {#get-mem}
+
+ory usage {#get-memory-usage}
+
+```
+
+```
+memory_
+i
+nfo = backend.get_memory_info()
+
+```tex
+t
+
+```
+
+## Ca
+
+l {#cal}
+
+culate metrics {#calculate-metrics}
+
+```t
+e
+xt
+
+```
+tot
+a
+l_time = end_time - start_time
+avg_time = total_time / iterations
+throughput = iterations / total_time
+
+``
+`
+text
+
+```
+r
+e
+turn {
+
+``
+`
+&quot;backend&quot;: backend.device_type,
+&quot;avg_inference_time_ms&quot;: avg_time _ 1000,
+&quot;throughput_per_second&quot;: throughput,
+&quot;iterations&quot;: iterations,
+&quot;memory&quot;: memory_info
+
+```
+}
+
+```
+
+```
+
+## Additional Resources {#additional-resources}
+
+- [Hardware Compatibility Guide](../hardware/compatibility.md)
+
+- [Hardware Optimization Guide](../hardware/optimization.md)
+
+- [Intel Arc GPU Guide](../hardware/device-specific/intel-arc.md)
+
+- [NPU Integration Guide](../hardware/device-specific/intel-npu.md)
+
+- [NVIDIA GPU Guide](../hardware/device-specific/nvidia.md)
+
+---
+*_Previous**: [API Design](api-design.md) | **Next**: [Data Flow](data-flow.md) | **See also_*: [Architecture Overview](overview.md)
+</code></pre></div> <p>````</p> </article> </div> <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script> <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script> </div> <button type=button class="md-top md-icon" data-md-component=top hidden> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg> Back to top </button> </main> <footer class=md-footer> <div class="md-footer-meta md-typeset"> <div class="md-footer-meta__inner md-grid"> <div class=md-copyright> Made with <a href=https://squidfunk.github.io/mkdocs-material/ target=_blank rel=noopener> Material for MkDocs </a> </div> <div class=md-social> <a href=https://github.com/intel/AI-Playground target=_blank rel=noopener title=github.com class=md-social__link> <svg xmlns=http://www.w3.org/2000/svg viewbox="0 0 496 512"><!-- Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg> </a> </div> </div> </div> </footer> </div> <div class=md-dialog data-md-component=dialog> <div class="md-dialog__inner md-typeset"></div> </div> <script id=__config type=application/json>{"base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.instant", "navigation.tracking", "navigation.top", "search.suggest", "search.highlight", "content.tabs.link", "content.code.copy"], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"default": "latest", "provider": "mike"}}</script> <script src=../../assets/javascripts/bundle.c8b220af.min.js></script> </body> </html>
