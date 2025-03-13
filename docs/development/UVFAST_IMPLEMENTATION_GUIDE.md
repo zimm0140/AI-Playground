@@ -47,7 +47,7 @@ This document provides a step-by-step guide for implementing and using the `uvfa
 
 - Add any other hardware-specific configurations
 
-````text
+````
 
 ### 3. Documentation {#documentation}
 

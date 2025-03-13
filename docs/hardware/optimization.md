@@ -31,7 +31,7 @@ Intel Arc GPUs (Alchemist and newer) offer excellent performance with these opti
 
 python setup_hardware_env.py --hardware acm
 
-````text
+````
 
 ### Performance Tuning {#performance-tuning}
 

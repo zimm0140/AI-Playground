@@ -37,7 +37,7 @@ Most documentation is written in Markdown format and can be viewed directly on G
 
 The documentation site can be built using MkDocs:
 
-````text
+````
 
 mkdocs build
 

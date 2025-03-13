@@ -185,6 +185,7 @@ print(json.dumps(info, indent=2))
 ```
 
 #
+
 ### `print_hardware_info(verbose: bool = False) -> None` {#print_hardware_infoverbose-bool-false---none}
 
 Print information about the system hardware.

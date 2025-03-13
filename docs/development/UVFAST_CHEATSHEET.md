@@ -27,7 +27,7 @@ python uvfast.py setup --hardware mtl
 
 python uvfast.py setup --no-lockfile
 
-````text
+````
 
 ### Show Environment Information {#show-environment-information}
 

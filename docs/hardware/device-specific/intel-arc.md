@@ -211,6 +211,7 @@ python service/tools/intel_gpu_diagnostics.py
 ```
 
 #
+
 #
  Performance Tuning {#performance-tuning}
 

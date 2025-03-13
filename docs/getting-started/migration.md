@@ -13,7 +13,7 @@ Version 2.x introduces significant changes to hardware detection, environment ma
 \`\`\`text\`bash
 git pull origin main
 
-````text
+````
 
 ### Step 2: Clean Your Environment {#step-2-clean-your-environment}
 

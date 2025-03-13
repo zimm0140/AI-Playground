@@ -47,7 +47,7 @@ All Python code should adhere to [PEP 8](https://peps.python.org/pep-0008/), wit
 
 - `UPPER_CASE` for constants
 
-````text
+````
 
 ### Type Hints {#type-hints}
 

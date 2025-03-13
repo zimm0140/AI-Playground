@@ -30,7 +30,7 @@ select = ["E", "F", "I", "W", "N", "B", "C4", "UP", "T20"]
 ignore = ["E501"]
 extend-exclude = \[".git", ".github", ".venv", "venv", "**pycache**", "build", "dist"\]
 
-````text
+````
 
 #### Key Rules {#key-rules}
 

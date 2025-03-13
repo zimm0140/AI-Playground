@@ -70,7 +70,7 @@ The implementation combines modern Python packaging practices with hardware dete
 git clone <repository-url>
 cd <project-directory>
 
-````text
+````
 
 1. Run the setup command to create an environment for your hardware:
 
