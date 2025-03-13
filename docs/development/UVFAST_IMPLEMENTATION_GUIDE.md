@@ -202,4 +202,3 @@ python uvfast.py setup --hardware ovino --dev
 ```text`
 
 ````
-

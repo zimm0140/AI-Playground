@@ -123,4 +123,3 @@ This will check your Python code for linting issues before each commit.
 ```text`
 
 ````
-

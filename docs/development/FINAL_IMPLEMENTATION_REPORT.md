@@ -170,4 +170,3 @@ can scale with the project's needs while providing immediate benefits to develop
 
 The comprehensive documentation and tooling provided will ensure a smooth transition for all stakeholders, from casual contributors to core developers, while significantly
 improving development speed, reliability, and convenience.
-

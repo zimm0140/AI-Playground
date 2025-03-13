@@ -239,4 +239,3 @@ A: Use the `scripts/fix_type_annotations.py` script to help identify and fix typ
 ```text`
 
 ````
-
