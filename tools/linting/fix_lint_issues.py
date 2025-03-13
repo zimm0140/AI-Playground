@@ -1,59 +1,127 @@
 #!/usr/bin/env python3
 """
-Script to automatically fix linting issues reported by Ruff.
-This script will run ruff with the --fix option on the directories
-with reported issues.
+Script to automatically fix common linting issues in the codebase.
+
+Enhanced version with:
+- Progress tracking
+- Selective rule fixing
+- Detailed reporting
+- Automatic backup
 """
 
+import argparse
+import json
+import re
+import shutil
 import subprocess
 import sys
+from datetime import datetime
 from pathlib import Path
+from typing import Dict, List, Optional, Set, Tuple
+
+
+class LintingFixer:
+    def __init__(self, directories: List[str], rules: Optional[List[str]] = None):
+        self.directories = directories
+        self.rules = rules or ["F401", "W291", "F821", "N801", "N802", "N803"]
+        self.stats: Dict[str, int] = {rule: 0 for rule in self.rules}
+        self.backup_dir = Path("lint_backups") / datetime.now().strftime("%Y%m%d_%H%M%S")
+
+    def backup_file(self, file_path: Path) -> None:
+        """Create a backup of the file before modifying it."""
+        backup_path = self.backup_dir / file_path.relative_to(Path.cwd())
+        backup_path.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(file_path, backup_path)
+
+    def fix_file(self, file_path: Path) -> Tuple[bool, Dict[str, int]]:
+        """Fix linting issues in a single file."""
+        try:
+            # Backup the file
+            self.backup_file(file_path)
+
+            # Run ruff with --fix for each rule
+            fixes_applied = {rule: 0 for rule in self.rules}
+            for rule in self.rules:
+                result = subprocess.run(
+                    ["ruff", "check", "--fix", f"--select={rule}", str(file_path)],
+                    capture_output=True,
+                    text=True,
+                    check=False,
+                )
+                if result.returncode == 0:
+                    fixes_applied[rule] = len(result.stdout.splitlines())
+
+            # Run formatter after fixes
+            subprocess.run(
+                ["ruff", "format", str(file_path)],
+                check=False,
+                capture_output=True,
+            )
+
+            return True, fixes_applied
+        except Exception as e:
+            print(f"❌ Error processing {file_path}: {str(e)}")
+            return False, {}
+
+    def generate_report(self, start_time: datetime) -> str:
+        """Generate a detailed report of fixes applied."""
+        end_time = datetime.now()
+        duration = (end_time - start_time).total_seconds()
+
+        report = [
+            "# Linting Fix Report",
+            f"\nRun completed at: {end_time.strftime('%Y-%m-%d %H:%M:%S')}",
+            f"Duration: {duration:.2f} seconds\n",
+            "## Rules Fixed",
+        ]
+
+        for rule, count in self.stats.items():
+            report.append(f"- {rule}: {count} fixes")
+
+        return "\n".join(report)
+
+    def run(self) -> bool:
+        """Run the linting fixes on all directories."""
+        start_time = datetime.now()
+        success = True
+
+        for directory in self.directories:
+            if not Path(directory).exists():
+                print(f"⚠️ Directory {directory} does not exist, skipping.")
+                continue
+
+            print(f"🛠️ Fixing issues in {directory}...")
+            py_files = list(Path(directory).rglob("*.py"))
+
+            for i, file_path in enumerate(py_files, 1):
+                print(f"Processing {file_path} ({i}/{len(py_files)})")
+                file_success, fixes = self.fix_file(file_path)
+                success &= file_success
+
+                # Update statistics
+                for rule, count in fixes.items():
+                    self.stats[rule] += count
+
+        # Generate and save report
+        report = self.generate_report(start_time)
+        report_path = Path("lint_report.md")
+        report_path.write_text(report)
+        print(f"\nReport saved to {report_path}")
+
+        return success
 
 
 def main():
-    """Run ruff with --fix on specified directories."""
-    directories = [".github/workflows/scripts/", "tests/", "LlamaCPP/", "OpenVINO/"]
+    """Run the enhanced linting fixer."""
+    parser = argparse.ArgumentParser(description="Fix linting issues with enhanced tracking")
+    parser.add_argument("directories", nargs="*", default=["."], help="Directories to process")
+    parser.add_argument("--rules", nargs="*", help="Specific rules to fix")
+    args = parser.parse_args()
 
-    print("🔍 Running Ruff auto-fixes on codebase...")
-    success = True
+    fixer = LintingFixer(args.directories, args.rules)
+    success = fixer.run()
 
-    for directory in directories:
-        if not Path(directory).exists():
-            print(f"⚠️ Directory {directory} does not exist, skipping.")
-            continue
-
-        print(f"🛠️ Fixing issues in {directory}...")
-        try:
-            result = subprocess.run(["ruff", "check", "--fix", directory], capture_output=True, text=True, check=False)
-
-            if result.returncode != 0:
-                print(f"❌ Failed to fix all issues in {directory}")
-                print(f"Error output: {result.stderr}")
-                success = False
-            else:
-                print(f"✅ Successfully fixed issues in {directory}")
-
-            # Also run formatter
-            format_result = subprocess.run(["ruff", "format", directory], capture_output=True, text=True, check=False)
-
-            if format_result.returncode != 0:
-                print(f"❌ Failed to format {directory}")
-                print(f"Error output: {format_result.stderr}")
-                success = False
-            else:
-                print(f"✅ Successfully formatted {directory}")
-
-        except Exception as e:
-            print(f"❌ Error processing {directory}: {str(e)}")
-            success = False
-
-    if success:
-        print("✅ All fixable linting issues have been addressed.")
-        print("Note: Some issues may require manual attention.")
-        return 0
-    print("⚠️ Some linting issues could not be automatically fixed.")
-    print("Please review the output and fix remaining issues manually.")
-    return 1
+    return 0 if success else 1
 
 
 if __name__ == "__main__":
