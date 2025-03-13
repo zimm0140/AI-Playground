@@ -144,14 +144,13 @@ class UVFast:
             # Simple detection as fallback
             self.hardware_type = self._simple_hardware_detection()
 
-    def _load_config(self) -> dict[str, list[str]]:
+    def _load_config(self) -> dict:
         """Load the configuration from the config file."""
         config_path = Path(".uvfast.json")
         if config_path.exists():
             try:
                 with config_path.open() as f:
-                    config = json.load(f)
-                return config
+                    return json.load(f)
             except json.JSONDecodeError:
                 logging.warning(f"Failed to parse config file: {config_path}")
                 return {}
@@ -385,7 +384,7 @@ class UVFast:
         print("Hardware Information:")
         print(f"Project: {self.config.get('project_name', 'ai-playground')}")
         print(f"Detected hardware type: {self.hardware_type}")
-        print(f"Available hardware types: {', '.join(self.config.get('hardware_types', []}")
+        print(f"Available hardware types: {', '.join(self.config.get('hardware_types', []))}")
 
         # Show requirements files
         print("\nRequirements files:")
@@ -418,7 +417,10 @@ class UVFast:
 
     def update_lockfiles(self, args: argparse.Namespace) -> int:
         """Update lockfiles for the specified hardware types."""
-        hardware_types = self.config.get("hardware_types", [] if args.all else [args.hardware or self.hardware_type]
+        hardware_types = self.config.get(
+            "hardware_types",
+            [] if args.all else [args.hardware or self.hardware_type],
+        )
         logging.info(f"Updating lockfiles for hardware types: {', '.join(hardware_types)}")
 
         if not self._ensure_uv_installed():
@@ -459,7 +461,10 @@ class UVFast:
             return 1
 
         # Get the hardware types to process
-        hardware_types = self.config.get("hardware_types", [] if args.all else [args.hardware or self.hardware_type]
+        hardware_types = self.config.get(
+            "hardware_types",
+            [] if args.all else [args.hardware or self.hardware_type],
+        )
 
         for hw_type in hardware_types:
             logging.info(f"Generating lockfile for hardware type: {hw_type}")
@@ -488,7 +493,10 @@ class UVFast:
 
 def main() -> int:
     """Main entry point for uvfast."""
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
     subparsers = parser.add_subparsers(dest="command", help="Command to run")
 
     # Setup command
@@ -516,6 +524,7 @@ def main() -> int:
         help="Hardware type to update lockfiles for",
     )
     update_parser.add_argument("--dev", action="store_true", help="Include development dependencies")
+    update_parser.add_argument("--all", action="store_true", help="Generate lockfiles for all hardware types")
 
     # Lock command
     lock_parser = subparsers.add_parser("lock", help="Generate lockfiles for dependencies")

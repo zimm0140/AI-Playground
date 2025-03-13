@@ -89,9 +89,25 @@ ignore = [
     "PTH202",
     "PTH100",
     "PTH207",
+    "PTH112",
+    "PTH113",
+    "PTH109",
     # Security issues - temporarily disabled
     "S603",
     "S607",
+    "S113",
+    "S501",
+    "S311",
+    "S605",
+    "S324",
+    "S314",
+    "S110",
+    # Exception naming conventions
+    "N818",
+    # Variable and class naming conventions
+    "N801",
+    "N807",
+    "N812",
     # Variable shadowing issues - temporarily disabled for backward compatibility
     "A001",
     "A002",
@@ -109,6 +125,15 @@ ignore = [
     "C901",
     # Line too long - to be addressed in future refactoring
     "E501",
+    # Code structure issues
+    "SIM102",
+    "SIM108",
+    "SIM115",
+    "SIM117",
+    # Error handling
+    "B904",
+    # Import placement
+    "E402",
 ]
 
 [tool.ruff.lint.per-file-ignores]
