@@ -62,12 +62,9 @@ Each workflow is provided as a JSON file that can be imported directly into Comf
 
 1. Download the JSON file
 
-
 1. Open ComfyUI in your browser
 
-
 1. Right-click anywhere in the canvas
-
 
 1. Select "Load" and choose the downloaded JSON file
 
@@ -81,18 +78,13 @@ To contribute a new workflow:
 
 1. Create a fork of this repository
 
-
 1. Add your workflow JSON file to this directory
-
 
 1. Create a pull request
 
-
 1. Our CI system will automatically validate your workflow
 
-
 1. Address any issues identified in the validation
-
 
 1. Once all checks pass, your workflow will be reviewed for merging
 

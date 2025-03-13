@@ -30,15 +30,11 @@ This document outlines the code quality standards, tools, and practices implemen
 
 1. Use type hints for all function parameters and return values.
 
-
 1. Follow PEP 8 style guidelines.
-
 
 1. Keep functions small and focused (preferably under 50 lines).
 
-
 1. Write docstrings for all modules, classes, and functions.
-
 
 1. Use meaningful variable and function names.
 
@@ -46,12 +42,9 @@ This document outlines the code quality standards, tools, and practices implemen
 
 1. Keep documentation up-to-date with code changes.
 
-
 1. Use consistent formatting in markdown files.
 
-
 1. Document complex functionality with examples.
-
 
 1. Include installation and setup instructions for developers.
 
@@ -81,16 +74,13 @@ Common issues and solutions:
 
 1. **Line Length (MD013)**: Break long lines or use the `<!-- markdownlint-disable MD013 -->` comment to disable for specific sections.
 
-
 1. **Multiple Top-level Headings (MD025)**: Use only one H1 (#) heading per document.
-
 
 1. **List Formatting**: Ensure lists have blank lines before and after, and use consistent formatting (- for unordered, 1. for ordered).
 
 ### Python Linting
 
 1. **Import Issues**: Update `pyrightconfig.json` or `mypy.ini` to handle special imports.
-
 
 1. **Line Length**: Use line breaks or, in rare cases, `# noqa: E501` to ignore specific lines.
 

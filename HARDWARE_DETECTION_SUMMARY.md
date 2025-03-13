@@ -50,15 +50,11 @@ The updated CI/CD workflow now:
 
 1. Sets up a matrix of test environments (OS, Python version, hardware type)
 
-
 1. Creates simulated hardware environments for each matrix combination
-
 
 1. Installs hardware-specific dependencies
 
-
 1. Runs hardware detection tests
-
 
 1. Verifies detection results
 
@@ -74,11 +70,8 @@ We've implemented support for the following simulated hardware types:
 
 1. Add support for more hardware types (Battlemage, Meteor Lake, etc.)
 
-
 1. Enhance detection patterns for newer hardware
 
-
 1. Integrate with package management to automatically install required dependencies
-
 
 1. Add performance benchmarking for different hardware types

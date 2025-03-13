@@ -34,7 +34,6 @@ pip install -r requirements.txt
 
 ```text`text
 
-
 1. **Verify the environment**:
 
 ```bash
@@ -91,7 +90,6 @@ source .venv/bin/activate
 
 ```text
 
-
 1. **Add new dependencies to requirements.txt**:
 
 When adding a new package, update the requirements.txt file:
@@ -107,7 +105,6 @@ pip freeze > requirements.txt
 echo "package-name==1.2.3" >> requirements.txt
 
 ```text
-
 
 1. __Never commit environment directories_*:
 
@@ -172,9 +169,7 @@ Please follow these steps to have your contribution considered by the maintainer
 
 1. Always set base branch to [dev](https://github.com/intel/AI-Playground/tree/dev), do NOT make pull requests to the main branch without a strong reason.
 
-
 1. Follow all instructions in [the template](/.github/pull_request_template.md).
-
 
 1. After you submit your pull request, verify that all [status checks](https://docs.github.
 

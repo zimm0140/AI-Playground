@@ -178,15 +178,11 @@ python uvfast.py setup --hardware ovino --dev
 
 1. **Modern tooling**: Leverages `uv` for faster package installation
 
-
 1. **Reproducible environments**: Uses lockfiles for consistent dependencies
-
 
 1. **Hardware-specific setups**: Easily manage different hardware configurations
 
-
 1. **CI/CD integration**: Streamlined testing across platforms
-
 
 1. **Developer convenience**: Simple commands for common tasks
 
@@ -194,15 +190,11 @@ python uvfast.py setup --hardware ovino --dev
 
 1. **Keep configuration up to date**: Update `uvfast.json` when adding new hardware configurations
 
-
 1. **Generate lockfiles after requirements changes**: Run `uvfast.py lock` after updating any requirements files
-
 
 1. **Use wrappers for consistency**: Encourage team members to use the wrapper scripts
 
-
 1. **Include in CI**: Integrate with your CI/CD pipeline for consistent testing
-
 
 1. **Document hardware-specific needs**: Make sure to document any hardware-specific considerations
 

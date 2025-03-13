@@ -2,97 +2,77 @@
 
 This guide explains how to optimize your AI applications for Intel hardware using our hardware-aware environment management system.
 
-
 ## Table of Contents {#table-of-content {#table-of-contents-table-of-content}
 
 s}
 
-
 1. [Overview](#overview)
 
-
 1. [Hardware Types](#hardware-types)
-
 
 1. [Environment Setup](#environment-setup
 
 )
 
-
 1. [Using the AI Framework Integration](#using-the-ai-framework-integratio
 
 n)
-
 
 1. [Working with LangChain](#working-with-langcha
 
 in)
 
-
 1. [Working with Stable Diffusion](#working-with-stable-diffus
 
 ion)
-
 
 1. [Performance Benchmarking](#performance-benchmar
 
 king)
 
-
 1. [Troubleshooting](#troublesho
 
 oting)
-
 
 1. [Advanced Configuration](#advanced-configu
 
 ration)
 
-
 1. [Overview](#o
 
 verview)
-
 
 1. [Hardware Types](#hardwa
 
 re-types)
 
-
 1. [Environment Setup](#environm
 
 ent-setup)
-
 
 1. [Using the AI Framework Integration](#using-the-ai-framework-i
 
 ntegration)
 
-
 1. [Working with LangChain](#working-wit
 
 h-langchain)
-
 
 1. [Working with Stable Diffusion](#working-with-stab
 
 le-diffusion)
 
-
 1. [Performance Benchmarking](#performance
 
 -benchmarking)
-
 
 1. [Troubleshooting](#t
 
 roubleshooting)
 
-
 1. [Advanced Configuration](#advanced-configuratio
 
 n)
-
 
 ## Overview {#overv {#overview-overv}
 
@@ -101,18 +81,14 @@ iew}
 Our hardware-aware environment management system automatically detects your Intel hardware and sets up the appropriate environment for optimal performance with AI frameworks. The
 system supports:
 
-
 - **Intel Arc GPUs** via XPU backends using Intel® Extension for PyTorch
 
-
 - **Intel CPUs** with OpenVINO optimizations
-
 
 - **Standard CPUs** as a fallback option
 
 The system integrates with popular AI frameworks like LangChain and Stable Diffusion to provide seamless acceleration without changing your application c
 ode.
-
 
 ## Hardware Types {#hardware- {#hardware-types-hardware-}
 
@@ -131,7 +107,6 @@ The system recognizes the following hardware types:
 
 t-setup}
 
-
 ### Basic Setup {#ba {#basic-setup-ba}
 
 sic-setup}
@@ -140,8 +115,8 @@ To set up your environment for the detected hardware
 
 ```bash
 
+# Set up for
 
-# Set up for 
 a
 
 utomatically detected hardware {#set-up-for-automatically-detect {#set-up-for-automatically-detected-hardware-set-up-for-automatically-detect}
@@ -150,14 +125,12 @@ ed-hardware}
 python uvf
 ast.py setup
 
-
 # Set up for specific hardware {#set-up-for-spec {#set-up-for-specific-hardware-set-up-for-spec}
 
 ific-hardware}
 python uvfast.py setup --hardware acm
 python uvfast.py setup --
 hardware ovino
-
 
 # Include development dependencies {#include-developme {#include-development-dependencies-include-developme}
 
@@ -168,6 +141,7 @@ setup --dev
 ```text
 
 ### Using Lockf {#usin
+
 g
 
 -lockf}
@@ -179,8 +153,8 @@ ockfiles:
 
 ```bash
 
+# Generate
 
-# Generate 
 l
 
 ockfile for the current hardware {#generate-lockfile-for-t {#generate-lockfile-for-the-current-hardware-generate-lockfile-for-t}
@@ -189,13 +163,11 @@ he-current-hardware}
 p
 ython uvfast.py lock
 
-
 # Generate lockfile for a specific hardware type {#generate-lockfile-for-a-s {#generate-lockfile-for-a-specific-hardware-type-generate-lockfile-for-a-s}
 
 pecific-hardware-type}
 python uvfast.
 py lock --hardware acm
-
 
 # Generate lockfiles for all hardware types {#generate-lockfiles {#generate-lockfiles-for-all-hardware-types-generate-lockfiles}
 
@@ -203,13 +175,11 @@ py lock --hardware acm
 pyt
 hon uvfast.py lock --all
 
-
 # Sync environment from lockfile {#sync- {#sync-environment-from-lockfile-sync-}
 
 environment-from-lockfile}
 
 python uvfast.py syn```text``
-
 
 ## Using the A {#using-the-a}
 
@@ -221,8 +191,8 @@ ized performance:
 
 ```python
 
-
 # Example of hardwar
+
 e
 
 -aware AI framework usage {#example-of-hard {#example-of-hardware-aware-ai-framework-usage-example-of-hard}
@@ -231,13 +201,11 @@ ware-aware-ai-framework-usage}
 from examples.ai_frameworks_integration import configure_h
 ardware, setup_langchain_model
 
-
 # Configure hardware and get device {#co {#configure-hardware-and-get-device-co}
 
 nfigure-hardware-and-get-device}
 device, hard
 ware_type = configure_hardware()
-
 
 # Set up LangChain model with hardware-specific optimizations {#set-up-langchain-model-wit {#set-up-langchain-model-with-hardware-specific-optimizations-set-up-langchain-model-wit}
 
@@ -246,15 +214,16 @@ llm = setup_lang
 chain_model(device, hardware_typ
 e)
 
-
 # Use {#use} the model {#use-the-model}
 
 response = llm("Explain quantum computing in
 simple terms.")
 print(respo```
+
 ```text
 
 ## Work {#
+
 work
 
 }ing wi {#working-wi}
@@ -265,7 +234,6 @@ To optimize La
 ngChain performance on Intel h
 ardware:
 
-
 ### Basic Usage {#basic-usage}
 
 ```python
@@ -275,13 +243,11 @@ r
 ameworks_integration import c
 onfigure_hardware, setup_langchain_model
 
-
 # Auto-con {#auto-con}
 
 figure hardware {#auto-configure-hardwa
 re}
 device, hw_type = configure_hardware()
-
 
 # Set up LangChain with hardware optimizations {#s {#set-up-langchain-with-hardware-optimizations-s}
 
@@ -294,7 +260,6 @@ struct"  # Change to your preferred model
 
 )
 
-
 # Use {#use}
 
 the optimized model {#use-the-optimized-model}
@@ -305,6 +270,7 @@ print(re```textse)
 ```text
 
 ### Adva
+
 nc {
 
 #advanc}
@@ -322,14 +288,12 @@ from langchain.chains import LLMChain
 from examples.ai_frameworks_integration
 import configure_hardware, setup_langchain_model
 
-
 #
 Auto-configure hardware {#auto-configure-hardware}
 
 device, hw_type = configure_hardw
 are()
 llm = setup_langchain_model(device, hw_type)
-
 
 #
 Create a prompt template {#create-a-prompt-template}
@@ -343,13 +307,11 @@ prompt = PromptTemplate(templ
 ate=template, input_variables=["to
 pic", "question"])
 
-
 # Create a chain {#cr {#create-a-chain-cr}
 
 eate-a-chain}
 chain = LLMChain(l
 lm=llm, prompt=prompt)
-
 
 # Run the chain {#run-the-chain}
 
@@ -359,6 +321,7 @@ mputing", question="What is quantum entan```textent?")
 ```text
 
 ## Wor
+
 k {#
 
 work}
@@ -370,7 +333,6 @@ iffusion}
 To optimize Stable
 Diffusion on Intel hardware:
 
-
 ### Basic Usage {#basic-usage}
 
 ```python
@@ -381,12 +343,10 @@ i_frameworks_i
 ntegration import configure_hardware, setup_stable_d
 iffusion
 
-
 # Auto-con {#auto-con}figure hardware {#a
 
 uto-configure-hardware}
 device, hw_type = configure_hardware()
-
 
 # Set up Stable Diffusion with hardware opti {#set-up-stable-diffusion-with-hardware-opti}
 
@@ -395,7 +355,6 @@ ions}
 pipeline, compel = setup_stable_di
 ffusion(device, hw_type)
 
-
 # Generate an image {#generate-an-image}
 
 prompt = "a photo of an astronaut riding a horse on mars, highly detailed"
@@ -403,11 +362,12 @@ conditioned_prompt = compel(prompt)
 image = pipeline(prompt_embeds=cond
 itioned_prompt).images[0]
 image.save("astronaut_
+
 ```textars.png")
 
 ```text
 
-### 
+###
 Opt
 {#opt}i {#opti}
 
@@ -417,14 +377,13 @@ For faster inference with reduced quality:
 
 ```python
 
+# For Intel
 
-# For Intel 
 A
 
 rc GPUs using Intel® Extensi {#for-intel-arc-gpus-using-intel-extensi}
 
 on for PyTorch {#for-intel-arc-gpus-using-intel-extension-for-pytorch}
-
 
 # Lower precision and fewer steps for fa {#lower-precision-and-fewer-steps-for-fa}
 
@@ -433,16 +392,19 @@ pipeline.set_progress_bar_config(disable=True)
 image = pipeline(
     prompt="a photo of an astronaut riding a horse on mars",
     num_inference_steps=15,  # Reduced from def
+
 ault 50
 
     height=512,  # Smaller size
 
     width=```
+
 ).images[0]
 
 ```text
 
 ##
+
 # Op
 
 t {#opt}
@@ -454,8 +416,8 @@ ation time:
 
 ```python
 
-
 # Higher q
+
 u
 
 ality settings {#higher-quality-settings}
@@ -471,7 +433,6 @@ s=50,
 
 ```text
 
-
 ## P
 
 er {#per}
@@ -484,7 +445,6 @@ To benchmark your hardware and
 
 ```bash
 
-
 #
 Run al
 l
@@ -494,17 +454,17 @@ l
 python benc
 hmarks/hardware_benchmark.py
 
-
 # Run specific benchmarks {#run-specific-benchmarks}
 
 python benchmarks/hardware_benchmark.py --matrix  # Matrix multiplication only
 
 python benchmarks/hardware_benchmark.py --model   # Model inferen
+
 ce only
 
 python benchmarks/hardware_benchmark.py --sd      # Stable Diffus
-ion only
 
+ion only
 
 # Specify iterations and output file {#specify-iterations-and-output-file {#specify-iterations-and-output-file-specify-iterations-and-output-file}
 
@@ -514,22 +474,18 @@ esults.json
 
 ```text
 
-
 ##
+
 # I {#i}
 
 nterpreting Benchmark Results {#interpreting-benchmark-results}
 The benchmark tool measures:
 
-
 - **Matrix multiplication**: Fundamental operation for linear algebra in ML models
-
 
 - **Convolution operations**: Key for computer vision models
 
-
 - **Model inference speed**: LLM inference performance
-
 
 - **Image generation**: Stable Diffusion image generation time
 
@@ -540,29 +496,23 @@ termine the best configuration for
 
  your workload.
 
-
 ## Troubleshooting {#troubleshooting}
-
 
 ###
 Common Issues {#common-issues}
-
 
 #### I {#i}ntel Arc GPU Not Detected {#intel-arc-gpu-not-detected}
 
 If your Intel Arc GPU
 is not detected:
 
-
 1. Ensure you have the latest Intel GPU
 
 drivers installed
 
-
 1. Check that the environment variable `XPU_VISIBLE_DEVICES
 
 ` is set correctly
-
 
 1. Verify that Intel® Extensi
 
@@ -575,54 +525,44 @@ h
 
    ```
 
-
 #### OpenVINO Issues {#openvino-issues}
 
 For
  OpenVINO problems:
-
 
 1. Ensure OpenVINO is
 
 correctly installe
 d
 
-
 1. Verify your CPU is comp
 
 atible with Open
 VINO
 
-
 1. Check for environment variable conflicts
-
 
 #### Per {#per}formance Issues {#performance-issues}
 
 If you experience slower than
  expected performance:
 
-
 1. Use the benchmarking tool
 
 to identify bottlenecks
-
 
 1. Try different batch sizes a
 
 nd mod
 el configurations
 
-
 1. Update to the latest versions
 
  of Intel® Extension for PyTorch and OpenVINO
 
-
 ## Advanced {#advanced}
 
  Configuration {#advanced-configuration}
-
 
 ### Custom Hardware Detection {#custom-hardware-detection}
 
@@ -643,6 +583,7 @@ e detection logic
  here
 
     return "ac```text# or "ovino", "base
+
 "
 
 ```te
@@ -651,13 +592,12 @@ xt
 ###
 Environment Variables {#environment-variables}
 
-
 #### For Intel Arc GPUs {#for-intel-arc-gpus}
 
 ```bash
 
-
 # Im
+
 p
 
 ortant environment variables for Intel Arc GPUs {#important-environment-variables-for-intel-arc-gpus}
@@ -667,6 +607,7 @@ export XPU_VISIBLE_DEVICES=0  # Specify which GPU to use
 export SYCL_CACHE_PERSISTENT=1  # Improve startup time
 
 export IPEX_XPU_ONEDNN_LAYOUT=1  # O
+
 ptimize memory layout
 
 export SYCL_PI_LEVEL_ZERO_USE_IMMEDIATE_COMMANDLISTS=1  # Improve performance
@@ -686,7 +627,6 @@ export OPENVINO_THREADING=TBB  # Use TBB threading
 export OMP_NUM_THREADS=8  # Control number of OpenMP threads
 
 ```
-
 
 ### Configuring uvfast.json {#configuring-uvfastjson}
 
@@ -728,6 +668,6 @@ You can create a `uvfast.json` file in your project root to customize behavior:
 
 This configuration allows for customized settings per hardware type, including environment```te```textbles and additional packages.
 
-
 ```text
+
 ```text

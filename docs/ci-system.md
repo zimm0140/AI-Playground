@@ -19,15 +19,11 @@ The AI-Playground CI system is designed to:
 
 1. *_Validate Code Quality__: Ensure code meets quality standards before merging.
 
-
 1. **Run Tests**: Verify that the codebase functions correctly on various platforms.
-
 
 1. **Generate Documentation**: Keep documentation up-to-date with code changes.
 
-
 1. **Create Artifacts**: Build and package artifacts for distribution.
-
 
 1. **Validate ComfyUI Workflows**: Test and validate workflows for compatibility.
 
@@ -102,18 +98,13 @@ To ensure smooth CI operation:
 
 1. **Keep workflow files organized**: Each workflow should have a single responsibility
 
-
 1. **Use unique artifact names**: Append job name or matrix variables to artifact names
-
 
 1. **Include conditionals**: Use `if: always()` for artifact uploads to ensure they run even if tests fail
 
-
 1. **Optimize cache usage**: Use dependency hashing and OS-specific cache paths
 
-
 1. **Keep workflows lean**: Combine similar steps and use job dependencies
-
 
 1. **Run pre-commit hooks locally**: Catch issues before pushing to remote
 
@@ -171,15 +162,11 @@ When contributing to the CI system:
 
 1. Test changes locally before pushing
 
-
 1. Document any new workflows or scripts
-
 
 1. Update this documentation if you add/modify CI capabilities
 
-
 1. Keep backwards compatibility in mind
-
 
 1. Consider cross-platform compatibility (Windows, Linux, macOS)
 
@@ -187,18 +174,13 @@ When contributing to the CI system:
 
 1. Use existing workflows as templates
 
-
 1. Ensure proper error handling
-
 
 1. Use conditionals to control when jobs run
 
-
 1. Provide clear job and step names
 
-
 1. Optimize for performance (use caching, fetch-depth: 1, etc.)
-
 
 1. Add status badges for visibility
 

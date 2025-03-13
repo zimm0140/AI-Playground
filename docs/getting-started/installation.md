@@ -71,7 +71,6 @@ If you prefer to set up the environment manually:
 
    ```bash
 
-
    ## Using venv
 
    python -m venv .venv
@@ -91,7 +90,6 @@ If you prefer to set up the environment manually:
 1. Install dependencies based on your hardware:
 
    ```bash
-
 
    ## For basic CPU setup
 

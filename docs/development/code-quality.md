@@ -23,9 +23,7 @@ All Python code should adhere to [PEP 8](https://peps.python.org/pep-0008/), wit
 
 1. Standard library imports
 
-
 1. Related third-party imports
-
 
 1. Local application/library-specific imports
 
@@ -291,12 +289,9 @@ When working with hardware-specific code:
 
 1. Use clear abstractions to separate hardware-specific code
 
-
 1. Add conditional imports for hardware-specific dependencies
 
-
 1. Use feature detection rather than version detection
-
 
 1. Include fallback implementations for unsupported hardware
 

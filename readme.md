@@ -39,9 +39,7 @@ gpu_info = get_gpu_info()
 
 1. Clone the repository
 
-
 1. Install dependencies: `pip install -e ".[dev]"`
-
 
 1. Run tests: `pytest`
 

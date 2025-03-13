@@ -72,7 +72,6 @@ Configuration files have changed format in v2.x. If you have custom configuratio
 
    ```bash
 
-
    ## Convert old workflow to new format
 
    python service/tools/convert_workflow.py --input old_workflow.json --output new_workflow.json
@@ -85,9 +84,7 @@ If you're using the API, note these changes:
 
 1. The base URL has changed from `/api/v1` to `/api/v2`
 
-
 1. The workflow submission format has been updated
-
 
 1. Authentication now requires an API key
 
@@ -112,9 +109,7 @@ Hardware detection is now more advanced:
 
 1. The system now auto-detects Intel Arc, Battlemage, Meteor Lake, and Lunar Lake devices
 
-
 1. Optimized packages are installed based on your hardware
-
 
 1. OpenVINO integration is improved
 
@@ -132,15 +127,11 @@ Be aware of these breaking changes in v2.x:
 
 1. Python 3.9 is no longer supported; minimum requirement is Python 3.10
 
-
 1. Config file format has changed and is not backward compatible
-
 
 1. The CLI interface has been redesigned with new command syntax
 
-
 1. Workflow format has been updated for better performance and flexibility
-
 
 1. Hardware detection now uses a different approach
 
@@ -150,9 +141,7 @@ If you encounter issues during migration:
 
 1. *_Missing dependencies__: Run `python setup_hardware_env.py --dev` to install all dependencies
 
-
 1. **Configuration errors**: Delete your `uvfast.json` file to regenerate the default configuration
-
 
 1. **Workflow compatibility**: Use the provided conversion tool for workflows
 

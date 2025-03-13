@@ -9,15 +9,11 @@ Tests in AI-Playground should:
 
 1. *_Verify behavior, not implementation__: Focus on testing what the code does, not how it does it
 
-
 1. **Be independent**: Tests should not depend on other tests
-
 
 1. **Be deterministic**: Tests should pass or fail consistently
 
-
 1. **Be fast**: Tests should run quickly to encourage frequent testing
-
 
 1. **Cover edge cases**: Test normal operation and exceptional conditions
 
@@ -107,9 +103,7 @@ A good test function should:
 
 1. Set up the test environment (Arrange)
 
-
 1. Execute the code being tested (Act)
-
 
 1. Verify the expected outcomes (Assert)
 
@@ -273,12 +267,9 @@ When testing hardware-specific functionality:
 
 1. *_Mock hardware detection__: Don't rely on actual hardware for tests
 
-
 1. **Test all hardware paths**: Ensure each hardware configuration works
 
-
 1. **Test fallback behavior**: Verify code works with unsupported hardware
-
 
 1. **Parameterize tests**: Use parameterized tests for different hardware
 
@@ -318,21 +309,15 @@ assert result == expected_type
 
 1. **Test the public API**: Focus on testing public interfaces, not implementation details
 
-
 1. **Keep tests simple**: Tests should be easy to understand
-
 
 1. **Test one thing per test**: Each test should verify a single behavior
 
-
 1. **Use meaningful test names**: Names should indicate what's being tested
-
 
 1. **Don't test external dependencies**: Mock external dependencies
 
-
 1. **Clean up after tests**: Tests should clean up any resources they create
-
 
 1. **Don't modify production code for testing**: Use mocks and dependency injection instead
 

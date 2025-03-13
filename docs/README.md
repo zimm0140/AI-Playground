@@ -94,12 +94,9 @@ Contributions to documentation are welcome! Please follow these guidelines:
 
 1. Fork the repository
 
-
 1. Create a branch for your changes
 
-
 1. Make your changes following our documentation standards
-
 
 1. Submit a pull request
 

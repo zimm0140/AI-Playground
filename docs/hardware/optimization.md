@@ -9,18 +9,13 @@ These optimization principles apply to all hardware configurations:
 
 1. *_Use the right environment__: Let the automatic hardware detection choose the optimal configuration
 
-
 1. **Update drivers**: Always use the latest drivers for your hardware
-
 
 1. **Close background applications**: Minimize resource competition
 
-
 1. **Monitor resource usage**: Use monitoring tools to identify bottlenecks
 
-
 1. **Batch processing**: Use appropriate batch sizes for your hardware
-
 
 1. **Mixed precision**: Enable mixed precision where appropriate
 
@@ -43,7 +38,6 @@ python setup_hardware_env.py --hardware acm
 1. **Enable Intel XPU backend**:
 
    ```python
-
 
    ## In your Python code
 
@@ -68,7 +62,6 @@ python setup_hardware_env.py --hardware acm
 
    ```python
 
-
    ## Clear cache between processing
 
    import torch
@@ -79,7 +72,6 @@ python setup_hardware_env.py --hardware acm
 1. **Enable mixed precision**:
 
    ```python
-
 
    ## Use BF16 for Arc GPUs
 
@@ -97,7 +89,6 @@ python setup_hardware_env.py --hardware acm
    output = model(input)
 
 ```text
-
 
    ```text
 
@@ -214,12 +205,9 @@ For systems with limited GPU memory:
 
 1. Use smaller batch sizes
 
-
 1. Use 16-bit precision where possible
 
-
 1. Consider model pruning for inference
-
 
 1. Use model splitting techniques for large models
 

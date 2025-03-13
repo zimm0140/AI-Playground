@@ -5,7 +5,6 @@
 
 1. run `npm install`
 
-
 1. aquire windows libuv dlls, e.g. via miniforge:
 
    - Install miniforge: <https://github.com/conda-forge/miniforge>

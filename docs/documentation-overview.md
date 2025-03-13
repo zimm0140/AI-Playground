@@ -102,9 +102,7 @@ If you're new to AI-Playground, we recommend starting with:
 
 1. [Quick Start Guide](getting-started/quickstart.md)
 
-
 1. [Hardware Overview](hardware/overview.md)
-
 
 1. [Python Client Examples](examples/python-client.md)
 
@@ -114,9 +112,7 @@ If you're developing with AI-Playground, focus on:
 
 1. [API Reference](reference/api.md)
 
-
 1. [Architecture Overview](architecture/overview.md)
-
 
 1. [Hardware Integration](architecture/hardware-integration.md)
 
@@ -126,9 +122,7 @@ If you want to contribute to AI-Playground, check out:
 
 1. [Contributing Guide](development/contributing.md)
 
-
 1. [Code Quality Standards](development/code-quality.md)
-
 
 1. [Testing Guide](development/testing.md)
 

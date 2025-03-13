@@ -62,12 +62,9 @@ The hardware detection module is designed to:
 
 1. Detect available hardware (GPUs, CPUs)
 
-
 1. Identify specific hardware types (Intel Arc GPUs, OpenVINO-compatible devices, etc.)
 
-
 1. Provide information about hardware capabilities
-
 
 1. Support CI/CD testing with simulated hardware environments
 

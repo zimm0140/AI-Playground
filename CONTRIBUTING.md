@@ -13,7 +13,6 @@ We use `uv`, an extremely fast Python package manager, for dependency management
 
    ```text`bash
 
-
    ## Unix/Linux/macOS
 
    curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -21,6 +20,7 @@ We use `uv`, an extremely fast Python package manager, for dependency management
    ## Windows
 
    powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+
 
    ```text
 
@@ -117,9 +117,7 @@ We use Python type annotations and verify them with mypy. For Python 3.10+ compa
 
 1. Use `Union` and `Optional` from the `typing` module
 
-
 1. For Python 3.10+, you can use the `|` operator for union types, but be consistent
-
 
 1. Use `TypeVar` for generic type annotations
 
@@ -153,9 +151,7 @@ If you have questions about the development process or need help with your contr
 
 1. Check the documentation in QUICKSTART.md and MIGRATION.md
 
-
 1. Open an issue with the "question" label
-
 
 1. Ask for help in pull request comments
 

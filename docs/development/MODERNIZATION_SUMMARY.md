@@ -89,15 +89,11 @@ Throughout these modernization efforts, we've maintained backward compatibility:
 
 1. **Generate lockfiles** for all hardware configurations
 
-
 1. **Migrate existing tests** to use the new infrastructure
-
 
 1. **Integrate additional hardware types** as needed
 
-
 1. **Train team members** on the new workflow
-
 
 1. __Monitor CI performance_* and make adjustments as necessary
 

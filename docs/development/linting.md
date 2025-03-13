@@ -248,12 +248,9 @@ The CI will:
 
 1. Check for linting issues
 
-
 1. Generate a report
 
-
 1. Comment on PRs if issues are found
-
 
 1. Provide instructions for fixing the issues
 
@@ -305,12 +302,9 @@ When writing hardware-specific code:
 
 1. Use conditional imports for hardware-specific dependencies
 
-
 1. Consider using feature checking rather than relying on specific hardware
 
-
 1. Add appropriate comments where hardware specifics affect code structure
-
 
 1. Use type annotations that reflect hardware-specific considerations
 

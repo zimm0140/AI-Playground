@@ -5,30 +5,21 @@ This guide explains how to optimize your AI applications for Intel hardware usin
 
 ## Table of Contents
 
-
 1. [Overview](#overview)
-
 
 1. [Hardware Types](#hardware-types)
 
-
 1. [Environment Setup](#environment-setup)
-
 
 1. [Using the AI Framework Integration](#using-the-ai-framework-integration)
 
-
 1. [Working with LangChain](#working-with-langchain)
-
 
 1. [Working with Stable Diffusion](#working-with-stable-diffusion)
 
-
 1. [Performance Benchmarking](#performance-benchmarking)
 
-
 1. [Troubleshooting](#troubleshooting)
-
 
 1. [Advanced Configuration](#advanced-configuration)
 

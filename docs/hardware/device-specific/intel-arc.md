@@ -49,7 +49,6 @@ AI-Playground supports all Intel Arc GPU models:
 
    ```bash
 
-
    # Run hardware detection
 
    python hardware_detection.py

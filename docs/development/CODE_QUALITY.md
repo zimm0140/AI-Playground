@@ -39,7 +39,6 @@ pip install pre-commit
 
 ```text`text
 
-
 1. Install the hooks:
 
 ```bash
@@ -47,7 +46,6 @@ pip install pre-commit
 pre-commit install
 
 ```text
-
 
 1. Run against all files:
 
@@ -63,12 +61,9 @@ Our GitHub Actions workflow runs the following checks:
 
 1. **Linting**: Ruff checks for code style and common errors.
 
-
 1. **Type Checking**: Mypy verifies type annotations.
 
-
 1. **Unit Tests**: Pytest runs our test suite.
-
 
 1. **Pre-commit**: Ensures all pre-commit hooks pass.
 
@@ -77,7 +72,6 @@ Our GitHub Actions workflow runs the following checks:
 We've created helper scripts to fix common linting issues:
 
 1. **check_linting.py**: Checks for linting issues in key directories.
-
 
 1. **fix_unused_variables.py**: Fixes unused variable warnings.
 
@@ -94,14 +88,11 @@ python fix_unused_variables.py
 
 1. **Run pre-commit before pushing**: This catches issues before they reach CI.
 
-
 1. **Add meaningful comments**: Especially when using `# noqa` directives.
 
 1. **Keep imports organized**: Standard library first, then third-party, then local.
 
-
 1. **Use type annotations**: They improve code readability and catch errors.
-
 
 1. __Write tests_*: Aim for high test coverage, especially for critical code paths.
 
@@ -111,12 +102,9 @@ If you encounter CI failures:
 
 1. Check the CI logs to identify the specific issues.
 
-
 1. Run `python check_linting.py` locally to see if you can reproduce the issues.
 
-
 1. Fix the issues manually or use the helper scripts.
-
 
 1. Run pre-commit to verify your fixes before pushing again.
 
