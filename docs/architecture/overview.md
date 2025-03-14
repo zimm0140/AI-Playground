@@ -591,7 +591,6 @@ Planned architectural improvements include:
 ---
 **Previous**: [Linting Guide](../development/linting.md) | **Next**: [API Design](api-design.md) | __See also_*: [Hardware Overview](../hardware/overview.md)
 
-
 ````
 
 ````

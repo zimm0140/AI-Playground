@@ -433,7 +433,6 @@ Documentation should be:
 ---
 **Previous**: [Contributing Guide](contributing.md) | **Next**: [Testing Guide](testing.md) | __See also_*: [Linting](linting.md)
 
-
 ````
 
 ````
