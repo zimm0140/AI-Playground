@@ -8,7 +8,6 @@ available hardware.
 """
 
 import importlib.util
-import os
 import sys
 from pathlib import Path
 
@@ -49,27 +48,21 @@ def configure_torch_backend():
 
         try:
             # Import Intel Extension for PyTorch
-            import intel_extension_for_pytorch as ipex
+            import importlib.util
+
+            has_ipex = importlib.util.find_spec("intel_extension_for_pytorch") is not None
+            if has_ipex:
+                import intel_extension_for_pytorch as ipex
 
             # Apply XPU hijacks
-            try:
-                from service.xpu_hijacks import ipex_hijacks
+            print("Setting up Intel XPU integration")
 
-                ipex_hijacks()
-                print("Successfully applied XPU hijacks")
-            except ImportError:
-                print("Warning: Could not import xpu_hijacks. Some functionality may be limited.")
+            # Set device
+            device = torch.device("xpu")
 
-            # Set device to XPU
-            print("Setting default device to XPU")
-            os.environ["XPU_VISIBLE_DEVICES"] = "0"
-            device = torch.device("xpu:0")
-
-            return "xpu", device
+            return device, "xpu"
         except ImportError:
-            print("Warning: Intel Extension for PyTorch not found, falling back to CPU")
-            device = torch.device("cpu")
-            return "cpu", device
+            print("Intel Extension for PyTorch not found, falling back to next option")
 
     elif hardware_type == "ovino" and is_package_available("openvino"):
         print("Configuring for OpenVINO...")
@@ -79,7 +72,11 @@ def configure_torch_backend():
 
         try:
             # Import OpenVINO
-            import openvino
+            import importlib.util
+
+            has_openvino = importlib.util.find_spec("openvino") is not None
+            if has_openvino:
+                import openvino
 
             print("Setting up OpenVINO integration")
             # For demonstration - in a real application you would

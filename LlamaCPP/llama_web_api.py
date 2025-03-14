@@ -23,7 +23,7 @@ os.environ["PATH"] = os.path.abspath("../llama-cpp-env/Library/bin") + os.pathse
 # Import after setting PATH environment variable
 from apiflask import APIFlask  # noqa: E402
 from flask import Response, jsonify, request, stream_with_context  # noqa: E402
-from llama_adapter import LLM_SSE_Adapter  # noqa: E402
+from llama_adapter import LlmSseAdapter  # noqa: E402
 from llama_cpp_backend import LlamaCpp  # noqa: E402
 from llama_params import LLMParams  # noqa: E402
 
@@ -63,7 +63,7 @@ def llm_chat():
     params = request.get_json()
     params.pop("print_metrics", None)  # Remove print_metrics if present
     llm_params = LLMParams(**params)  # Convert JSON to LLMParams object
-    sse_invoker = LLM_SSE_Adapter(llm_backend)  # Create adapter for streaming
+    sse_invoker = LlmSseAdapter(llm_backend)  # Create adapter for streaming
     it = sse_invoker.text_conversation(llm_params)  # Generate text iterator
     return Response(stream_with_context(it), content_type="text/event-stream")
 

@@ -18,6 +18,7 @@ import argparse
 import datetime
 import json
 import os
+import traceback
 from typing import Any
 
 
@@ -50,7 +51,8 @@ class ComfyWorkflowDashboard:
         """Load workflow validation results"""
         try:
             validation_file = os.path.join(
-                self.validation_dir, "workflow_validation_results.json",
+                self.validation_dir,
+                "workflow_validation_results.json",
             )
             if os.path.exists(validation_file):
                 with open(validation_file, encoding="utf-8") as f:
@@ -69,7 +71,8 @@ class ComfyWorkflowDashboard:
         """Load workflow requirements analysis"""
         try:
             requirements_file = os.path.join(
-                self.requirements_dir, "workflow_requirements_results.json",
+                self.requirements_dir,
+                "workflow_requirements_results.json",
             )
             if os.path.exists(requirements_file):
                 with open(requirements_file, encoding="utf-8") as f:
@@ -188,12 +191,8 @@ class ComfyWorkflowDashboard:
 
                 filename = workflow["filename"]
                 if filename in self.dashboard_data:
-                    self.dashboard_data[filename]["validation"][
-                        "is_valid"
-                    ] = workflow.get("is_valid", False)
-                    self.dashboard_data[filename]["validation"][
-                        "issues"
-                    ] = workflow.get("issues", [])
+                    self.dashboard_data[filename]["validation"]["is_valid"] = workflow.get("is_valid", False)
+                    self.dashboard_data[filename]["validation"]["issues"] = workflow.get("issues", [])
 
                     # Set validation status
                     if workflow.get("is_valid", False):
@@ -201,12 +200,9 @@ class ComfyWorkflowDashboard:
                     else:
                         # Check if there are errors or just warnings
                         has_errors = any(
-                            issue.get("type", "").endswith("_error")
-                            for issue in workflow.get("issues", [])
+                            issue.get("type", "").endswith("_error") for issue in workflow.get("issues", [])
                         )
-                        self.dashboard_data[filename]["status"]["validation"] = (
-                            "fail" if has_errors else "warning"
-                        )
+                        self.dashboard_data[filename]["status"]["validation"] = "fail" if has_errors else "warning"
 
         # Integrate requirements data
         if self.requirements_data:
@@ -216,15 +212,11 @@ class ComfyWorkflowDashboard:
 
                 filename = workflow["filename"]
                 if filename in self.dashboard_data:
-                    self.dashboard_data[filename]["requirements"][
-                        "models"
-                    ] = workflow.get("models", {})
-                    self.dashboard_data[filename]["requirements"][
-                        "custom_nodes"
-                    ] = workflow.get("custom_nodes", [])
-                    self.dashboard_data[filename]["requirements"][
-                        "memory_required"
-                    ] = workflow.get("memory_required", {"min": 0, "recommended": 0})
+                    self.dashboard_data[filename]["requirements"]["models"] = workflow.get("models", {})
+                    self.dashboard_data[filename]["requirements"]["custom_nodes"] = workflow.get("custom_nodes", [])
+                    self.dashboard_data[filename]["requirements"]["memory_required"] = workflow.get(
+                        "memory_required", {"min": 0, "recommended": 0}
+                    )
 
                     # Set requirements status based on analysis success
                     self.dashboard_data[filename]["status"]["requirements"] = (
@@ -240,26 +232,22 @@ class ComfyWorkflowDashboard:
                 filename = workflow["filename"]
                 if filename in self.dashboard_data:
                     self.dashboard_data[filename]["tests"]["passed"] = workflow.get(
-                        "passed", False,
+                        "passed",
+                        False,
                     )
                     self.dashboard_data[filename]["tests"]["issues"] = workflow.get(
-                        "issues", [],
+                        "issues",
+                        [],
                     )
-                    self.dashboard_data[filename]["tests"][
-                        "execution_time"
-                    ] = workflow.get("execution_time", 0)
+                    self.dashboard_data[filename]["tests"]["execution_time"] = workflow.get("execution_time", 0)
 
                     # Set test status
                     if workflow.get("passed", False):
                         self.dashboard_data[filename]["status"]["test"] = "pass"
                     else:
                         # Check if there are errors or just warnings
-                        has_errors = any(
-                            "Error:" in issue for issue in workflow.get("issues", [])
-                        )
-                        self.dashboard_data[filename]["status"]["test"] = (
-                            "fail" if has_errors else "warning"
-                        )
+                        has_errors = any("Error:" in issue for issue in workflow.get("issues", []))
+                        self.dashboard_data[filename]["status"]["test"] = "fail" if has_errors else "warning"
 
         # Integrate version history
         if self.versions_data:
@@ -277,27 +265,19 @@ class ComfyWorkflowDashboard:
                     if versions:
                         # Find latest version (by timestamp)
                         latest = max(versions, key=lambda v: v.get("timestamp", ""))
-                        self.dashboard_data[filename]["versions"][
-                            "latest_version"
-                        ] = latest.get("hash", "")
-                        self.dashboard_data[filename]["versions"][
-                            "latest_changes"
-                        ] = latest.get("changes", [])
+                        self.dashboard_data[filename]["versions"]["latest_version"] = latest.get("hash", "")
+                        self.dashboard_data[filename]["versions"]["latest_changes"] = latest.get("changes", [])
 
                         # Check for breaking changes
                         has_breaking = any(
                             change.startswith("Removed") or "type changed" in change
                             for change in latest.get("changes", [])
                         )
-                        self.dashboard_data[filename]["versions"][
-                            "has_breaking_changes"
-                        ] = has_breaking
+                        self.dashboard_data[filename]["versions"]["has_breaking_changes"] = has_breaking
 
                         # Set version status
                         if has_breaking:
-                            self.dashboard_data[filename]["status"][
-                                "version"
-                            ] = "warning"
+                            self.dashboard_data[filename]["status"]["version"] = "warning"
                         else:
                             self.dashboard_data[filename]["status"]["version"] = "pass"
 
@@ -342,327 +322,141 @@ class ComfyWorkflowDashboard:
             print(f"Error generating dashboard JSON: {e}")
             return ""
 
+    def _write_summary_section(self, file_handle):
+        """Write the summary section to the markdown file."""
+        file_handle.write("## Summary\n\n")
+        file_handle.write(f"- Total workflows: {len(self.dashboard_data)}\n")
+
+        # Count workflows by status
+        status_counts = {
+            "pass": sum(1 for data in self.dashboard_data.values() if data["status"]["overall"] == "pass"),
+            "warning": sum(1 for data in self.dashboard_data.values() if data["status"]["overall"] == "warning"),
+            "fail": sum(1 for data in self.dashboard_data.values() if data["status"]["overall"] == "fail"),
+            "unknown": sum(1 for data in self.dashboard_data.values() if data["status"]["overall"] == "unknown"),
+        }
+
+        file_handle.write(f"- Passing workflows: {status_counts['pass']}\n")
+        file_handle.write(f"- Workflows with warnings: {status_counts['warning']}\n")
+        file_handle.write(f"- Failing workflows: {status_counts['fail']}\n")
+        file_handle.write(f"- Unknown status: {status_counts['unknown']}\n\n")
+
+    def _get_status_emoji(self, status):
+        """Convert status string to emoji representation."""
+        status_mapping = {
+            "pass": "✅",
+            "warning": "⚠️",
+            "fail": "❌",
+            "unknown": "❓",
+        }
+        return status_mapping.get(status, "❓")
+
+    def _format_memory_text(self, mem_req):
+        """Format memory requirement text with highlighting for high values."""
+        if mem_req == 0:
+            return "Unknown"
+
+        memory_text = f"{mem_req}GB"
+        if mem_req > 16:
+            memory_text = f"**{memory_text}**"  # Highlight high memory requirements
+
+        return memory_text
+
+    def _get_node_count(self, filename, versions):
+        """Extract node count from version data."""
+        if not versions["latest_version"]:
+            return "Unknown"
+
+        # Extract from latest changes if available
+        for workflow in self.versions_data.get("workflows", []):
+            if workflow.get("filename") == filename:
+                latest_version = max(
+                    workflow.get("versions", []),
+                    key=lambda v: v.get("timestamp", ""),
+                )
+                if "node_count" in latest_version:
+                    return str(latest_version["node_count"])
+
+        return "Unknown"
+
+    def _format_version_status(self, version_data):
+        """Format version status text with warning if breaking changes."""
+        version_status = version_data["total_versions"]
+        if version_data["has_breaking_changes"]:
+            version_status = f"{version_status} ⚠️"
+        return version_status
+
+    def _write_table_header(self, file_handle):
+        """Write the markdown table header."""
+        file_handle.write("## Workflow Status Dashboard\n\n")
+        file_handle.write(
+            "| Workflow | Validation | Test | Memory Req. | Nodes | Custom Nodes | Versions | Status |\n",
+        )
+        file_handle.write(
+            "|----------|------------|------|-------------|-------|--------------|----------|--------|\n",
+        )
+
+    def _write_workflow_row(self, file_handle, filename, data):
+        """Write a single workflow row to the markdown table."""
+        # Get status indicators
+        validation_status = self._get_status_emoji(data["status"]["validation"])
+        test_status = self._get_status_emoji(data["status"]["test"])
+
+        # Format memory requirements
+        mem_req = data["requirements"]["memory_required"]["min"]
+        memory_text = self._format_memory_text(mem_req)
+
+        # Get node counts
+        node_count = self._get_node_count(filename, data["versions"])
+
+        # Format custom nodes
+        custom_nodes = len(data["requirements"]["custom_nodes"])
+        custom_nodes_text = str(custom_nodes) if custom_nodes > 0 else "-"
+
+        # Format version status
+        version_status = self._format_version_status(data["versions"])
+
+        # Get overall status
+        overall_status = self._get_status_emoji(data["status"]["overall"])
+
+        # Write the table row
+        file_handle.write(
+            f"| [{filename}]({data['repo_link']}) | {validation_status} | {test_status} | {memory_text} | {node_count} | {custom_nodes_text} | {version_status} | {overall_status} |\n",
+        )
+
     def generate_dashboard_markdown(self) -> str:
         """Generate a markdown dashboard report"""
         md_path = os.path.join(self.output_dir, "workflow_dashboard.md")
 
         try:
             with open(md_path, "w", encoding="utf-8") as f:
+                # Write header
                 f.write("# ComfyUI Workflow Dashboard\n\n")
                 f.write(
                     f"Generated on: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n",
                 )
 
-                # Summary section
-                f.write("## Summary\n\n")
-                f.write(f"- Total workflows: {len(self.dashboard_data)}\n")
+                # Write summary section
+                self._write_summary_section(f)
 
-                # Count workflows by status
-                status_counts = {
-                    "pass": sum(
-                        1
-                        for data in self.dashboard_data.values()
-                        if data["status"]["overall"] == "pass"
-                    ),
-                    "warning": sum(
-                        1
-                        for data in self.dashboard_data.values()
-                        if data["status"]["overall"] == "warning"
-                    ),
-                    "fail": sum(
-                        1
-                        for data in self.dashboard_data.values()
-                        if data["status"]["overall"] == "fail"
-                    ),
-                    "unknown": sum(
-                        1
-                        for data in self.dashboard_data.values()
-                        if data["status"]["overall"] == "unknown"
-                    ),
-                }
+                # Write table header
+                self._write_table_header(f)
 
-                f.write(f"- Passing workflows: {status_counts['pass']}\n")
-                f.write(f"- Workflows with warnings: {status_counts['warning']}\n")
-                f.write(f"- Failing workflows: {status_counts['fail']}\n")
-                f.write(f"- Unknown status: {status_counts['unknown']}\n\n")
-
-                # Dashboard table
-                f.write("## Workflow Status Dashboard\n\n")
-                f.write(
-                    "| Workflow | Validation | Test | Memory Req. | Nodes | Custom Nodes | Versions | Status |\n",
-                )
-                f.write(
-                    "|----------|------------|------|-------------|-------|--------------|----------|--------|\n",
-                )
-
+                # Write workflow rows
                 for filename, data in sorted(self.dashboard_data.items()):
-                    # Validation status
-                    if data["status"]["validation"] == "pass":
-                        validation_status = "✅"
-                    elif data["status"]["validation"] == "warning":
-                        validation_status = "⚠️"
-                    elif data["status"]["validation"] == "fail":
-                        validation_status = "❌"
-                    else:
-                        validation_status = "❓"
+                    self._write_workflow_row(f, filename, data)
 
-                    # Test status
-                    if data["status"]["test"] == "pass":
-                        test_status = "✅"
-                    elif data["status"]["test"] == "warning":
-                        test_status = "⚠️"
-                    elif data["status"]["test"] == "fail":
-                        test_status = "❌"
-                    else:
-                        test_status = "❓"
+                # Add legend
+                f.write("\n## Status Legend\n\n")
+                f.write("- ✅ Pass - All checks passing\n")
+                f.write("- ⚠️ Warning - Issues detected but workflow is usable\n")
+                f.write("- ❌ Fail - Workflow has critical issues\n")
+                f.write("- ❓ Unknown - Status cannot be determined\n")
 
-                    # Memory requirements
-                    mem_req = data["requirements"]["memory_required"]["min"]
-                    if mem_req == 0:
-                        memory_text = "Unknown"
-                    else:
-                        memory_text = f"{mem_req}GB"
-
-                        if mem_req > 16:
-                            memory_text = f"**{memory_text}**"  # Highlight high memory requirements
-
-                    # Node count from version data
-                    versions = data["versions"]
-                    node_count = "Unknown"
-                    if versions["latest_version"]:
-                        # Extract from latest changes if available
-                        for workflow in self.versions_data.get("workflows", []):
-                            if workflow.get("filename") == filename:
-                                latest_version = max(
-                                    workflow.get("versions", []),
-                                    key=lambda v: v.get("timestamp", ""),
-                                )
-                                if "node_count" in latest_version:
-                                    node_count = str(latest_version["node_count"])
-
-                    # Custom nodes
-                    custom_nodes = len(data["requirements"]["custom_nodes"])
-                    custom_nodes_text = str(custom_nodes) if custom_nodes > 0 else "-"
-
-                    # Version status
-                    version_status = data["versions"]["total_versions"]
-                    if data["versions"]["has_breaking_changes"]:
-                        version_status = f"{version_status} ⚠️"
-
-                    # Overall status
-                    if data["status"]["overall"] == "pass":
-                        status_text = "✅ Pass"
-                    elif data["status"]["overall"] == "warning":
-                        status_text = "⚠️ Warning"
-                    elif data["status"]["overall"] == "fail":
-                        status_text = "❌ Fail"
-                    else:
-                        status_text = "❓ Unknown"
-
-                    f.write(
-                        f"| {filename} | {validation_status} | {test_status} | {memory_text} | {node_count} | {custom_nodes_text} | {version_status} | {status_text} |\n",
-                    )
-
-                f.write("\n")
-
-                # Status legend
-                f.write("### Status Legend\n\n")
-                f.write("- ✅ **Pass**: No issues detected\n")
-                f.write(
-                    "- ⚠️ **Warning**: Minor issues that might not affect functionality\n",
-                )
-                f.write("- ❌ **Fail**: Critical issues that need to be addressed\n")
-                f.write(
-                    "- ❓ **Unknown**: Not enough information to determine status\n\n",
-                )
-
-                # Workflow details
-                f.write("## Workflow Details\n\n")
-
-                # Group workflows by status for better organization
-                grouped_workflows = {
-                    "fail": [],
-                    "warning": [],
-                    "pass": [],
-                    "unknown": [],
-                }
-
-                for filename, data in self.dashboard_data.items():
-                    grouped_workflows[data["status"]["overall"]].append(
-                        (filename, data),
-                    )
-
-                # First show failing workflows
-                if grouped_workflows["fail"]:
-                    f.write("### ❌ Failing Workflows\n\n")
-                    for filename, data in sorted(grouped_workflows["fail"]):
-                        f.write(f"#### {filename}\n\n")
-
-                        # Validation issues
-                        if data["validation"]["issues"]:
-                            f.write("**Validation Issues:**\n\n")
-                            for issue in data["validation"]["issues"]:
-                                issue_type = (
-                                    issue.get("type", "").replace("_", " ").title()
-                                )
-                                f.write(f"- {issue_type}: {issue.get('message', '')}\n")
-                            f.write("\n")
-
-                        # Test issues
-                        if data["tests"]["issues"]:
-                            f.write("**Test Issues:**\n\n")
-                            for issue in data["tests"]["issues"]:
-                                f.write(f"- {issue}\n")
-                            f.write("\n")
-
-                        # Requirements
-                        f.write("**Requirements:**\n\n")
-                        f.write(
-                            f"- Memory: Min {data['requirements']['memory_required']['min']}GB, Recommended {data['requirements']['memory_required']['recommended']}GB\n",
-                        )
-                        if data["requirements"]["custom_nodes"]:
-                            f.write(
-                                f"- Custom Nodes: {', '.join(data['requirements']['custom_nodes'])}\n",
-                            )
-                        f.write("\n")
-
-                        # Version information
-                        if data["versions"]["latest_changes"]:
-                            f.write("**Recent Changes:**\n\n")
-                            for change in data["versions"]["latest_changes"]:
-                                f.write(f"- {change}\n")
-                            f.write("\n")
-
-                # Then show workflows with warnings
-                if grouped_workflows["warning"]:
-                    f.write("### ⚠️ Workflows with Warnings\n\n")
-                    for filename, data in sorted(grouped_workflows["warning"]):
-                        f.write(f"#### {filename}\n\n")
-
-                        # Validation issues (warnings only)
-                        warnings = [
-                            issue
-                            for issue in data["validation"]["issues"]
-                            if not issue.get("type", "").endswith("_error")
-                        ]
-                        if warnings:
-                            f.write("**Validation Warnings:**\n\n")
-                            for issue in warnings:
-                                issue_type = (
-                                    issue.get("type", "").replace("_", " ").title()
-                                )
-                                f.write(f"- {issue_type}: {issue.get('message', '')}\n")
-                            f.write("\n")
-
-                        # Test warnings
-                        warnings = [
-                            issue
-                            for issue in data["tests"]["issues"]
-                            if not issue.startswith("Error:")
-                        ]
-                        if warnings:
-                            f.write("**Test Warnings:**\n\n")
-                            for issue in warnings:
-                                f.write(f"- {issue}\n")
-                            f.write("\n")
-
-                        # Requirements
-                        f.write("**Requirements:**\n\n")
-                        f.write(
-                            f"- Memory: Min {data['requirements']['memory_required']['min']}GB, Recommended {data['requirements']['memory_required']['recommended']}GB\n",
-                        )
-                        if data["requirements"]["custom_nodes"]:
-                            f.write(
-                                f"- Custom Nodes: {', '.join(data['requirements']['custom_nodes'])}\n",
-                            )
-                        f.write("\n")
-
-                        # Version information for breaking changes
-                        if data["versions"]["has_breaking_changes"]:
-                            f.write("**Breaking Changes:**\n\n")
-                            for change in data["versions"]["latest_changes"]:
-                                if (
-                                    change.startswith("Removed")
-                                    or "type changed" in change
-                                ):
-                                    f.write(f"- ⚠️ {change}\n")
-                                else:
-                                    f.write(f"- {change}\n")
-                            f.write("\n")
-
-                # Passing workflows (summary only)
-                if grouped_workflows["pass"]:
-                    f.write("### ✅ Passing Workflows\n\n")
-                    f.write("The following workflows passed all validations:\n\n")
-                    for filename, _ in sorted(grouped_workflows["pass"]):
-                        f.write(f"- {filename}\n")
-                    f.write("\n")
-
-                # Recommendations section
-                f.write("## Recommendations\n\n")
-
-                if grouped_workflows["fail"]:
-                    f.write("### High Priority\n\n")
-                    f.write("Fix critical issues in the following workflows:\n\n")
-                    for filename, data in sorted(grouped_workflows["fail"]):
-                        f.write(f"- **{filename}**: ")
-
-                        issues = []
-                        if data["validation"]["issues"]:
-                            issues.append("Fix validation errors")
-                        if [
-                            issue
-                            for issue in data["tests"]["issues"]
-                            if issue.startswith("Error:")
-                        ]:
-                            issues.append("Address execution errors")
-
-                        f.write(f"{', '.join(issues)}\n")
-                    f.write("\n")
-
-                if grouped_workflows["warning"]:
-                    f.write("### Medium Priority\n\n")
-                    f.write("Address warnings in the following workflows:\n\n")
-                    for filename, data in sorted(grouped_workflows["warning"]):
-                        f.write(f"- **{filename}**: ")
-
-                        issues = []
-                        if data["versions"]["has_breaking_changes"]:
-                            issues.append("Review breaking changes")
-                        if data["requirements"]["memory_required"]["min"] > 12:
-                            issues.append("Consider memory optimization")
-                        if [
-                            issue
-                            for issue in data["tests"]["issues"]
-                            if not issue.startswith("Error:")
-                        ]:
-                            issues.append("Check test warnings")
-
-                        f.write(f"{', '.join(issues)}\n")
-                    f.write("\n")
-
-                # Final notes
-                f.write("## Notes\n\n")
-                f.write(
-                    "1. This dashboard is automatically generated by the CI workflow.\n",
-                )
-                f.write(
-                    "2. Workflows with high memory requirements may not run on all systems.\n",
-                )
-                f.write(
-                    "3. Breaking changes in workflows may affect compatibility with older versions.\n",
-                )
-                f.write(
-                    "4. Custom nodes required by workflows must be installed separately.\n\n",
-                )
-
-                f.write("---\n")
-                f.write("*Generated by the ComfyUI Workflow Dashboard Generator*\n")
-
-            print(f"Dashboard markdown generated at {md_path}")
+            print(f"Generated markdown dashboard at {md_path}")
             return md_path
         except Exception as e:
             print(f"Error generating dashboard markdown: {e}")
+            traceback.print_exc()
             return ""
 
     def generate_github_summary(self) -> None:
@@ -676,25 +470,13 @@ class ComfyWorkflowDashboard:
 
                 # Count workflows by status
                 status_counts = {
-                    "pass": sum(
-                        1
-                        for data in self.dashboard_data.values()
-                        if data["status"]["overall"] == "pass"
-                    ),
+                    "pass": sum(1 for data in self.dashboard_data.values() if data["status"]["overall"] == "pass"),
                     "warning": sum(
-                        1
-                        for data in self.dashboard_data.values()
-                        if data["status"]["overall"] == "warning"
+                        1 for data in self.dashboard_data.values() if data["status"]["overall"] == "warning"
                     ),
-                    "fail": sum(
-                        1
-                        for data in self.dashboard_data.values()
-                        if data["status"]["overall"] == "fail"
-                    ),
+                    "fail": sum(1 for data in self.dashboard_data.values() if data["status"]["overall"] == "fail"),
                     "unknown": sum(
-                        1
-                        for data in self.dashboard_data.values()
-                        if data["status"]["overall"] == "unknown"
+                        1 for data in self.dashboard_data.values() if data["status"]["overall"] == "unknown"
                     ),
                 }
 

@@ -38,5 +38,65 @@
       "medium_priority": 42,
       "low_priority": 100
     }
+  },
+  {
+    "timestamp": "2025-03-13T20:53:53.517893",
+    "issues": {
+      "high_priority": 3833,
+      "medium_priority": 3775,
+      "low_priority": 10734
+    },
+    "total_files": 12697,
+    "affected_files": 109,
+    "files_by_category": {
+      "high_priority": 18,
+      "medium_priority": 42,
+      "low_priority": 100
+    }
+  },
+  {
+    "timestamp": "2025-03-13T20:57:43.647126",
+    "issues": {
+      "high_priority": 3854,
+      "medium_priority": 3767,
+      "low_priority": 10734
+    },
+    "total_files": 12697,
+    "affected_files": 109,
+    "files_by_category": {
+      "high_priority": 17,
+      "medium_priority": 42,
+      "low_priority": 100
+    }
+  },
+  {
+    "timestamp": "2025-03-13T21:01:47.499233",
+    "issues": {
+      "high_priority": 3838,
+      "medium_priority": 3757,
+      "low_priority": 10734
+    },
+    "total_files": 12697,
+    "affected_files": 107,
+    "files_by_category": {
+      "high_priority": 15,
+      "medium_priority": 42,
+      "low_priority": 100
+    }
+  },
+  {
+    "timestamp": "2025-03-13T21:08:35.556369",
+    "issues": {
+      "high_priority": 3838,
+      "medium_priority": 3757,
+      "low_priority": 10734
+    },
+    "total_files": 12697,
+    "affected_files": 107,
+    "files_by_category": {
+      "high_priority": 15,
+      "medium_priority": 42,
+      "low_priority": 100
+    }
   }
 ]

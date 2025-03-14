@@ -71,9 +71,14 @@ class HardwareBenchmark:
         # Add GPU info if available
         if self.hardware_type == "acm":
             try:
-                import intel_extension_for_pytorch as ipex
+                # Check if Intel Extension for PyTorch is available
+                import importlib.util
 
-                info["ipex_version"] = ipex.__version__
+                has_ipex = importlib.util.find_spec("intel_extension_for_pytorch") is not None
+                if has_ipex:
+                    import intel_extension_for_pytorch as ipex
+
+                    from service.xpu_hijacks import ipex_hijacks
             except ImportError:
                 pass
 
@@ -85,9 +90,14 @@ class HardwareBenchmark:
 
         if self.hardware_type == "acm":
             try:
-                import intel_extension_for_pytorch as ipex
+                # Check if Intel Extension for PyTorch is available
+                import importlib.util
 
-                from service.xpu_hijacks import ipex_hijacks
+                has_ipex = importlib.util.find_spec("intel_extension_for_pytorch") is not None
+                if has_ipex:
+                    import intel_extension_for_pytorch as ipex
+
+                    from service.xpu_hijacks import ipex_hijacks
 
                 # Apply XPU hijacks
                 ipex_hijacks()
@@ -303,12 +313,21 @@ class HardwareBenchmark:
             # Different loading based on hardware
             if self.hardware_type == "acm":
                 try:
-                    import intel_extension_for_pytorch as ipex
+                    # Check if Intel Extension for PyTorch is available
+                    import importlib.util
 
-                    pipeline = StableDiffusionPipeline.from_pretrained("runwayml/stable-diffusion-v1-5").to(self.device)
+                    has_ipex = importlib.util.find_spec("intel_extension_for_pytorch") is not None
+                    if has_ipex:
+                        import intel_extension_for_pytorch as ipex
 
-                    # Optional: Optimize with IPEX
-                    pipeline = ipex.optimize(pipeline)
+                        from service.xpu_hijacks import ipex_hijacks
+
+                        pipeline = StableDiffusionPipeline.from_pretrained("runwayml/stable-diffusion-v1-5").to(
+                            self.device,
+                        )
+
+                        # Optional: Optimize with IPEX
+                        pipeline = ipex.optimize(pipeline)
                 except ImportError:
                     print("Intel XPU extensions not available, loading standard pipeline")
                     pipeline = StableDiffusionPipeline.from_pretrained("runwayml/stable-diffusion-v1-5").to(self.device)

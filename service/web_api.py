@@ -49,7 +49,7 @@ import rag
 import service_config
 from apiflask import APIFlask
 from flask import Response, jsonify, request, stream_with_context
-from llm_adapter import LLM_SSE_Adapter
+from llm_adapter import LlmSseAdapter
 from model_downloader import HFPlaygroundDownloader
 from paint_biz import (
     ImageToImageParams,
@@ -142,7 +142,7 @@ def llm_chat():
     if "max_tokens" not in params:
         params["max_tokens"] = 256
     llm_params = llm_biz.LLMParams(**params)
-    sse_invoker = LLM_SSE_Adapter()
+    sse_invoker = LlmSseAdapter()
     it = sse_invoker.text_conversation(llm_params)
     return Response(stream_with_context(it), content_type="text/event-stream")
 

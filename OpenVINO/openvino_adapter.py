@@ -6,7 +6,7 @@ streaming protocol for web API integration. It enables real-time streaming of LL
 outputs with metrics collection and error handling.
 
 The module implements:
-1. The LLM_SSE_Adapter class for streaming LLM responses via SSE
+1. The LlmSseAdapter class for streaming LLM responses via SSE
 2. Helper functions for prompt conversion and RAG (Retrieval Augmented Generation)
 3. Metrics collection for token generation speed and latency measurements
 """
@@ -25,7 +25,7 @@ from openvino_params import LLMParams
 RAG_PROMPT_FORMAT = "Answer the questions based on the information below. \n{context}\n\nQuestion: {prompt}"
 
 
-class LLM_SSE_Adapter:
+class LlmSseAdapter:
     """
     Adapter for streaming LLM responses using Server-Sent Events (SSE) protocol.
 

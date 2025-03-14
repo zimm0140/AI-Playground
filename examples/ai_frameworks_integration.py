@@ -23,9 +23,14 @@ def configure_hardware():
 
     if hardware_type == "acm":  # Intel Arc GPUs
         try:
-            import intel_extension_for_pytorch as ipex
+            # Check if Intel Extension for PyTorch is available
+            import importlib.util
 
-            from service.xpu_hijacks import ipex_hijacks
+            has_ipex = importlib.util.find_spec("intel_extension_for_pytorch") is not None
+            if has_ipex:
+                import intel_extension_for_pytorch as ipex
+
+                from service.xpu_hijacks import ipex_hijacks
 
             # Apply XPU hijacks to redirect CUDA calls to XPU
             ipex_hijacks()
@@ -38,17 +43,24 @@ def configure_hardware():
             print("Intel Arc GPU configured successfully")
             return device, hardware_type
         except ImportError:
-            print("Intel XPU extensions not available, falling back to CPU")
+            print("Intel Extension for PyTorch not found, falling back to CPU.")
+            device = torch.device("cpu")
 
     elif hardware_type == "ovino":  # OpenVINO
         try:
-            import openvino
+            # Check if OpenVINO is available
+            import importlib.util
+
+            has_openvino = importlib.util.find_spec("openvino") is not None
+            if has_openvino:
+                import openvino
 
             device = torch.device("cpu")  # OpenVINO optimizes on CPU
             print("OpenVINO environment configured")
             return device, hardware_type
         except ImportError:
-            print("OpenVINO not available, using standard CPU")
+            print("OpenVINO not found, falling back to CPU.")
+            device = torch.device("cpu")
 
     # Default fallback to CPU
     device = torch.device("cpu")

@@ -18,7 +18,7 @@ from model_downloader import DownloadException, NotEnoughDiskSpaceException
 from psutil._common import bytes2human
 
 
-class LLM_SSE_Adapter:
+class LlmSseAdapter:
     """
     Adapter class for managing SSE messages for LLM interactions.
 
