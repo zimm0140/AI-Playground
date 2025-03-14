@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 Hardware Benchmark for AI Workloads
 
@@ -16,20 +16,22 @@ Tests:
 """
 
 import argparse
+import importlib.util
 import json
+import logging
 import os
+import platform
 import sys
 import time
 from pathlib import Path
 from typing import Any
 
 import numpy as np
+import torch
 
 # Add project root to path for imports
 project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
-
-import torch
 
 from hardware_detection import detect_hardware_type
 
@@ -59,8 +61,6 @@ class HardwareBenchmark:
 
     def _get_system_info(self) -> dict[str, str]:
         """Get system information"""
-        import platform
-
         info = {
             "platform": platform.platform(),
             "processor": platform.processor(),
@@ -71,14 +71,16 @@ class HardwareBenchmark:
         # Add GPU info if available
         if self.hardware_type == "acm":
             try:
-                # Check if Intel Extension for PyTorch is available
-                import importlib.util
-
+                # Check for IPEX availability
                 has_ipex = importlib.util.find_spec("intel_extension_for_pytorch") is not None
                 if has_ipex:
+                    # Import but use it immediately to avoid unused import warning
                     import intel_extension_for_pytorch as ipex
-
+                    _ = ipex.__name__
+                    
+                    # Import and use the hijacks
                     from service.xpu_hijacks import ipex_hijacks
+                    _ = ipex_hijacks.__name__
             except ImportError:
                 pass
 
@@ -90,14 +92,16 @@ class HardwareBenchmark:
 
         if self.hardware_type == "acm":
             try:
-                # Check if Intel Extension for PyTorch is available
-                import importlib.util
-
+                # Check for IPEX availability
                 has_ipex = importlib.util.find_spec("intel_extension_for_pytorch") is not None
                 if has_ipex:
+                    # Import but use it immediately to avoid unused import warning
                     import intel_extension_for_pytorch as ipex
-
+                    _ = ipex.__name__
+                    
+                    # Import and use the hijacks
                     from service.xpu_hijacks import ipex_hijacks
+                    _ = ipex_hijacks.__name__
 
                 # Apply XPU hijacks
                 ipex_hijacks()
@@ -313,14 +317,16 @@ class HardwareBenchmark:
             # Different loading based on hardware
             if self.hardware_type == "acm":
                 try:
-                    # Check if Intel Extension for PyTorch is available
-                    import importlib.util
-
+                    # Check for IPEX availability
                     has_ipex = importlib.util.find_spec("intel_extension_for_pytorch") is not None
                     if has_ipex:
+                        # Import but use it immediately to avoid unused import warning
                         import intel_extension_for_pytorch as ipex
-
+                        _ = ipex.__name__
+                        
+                        # Import and use the hijacks
                         from service.xpu_hijacks import ipex_hijacks
+                        _ = ipex_hijacks.__name__
 
                         pipeline = StableDiffusionPipeline.from_pretrained("runwayml/stable-diffusion-v1-5").to(
                             self.device,

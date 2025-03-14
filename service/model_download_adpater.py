@@ -9,7 +9,7 @@ It abstracts away the specifics of different download sources by providing:
 - Consistent error handling across download sources
 - Support for both local file downloads and Hugging Face Hub models
 
-The primary class is Model_Downloader_Adapter, which coordinates downloads
+The primary class is ModelDownloaderAdapter, which coordinates downloads
 and streams progress events back to the client.
 """
 
@@ -30,7 +30,7 @@ from psutil._common import bytes2human
 from web_request_bodies import DownloadModelData
 
 
-class Model_Downloader_Adapter:
+class ModelDownloaderAdapter:
     """
     Adapter class that unifies the interface for downloading models from different sources.
 
@@ -57,7 +57,7 @@ class Model_Downloader_Adapter:
 
     def __init__(self, hf_token=None):
         """
-        Initialize the Model_Downloader_Adapter.
+        Initialize the ModelDownloaderAdapter.
 
         Sets up the message queue, events, and downloaders with appropriate callbacks.
 
@@ -254,4 +254,4 @@ class Model_Downloader_Adapter:
 
 
 # Global singleton instance of the adapter
-_adapter: Model_Downloader_Adapter = None
+_adapter: ModelDownloaderAdapter = None

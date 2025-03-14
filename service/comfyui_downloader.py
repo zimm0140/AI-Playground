@@ -220,39 +220,39 @@ def _install_pip_requirements(requirements_txt_path: str):
         logging.warning(f"specified {requirements_txt_path} does not exist.")
 
 
-def install_pypi_package(packageSpecifier: str):
+def install_pypi_package(package_specifier: str):
     """
     Install a Python package from PyPI or from a wheel file URL.
 
     If the package is already installed, the installation is skipped.
-    If the packageSpecifier is a URL to a .whl file, it is first downloaded.
+    If the package_specifier is a URL to a .whl file, it is first downloaded.
 
     Args:
-        packageSpecifier: PyPI package name (with optional version) or URL to a wheel file
+        package_specifier: PyPI package name (with optional version) or URL to a wheel file
     """
-    if is_package_installed(packageSpecifier):
-        logging.info(f"package {packageSpecifier} already installed. Omitting installation")
+    if is_package_installed(package_specifier):
+        logging.info(f"package {package_specifier} already installed. Omitting installation")
         return
-    if packageSpecifier.endswith(".whl"):
+    if package_specifier.endswith(".whl"):
         pip_specifier = os.path.abspath(
-            os.path.join(service_config.comfyui_python_env, packageSpecifier.split("/")[-1]),
+            os.path.join(service_config.comfyui_python_env, package_specifier.split("/")[-1]),
         )
         try:
-            response = requests.get(packageSpecifier, stream=True, timeout=30)
+            response = requests.get(package_specifier, stream=True, timeout=30)
             if response.status_code == 200:
                 with open(pip_specifier, "wb") as file:
                     for chunk in response.iter_content(chunk_size=1024):
                         file.write(chunk)
             else:
-                logging.error(f"Failed fetching resources from {packageSpecifier}")
-                raise Exception(f"fetching {packageSpecifier} failed with response: {response}")
+                logging.error(f"Failed fetching resources from {package_specifier}")
+                raise Exception(f"fetching {package_specifier} failed with response: {response}")
         except Exception as e:
-            logging.error(f"Failed to fetch dependency from {packageSpecifier} with error {e}")
+            logging.error(f"Failed to fetch dependency from {package_specifier} with error {e}")
             raise e
     else:
-        pip_specifier = packageSpecifier
+        pip_specifier = package_specifier
 
-    logging.info(f"installing python package {packageSpecifier} using {sys.executable}")
+    logging.info(f"installing python package {package_specifier} using {sys.executable}")
     python_exe_callable_path = (
         "'" + os.path.abspath(service_config.comfyui_python_exe) + "'"
     )  # this returns the abs path and may contain spaces. Escape the spaces with "ticks"
@@ -261,21 +261,21 @@ def install_pypi_package(packageSpecifier: str):
     logging.info("python package installation completed.")
 
 
-def is_package_installed(packageSpecifier: str):
+def is_package_installed(package_specifier: str):
     """
     Check if a Python package is already installed.
 
     Args:
-        packageSpecifier: PyPI package name (with optional version) or URL to a wheel file
+        package_specifier: PyPI package name (with optional version) or URL to a wheel file
 
     Returns:
         bool: True if the package is already installed, False otherwise
     """
     installed_packages = aipg_utils.call_subprocess(f"{service_config.comfyui_python_exe} -m pip list")
-    if packageSpecifier.endswith(".whl"):
-        package_name = packageSpecifier.split("/")[-1].split("-")[0]
+    if package_specifier.endswith(".whl"):
+        package_name = package_specifier.split("/")[-1].split("-")[0]
     else:
-        package_name = packageSpecifier.split("==")[0]
+        package_name = package_specifier.split("==")[0]
     return package_name in installed_packages
 
 

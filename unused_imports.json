@@ -1,0 +1,369 @@
+[
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 63,
+      "row": 79
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\benchmarks\\hardware_benchmark.py",
+    "fix": null,
+    "location": {
+      "column": 59,
+      "row": 79
+    },
+    "message": "`intel_extension_for_pytorch` imported but unused; consider using `importlib.util.find_spec` to test for availability",
+    "noqa_row": 79,
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 65,
+      "row": 81
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\benchmarks\\hardware_benchmark.py",
+    "fix": null,
+    "location": {
+      "column": 53,
+      "row": 81
+    },
+    "message": "`service.xpu_hijacks.ipex_hijacks` imported but unused; consider using `importlib.util.find_spec` to test for availability",
+    "noqa_row": 81,
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 63,
+      "row": 98
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\benchmarks\\hardware_benchmark.py",
+    "fix": null,
+    "location": {
+      "column": 59,
+      "row": 98
+    },
+    "message": "`intel_extension_for_pytorch` imported but unused; consider using `importlib.util.find_spec` to test for availability",
+    "noqa_row": 98,
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 69,
+      "row": 323
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\benchmarks\\hardware_benchmark.py",
+    "fix": null,
+    "location": {
+      "column": 57,
+      "row": 323
+    },
+    "message": "`service.xpu_hijacks.ipex_hijacks` imported but unused; consider using `importlib.util.find_spec` to test for availability",
+    "noqa_row": 323,
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 59,
+      "row": 31
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\examples\\ai_frameworks_integration.py",
+    "fix": null,
+    "location": {
+      "column": 55,
+      "row": 31
+    },
+    "message": "`intel_extension_for_pytorch` imported but unused; consider using `importlib.util.find_spec` to test for availability",
+    "noqa_row": 31,
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 32,
+      "row": 56
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\examples\\ai_frameworks_integration.py",
+    "fix": null,
+    "location": {
+      "column": 24,
+      "row": 56
+    },
+    "message": "`openvino` imported but unused; consider using `importlib.util.find_spec` to test for availability",
+    "noqa_row": 56,
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 59,
+      "row": 55
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\examples\\xpu_integration.py",
+    "fix": null,
+    "location": {
+      "column": 55,
+      "row": 55
+    },
+    "message": "`intel_extension_for_pytorch` imported but unused; consider using `importlib.util.find_spec` to test for availability",
+    "noqa_row": 55,
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 32,
+      "row": 79
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\examples\\xpu_integration.py",
+    "fix": null,
+    "location": {
+      "column": 24,
+      "row": 79
+    },
+    "message": "`openvino` imported but unused; consider using `importlib.util.find_spec` to test for availability",
+    "noqa_row": 79,
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 12,
+      "row": 13
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\tools\\linting\\find_complex_functions.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "",
+          "end_location": {
+            "column": 1,
+            "row": 14
+          },
+          "location": {
+            "column": 1,
+            "row": 13
+          }
+        }
+      ],
+      "message": "Remove unused import: `json`"
+    },
+    "location": {
+      "column": 8,
+      "row": 13
+    },
+    "message": "`json` imported but unused",
+    "noqa_row": 13,
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 25,
+      "row": 18
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\tools\\linting\\find_complex_functions.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "",
+          "end_location": {
+            "column": 1,
+            "row": 19
+          },
+          "location": {
+            "column": 1,
+            "row": 18
+          }
+        }
+      ],
+      "message": "Remove unused import: `pathlib.Path`"
+    },
+    "location": {
+      "column": 21,
+      "row": 18
+    },
+    "message": "`pathlib.Path` imported but unused",
+    "noqa_row": 18,
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 37,
+      "row": 19
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\tools\\linting\\find_complex_functions.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from typing import Dict, List",
+          "end_location": {
+            "column": 37,
+            "row": 19
+          },
+          "location": {
+            "column": 1,
+            "row": 19
+          }
+        }
+      ],
+      "message": "Remove unused import: `typing.Tuple`"
+    },
+    "location": {
+      "column": 32,
+      "row": 19
+    },
+    "message": "`typing.Tuple` imported but unused",
+    "noqa_row": 19,
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 12,
+      "row": 15
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\tools\\linting\\track_progress.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "",
+          "end_location": {
+            "column": 1,
+            "row": 16
+          },
+          "location": {
+            "column": 1,
+            "row": 15
+          }
+        }
+      ],
+      "message": "Remove unused import: `json`"
+    },
+    "location": {
+      "column": 8,
+      "row": 15
+    },
+    "message": "`json` imported but unused",
+    "noqa_row": 15,
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 25,
+      "row": 20
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\tools\\linting\\track_progress.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "",
+          "end_location": {
+            "column": 1,
+            "row": 21
+          },
+          "location": {
+            "column": 1,
+            "row": 20
+          }
+        }
+      ],
+      "message": "Remove unused import: `pathlib.Path`"
+    },
+    "location": {
+      "column": 21,
+      "row": 20
+    },
+    "message": "`pathlib.Path` imported but unused",
+    "noqa_row": 20,
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 30,
+      "row": 21
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\tools\\linting\\track_progress.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from typing import Dict",
+          "end_location": {
+            "column": 37,
+            "row": 21
+          },
+          "location": {
+            "column": 1,
+            "row": 21
+          }
+        }
+      ],
+      "message": "Remove unused import"
+    },
+    "location": {
+      "column": 26,
+      "row": 21
+    },
+    "message": "`typing.List` imported but unused",
+    "noqa_row": 21,
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  },
+  {
+    "cell": null,
+    "code": "F401",
+    "end_location": {
+      "column": 37,
+      "row": 21
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\tools\\linting\\track_progress.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from typing import Dict",
+          "end_location": {
+            "column": 37,
+            "row": 21
+          },
+          "location": {
+            "column": 1,
+            "row": 21
+          }
+        }
+      ],
+      "message": "Remove unused import"
+    },
+    "location": {
+      "column": 32,
+      "row": 21
+    },
+    "message": "`typing.Tuple` imported but unused",
+    "noqa_row": 21,
+    "url": "https://docs.astral.sh/ruff/rules/unused-import"
+  }
+]

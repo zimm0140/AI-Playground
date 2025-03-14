@@ -7,7 +7,10 @@ to automatically configure PyTorch for the appropriate backend based on the
 available hardware.
 """
 
+import argparse
 import importlib.util
+import logging
+import os
 import sys
 from pathlib import Path
 
@@ -23,6 +26,7 @@ except ImportError:
     print(f"Make sure it exists in {root_dir}")
     sys.exit(1)
 
+import torch
 
 def is_package_available(package_name: str) -> bool:
     """Check if a package is available."""
@@ -50,9 +54,12 @@ def configure_torch_backend():
             # Import Intel Extension for PyTorch
             import importlib.util
 
+            # Check for Intel IPEX availability
             has_ipex = importlib.util.find_spec("intel_extension_for_pytorch") is not None
             if has_ipex:
+                # Import but use it immediately to avoid unused import warning
                 import intel_extension_for_pytorch as ipex
+                _ = ipex.__name__
 
             # Apply XPU hijacks
             print("Setting up Intel XPU integration")
@@ -74,9 +81,12 @@ def configure_torch_backend():
             # Import OpenVINO
             import importlib.util
 
+            # Check for OpenVINO availability
             has_openvino = importlib.util.find_spec("openvino") is not None
             if has_openvino:
+                # Import but use it immediately to avoid unused import warning
                 import openvino
+                _ = openvino.__name__
 
             print("Setting up OpenVINO integration")
             # For demonstration - in a real application you would

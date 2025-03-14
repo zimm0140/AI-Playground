@@ -884,16 +884,16 @@ def torch_load(f, map_location=None, *args, **kwargs):
 # =================== MAIN HIJACK APPLICATION FUNCTION ===================
 def ipex_hijacks():
     """
-    Apply all the XPU hijacks to the torch module.
+    Apply the XPU device hijacks to PyTorch.
 
-    This function replaces various PyTorch functions with the hijacked versions
+    This function replaces key PyTorch CUDA functions with equivalent functions
     defined in this module to make code written for CUDA work with Intel XPU devices.
     """
     torch.tensor = torch_tensor
-    torch.Tensor.to = Tensor_to
-    torch.Tensor.cuda = Tensor_cuda
-    torch.UntypedStorage.__init__ = UntypedStorage_init
-    torch.UntypedStorage.cuda = UntypedStorage_cuda
+    torch.Tensor.to = tensor_to
+    torch.Tensor.cuda = tensor_cuda
+    torch.UntypedStorage.__init__ = untyped_storage_init
+    torch.UntypedStorage.cuda = untyped_storage_cuda
     torch.empty = torch_empty
     torch.randn = torch_randn
     torch.ones = torch_ones

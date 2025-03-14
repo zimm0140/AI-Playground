@@ -1,0 +1,172 @@
+[
+  {
+    "cell": null,
+    "code": "F821",
+    "end_location": {
+      "column": 37,
+      "row": 75
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\benchmarks\\hardware_benchmark.py",
+    "fix": null,
+    "location": {
+      "column": 28,
+      "row": 75
+    },
+    "message": "Undefined name `importlib`",
+    "noqa_row": 75,
+    "url": "https://docs.astral.sh/ruff/rules/undefined-name"
+  },
+  {
+    "cell": null,
+    "code": "F821",
+    "end_location": {
+      "column": 37,
+      "row": 96
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\benchmarks\\hardware_benchmark.py",
+    "fix": null,
+    "location": {
+      "column": 28,
+      "row": 96
+    },
+    "message": "Undefined name `importlib`",
+    "noqa_row": 96,
+    "url": "https://docs.astral.sh/ruff/rules/undefined-name"
+  },
+  {
+    "cell": null,
+    "code": "F821",
+    "end_location": {
+      "column": 41,
+      "row": 321
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\benchmarks\\hardware_benchmark.py",
+    "fix": null,
+    "location": {
+      "column": 32,
+      "row": 321
+    },
+    "message": "Undefined name `importlib`",
+    "noqa_row": 321,
+    "url": "https://docs.astral.sh/ruff/rules/undefined-name"
+  },
+  {
+    "cell": null,
+    "code": "F821",
+    "end_location": {
+      "column": 33,
+      "row": 27
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\examples\\ai_frameworks_integration.py",
+    "fix": null,
+    "location": {
+      "column": 24,
+      "row": 27
+    },
+    "message": "Undefined name `importlib`",
+    "noqa_row": 27,
+    "url": "https://docs.astral.sh/ruff/rules/undefined-name"
+  },
+  {
+    "cell": null,
+    "code": "F821",
+    "end_location": {
+      "column": 37,
+      "row": 53
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\examples\\ai_frameworks_integration.py",
+    "fix": null,
+    "location": {
+      "column": 28,
+      "row": 53
+    },
+    "message": "Undefined name `importlib`",
+    "noqa_row": 53,
+    "url": "https://docs.astral.sh/ruff/rules/undefined-name"
+  },
+  {
+    "cell": null,
+    "code": "F821",
+    "end_location": {
+      "column": 32,
+      "row": 893
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\service\\xpu_hijacks.py",
+    "fix": null,
+    "location": {
+      "column": 23,
+      "row": 893
+    },
+    "message": "Undefined name `Tensor_to`",
+    "noqa_row": 893,
+    "url": "https://docs.astral.sh/ruff/rules/undefined-name"
+  },
+  {
+    "cell": null,
+    "code": "F821",
+    "end_location": {
+      "column": 36,
+      "row": 894
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\service\\xpu_hijacks.py",
+    "fix": null,
+    "location": {
+      "column": 25,
+      "row": 894
+    },
+    "message": "Undefined name `Tensor_cuda`",
+    "noqa_row": 894,
+    "url": "https://docs.astral.sh/ruff/rules/undefined-name"
+  },
+  {
+    "cell": null,
+    "code": "F821",
+    "end_location": {
+      "column": 56,
+      "row": 895
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\service\\xpu_hijacks.py",
+    "fix": null,
+    "location": {
+      "column": 37,
+      "row": 895
+    },
+    "message": "Undefined name `UntypedStorage_init`",
+    "noqa_row": 895,
+    "url": "https://docs.astral.sh/ruff/rules/undefined-name"
+  },
+  {
+    "cell": null,
+    "code": "F821",
+    "end_location": {
+      "column": 52,
+      "row": 896
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\service\\xpu_hijacks.py",
+    "fix": null,
+    "location": {
+      "column": 33,
+      "row": 896
+    },
+    "message": "Undefined name `UntypedStorage_cuda`",
+    "noqa_row": 896,
+    "url": "https://docs.astral.sh/ruff/rules/undefined-name"
+  },
+  {
+    "cell": null,
+    "code": "F821",
+    "end_location": {
+      "column": 26,
+      "row": 103
+    },
+    "filename": "C:\\Code\\ML\\AI-Playground\\tools\\fix_markdown_advanced.py",
+    "fix": null,
+    "location": {
+      "column": 19,
+      "row": 103
+    },
+    "message": "Undefined name `fix_all`",
+    "noqa_row": 103,
+    "url": "https://docs.astral.sh/ruff/rules/undefined-name"
+  }
+]

@@ -43,7 +43,7 @@ AVAILABLE_DEVICES = ["CPU"]
 version = "STUB.2023.0.0"
 
 
-def Core():
+def core():
     """Create a mock OpenVINO Core instance."""
     return Runtime()
 

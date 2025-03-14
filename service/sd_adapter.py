@@ -4,7 +4,7 @@ Stable Diffusion Server-Sent Events Adapter Module
 This module implements an adapter for Stable Diffusion image generation that uses
 Server-Sent Events (SSE) to stream generation progress and results back to the client.
 
-The SD_SSE_Adapter class handles:
+The SdSseAdapter class handles:
 - Model downloading and loading progress communication
 - Step-by-step generation progress updates with optional image previews
 - Final image output and saving
@@ -27,7 +27,7 @@ from PIL import Image
 from psutil._common import bytes2human
 
 
-class SD_SSE_Adapter:
+class SdSseAdapter:
     """
     Adapter class that uses Server-Sent Events to stream Stable Diffusion generation progress.
 
@@ -50,7 +50,7 @@ class SD_SSE_Adapter:
 
     def __init__(self, url_root: str):
         """
-        Initialize the SD_SSE_Adapter with the server's URL root.
+        Initialize the SdSseAdapter with the server's URL root.
 
         Sets up message queue, control flags, and determines the appropriate
         output path for saving generated images based on the user's environment.

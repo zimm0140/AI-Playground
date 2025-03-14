@@ -10,13 +10,11 @@ Usage:
 """
 
 import argparse
-import json
 import logging
 import os
 import subprocess
 import sys
-from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, List
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")

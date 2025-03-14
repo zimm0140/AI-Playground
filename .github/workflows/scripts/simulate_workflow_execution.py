@@ -196,7 +196,7 @@ class NodeSimulation:
             return {"output": torch.randn(1, 32, 32, 32)}
         return {"output": np.random.randn(1, 32, 32, 32)}
 
-    def _execute_CheckpointLoader(self):
+    def _execute_checkpoint_loader(self):
         """Simulate checkpoint loader node"""
         ckpt_name = self.inputs.get("ckpt_name", "stable_diffusion.ckpt")
 
@@ -217,7 +217,7 @@ class NodeSimulation:
             "vae": model_sim.get_tensor("model.first_stage_model"),
         }
 
-    def _execute_VAELoader(self):
+    def _execute_vae_loader(self):
         """Simulate VAE loader node"""
         # Variable captured for future implementation
         _ = self.inputs.get("vae_name", "vae.pt")
@@ -225,7 +225,7 @@ class NodeSimulation:
 
         return {"vae": model_sim.tensor_data}
 
-    def _execute_LoraLoader(self):
+    def _execute_lora_loader(self):
         """Simulate LoRA loader node"""
         model = self.inputs.get("model", None)
         clip = self.inputs.get("clip", None)
@@ -245,7 +245,7 @@ class NodeSimulation:
             "clip": model_sim.get_tensor("lora_down"),
         }
 
-    def _execute_CLIPTextEncode(self):
+    def _execute_clip_text_encode(self):
         """Simulate CLIP text encoding"""
         text = self.inputs.get("text", "")
         # Variable captured for future implementation
@@ -259,7 +259,7 @@ class NodeSimulation:
         text_token_count = min(len(text.split()), 77) if text else 3
         return {"conditioning": np.random.randn(1, text_token_count, 64)}
 
-    def _execute_EmptyLatentImage(self):
+    def _execute_empty_latent_image(self):
         """Simulate empty latent image creation"""
         width = self.inputs.get("width", 512)
         height = self.inputs.get("height", 512)
@@ -273,7 +273,7 @@ class NodeSimulation:
             return {"latent": torch.zeros(batch_size, 4, latent_height, latent_width)}
         return {"latent": np.zeros((batch_size, 4, latent_height, latent_width))}
 
-    def _execute_KSampler(self):
+    def _execute_ksampler(self):
         """Simulate K-Sampler node"""
         # Variables captured for future implementation
         _ = self.inputs.get("model")
@@ -294,7 +294,7 @@ class NodeSimulation:
             return {"latent": torch.randn(1, 4, 64, 64)}
         return {"latent": np.random.randn(1, 4, 64, 64)}
 
-    def _execute_VAEDecode(self):
+    def _execute_vae_decode(self):
         """Simulate VAE decoding from latent to image"""
         # Variable captured for future implementation
         _ = self.inputs.get("vae")
@@ -316,7 +316,7 @@ class NodeSimulation:
             return {"image": torch.randn(1, 3, 512, 512)}
         return {"image": np.random.randn(1, 3, 512, 512)}
 
-    def _execute_SaveImage(self):
+    def _execute_save_image(self):
         """Simulate saving an image"""
         images = self.inputs.get("images")
 
@@ -332,7 +332,7 @@ class NodeSimulation:
         # This node has no outputs
         return {}
 
-    def _execute_UpscaleImage(self):
+    def _execute_upscale_image(self):
         """Simulate image upscaling"""
         image = self.inputs.get("image")
         # Variable captured for future implementation

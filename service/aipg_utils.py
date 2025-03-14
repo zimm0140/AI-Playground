@@ -476,7 +476,7 @@ def is_single_file(filename: str):
     return filename.endswith(".safetensors") or filename.endswith(".bin") or filename.endswith(".gguf")
 
 
-def get_ESRGAN_size():
+def get_esrgan_size():
     """
     Get the file size of the ESRGAN model.
 

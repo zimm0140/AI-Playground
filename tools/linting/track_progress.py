@@ -12,13 +12,11 @@ Usage:
 import argparse
 import csv
 import datetime
-import json
 import logging
 import os
 import subprocess
 import sys
-from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict
 
 try:
     import matplotlib.pyplot as plt

@@ -567,7 +567,7 @@ def set_components(
         load_model_components_callback("finish")
 
 
-def get_ESRGANer():
+def get_esrganer():
     """
     Get or initialize the RealESRGAN super-resolution model.
 
@@ -856,7 +856,7 @@ def upscale(params: UpscaleImageParams):
     input_image = input_image.convert("RGB") if input_image.mode != "RGB" else input_image
 
     if params.denoise <= 0.1:
-        out_image = Image.fromarray(get_ESRGANer().enhance(input_image, params.scale)[0])
+        out_image = Image.fromarray(get_esrganer().enhance(input_image, params.scale)[0])
         if image_out_callback is not None:
             image_out_callback(0, out_image, params)
     else:
@@ -892,7 +892,7 @@ def upscale(params: UpscaleImageParams):
                 callback_on_step_end=__callback_on_step_end__,
                 **custom_inputs,
             ).images[0]
-            out_image = Image.fromarray(get_ESRGANer().enhance(out_image, params.scale)[0])
+            out_image = Image.fromarray(get_esrganer().enhance(out_image, params.scale)[0])
             params.width = out_image.width
             params.height = out_image.height
             output_image(pipe, out_image, params)
@@ -972,7 +972,7 @@ def inpaint(params: InpaintParams):
             gen_image = pipe.image_processor.apply_overlay(mask_image, slice_image, repainted_image)
 
             if out_radio != 1:
-                realESRGANer = get_ESRGANer()
+                realESRGANer = get_esrganer()
                 gen_image = Image.fromarray(realESRGANer.enhance(gen_image, out_radio)[0])
 
             slice_width = slice_box[2] - slice_box[0]
@@ -1064,7 +1064,7 @@ def outpaint(params: OutpaintParams):
 
             if scale_ratio != 1:
                 unmasked_unchanged_image = Image.fromarray(
-                    get_ESRGANer().enhance(unmasked_unchanged_image, scale_ratio)[0],
+                    get_esrganer().enhance(unmasked_unchanged_image, scale_ratio)[0],
                 )
 
             output_image(pipe, unmasked_unchanged_image, params)

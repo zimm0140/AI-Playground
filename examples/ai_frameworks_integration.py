@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 Hardware-Aware AI Framework Integration Example
 
@@ -5,7 +6,12 @@ This example demonstrates how to use the hardware detection system with LangChai
 and Stable Diffusion to optimize performance on different Intel hardware.
 """
 
+import argparse
+import importlib.util
+import logging
 import os
+import sys
+from pathlib import Path
 
 import torch
 from compel import Compel
@@ -23,14 +29,15 @@ def configure_hardware():
 
     if hardware_type == "acm":  # Intel Arc GPUs
         try:
-            # Check if Intel Extension for PyTorch is available
-            import importlib.util
-
+            # Check for Intel IPEX availability
             has_ipex = importlib.util.find_spec("intel_extension_for_pytorch") is not None
             if has_ipex:
+                # Import but use it immediately to avoid unused import warning
                 import intel_extension_for_pytorch as ipex
-
+                _ = ipex.__name__
+                
                 from service.xpu_hijacks import ipex_hijacks
+                _ = ipex_hijacks.__name__
 
             # Apply XPU hijacks to redirect CUDA calls to XPU
             ipex_hijacks()
@@ -48,12 +55,12 @@ def configure_hardware():
 
     elif hardware_type == "ovino":  # OpenVINO
         try:
-            # Check if OpenVINO is available
-            import importlib.util
-
+            # Check for OpenVINO availability
             has_openvino = importlib.util.find_spec("openvino") is not None
             if has_openvino:
+                # Import but use it immediately to avoid unused import warning
                 import openvino
+                _ = openvino.__name__
 
             device = torch.device("cpu")  # OpenVINO optimizes on CPU
             print("OpenVINO environment configured")

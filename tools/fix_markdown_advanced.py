@@ -93,8 +93,24 @@ def fix_ordered_list_spacing(content: str) -> str:
     return re.sub(r"^(\s*)(\d+\.)(\s{2,})", r"\1\2 ", content, flags=re.MULTILINE)
 
 
+def fix_all(content: str) -> str:
+    """Apply all markdown fixes in sequence."""
+    content = fix_trailing_spaces(content)
+    content = fix_consecutive_blank_lines(content)
+    content = fix_heading_spacing(content)
+    content = fix_heading_punctuation(content)
+    content = fix_ordered_lists(content)
+    content = fix_list_marker_spacing(content)
+    content = fix_code_blocks(content)
+    content = fix_table_spacing(content)
+    content = fix_bare_urls(content)
+    content = fix_ordered_list_spacing(content)
+    content = ensure_trailing_newline(content)
+    return content
+
+
 def fix_markdown_file(file_path: str) -> bool:
-    """Apply all fixes to a single markdown file."""
+    """Fix markdown linting issues in a file."""
     try:
         with open(file_path, encoding="utf-8") as f:
             content = f.read()
