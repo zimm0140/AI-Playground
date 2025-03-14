@@ -102,7 +102,6 @@ The system recognizes the following hardware types:
 | `ovino` | Intel CPUs with OpenVINO | OpenVINO runtime optimizations |
 | `base` | Standard hardware | Standard PyTorch CPU operations |
 
-
 ## Environment Setup {#environmen {#environment-setup-environmen}
 
 t-setup}
