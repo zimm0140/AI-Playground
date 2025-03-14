@@ -1,6 +1,6 @@
 # Technical Debt Report
 
-Generated at: 2025-03-14 04:53:57
+Generated at: 2025-03-14 05:07:56
 
 ## Current Status
 - Total Python files: 12698
@@ -8,17 +8,17 @@ Generated at: 2025-03-14 04:53:57
 - Clean files: 12590
 
 ## Issues by Priority
-- High Priority: 320 issues in 14 files
+- High Priority: 288 issues in 12 files
 - Medium Priority: 833 issues in 41 files
-- Low Priority: 9312 issues in 101 files
+- Low Priority: 9322 issues in 101 files
 
 ## Trend Analysis
 Issue count over time:
-- 2025-03-13: 18355 total issues
-- 2025-03-13: 18329 total issues
-- 2025-03-13: 18329 total issues
 - 2025-03-14: 10480 total issues
 - 2025-03-14: 10465 total issues
+- 2025-03-14: 10485 total issues
+- 2025-03-14: 10485 total issues
+- 2025-03-14: 10443 total issues
 
 ## Recommendations
 1. High Priority Fixes:

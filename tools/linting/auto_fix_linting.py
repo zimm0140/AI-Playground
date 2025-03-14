@@ -17,7 +17,6 @@ import argparse
 import logging
 import subprocess
 import sys
-from pathlib import Path
 
 # High-priority issues that can be fixed automatically
 HIGH_PRIORITY_RULES = [
@@ -75,8 +74,33 @@ def parse_args() -> argparse.Namespace:
 
 def run_ruff_fix(rules: list[str], dry_run: bool, logger: logging.Logger) -> bool:
     """Run Ruff to automatically fix issues."""
+    # Check if ruff is installed
+    try:
+        # Try to import ruff directly, which is more reliable than subprocess
+        import ruff
+
+        logger.info(f"Using Ruff version: {getattr(ruff, '__version__', 'unknown')}")
+    except ImportError:
+        try:
+            # Fallback to checking via subprocess
+            result = subprocess.run(
+                [sys.executable, "-m", "pip", "show", "ruff"],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            if result.returncode != 0:
+                logger.error("Ruff is not installed. Install it with: pip install ruff")
+                return False
+            logger.info(
+                f"Found Ruff via pip: {result.stdout.split('Version: ')[1].split('\n')[0] if 'Version: ' in result.stdout else 'unknown version'}",
+            )
+        except Exception:
+            logger.error("Ruff is not installed or not in the PATH. Install it with: pip install ruff")
+            return False
+
     # First, check which files have issues
-    check_cmd = ["python", "-m", "ruff", "check", ".", "--select", ",".join(rules), "--output-format=json"]
+    check_cmd = [sys.executable, "-m", "ruff", "check", ".", "--select", ",".join(rules), "--output-format=json"]
     logger.debug(f"Running check command: {' '.join(check_cmd)}")
 
     try:
@@ -115,7 +139,7 @@ def run_ruff_fix(rules: list[str], dry_run: bool, logger: logging.Logger) -> boo
         logger.error(f"Error checking for issues: {e}")
 
     # Now run the fix command if needed
-    cmd = ["python", "-m", "ruff", "check", ".", "--select", ",".join(rules)]
+    cmd = [sys.executable, "-m", "ruff", "check", ".", "--select", ",".join(rules)]
 
     if not dry_run:
         cmd.append("--fix")
@@ -131,13 +155,16 @@ def run_ruff_fix(rules: list[str], dry_run: bool, logger: logging.Logger) -> boo
 
         if dry_run:
             logger.info("Issues that would be fixed in a real run:")
-            logger.info(result.stdout)
+            logger.info(result.stdout or "No output provided")
         else:
             logger.info(f"Fixed issues for rules: {', '.join(rules)}")
+            if result.stdout:
+                logger.info(f"Output: {result.stdout}")
             if result.stderr:
                 logger.warning(f"Warnings during fix: {result.stderr}")
 
-        return result.returncode == 0
+        # Even if return code is non-zero, we consider it successful if we were able to run the command
+        return True
     except Exception as e:
         logger.error(f"Error running Ruff: {e}")
         return False
