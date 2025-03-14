@@ -204,17 +204,17 @@ jobs:
           if __name__ == "__main__":
               main()
           EOF
-      - name: Run markdown fixer
-        run: python fix_markdown_advanced.py
+      - name: Run Python markdown fixer
+        run: python fix_markdown_advanced.py docs/
+
       - name: Check for markdown linting issues
-        run: markdownlint-cli2 "**/*.md" "!node_modules/**/*.md" "!WebUI/node_modules/**/*.md" --config .markdownlint.yaml || true
-      - name: Commit changes if any
         run: |
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git add -A
-          git diff --quiet && git diff --staged --quiet || git commit -m "Fix markdown linting issues [skip ci]"
-          git push
+          echo "Checking markdown files for linting issues (informational only)..."
+          markdownlint-cli2 "**/*.md" "!node_modules/**/*.md" "!WebUI/node_modules/**/*.md" --config .markdownlint.yaml || true
+          echo "Note: Markdown linting is currently set to informational only while we address technical debt."
+          echo "See docs/development/technical_debt.md for our reduction strategy."
+          # Always succeed
+          exit 0
 
   lint:
     if: false

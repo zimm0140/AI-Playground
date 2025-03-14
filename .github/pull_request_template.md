@@ -1,25 +1,46 @@
-### Description:
+# Pull Request
 
-Please provide a brief description of the changes made in this pull request.
+## Description
 
-### Related Issue:
+<!-- Describe the changes in this PR -->
 
-If this pull request is related to any existing issue, please mention the issue number here.
+## Type of Change
 
-### Changes Made:
+- [ ] Bug fix
+- [ ] New feature
+- [ ] Documentation update
+- [ ] Refactoring
+- [ ] Technical debt reduction
+- [ ] CI/CD improvement
 
-Please list down the specific changes made in this pull request.
+## Technical Debt Consideration
 
-### Testing Done:
+<!-- If adding code, how does this PR affect technical debt? -->
+- [ ] This PR adds new code with full test coverage
+- [ ] This PR fixes existing technical debt
+- [ ] This PR might add technical debt (explain below)
 
-Please describe the testing that has been done to ensure the changes made in this pull request are functioning as expected.
+<!-- If adding technical debt, explain why it's necessary and how it will be addressed later -->
 
-### Screenshots:
+## Related Issues
 
-If applicable, please provide screenshots or GIFs or videos to visually demonstrate the changes made.
+<!-- Link to related issues -->
 
-### Checklist:
+## Testing
 
-- [ ] I have tested the changes locally.
-- [ ] I have self-reviewed the code changes.
-- [ ] I have updated the documentation, if necessary.
+<!-- Describe how you tested your changes -->
+
+## Checklist
+
+- [ ] I have performed a self-review of my code
+- [ ] I have added tests that prove my fix is effective or that my feature works
+- [ ] I have updated the documentation accordingly
+- [ ] I have run the technical debt tracker and verified the impact of my changes
+
+## Screenshots (if applicable)
+
+<!-- Add screenshots here -->
+
+## Additional Notes
+
+<!-- Any additional information that reviewers should know -->

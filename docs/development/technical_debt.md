@@ -22,6 +22,24 @@ As of March 2025, we've identified the following key metrics:
 - **Medium-priority issues**: ~3,700 in 42 files
 - **Low-priority issues**: ~10,700 in 100 files
 
+## Current CI Accommodations
+
+To maintain smooth CI operation while we address technical debt, we've made these temporary accommodations:
+
+1. **Markdown Linting**: Set to informational-only (non-failing)
+   - In `.github/workflows/markdown-lint.yml`
+   - In `.github/workflows/code-quality.yml`
+
+2. **Ruff Python Linting**: Configured with specific rule exemptions
+   - In `.github/workflows/ruff.yml` using `--ignore=F401,W291,F821,N801,N802,N803`
+   - Set to non-failing mode with `--exit-zero`
+
+3. **Disabled Rules in Config Files**:
+   - In `.markdownlint.yaml` for markdown formatting rules
+   - In `pyproject.toml` for Python linting rules
+
+These accommodations are temporary and will be gradually removed as we address the underlying issues.
+
 ## Prioritization Strategy
 
 We categorize technical debt based on three priority levels:
