@@ -67,7 +67,7 @@ class ComplexityAnalyzer:
                     "line": line,
                     "function_name": function_name,
                     "complexity": complexity,
-                }
+                },
             )
 
         return function_details
@@ -107,7 +107,7 @@ class ComplexityAnalyzer:
                 "2. Create unit tests before refactoring",
                 "3. Refactor one function at a time",
                 "4. Re-run complexity analysis after each refactoring",
-            ]
+            ],
         )
 
         return "\n".join(report)

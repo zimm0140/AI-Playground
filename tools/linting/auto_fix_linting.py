@@ -65,32 +65,75 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--dry-run", action="store_true", help="Show what would be fixed without making changes")
     parser.add_argument("--verbose", action="store_true", help="Show verbose output")
     parser.add_argument(
-        "--priority", choices=["high", "medium", "all"], default="high", help="Priority level of issues to fix"
+        "--priority",
+        choices=["high", "medium", "all"],
+        default="high",
+        help="Priority level of issues to fix",
     )
     return parser.parse_args()
 
 
 def run_ruff_fix(rules: list[str], dry_run: bool, logger: logging.Logger) -> bool:
     """Run Ruff to automatically fix issues."""
+    # First, check which files have issues
+    check_cmd = ["python", "-m", "ruff", "check", ".", "--select", ",".join(rules), "--output-format=json"]
+    logger.debug(f"Running check command: {' '.join(check_cmd)}")
+
+    try:
+        check_result = subprocess.run(check_cmd, capture_output=True, text=True, check=False)
+
+        # Try to parse JSON output to get the affected files
+        if check_result.stdout:
+            try:
+                import json
+
+                issues = json.loads(check_result.stdout)
+                files_with_issues = {}
+
+                for issue in issues:
+                    filename = issue.get("filename", "unknown")
+                    rule = issue.get("code", "unknown")
+                    if filename not in files_with_issues:
+                        files_with_issues[filename] = {}
+
+                    if rule not in files_with_issues[filename]:
+                        files_with_issues[filename][rule] = 0
+
+                    files_with_issues[filename][rule] += 1
+
+                if files_with_issues:
+                    logger.info(f"Found {len(files_with_issues)} files with issues:")
+                    for filename, rules_count in files_with_issues.items():
+                        rule_summary = ", ".join([f"{rule}: {count}" for rule, count in rules_count.items()])
+                        logger.info(f"  {filename}: {rule_summary}")
+                else:
+                    logger.info("No issues found to fix")
+                    return True
+            except Exception as e:
+                logger.warning(f"Could not parse Ruff output: {e}")
+    except Exception as e:
+        logger.error(f"Error checking for issues: {e}")
+
+    # Now run the fix command if needed
     cmd = ["python", "-m", "ruff", "check", ".", "--select", ",".join(rules)]
 
     if not dry_run:
         cmd.append("--fix")
 
-    logger.debug(f"Running command: {' '.join(cmd)}")
+    logger.debug(f"Running fix command: {' '.join(cmd)}")
 
     try:
         result = subprocess.run(cmd, capture_output=True, text=True, check=False)
 
         if result.returncode == 0:
-            logger.info("No issues found to fix")
+            logger.info("No issues needed to be fixed")
             return True
 
         if dry_run:
             logger.info("Issues that would be fixed in a real run:")
             logger.info(result.stdout)
         else:
-            logger.info(f"Fixed {rules} issues")
+            logger.info(f"Fixed issues for rules: {', '.join(rules)}")
             if result.stderr:
                 logger.warning(f"Warnings during fix: {result.stderr}")
 

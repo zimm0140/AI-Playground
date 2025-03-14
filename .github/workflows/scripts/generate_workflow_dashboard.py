@@ -215,7 +215,7 @@ class ComfyWorkflowDashboard:
                     self.dashboard_data[filename]["requirements"]["models"] = workflow.get("models", {})
                     self.dashboard_data[filename]["requirements"]["custom_nodes"] = workflow.get("custom_nodes", [])
                     self.dashboard_data[filename]["requirements"]["memory_required"] = workflow.get(
-                        "memory_required", {"min": 0, "recommended": 0}
+                        "memory_required", {"min": 0, "recommended": 0},
                     )
 
                     # Set requirements status based on analysis success
