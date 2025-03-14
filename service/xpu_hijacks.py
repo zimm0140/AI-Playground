@@ -634,7 +634,7 @@ original_Tensor_to = torch.Tensor.to
 
 
 @wraps(torch.Tensor.to)
-def Tensor_to(self, device=None, *args, **kwargs):
+def tensor_to(self, device=None, *args, **kwargs):
     """
     Hijacked version of torch.Tensor.to that converts CUDA device specifications to XPU.
 
@@ -657,7 +657,7 @@ original_Tensor_cuda = torch.Tensor.cuda
 
 
 @wraps(torch.Tensor.cuda)
-def Tensor_cuda(self, device=None, *args, **kwargs):
+def tensor_cuda(self, device=None, *args, **kwargs):
     """
     Hijacked version of torch.Tensor.cuda that converts to XPU instead of CUDA.
 
@@ -680,7 +680,7 @@ original_UntypedStorage_init = torch.UntypedStorage.__init__
 
 
 @wraps(torch.UntypedStorage.__init__)
-def UntypedStorage_init(*args, device=None, **kwargs):
+def untyped_storage_init(*args, device=None, **kwargs):
     """
     Hijacked version of torch.UntypedStorage.__init__ that converts CUDA device specifications to XPU.
 
@@ -702,7 +702,7 @@ original_UntypedStorage_cuda = torch.UntypedStorage.cuda
 
 
 @wraps(torch.UntypedStorage.cuda)
-def UntypedStorage_cuda(self, device=None, *args, **kwargs):
+def untyped_storage_cuda(self, device=None, *args, **kwargs):
     """
     Hijacked version of torch.UntypedStorage.cuda that converts to XPU instead of CUDA.
 

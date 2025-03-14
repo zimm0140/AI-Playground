@@ -384,7 +384,7 @@ class UVFast:
         print("Hardware Information:")
         print(f"Project: {self.config.get('project_name', 'ai-playground')}")
         print(f"Detected hardware type: {self.hardware_type}")
-        print(f"Available hardware types: {', '.join(self.config.get('hardware_types', []))}")
+        print(f"Available hardware types: {', '.join(self.config.get('hardware_types', [])}")
 
         # Show requirements files
         print("\nRequirements files:")

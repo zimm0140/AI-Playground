@@ -9,6 +9,8 @@ This script addresses:
 - I001: Unsorted imports (using isort)
 - E501: Line too long (where possible)
 - C408: Unnecessary list calls
+- N802: Function name should be lowercase
+- F401: Unused imports
 """
 
 import re
@@ -46,6 +48,60 @@ def fix_whitespace_issues(file_path):
         return False
     except Exception as e:
         print(f"Error processing {file_path}: {e}")
+        return False
+
+
+def fix_function_naming_conventions(file_path):
+    """Fix function naming conventions to follow PEP8."""
+    try:
+        with open(file_path, encoding="utf-8") as f:
+            content = f.read()
+
+        original_content = content
+
+        # Pattern to match function names that start with a capital letter
+        pattern = r"def\s+([_]*)([A-Z][a-zA-Z0-9]*)"
+
+        # Function to convert CamelCase to snake_case
+        def convert_to_snake_case(match):
+            prefix = match.group(1)  # Keep any leading underscores
+            name = match.group(2)  # The actual name starting with capital
+            # Convert CamelCase to snake_case
+            s1 = re.sub("(.)([A-Z][a-z]+)", r"\1_\2", name)
+            snake = re.sub("([a-z0-9])([A-Z])", r"\1_\2", s1).lower()
+            return f"def {prefix}{snake}"
+
+        # Apply the conversion
+        content = re.sub(pattern, convert_to_snake_case, content)
+
+        # Also fix specific patterns in workflow scripts
+        pattern_execute = r"def\s+(_execute_)([A-Z][a-zA-Z0-9]*)"
+        content = re.sub(pattern_execute, convert_to_snake_case, content)
+
+        # Write changes if needed
+        if content != original_content:
+            with open(file_path, "w", encoding="utf-8") as f:
+                f.write(content)
+            return True
+        return False
+    except Exception as e:
+        print(f"Error fixing naming conventions in {file_path}: {e}")
+        return False
+
+
+def fix_unused_imports(file_path):
+    """Fix unused imports specifically."""
+    try:
+        result = subprocess.run(
+            [sys.executable, "-m", "ruff", "check", "--select=F401", "--fix", file_path],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        # Return True if changes were made (non-zero exit code with --fix often means changes)
+        return result.returncode != 0
+    except Exception as e:
+        print(f"Error fixing imports in {file_path}: {e}")
         return False
 
 
@@ -147,14 +203,24 @@ def main():
     py_files = find_python_files()
     print(f"Found {len(py_files)} Python files to process")
 
-    # First run the fixes in order of simplicity/safety
+    # Counters for different types of fixes
     whitespace_count = 0
     isort_count = 0
     ruff_count = 0
     line_count = 0
+    naming_count = 0
+    import_count = 0
 
     for file_path in py_files:
-        # Run fixes in order of simplicity/safety
+        # First fix imports as they might change line lengths
+        if fix_unused_imports(file_path):
+            import_count += 1
+
+        # Then fix naming conventions
+        if fix_function_naming_conventions(file_path):
+            naming_count += 1
+
+        # Then run other fixes
         if run_ruff_format(file_path):
             ruff_count += 1
 
@@ -172,6 +238,8 @@ def main():
     print(f"- Import sorting: {isort_count}")
     print(f"- Whitespace fixes: {whitespace_count}")
     print(f"- Line length fixes: {line_count}")
+    print(f"- Naming convention fixes: {naming_count}")
+    print(f"- Unused import fixes: {import_count}")
 
 
 if __name__ == "__main__":

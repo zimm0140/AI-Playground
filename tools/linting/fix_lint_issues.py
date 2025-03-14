@@ -10,14 +10,12 @@ Enhanced version with:
 """
 
 import argparse
-import json
-import re
 import shutil
 import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional, Set, Tuple
+from typing import Dict, List, Optional, Tuple
 
 
 class LintingFixer:

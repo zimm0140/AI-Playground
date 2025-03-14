@@ -23,5 +23,20 @@
       "medium_priority": 39,
       "low_priority": 99
     }
+  },
+  {
+    "timestamp": "2025-03-13T20:03:55.079332",
+    "issues": {
+      "high_priority": 3821,
+      "medium_priority": 3767,
+      "low_priority": 10734
+    },
+    "total_files": 12697,
+    "affected_files": 109,
+    "files_by_category": {
+      "high_priority": 17,
+      "medium_priority": 42,
+      "low_priority": 100
+    }
   }
 ]

@@ -11,10 +11,9 @@ This script:
 
 import json
 import subprocess
-import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional, Set, Tuple
+from typing import Dict, List, Set, Tuple
 
 
 class TechnicalDebtTracker:
@@ -113,7 +112,7 @@ class TechnicalDebtTracker:
                 [
                     "\n## Trend Analysis",
                     "Issue count over time:",
-                ]
+                ],
             )
             for record in history[-5:]:  # Show last 5 records
                 date = datetime.fromisoformat(record["timestamp"]).strftime("%Y-%m-%d")
@@ -135,7 +134,7 @@ class TechnicalDebtTracker:
                 "   - Review and fix security issues (S*)",
                 "   - Improve path handling (PTH*)",
                 "   - Enhance code structure (SIM*)",
-            ]
+            ],
         )
 
         return "\n".join(report)
