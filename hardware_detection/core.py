@@ -83,6 +83,64 @@ def load_config() -> dict[str, Any]:
     return {"hardware_types": HARDWARE_TYPES, "default_hardware": "base"}
 
 
+def _get_simulated_gpu_info() -> list[str]:
+    """Get GPU information from environment variables for CI simulation."""
+    sim_hw = os.environ.get("SIMULATED_HARDWARE", "").lower()
+    debug_print(f"Using simulated hardware: {sim_hw}")
+    if sim_hw == "acm":
+        return ["Intel(R) Arc(TM) A770 Graphics (Simulated)"]
+    if sim_hw == "ovino":
+        return ["Intel(R) UHD Graphics (Simulated)"]
+    return []
+
+
+def _get_mock_gpu_info() -> list[str] | None:
+    """Get GPU information from mock files in CI environments."""
+    mock_dir = Path(os.environ.get("UVFAST_MOCK_DIR", ".uvfast/mock"))
+    mock_gpu_file = mock_dir / "gpu_info.txt"
+
+    if mock_gpu_file.exists():
+        try:
+            with open(mock_gpu_file, encoding="utf-8") as f:
+                gpus = [line.strip() for line in f.readlines() if line.strip()]
+                debug_print(f"Using mock GPU info: {gpus}")
+                return gpus
+        except OSError as e:
+            debug_print(f"Error reading mock GPU file: {e}", "WARNING")
+
+    return None
+
+
+def _get_windows_gpu_info() -> list[str]:
+    """Get GPU information on Windows systems."""
+    output = safe_run_command(["wmic", "path", "win32_VideoController", "get", "Name"])
+    return [line.strip() for line in output.split("\n")[1:] if line.strip()]
+
+
+def _get_linux_gpu_info() -> list[str]:
+    """Get GPU information on Linux systems."""
+    output = safe_run_command(["lspci", "-v"])
+    gpu_lines = []
+
+    for line in output.split("\n"):
+        if any(term in line for term in ["VGA", "3D", "Display"]):
+            gpu_lines.append(line)
+
+    return [line.split(":", 2)[2].strip() if len(line.split(":", 2)) > 2 else line for line in gpu_lines]
+
+
+def _get_macos_gpu_info() -> list[str]:
+    """Get GPU information on macOS systems."""
+    output = safe_run_command(["system_profiler", "SPDisplaysDataType"])
+    gpu_lines = []
+
+    for line in output.split("\n"):
+        if "Chipset Model:" in line:
+            gpu_lines.append(line.split(":", 1)[1].strip())
+
+    return gpu_lines
+
+
 def get_gpu_info() -> list[str]:
     """Get information about available GPUs.
 
@@ -98,60 +156,151 @@ def get_gpu_info() -> list[str]:
     """
     # Check for simulation in CI environments
     if "SIMULATED_HARDWARE" in os.environ:
-        sim_hw = os.environ.get("SIMULATED_HARDWARE", "").lower()
-        debug_print(f"Using simulated hardware: {sim_hw}")
-        if sim_hw == "acm":
-            return ["Intel(R) Arc(TM) A770 Graphics (Simulated)"]
-        if sim_hw == "ovino":
-            return ["Intel(R) UHD Graphics (Simulated)"]
-        return []
+        return _get_simulated_gpu_info()
 
     # Check for mock files in CI environments
-    mock_dir = Path(os.environ.get("UVFAST_MOCK_DIR", ".uvfast/mock"))
-    mock_gpu_file = mock_dir / "gpu_info.txt"
-
-    if mock_gpu_file.exists():
-        try:
-            with open(mock_gpu_file, encoding="utf-8") as f:
-                gpus = [line.strip() for line in f.readlines() if line.strip()]
-                debug_print(f"Using mock GPU info: {gpus}")
-                return gpus
-        except OSError as e:
-            debug_print(f"Error reading mock GPU file: {e}", "WARNING")
+    mock_gpus = _get_mock_gpu_info()
+    if mock_gpus is not None:
+        return mock_gpus
 
     # Platform-specific GPU detection
     system = platform.system()
     gpus = []
 
     if system == "Windows":
-        # Windows: Use WMIC to get GPU information
-        output = safe_run_command(["wmic", "path", "win32_VideoController", "get", "Name"])
-        gpus = [line.strip() for line in output.split("\n")[1:] if line.strip()]
-
+        gpus = _get_windows_gpu_info()
     elif system == "Linux":
-        # Linux: Try lspci
-        output = safe_run_command(["lspci", "-v"])
-        gpu_lines = []
-
-        for line in output.split("\n"):
-            if any(term in line for term in ["VGA", "3D", "Display"]):
-                gpu_lines.append(line)
-
-        gpus = [line.split(":", 2)[2].strip() if len(line.split(":", 2)) > 2 else line for line in gpu_lines]
-
+        gpus = _get_linux_gpu_info()
     elif system == "Darwin":
-        # macOS: Use system_profiler
-        output = safe_run_command(["system_profiler", "SPDisplaysDataType"])
-        gpu_lines = []
-
-        for line in output.split("\n"):
-            if "Chipset Model:" in line:
-                gpu_lines.append(line.split(":", 1)[1].strip())
-
-        gpus = gpu_lines
+        gpus = _get_macos_gpu_info()
 
     debug_print(f"Detected GPUs: {gpus}")
     return gpus
+
+
+def _get_simulated_cpu_info() -> dict[str, Any]:
+    """Get CPU information from environment variables for CI simulation."""
+    sim_hw = os.environ.get("SIMULATED_HARDWARE", "").lower()
+    if sim_hw == "acm":
+        info = {
+            "vendor": "Intel",
+            "name": "Intel(R) Core(TM) i9-13900K (Simulated)",
+            "cores": 24,
+        }
+    elif sim_hw == "ovino":
+        info = {
+            "vendor": "Intel",
+            "name": "Intel(R) Core(TM) i7-1370P (Simulated)",
+            "cores": 16,
+        }
+    else:
+        info = {
+            "vendor": "Intel",
+            "name": "Intel(R) Core(TM) i5-10400 (Simulated)",
+            "cores": 6,
+        }
+    debug_print(f"Using simulated CPU info: {info}")
+    return info
+
+
+def _get_mock_cpu_info() -> dict[str, Any]:
+    """Get CPU information from mock files in CI environments."""
+    info = {
+        "vendor": "",
+        "name": "",
+        "cores": 0,
+    }
+
+    mock_dir = Path(os.environ.get("UVFAST_MOCK_DIR", ".uvfast/mock"))
+    mock_cpu_file = mock_dir / "cpu_info.txt"
+
+    try:
+        with open(mock_cpu_file, encoding="utf-8") as f:
+            for line in f:
+                if ":" in line:
+                    key, value = line.split(":", 1)
+                    key = key.strip().lower()
+                    value = value.strip()
+                    if key in info:
+                        info[key] = value
+                    if key == "cores" and isinstance(info["cores"], str) and info["cores"].isdigit():
+                        info["cores"] = int(info["cores"])
+
+        debug_print(f"Using mock CPU info: {info}")
+        return info
+    except OSError as e:
+        debug_print(f"Error reading mock CPU file: {e}", "WARNING")
+        return None
+
+
+def _get_windows_cpu_info() -> dict[str, Any]:
+    """Get CPU information on Windows systems."""
+    # Windows: Use WMIC
+    vendor_output = safe_run_command(["wmic", "cpu", "get", "Manufacturer"])
+    vendor = vendor_output.split("\n")[1].strip() if "\n" in vendor_output else ""
+
+    name_output = safe_run_command(["wmic", "cpu", "get", "Name"])
+    name = name_output.split("\n")[1].strip() if "\n" in name_output else ""
+
+    cores_output = safe_run_command(["wmic", "cpu", "get", "NumberOfCores"])
+    cores_str = cores_output.split("\n")[1].strip() if "\n" in cores_output else "0"
+    cores = int(cores_str) if cores_str.isdigit() else 0
+
+    return {"vendor": vendor, "name": name, "cores": cores}
+
+
+def _get_linux_cpu_info() -> dict[str, Any]:
+    """Get CPU information on Linux systems."""
+    info = {
+        "vendor": "",
+        "name": "",
+        "cores": 0,
+    }
+
+    if os.path.exists("/proc/cpuinfo"):
+        try:
+            with open("/proc/cpuinfo", encoding="utf-8") as f:
+                content = f.read()
+
+                # Extract vendor
+                vendor_match = re.search(r"vendor_id\s*:\s*([^\n]+)", content)
+                if vendor_match:
+                    info["vendor"] = vendor_match.group(1).strip()
+
+                # Extract model name
+                name_match = re.search(r"model name\s*:\s*([^\n]+)", content)
+                if name_match:
+                    info["name"] = name_match.group(1).strip()
+
+                # Count cores
+                cores = content.count("processor")
+                if cores > 0:
+                    info["cores"] = cores
+        except OSError as e:
+            debug_print(f"Error reading /proc/cpuinfo: {e}", "WARNING")
+
+    return info
+
+
+def _get_macos_cpu_info() -> dict[str, Any]:
+    """Get CPU information on macOS systems."""
+    info = {
+        "vendor": "",
+        "name": "",
+        "cores": 0,
+    }
+
+    vendor_output = safe_run_command(["sysctl", "-n", "machdep.cpu.vendor"])
+    info["vendor"] = vendor_output.strip()
+
+    name_output = safe_run_command(["sysctl", "-n", "machdep.cpu.brand_string"])
+    info["name"] = name_output.strip()
+
+    cores_output = safe_run_command(["sysctl", "-n", "hw.physicalcpu"])
+    with contextlib.suppress(ValueError):
+        info["cores"] = int(cores_output.strip())
+
+    return info
 
 
 def get_cpu_info() -> dict[str, Any]:
@@ -171,110 +320,29 @@ def get_cpu_info() -> dict[str, Any]:
         >>> get_cpu_info()
         {'vendor': 'Intel', 'name': 'Intel(R) Core(TM) i7-10700K', 'cores': 8}
     """
+    # Check for simulation in CI environments
+    if "SIMULATED_HARDWARE" in os.environ:
+        return _get_simulated_cpu_info()
+
+    # Check for mock files in CI environments
+    mock_info = _get_mock_cpu_info()
+    if mock_info:
+        return mock_info
+
+    # Platform-specific CPU detection
+    system = platform.system()
     info = {
         "vendor": "",
         "name": "",
         "cores": 0,
     }
 
-    # Check for simulation in CI environments
-    if "SIMULATED_HARDWARE" in os.environ:
-        sim_hw = os.environ.get("SIMULATED_HARDWARE", "").lower()
-        if sim_hw == "acm":
-            info = {
-                "vendor": "Intel",
-                "name": "Intel(R) Core(TM) i9-13900K (Simulated)",
-                "cores": 24,
-            }
-        elif sim_hw == "ovino":
-            info = {
-                "vendor": "Intel",
-                "name": "Intel(R) Core(TM) i7-1370P (Simulated)",
-                "cores": 16,
-            }
-        else:
-            info = {
-                "vendor": "Intel",
-                "name": "Intel(R) Core(TM) i5-10400 (Simulated)",
-                "cores": 6,
-            }
-        debug_print(f"Using simulated CPU info: {info}")
-        return info
-
-    # Check for mock files in CI environments
-    mock_dir = Path(os.environ.get("UVFAST_MOCK_DIR", ".uvfast/mock"))
-    mock_cpu_file = mock_dir / "cpu_info.txt"
-
-    if mock_cpu_file.exists():
-        try:
-            with open(mock_cpu_file, encoding="utf-8") as f:
-                for line in f:
-                    if ":" in line:
-                        key, value = line.split(":", 1)
-                        key = key.strip().lower()
-                        value = value.strip()
-                        if key in info:
-                            info[key] = value
-                        if key == "cores" and isinstance(info["cores"], str) and info["cores"].isdigit():
-                            info["cores"] = int(info["cores"])
-
-            debug_print(f"Using mock CPU info: {info}")
-            return info
-        except OSError as e:
-            debug_print(f"Error reading mock CPU file: {e}", "WARNING")
-
-    # Platform-specific CPU detection
-    system = platform.system()
-
     if system == "Windows":
-        # Windows: Use WMIC
-        vendor_output = safe_run_command(["wmic", "cpu", "get", "Manufacturer"])
-        vendor = vendor_output.split("\n")[1].strip() if "\n" in vendor_output else ""
-
-        name_output = safe_run_command(["wmic", "cpu", "get", "Name"])
-        name = name_output.split("\n")[1].strip() if "\n" in name_output else ""
-
-        cores_output = safe_run_command(["wmic", "cpu", "get", "NumberOfCores"])
-        cores_str = cores_output.split("\n")[1].strip() if "\n" in cores_output else "0"
-        cores = int(cores_str) if cores_str.isdigit() else 0
-
-        info = {"vendor": vendor, "name": name, "cores": cores}
-
+        info = _get_windows_cpu_info()
     elif system == "Linux":
-        # Linux: Parse /proc/cpuinfo
-        if os.path.exists("/proc/cpuinfo"):
-            try:
-                with open("/proc/cpuinfo", encoding="utf-8") as f:
-                    content = f.read()
-
-                    # Extract vendor
-                    vendor_match = re.search(r"vendor_id\s*:\s*([^\n]+)", content)
-                    if vendor_match:
-                        info["vendor"] = vendor_match.group(1).strip()
-
-                    # Extract model name
-                    name_match = re.search(r"model name\s*:\s*([^\n]+)", content)
-                    if name_match:
-                        info["name"] = name_match.group(1).strip()
-
-                    # Count cores
-                    cores = content.count("processor")
-                    if cores > 0:
-                        info["cores"] = cores
-            except OSError as e:
-                debug_print(f"Error reading /proc/cpuinfo: {e}", "WARNING")
-
+        info = _get_linux_cpu_info()
     elif system == "Darwin":
-        # macOS: Use sysctl
-        vendor_output = safe_run_command(["sysctl", "-n", "machdep.cpu.vendor"])
-        info["vendor"] = vendor_output.strip()
-
-        name_output = safe_run_command(["sysctl", "-n", "machdep.cpu.brand_string"])
-        info["name"] = name_output.strip()
-
-        cores_output = safe_run_command(["sysctl", "-n", "hw.physicalcpu"])
-        with contextlib.suppress(ValueError):
-            info["cores"] = int(cores_output.strip())
+        info = _get_macos_cpu_info()
 
     debug_print(f"Detected CPU info: {info}")
     return info
