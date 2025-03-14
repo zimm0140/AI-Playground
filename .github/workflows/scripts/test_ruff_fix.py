@@ -1,3 +1,5 @@
+from pathlib import Path
+
 #!/usr/bin/env python3
 """
 Test Ruff Fixability
@@ -104,7 +106,7 @@ def find_service_python_files():
     if not os.path.isdir("service"):
         print("Error: service directory not found in the current directory.")
         print(f"Current directory: {os.getcwd()}")
-        print("Contents:", os.listdir("."))
+        print("Contents:", Path().iterdir())
         sys.exit(1)
 
     files = []

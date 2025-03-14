@@ -1,3 +1,5 @@
+from pathlib import Path
+
 #!/usr/bin/env python
 """
 ComfyUI Workflow Testing Script
@@ -72,7 +74,7 @@ def main():
     if os.path.isdir(args.workflows_dir):
         workflow_files = [
             os.path.join(args.workflows_dir, f)
-            for f in os.listdir(args.workflows_dir)
+            for f in Path(args.workflows_dir).iterdir()
             if f.endswith(".json")
             and os.path.isfile(os.path.join(args.workflows_dir, f))
         ]

@@ -1,3 +1,5 @@
+from pathlib import Path
+
 #!/usr/bin/env python3
 """
 Workflow Schema Validator
@@ -95,7 +97,7 @@ def validate_all_workflows(workflows_dir, schema_file, output_file):
 
     # Find workflow files
     workflow_files = []
-    for filename in os.listdir(workflows_dir):
+    for filename in Path(workflows_dir).iterdir():
         if filename.endswith(".json"):
             workflow_files.append(os.path.join(workflows_dir, filename))
 

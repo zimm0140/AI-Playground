@@ -1,3 +1,5 @@
+from pathlib import Path
+
 #!/usr/bin/env python3
 """
 Custom test runner for CI environment that handles import errors gracefully
@@ -21,7 +23,7 @@ def run_tests():
     print("Current directory:", os.getcwd())
     print(
         "Files in service/tests:",
-        os.listdir("service/tests")
+        Path("service/tests").iterdir()
         if os.path.exists("service/tests")
         else "directory not found",
     )

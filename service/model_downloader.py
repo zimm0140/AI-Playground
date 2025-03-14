@@ -1,3 +1,5 @@
+from pathlib import Path
+
 """
 Hugging Face Model Downloader Module
 -----------------------------------
@@ -475,7 +477,7 @@ class HFPlaygroundDownloader:
                 os.makedirs(desired_repo_root_dir_name)
         try:
             if os.path.exists(desired_repo_root_dir_name) or move_to_flat_structure:
-                for item in os.listdir(self.save_path_tmp):
+                for item in Path(self.save_path_tmp).iterdir():
                     shutil.move(os.path.join(self.save_path_tmp, item), desired_repo_root_dir_name)
                 shutil.rmtree(self.save_path_tmp)
             else:

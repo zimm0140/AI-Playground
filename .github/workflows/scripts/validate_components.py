@@ -1,3 +1,5 @@
+from pathlib import Path
+
 #!/usr/bin/env python3
 """
 Component Validator
@@ -159,7 +161,7 @@ def validate_all_components(components_dir, output_dir):
 
     # Find all component files
     component_files = []
-    for filename in os.listdir(components_dir):
+    for filename in Path(components_dir).iterdir():
         if filename.endswith(".json") and filename != "schema.json":
             component_files.append(os.path.join(components_dir, filename))
 

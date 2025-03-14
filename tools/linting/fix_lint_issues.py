@@ -22,7 +22,7 @@ class LintingFixer:
     def __init__(self, directories: List[str], rules: Optional[List[str]] = None):
         self.directories = directories
         self.rules = rules or ["F401", "W291", "F821", "N801", "N802", "N803"]
-        self.stats: Dict[str, int] = {rule: 0 for rule in self.rules}
+        self.stats: Dict[str, int] = dict.fromkeys(self.rules, 0)
         self.backup_dir = Path("lint_backups") / datetime.now().strftime("%Y%m%d_%H%M%S")
 
     def backup_file(self, file_path: Path) -> None:
@@ -38,7 +38,7 @@ class LintingFixer:
             self.backup_file(file_path)
 
             # Run ruff with --fix for each rule
-            fixes_applied = {rule: 0 for rule in self.rules}
+            fixes_applied = dict.fromkeys(self.rules, 0)
             for rule in self.rules:
                 result = subprocess.run(
                     ["ruff", "check", "--fix", f"--select={rule}", str(file_path)],

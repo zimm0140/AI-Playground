@@ -1,3 +1,5 @@
+from pathlib import Path
+
 #!/usr/bin/env python3
 """
 Workflow Documentation Generator
@@ -295,7 +297,7 @@ def generate_gallery(workflows_dir, output_dir):
     # Collect workflow information with examples
     workflows_with_examples = []
 
-    for filename in os.listdir(workflows_dir):
+    for filename in Path(workflows_dir).iterdir():
         if filename.endswith(".json"):
             workflow_file = os.path.join(workflows_dir, filename)
             workflow = load_workflow(workflow_file)
@@ -452,7 +454,7 @@ def generate_index(workflows_dir, output_dir):
 
     # Collect workflow information
     workflows = []
-    for filename in os.listdir(workflows_dir):
+    for filename in Path(workflows_dir).iterdir():
         if filename.endswith(".json"):
             workflow_file = os.path.join(workflows_dir, filename)
             workflow = load_workflow(workflow_file)
@@ -515,7 +517,7 @@ def generate_all_docs(
     success_count = 0
     error_count = 0
 
-    for filename in os.listdir(workflows_dir):
+    for filename in Path(workflows_dir).iterdir():
         if filename.endswith(".json"):
             workflow_file = os.path.join(workflows_dir, filename)
             workflow = load_workflow(workflow_file)

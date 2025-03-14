@@ -35,7 +35,7 @@ def configure_hardware():
                 # Import but use it immediately to avoid unused import warning
                 import intel_extension_for_pytorch as ipex
                 _ = ipex.__name__
-                
+
                 from service.xpu_hijacks import ipex_hijacks
                 _ = ipex_hijacks.__name__
 

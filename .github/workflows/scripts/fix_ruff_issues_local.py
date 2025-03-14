@@ -1,3 +1,5 @@
+from pathlib import Path
+
 #!/usr/bin/env python3
 """
 Quick Local Ruff Issues Fixer
@@ -189,7 +191,7 @@ if __name__ == "__main__":
         if not os.path.isdir("service"):
             print("Service directory not found in current location!")
             print(f"Current directory: {os.getcwd()}")
-            print("Contents:", os.listdir("."))
+            print("Contents:", Path().iterdir())
 
             # Check if it's in the parent directory
             if os.path.isdir("../service"):

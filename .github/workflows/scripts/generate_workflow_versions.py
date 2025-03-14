@@ -1,3 +1,5 @@
+from pathlib import Path
+
 #!/usr/bin/env python
 """
 Generate Workflow Versions
@@ -111,7 +113,7 @@ def generate_version_report(workflows_dir: str, output_dir: str) -> None:
     }
 
     # Process all workflow files
-    for filename in os.listdir(workflows_dir):
+    for filename in Path(workflows_dir).iterdir():
         if not filename.endswith(".json"):
             continue
 

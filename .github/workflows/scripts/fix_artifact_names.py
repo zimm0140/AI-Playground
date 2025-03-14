@@ -1,3 +1,5 @@
+from pathlib import Path
+
 #!/usr/bin/env python
 """
 Fix artifact name conflicts in workflow files.
@@ -86,7 +88,7 @@ def main():
 
     updated_files = 0
 
-    for filename in os.listdir(workflow_dir):
+    for filename in Path(workflow_dir).iterdir():
         if filename.endswith(".yml") or filename.endswith(".yaml"):
             file_path = os.path.join(workflow_dir, filename)
             if fix_artifact_names(file_path):

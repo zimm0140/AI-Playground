@@ -1,3 +1,5 @@
+from pathlib import Path
+
 #!/usr/bin/env python3
 """
 Workflow Version Manager
@@ -209,7 +211,7 @@ def process_all_workflows(workflows_dir, bump_type=None):
     success_count = 0
     error_count = 0
 
-    for filename in os.listdir(workflows_dir):
+    for filename in Path(workflows_dir).iterdir():
         if filename.endswith(".json"):
             workflow_file = os.path.join(workflows_dir, filename)
             print(f"Processing {filename}...")

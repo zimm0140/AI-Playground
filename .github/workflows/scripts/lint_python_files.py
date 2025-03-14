@@ -1,3 +1,5 @@
+from pathlib import Path
+
 #!/usr/bin/env python3
 """
 Lint Python Files
@@ -268,7 +270,7 @@ if __name__ == "__main__":
         try:
             workflow_scripts = [
                 os.path.join(workflows_scripts_dir, f)
-                for f in os.listdir(workflows_scripts_dir)
+                for f in Path(workflows_scripts_dir).iterdir()
                 if f.endswith(".py")
             ]
             if workflow_scripts:

@@ -10,10 +10,12 @@ Usage:
 """
 
 import argparse
+import contextlib
 import logging
 import os
 import subprocess
 import sys
+from pathlib import Path
 from typing import Dict, List
 
 # Configure logging
@@ -59,10 +61,8 @@ def run_complexity_check() -> List[Dict]:
 
                     function_name = "unknown"
                     if "'" in message:
-                        try:
+                        with contextlib.suppress(IndexError):
                             function_name = message.split("'")[1]
-                        except IndexError:
-                            pass
 
                     # Extract complexity value
                     complexity = 0
@@ -80,7 +80,7 @@ def run_complexity_check() -> List[Dict]:
                             "line": line_num,
                             "function": function_name,
                             "complexity": complexity,
-                        }
+                        },
                     )
                 except Exception as e:
                     logger.warning(f"Error parsing line: {line} - {e}")
@@ -115,7 +115,7 @@ def display_functions(functions: List[Dict], limit: int = None) -> None:
         file_path = func["file"]
         if len(file_path) > 30:
             # Try to show the most relevant part of the path
-            parts = file_path.split(os.sep)
+            parts = Path(file_path).parts
             if len(parts) > 2:
                 file_path = f"...{os.sep}{os.sep.join(parts[-2:])}"
 
