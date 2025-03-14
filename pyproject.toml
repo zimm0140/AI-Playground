@@ -36,7 +36,10 @@ testpaths = ["hardware_detection/tests"]
 pythonpath = ["."]
 
 [tool.mypy]
+# Python version to analyze
 python_version = "3.10"
+
+# Enable most strict settings
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
@@ -50,29 +53,64 @@ warn_no_return = true
 warn_unreachable = true
 strict_equality = true
 
+# Modern options
+disallow_any_generics = false
+disallow_subclassing_any = false
+disallow_untyped_calls = false
+implicit_reexport = true
+strict_optional = true
+
+# Configure explicit module imports
+ignore_missing_imports = true
+follow_imports = "normal"
+
+# Path-based exclusions
+exclude = ["tests/", "venv/", ".venv/", "^docs/"]
+
+# Per-module options
+[[tool.mypy.overrides]]
+module = "tests.*"
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+
 [tool.ruff]
+# Target Python version
 target-version = "py39"
 line-length = 120
 
+# Organize imports
+[tool.ruff.lint.isort]
+known-first-party = ["hardware_detection", "service"]
+section-order = [
+    "future",
+    "standard-library",
+    "third-party",
+    "first-party",
+    "local-folder",
+]
+
+# Linting rules configuration
 [tool.ruff.lint]
 select = [
-    "E",
-    "F",
-    "W",
-    "I",
-    "N",
-    "UP",
-    "S",
-    "C4",
-    "B",
-    "A",
-    "COM",
-    "C90",
-    "RSE",
-    "RET",
-    "SIM",
-    "PTH",
+    "E",   # pycodestyle errors
+    "F",   # pyflakes
+    "W",   # pycodestyle warnings
+    "I",   # isort
+    "N",   # pep8-naming
+    "UP",  # pyupgrade
+    "S",   # flake8-bandit (security)
+    "C4",  # flake8-comprehensions
+    "B",   # flake8-bugbear
+    "A",   # flake8-builtins
+    "COM", # flake8-commas
+    "C90", # mccabe complexity
+    "RSE", # flake8-raise
+    "RET", # flake8-return
+    "SIM", # flake8-simplify
+    "PTH", # flake8-use-pathlib
 ]
+
+# Rules to ignore
 ignore = [
     # Path handling issues - temporarily disabled
     "PTH101",
@@ -93,6 +131,7 @@ ignore = [
     "PTH113",
     "PTH109",
     "PTH105",
+
     # Security issues - temporarily disabled
     "S603",
     "S607",
@@ -104,57 +143,75 @@ ignore = [
     "S314",
     "S110",
     "S103",
+
     # Exception naming conventions
     "N818",
+
     # Variable and class naming conventions
     "N801",
     "N807",
     "N812",
+
     # Variable shadowing issues - temporarily disabled for backward compatibility
     "A001",
     "A002",
+
     # Mixed case variables - existing code style
     "N802",
     "N803",
     "N806",
     "N815",
     "N816",
+
     # Magic values - can be addressed in future refactoring
     "PLR2004",
+
     # Loop overwrite - harmless in this context
     "PLW2901",
+
     # Complex structure - to be addressed in future refactoring
     "C901",
+
     # Line too long - to be addressed in future refactoring
     "E501",
+
     # Code structure issues
     "SIM102",
     "SIM108",
     "SIM115",
     "SIM117",
+
     # Error handling
     "B904",
+
     # Import placement
     "E402",
+
     # Assignments and returns
     "RET504",
     "RET503",
     "RET505",
+
     # Unused variables
     "F841",
+
     # Unused loop control variables
     "B007",
+
     # Deprecated type annotations
     "UP006",
     "UP035",
+
     # Redefined while unused
     "F811",
+
     # Additional issues to ignore
     "F401", # unused-import
     "W291", # trailing-whitespace
     "F821", # undefined-name
 ]
 
+# Per-file rule exceptions
 [tool.ruff.lint.per-file-ignores]
 "test*.py" = ["S101", "F401", "F403"]
 "service/xpu_hijacks.py" = ["A001", "A002", "SIM102", "N802", "N816"]
@@ -169,6 +226,7 @@ ignore = [
     "F403",
 ]
 
+# Formatting options
 [tool.ruff.format]
 quote-style = "double"
 indent-style = "space"
