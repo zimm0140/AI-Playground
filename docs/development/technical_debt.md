@@ -30,11 +30,11 @@ To maintain smooth CI operation while we address technical debt, we've made thes
    - In `.github/workflows/markdown-lint.yml`
    - In `.github/workflows/code-quality.yml`
 
-2. **Ruff Python Linting**: Configured with specific rule exemptions
+1. **Ruff Python Linting**: Configured with specific rule exemptions
    - In `.github/workflows/ruff.yml` using `--ignore=F401,W291,F821,N801,N802,N803`
    - Set to non-failing mode with `--exit-zero`
 
-3. **Disabled Rules in Config Files**:
+1. **Disabled Rules in Config Files**:
    - In `.markdownlint.yaml` for markdown formatting rules
    - In `pyproject.toml` for Python linting rules
 
