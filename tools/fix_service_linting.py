@@ -63,4 +63,4 @@ def main() -> int:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Fix linting issues in service directory")
     args = parser.parse_args()
-    sys.exit(main()) 
+    sys.exit(main())
