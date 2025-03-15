@@ -19,7 +19,7 @@ import re
 import shutil
 import sys
 from collections import defaultdict
-from typing import Any
+from typing import Any, Dict, List, Optional, Set, Tuple, Union, cast
 
 
 class HardwareCompatibilityAutofix:
@@ -56,10 +56,10 @@ class HardwareCompatibilityAutofix:
         self.high_priority_only = high_priority_only
         self.dry_run = dry_run
 
-        self.compatibility_data = {}
-        self.resolution_plan = {}
-        self.applied_changes = defaultdict(list)
-        self.skipped_changes = defaultdict(list)
+        self.compatibility_data: Dict[str, Any] = {}
+        self.resolution_plan: Dict[str, Any] = {}
+        self.applied_changes: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
+        self.skipped_changes: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
 
         # Create output directory
         os.makedirs(self.output_dir, exist_ok=True)
@@ -141,12 +141,12 @@ class HardwareCompatibilityAutofix:
             print(f"Error loading recommendations: {e}")
             return False
 
-    def _parse_recommendations(self, text: str) -> List[Dict[str, str]]:
+    def _parse_recommendations(self, text: str) -> List[Dict[str, Union[str, List[str], Any]]]:
         """
         Parse recommendations from markdown text.
 
         Args:
-            text: Markdown text containing recommendations
+            text: Markdown text with recommendations
 
         Returns:
             List of recommendation dictionaries
@@ -194,12 +194,12 @@ class HardwareCompatibilityAutofix:
 
         return recommendations
 
-    def apply_fixes(self) -> Dict[str, List[dict[str, Any]]]:
+    def apply_fixes(self) -> Dict[str, Dict[str, List[Dict[str, Any]]]]:
         """
         Apply recommendations to fix compatibility issues.
 
         Returns:
-            Dictionary with summary of applied changes
+            Dictionary with applied and skipped changes
         """
         # Get the hardware requirements data
         hw_requirements = self.compatibility_data.get("hardware_requirements", {})
@@ -256,6 +256,7 @@ class HardwareCompatibilityAutofix:
                                 },
                             )
 
+        # Return the changes
         return {
             "applied_changes": self.applied_changes,
             "skipped_changes": self.skipped_changes,
@@ -275,10 +276,9 @@ class HardwareCompatibilityAutofix:
         for file_path in (
             self.compatibility_data.get("hardware_requirements", {})
             .get(hw_name, {})
-
         ):
             if os.path.basename(file_path) == file_name:
-                return file_path
+                return cast(str, file_path)
 
         return ""
 

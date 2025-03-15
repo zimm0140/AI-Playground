@@ -2,16 +2,14 @@
 """
 Hardware Compatibility Tester
 
-This script analyzes hardware-specific requirements files and validates compatibility
-across different Intel architectures. It detects conflicts, incompatible versions,
-and provides detailed reports to ensure correct operation on all supported hardware.
+This script tests hardware compatibility across different platforms by:
+- Analyzing requirements files for hardware-specific packages
+- Detecting package version conflicts between platforms
+- Identifying package compatibility issues
+- Generating reports for CI/CD pipelines
 
-Features:
-- Cross-validation of package versions between hardware platforms
-- Detection of compatibility issues and version conflicts
-- Generation of compatibility matrices for visualization
-- Performance impact analysis of package versions
-- Hardware-specific test environment setup recommendations
+It helps ensure that AI models can run consistently across diverse hardware
+configurations including Intel Arc GPUs, integrated graphics, discrete GPUs, and more.
 """
 
 import argparse
@@ -23,24 +21,29 @@ import platform
 import re
 import sys
 from collections import defaultdict
-from typing import Any
+from typing import Any, Dict, List, Optional, Set, Tuple, Union, cast
 
 
 class HardwareCompatibilityTester:
     def __init__(
         self,
+        requirements_dir: str = "requirements/",
         output_dir: str = "ci_artifacts/hardware_compatibility",
-        req_files_pattern: str = "**/*requirements*.txt",
+        ignore_file: str = ".hardware-compatibility-ignore",
     ):
         """
         Initialize the hardware compatibility tester.
 
         Args:
-            output_dir: Directory to store test results and reports
-            req_files_pattern: Glob pattern to identify requirements files
+            requirements_dir: Directory containing requirements files
+            output_dir: Directory to store test results
+            ignore_file: File with packages to ignore
         """
+        self.requirements_dir = requirements_dir
         self.output_dir = output_dir
-        self.req_files_pattern = req_files_pattern
+        self.ignore_file = ignore_file
+        
+        # Add hardware patterns
         self.hardware_patterns = {
             "mtl": r".*mtl.*",  # Meteor Lake
             "lnl": r".*lnl.*",  # Lunar Lake
@@ -50,18 +53,28 @@ class HardwareCompatibilityTester:
             "level_zero": r".*level_zero.*",  # Level Zero interface
             "llamacpp": r".*/LlamaCPP/.*",  # LlamaCPP requirements
         }
-        self.hardware_requirements = {}
-        self.hardware_compatibility_matrix = {}
-        self.conflict_data = []
-
+        
+        # Lists of files to analyze
+        self.requirement_files: List[str] = []
+        
+        # Results storage
+        self.hardware_requirements: Dict[str, Dict[str, Dict[str, str]]] = {}
+        self.hardware_compatibility_matrix: Dict[str, Dict[str, bool]] = {}
+        self.conflict_data: List[Dict[str, Any]] = []
+        
         # Create output directory
-        os.makedirs(self.output_dir, exist_ok=True)
+        os.makedirs(output_dir, exist_ok=True)
 
-    def find_hardware_requirements(self) -> Dict[str, List[str]]:
-        """Find hardware-specific requirements files."""
+    def collect_requirements_files(self) -> List[str]:
+        """
+        Collect all requirements files from the requirements directory.
+
+        Returns:
+            List of paths to requirements files
+        """
         hw_req_files = defaultdict(list)
 
-        for req_file in glob.glob(self.req_files_pattern, recursive=True):
+        for req_file in glob.glob("**/*requirements*.txt", recursive=True):
             for hw_name, pattern in self.hardware_patterns.items():
                 if re.match(pattern, req_file, re.IGNORECASE):
                     hw_req_files[hw_name].append(req_file)
@@ -79,19 +92,20 @@ class HardwareCompatibilityTester:
         if default_req:
             hw_req_files["default"] = default_req
 
-        return dict(hw_req_files)
+        self.requirement_files = list(itertools.chain(*hw_req_files.values()))
+        return self.requirement_files
 
-    def parse_requirements_file(self, file_path: str) -> Dict[str, str]:
+    def analyze_requirements_file(self, file_path: str) -> Dict[str, str]:
         """
-        Parse a requirements file and extract package names and versions.
+        Analyze a single requirements file to extract package versions.
 
         Args:
-            file_path: Path to the requirements file
+            file_path: Path to requirements file
 
         Returns:
-            Dictionary of package names to version specifications
+            Dictionary of package name -> version
         """
-        requirements = {}
+        requirements: Dict[str, str] = {}
 
         if not os.path.exists(file_path):
             print(f"Warning: File {file_path} does not exist")
@@ -139,45 +153,44 @@ class HardwareCompatibilityTester:
 
         return requirements
 
-    def analyze_hardware_requirements(self) -> Dict[str, dict[str, dict[str, str]]]:
+    def analyze_all_requirements(self) -> Dict[str, Dict[str, Dict[str, str]]]:
         """
-        Analyze hardware-specific requirements and extract package versions.
+        Analyze all requirements files and organize by hardware type.
 
         Returns:
-            Nested dictionary of hardware platforms, files, and package requirements
+            Dictionary of hardware type -> file path -> package requirements
         """
-        hw_req_files = self.find_hardware_requirements()
-        hardware_requirements = {}
+        hardware_requirements: Dict[str, Dict[str, Dict[str, str]]] = {}
 
-        for hw_name, files in hw_req_files.items():
-            hardware_requirements[hw_name] = {}
-
-            for file_path in files:
-                file_name = os.path.basename(file_path)
-                requirements = self.parse_requirements_file(file_path)
-                hardware_requirements[hw_name][file_name] = requirements
+        for file_path in self.requirement_files:
+            file_name = os.path.basename(file_path)
+            requirements = self.analyze_requirements_file(file_path)
+            hw_name = self.hardware_patterns.get(file_name.split('_')[0], "default")
+            if hw_name not in hardware_requirements:
+                hardware_requirements[hw_name] = {}
+            hardware_requirements[hw_name][file_name] = requirements
 
         self.hardware_requirements = hardware_requirements
         return hardware_requirements
 
-    def identify_conflicts(self) -> List[Dict[str, Any]]:
+    def detect_conflicts(self) -> List[Dict[str, Any]]:
         """
-        Identify conflicts between hardware-specific requirements.
+        Detect version conflicts between different hardware platforms.
 
         Returns:
-            List of conflict data with details
+            List of conflict dictionaries
         """
         conflicts = []
-
-        # Get all packages across all hardware platforms
-        all_packages = set()
+        
+        # Get all unique packages across all hardware platforms
+        all_packages: Set[str] = set()
         for hw_data in self.hardware_requirements.values():
             for file_data in hw_data.values():
                 all_packages.update(file_data.keys())
 
         # Check for conflicts in each package
         for package in all_packages:
-            package_versions = {}
+            package_versions: Dict[str, Dict[str, str]] = {}
 
             # Collect versions for this package across hardware platforms
             for hw_name, hw_data in self.hardware_requirements.items():
@@ -188,7 +201,7 @@ class HardwareCompatibilityTester:
                         package_versions[hw_name][file_name] = file_data[package]
 
             # Check if there are different versions across platforms
-            all_versions = set()
+            all_versions: Set[str] = set()
             for hw_versions in package_versions.values():
                 all_versions.update(hw_versions.values())
 
@@ -208,27 +221,28 @@ class HardwareCompatibilityTester:
         self.conflict_data = conflicts
         return conflicts
 
-    def generate_compatibility_matrix(self) -> Dict[str, dict[str, str]]:
+    def generate_compatibility_matrix(self) -> Dict[str, Dict[str, bool]]:
         """
-        Generate a compatibility matrix between hardware platforms.
+        Generate compatibility matrix between different hardware platforms.
 
         Returns:
-            Dictionary representing the compatibility matrix
+            Dictionary of hardware platform pairs and their compatibility status
         """
+        compatibility_matrix: Dict[str, Dict[str, bool]] = {}
+
         hw_platforms = list(self.hardware_requirements.keys())
-        compatibility_matrix = {}
 
         for hw1, hw2 in itertools.combinations(hw_platforms, 2):
             # Compare packages between two hardware platforms
             conflicts = []
 
             # Get all packages for hw1
-            hw1_packages = {}
+            hw1_packages: Dict[str, str] = {}
             for file_data in self.hardware_requirements[hw1].values():
                 hw1_packages.update(file_data)
 
             # Get all packages for hw2
-            hw2_packages = {}
+            hw2_packages: Dict[str, str] = {}
             for file_data in self.hardware_requirements[hw2].values():
                 hw2_packages.update(file_data)
 
@@ -258,22 +272,49 @@ class HardwareCompatibilityTester:
             # Store in matrix
             if hw1 not in compatibility_matrix:
                 compatibility_matrix[hw1] = {}
-            compatibility_matrix[hw1][hw2] = {
-                "score": score,
-                "common_packages": len(common_packages),
-                "conflicts": conflicts,
-            }
+            compatibility_matrix[hw1][hw2] = score == "100% Compatible"
 
             if hw2 not in compatibility_matrix:
                 compatibility_matrix[hw2] = {}
-            compatibility_matrix[hw2][hw1] = {
-                "score": score,
-                "common_packages": len(common_packages),
-                "conflicts": conflicts,
-            }
+            compatibility_matrix[hw2][hw1] = score == "100% Compatible"
 
         self.hardware_compatibility_matrix = compatibility_matrix
         return compatibility_matrix
+
+    def calculate_package_statistics(self) -> Dict[str, Dict[str, Union[int, List[str]]]]:
+        """
+        Calculate statistics about packages used across hardware types.
+
+        Returns:
+            Dictionary with package statistics
+        """
+        package_versions: Dict[str, Dict[str, Union[int, List[str]]]] = {}
+
+        for hw_name, hw_data in self.hardware_requirements.items():
+            for file_name, file_data in hw_data.items():
+                for package, version in file_data.items():
+                    if package not in package_versions:
+                        package_versions[package] = {
+                            "count": 0,
+                            "versions": [],
+                            "platforms": []
+                        }
+                    
+                    # Increment count
+                    if "count" in package_versions[package]:
+                        package_versions[package]["count"] = cast(int, package_versions[package]["count"]) + 1
+                    
+                    # Add version if it contains ==
+                    if "==" in version and "versions" in package_versions[package]:
+                        versions_list = cast(List[str], package_versions[package]["versions"])
+                        versions_list.append(version)
+                    
+                    # Add platform
+                    if "platforms" in package_versions[package]:
+                        platforms_list = cast(List[str], package_versions[package]["platforms"])
+                        platforms_list.append(hw_name)
+
+        return package_versions
 
     def generate_markdown_report(self) -> str:
         """
@@ -330,7 +371,7 @@ class HardwareCompatibilityTester:
                         f.write(" — |")
                     elif hw2 in self.hardware_compatibility_matrix[hw1]:
                         f.write(
-                            f" {self.hardware_compatibility_matrix[hw1][hw2]['score']} |",
+                            f" {'✅' if self.hardware_compatibility_matrix[hw1][hw2] else '❌'} |",
                         )
                     else:
                         f.write(" N/A |")
@@ -482,8 +523,7 @@ class HardwareCompatibilityTester:
                 for hw1 in self.hardware_compatibility_matrix
                 for hw2 in self.hardware_compatibility_matrix[hw1]
                 if hw1 != hw2
-                and self.hardware_compatibility_matrix[hw1][hw2]["score"]
-                == "100% Compatible"
+                and self.hardware_compatibility_matrix[hw1][hw2]
             )
 
             compatibility_rate = (
@@ -508,20 +548,18 @@ class HardwareCompatibilityTester:
             Exit code (0 for success, 1 for issues found)
         """
         try:
-            print("Finding hardware-specific requirements files...")
-            hw_req_files = self.find_hardware_requirements()
+            print("Collecting requirements files...")
+            self.collect_requirements_files()
 
             # Print found hardware requirements files
-            for hw, files in hw_req_files.items():
-                print(f"Found {len(files)} requirements files for {hw}:")
-                for file in files:
-                    print(f"  - {file}")
+            for file in self.requirement_files:
+                print(f"Found requirements file: {file}")
 
             print("\nAnalyzing hardware requirements...")
-            self.analyze_hardware_requirements()
+            self.analyze_all_requirements()
 
             print("Identifying conflicts...")
-            conflicts = self.identify_conflicts()
+            conflicts = self.detect_conflicts()
 
             print("Generating compatibility matrix...")
             self.generate_compatibility_matrix()
@@ -553,39 +591,37 @@ class HardwareCompatibilityTester:
 
 
 def main():
+    """Main entry point for the script."""
     parser = argparse.ArgumentParser(
-        description="Analyze hardware-specific package compatibility",
+        description="Test hardware compatibility across platforms",
+    )
+    parser.add_argument(
+        "--requirements-dir",
+        default="requirements/",
+        help="Directory containing requirements files",
     )
     parser.add_argument(
         "--output-dir",
         default="ci_artifacts/hardware_compatibility",
-        help="Directory to store output reports",
+        help="Directory to store test results",
     )
     parser.add_argument(
-        "--req-files-pattern",
-        default="**/*requirements*.txt",
-        help="Glob pattern to identify requirements files",
+        "--ignore-file",
+        default=".hardware-compatibility-ignore",
+        help="File with packages to ignore",
     )
-    parser.add_argument(
-        "--github-summary",
-        action="store_true",
-        help="Generate GitHub Actions compatible summary",
-    )
-    parser.add_argument(
-        "--fail-on-high-priority",
-        action="store_true",
-        help="Return non-zero exit code if high priority issues are found",
-    )
-
+    
     args = parser.parse_args()
-
+    
     tester = HardwareCompatibilityTester(
-        output_dir=args.output_dir, req_files_pattern=args.req_files_pattern,
+        requirements_dir=args.requirements_dir,
+        output_dir=args.output_dir,
+        ignore_file=args.ignore_file,
     )
 
     exit_code = tester.run()
 
-    if args.github_summary and os.environ.get("GITHUB_STEP_SUMMARY"):
+    if os.environ.get("GITHUB_STEP_SUMMARY"):
         # Get the GITHUB_STEP_SUMMARY environment variable
         step_summary = os.environ.get("GITHUB_STEP_SUMMARY")
         if step_summary:
@@ -597,10 +633,7 @@ def main():
                         dest.write(src.read())
                 print("Added summary to GitHub Actions output")
 
-    if args.fail_on_high_priority:
-        sys.exit(exit_code)
-    else:
-        sys.exit(0)
+    sys.exit(exit_code)
 
 
 if __name__ == "__main__":

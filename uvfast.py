@@ -15,17 +15,49 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
+from typing import Any, Dict, List, Optional, Union, cast
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
-# Try to import hardware detection module, which should be in the same directory
-try:
-    # Update import path to use the module from tools/hardware
-    import os
-    import sys
-    from pathlib import Path
+# Define hardware types
+HARDWARE_TYPES = ["base", "acm", "bmg", "mtl", "lnl", "ovino", "arl_h"]
 
+# Create a fallback hardware detection class
+class FallbackHardwareDetection:
+    def __init__(self):
+        self.HARDWARE_TYPES = HARDWARE_TYPES
+
+    def detect_hardware_type(self) -> str:
+        """Detect hardware type based on environment variables."""
+        if "SIMULATED_HARDWARE" in os.environ:
+            sim_hw = os.environ.get("SIMULATED_HARDWARE", "").lower()
+            if sim_hw in HARDWARE_TYPES:
+                return sim_hw
+        return "base"
+
+    def print_hardware_info(self, verbose: bool = False) -> None:
+        """Print hardware info."""
+        print("System: CI Environment")
+        print(f"Python version: {sys.version}")
+        print(f"Detected hardware type: {self.detect_hardware_type()}")
+        print("GPUs: [Simulated]")
+        print("CPU: Simulated CI CPU")
+
+    def get_hardware_info(self) -> Dict[str, Any]:
+        """Get hardware info."""
+        return {
+            "system": "CI",
+            "python_version": sys.version,
+            "gpus": [],
+            "cpu": {"name": "CI CPU"},
+            "detected_hardware": self.detect_hardware_type(),
+            "openvino_available": self.detect_hardware_type() == "ovino",
+        }
+
+# Try to import hardware detection module
+hardware_detection: Any = None
+try:
     # Add tools directory to path if not already there
     tools_dir = Path("tools")
     if tools_dir.exists():
@@ -37,65 +69,27 @@ try:
     # Try importing from tools.hardware first
     try:
         from tools.hardware import hardware_detection
-
         print("Imported hardware_detection from tools.hardware")
     except (ImportError, ModuleNotFoundError):
         # Then try importing from the root
         try:
             import hardware_detection
-
             print("Imported hardware_detection from root")
         except (ImportError, ModuleNotFoundError):
             print("hardware_detection.py not found, using fallback")
-
-            # Define fallback hardware constants
-            HARDWARE_TYPES = ["base", "acm", "bmg", "mtl", "lnl", "ovino", "arl_h"]
-
-            # Create minimal fallback module for CI
-            class FallbackHardwareDetection:
-                def __init__(self):
-                    self.HARDWARE_TYPES = HARDWARE_TYPES
-
-                def detect_hardware_type(self):
-                    """Detect hardware type based on environment variables."""
-                    if "SIMULATED_HARDWARE" in os.environ:
-                        sim_hw = os.environ.get("SIMULATED_HARDWARE", "").lower()
-                        if sim_hw in HARDWARE_TYPES:
-                            return sim_hw
-                    return "base"
-
-                def print_hardware_info(self, verbose=False):
-                    """Print hardware info."""
-                    print("System: CI Environment")
-                    print(f"Python version: {sys.version}")
-                    print(f"Detected hardware type: {self.detect_hardware_type()}")
-                    print("GPUs: [Simulated]")
-                    print("CPU: Simulated CI CPU")
-
-                def get_hardware_info(self):
-                    """Get hardware info."""
-                    return {
-                        "system": "CI",
-                        "python_version": sys.version,
-                        "gpus": [],
-                        "cpu": {"name": "CI CPU"},
-                        "detected_hardware": self.detect_hardware_type(),
-                        "openvino_available": self.detect_hardware_type() == "ovino",
-                    }
-
             # Create fallback module
             hardware_detection = FallbackHardwareDetection()
 except Exception as e:
     logging.warning(f"Error importing hardware_detection: {e}")
     logging.warning("hardware_detection.py not found, some features will be limited")
-    HARDWARE_TYPES = ["base", "acm", "bmg", "mtl", "lnl", "ovino", "arl_h"]
+    hardware_detection = FallbackHardwareDetection()
 
 
 # Default config values
 DEFAULT_CONFIG = {
     "project_name": "ai-playground",
     "python_version": "3.10",
-    "hardware_types": ["base", "acm", "bmg", "mtl", "lnl", "ovino", "arl_h"],
+    "hardware_types": ["intel_arc", "intel_cpu", "openvino", "rocm", "cuda"],
     "default_hardware": "base",
     "requirements": {
         "base": "requirements.txt",
@@ -144,19 +138,19 @@ class UVFast:
             # Simple detection as fallback
             self.hardware_type = self._simple_hardware_detection()
 
-    def _load_config(self) -> dict:
+    def _load_config(self) -> Dict[str, Any]:
         """Load the configuration from the config file."""
         config_path = Path(".uvfast.json")
         if config_path.exists():
             try:
                 with config_path.open() as f:
-                    return json.load(f)
+                    return cast(Dict[str, Any], json.load(f))
             except json.JSONDecodeError:
                 logging.warning(f"Failed to parse config file: {config_path}")
                 return {}
         else:
             # Create a default config
-            return {
+            return cast(Dict[str, Any], {
                 "project_name": "ai-playground",
                 "hardware_types": ["intel_arc", "intel_cpu", "openvino", "rocm", "cuda"],
                 "requirements": {
@@ -181,7 +175,7 @@ class UVFast:
                         "cuda": "requirements-cuda.lock",
                     },
                 },
-            }
+            })
 
     def _simple_hardware_detection(self) -> str:
         """Simple hardware detection as a fallback when the module is not available."""
@@ -223,7 +217,7 @@ class UVFast:
             pass
 
         # Default to base
-        return self.config.get("default_hardware", "base")
+        return cast(str, self.config.get("default_hardware", "base"))
 
     def _get_venv_path(self) -> Path:
         """Get the path to the virtual environment."""
@@ -236,10 +230,10 @@ class UVFast:
             return venv_path / "Scripts" / "python.exe"
         return venv_path / "bin" / "python"
 
-    def _get_requirements_files(self, hardware_type: str, dev: bool = False) -> list[str]:
+    def _get_requirements_files(self, hardware_type: str, dev: bool = False) -> List[str]:
         """Get the requirements files for the specified hardware type."""
         req_config = self.config.get("requirements", {})
-        result = []
+        result: List[str] = []
 
         # Add hardware-specific requirements if available
         if hardware_type != "base" and "hardware" in req_config:
@@ -268,10 +262,10 @@ class UVFast:
         if hardware_type != "base" and "hardware" in lock_config:
             hw_lock = lock_config.get("hardware", {}).get(hardware_type)
             if hw_lock:
-                return hw_lock
+                return cast(str, hw_lock)
 
         # Default to base lockfile
-        return lock_config.get("base", "requirements.lock")
+        return cast(str, lock_config.get("base", "requirements.lock"))
 
     def _ensure_uv_installed(self) -> bool:
         """Ensure uv is installed."""

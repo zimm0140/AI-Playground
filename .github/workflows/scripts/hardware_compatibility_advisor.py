@@ -18,7 +18,7 @@ import argparse
 import json
 import os
 from collections import defaultdict
-from typing import Any
+from typing import Any, Dict, List, Optional, Union, cast
 
 
 class HardwareCompatibilityAdvisor:
@@ -39,10 +39,10 @@ class HardwareCompatibilityAdvisor:
         self.input_dir = input_dir
         self.output_dir = output_dir
         self.data_file = os.path.join(input_dir, data_file)
-        self.compatibility_data = {}
-        self.recommendations = {}
-        self.resolution_plans = {}
-        self.optimized_requirements = {}
+        self.compatibility_data: Dict[str, Any] = {}
+        self.recommendations: Dict[str, Any] = {}
+        self.resolution_plans: Dict[str, Dict[str, Dict[str, str]]] = {}
+        self.optimized_requirements: Dict[str, Dict[str, Dict[str, str]]] = {}
 
         # Create output directory
         os.makedirs(self.output_dir, exist_ok=True)
@@ -207,7 +207,7 @@ class HardwareCompatibilityAdvisor:
             "confidence": confidence,
         }
 
-    def generate_all_recommendations(self) -> Dict[str, List[dict[str, Any]]]:
+    def generate_all_recommendations(self) -> Dict[str, List[Dict[str, Any]]]:
         """
         Generate recommendations for all conflicts.
 
@@ -243,7 +243,7 @@ class HardwareCompatibilityAdvisor:
 
         return self.recommendations
 
-    def generate_resolution_plan(self) -> Dict[str, dict[str, str]]:
+    def generate_resolution_plan(self) -> Dict[str, Dict[str, Dict[str, str]]]:
         """
         Generate a concrete resolution plan for each hardware platform.
 
@@ -257,7 +257,7 @@ class HardwareCompatibilityAdvisor:
         hw_requirements = self.compatibility_data.get("hardware_requirements", {})
 
         # Start with current requirements for each platform
-        resolution_plans = {}
+        resolution_plans: Dict[str, Dict[str, Dict[str, str]]] = {}
         for hw_name, hw_data in hw_requirements.items():
             resolution_plans[hw_name] = {}
             for file_name, file_data in hw_data.items():
@@ -305,7 +305,7 @@ class HardwareCompatibilityAdvisor:
         self.resolution_plans = resolution_plans
         return resolution_plans
 
-    def generate_optimized_requirements(self) -> Dict[str, dict[str, str]]:
+    def generate_optimized_requirements(self) -> Dict[str, Dict[str, Dict[str, str]]]:
         """
         Generate optimized requirements files based on resolution plan.
 
@@ -315,7 +315,7 @@ class HardwareCompatibilityAdvisor:
         if not self.resolution_plans:
             return {}
 
-        optimized_requirements = {}
+        optimized_requirements: Dict[str, Dict[str, Dict[str, str]]] = {}
 
         for hw_name, hw_files in self.resolution_plans.items():
             optimized_requirements[hw_name] = {}
@@ -536,8 +536,9 @@ class HardwareCompatibilityAdvisor:
             )
 
         # Add summary to GitHub step summary if running in GitHub Actions
-        if os.environ.get("GITHUB_STEP_SUMMARY"):
-            with open(os.environ.get("GITHUB_STEP_SUMMARY"), "a") as f:
+        github_summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
+        if github_summary_path:
+            with open(github_summary_path, "a", encoding="utf-8") as f:
                 f.write("## Hardware Compatibility Advisor Results\n\n")
 
                 # Add overview
@@ -637,7 +638,13 @@ class HardwareCompatibilityAdvisor:
 
         # Write resolution plan
         print("Writing resolution plan...")
-        report_path = self.write_resolution_plan()
+        output_file = self.write_resolution_plan()
+        
+        # Only attempt to read the file if it exists and is not None
+        plan_content = ""
+        if output_file and os.path.exists(output_file):
+            with open(output_file, "r", encoding="utf-8") as f:
+                plan_content = f.read()
 
         # Generate patch files
         print("Generating patch files...")
@@ -648,7 +655,7 @@ class HardwareCompatibilityAdvisor:
         self.write_github_summary()
 
         print("Hardware Compatibility Advisor complete!")
-        print(f"Resolution plan: {report_path}")
+        print(f"Resolution plan: {output_file}")
 
         # Return success
         return 0
