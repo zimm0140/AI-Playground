@@ -6,9 +6,9 @@ This guide documents the refactoring patterns and techniques we've established d
 
 1. [Introduction](#introduction)
 
-2. [Identifying Complex Functions](#identifying-complex-functions)
+1. [Identifying Complex Functions](#identifying-complex-functions)
 
-3. [Refactoring Patterns](#refactoring-patterns)
+1. [Refactoring Patterns](#refactoring-patterns)
 
    - [Extract Method](#extract-method)
 
@@ -20,11 +20,11 @@ This guide documents the refactoring patterns and techniques we've established d
 
    - [State Management](#state-management)
 
-4. [Before and After Examples](#before-and-after-examples)
+1. [Before and After Examples](#before-and-after-examples)
 
-5. [Testing Refactored Code](#testing-refactored-code)
+1. [Testing Refactored Code](#testing-refactored-code)
 
-6. [Best Practices](#best-practices)
+1. [Best Practices](#best-practices)
 
 ## Introduction
 
