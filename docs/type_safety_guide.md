@@ -34,14 +34,19 @@ Variables should be annotated, especially at module level or in class definition
 from typing import Dict, List
 
 # Module-level variables
+
 ALLOWED_EXTENSIONS: List[str] = ["jpg", "png", "gif"]
 CONFIG: Dict[str, str] = {"api_key": "default_key", "timeout": "30"}
 
 # Within functions - type inference often makes this unnecessary
+
 def process_data() -> Dict[str, int]:
     results: Dict[str, int] = {}  # Explicit annotation
+
     count = 0  # Type inferred as int, no annotation needed
+
     # ...
+
     return results
 ```
 
@@ -55,18 +60,23 @@ Use the appropriate collection type from the `typing` module:
 from typing import Dict, List, Set, Tuple
 
 # List of strings
+
 names: List[str] = ["Alice", "Bob", "Charlie"]
 
 # Dictionary mapping strings to integers
+
 scores: Dict[str, int] = {"Alice": 95, "Bob": 87, "Charlie": 92}
 
 # Set of integers
+
 unique_ids: Set[int] = {1001, 1002, 1003}
 
 # Tuple with specific types for each position
+
 point: Tuple[float, float] = (23.5, 42.1)
 
 # Tuple with variable length but same type
+
 coordinates: Tuple[float, ...] = (23.5, 42.1, 5.7)
 ```
 
@@ -80,6 +90,7 @@ from typing import Optional
 def find_user(user_id: int) -> Optional[User]:
     """Find a user by ID, returns None if not found."""
     # ...
+
     if user_exists:
         return user
     return None
@@ -96,9 +107,11 @@ def process_identifier(identifier: Union[int, str]) -> None:
     """Process an identifier which could be an integer or string."""
     if isinstance(identifier, int):
         # Handle integer case
+
         pass
     else:
         # Handle string case
+
         pass
 ```
 
@@ -110,22 +123,29 @@ Create type aliases for complex or commonly used types:
 from typing import Dict, List, NewType, Tuple, TypeAlias
 
 # Simple type alias
+
 UserId = int
 
 # More complex alias
+
 UserRecord: TypeAlias = Dict[str, Union[str, int, bool]]
 
 # Type for enhanced type safety
+
 AuthToken = NewType('AuthToken', str)
 
 # Usage
+
 def get_user(user_id: UserId) -> UserRecord:
     # ...
+
     pass
 
 def authenticate(token: AuthToken) -> bool:
     # This function will only accept AuthToken, not any string
+
     # ...
+
     pass
 ```
 
@@ -157,8 +177,11 @@ def first_element(items: List[T]) -> T:
     return items[0]
 
 # The return type will match the input list's element type
+
 name: str = first_element(["Alice", "Bob"])  # Type is str
+
 number: int = first_element([1, 2, 3])  # Type is int
+
 ```
 
 ### Protocol Classes
@@ -177,11 +200,13 @@ def render(item: Drawable) -> None:
     item.draw()
 
 # Any class with a draw method will satisfy the Drawable protocol
+
 class Circle:
     def draw(self) -> None:
         print("Drawing a circle")
 
 render(Circle())  # This works, even though Circle doesn't inherit from Drawable
+
 ```
 
 ## Working with Third-Party Code
@@ -191,7 +216,9 @@ render(Circle())  # This works, even though Circle doesn't inherit from Drawable
 For libraries without type annotations, use stub files or install type packages:
 
 ```bash
+
 # Install type stubs for popular libraries
+
 pip install types-requests
 ```
 
@@ -200,8 +227,11 @@ pip install types-requests
 Use type ignores sparingly and with comments explaining why:
 
 ```python
+
 # Third-party library returns dynamic type
+
 result = external_lib.complex_function()  # type: ignore  # Returns dynamic JSON structure
+
 ```
 
 ## Type Checking
@@ -211,10 +241,13 @@ result = external_lib.complex_function()  # type: ignore  # Returns dynamic JSON
 We use mypy for type checking. Run it locally before committing:
 
 ```bash
+
 # Check a specific file
+
 python -m mypy --config-file mypy.ini path/to/file.py
 
 # Check using our gradual adoption tool
+
 python -m tools.run_type_checks --targets path/to/file.py
 ```
 
@@ -234,11 +267,15 @@ Our mypy configuration is in `mypy.ini`. Key settings include:
 Always add return types to functions, including those that return None:
 
 ```python
+
 # Bad
+
 def update_user(user_id, data):
     db.update(user_id, data)
     
+
 # Good
+
 def update_user(user_id: int, data: Dict[str, Any]) -> None:
     db.update(user_id, data)
 ```
@@ -248,11 +285,14 @@ def update_user(user_id: int, data: Dict[str, Any]) -> None:
 Always check if Optional values are None before using them:
 
 ```python
+
 # Bad
+
 def process_data(data: Optional[Dict[str, Any]]) -> str:
     return data["name"]  # Might be None!
 
 # Good
+
 def process_data(data: Optional[Dict[str, Any]]) -> str:
     if data is None:
         return "No data"
@@ -264,11 +304,14 @@ def process_data(data: Optional[Dict[str, Any]]) -> str:
 Avoid using `Any` unless absolutely necessary:
 
 ```python
+
 # Bad
+
 def process_data(data: Any) -> Any:
     return data.transform()
 
 # Better
+
 from typing import TypeVar, Protocol
 
 T = TypeVar('T')
@@ -290,12 +333,12 @@ We've created several tools to help with type safety:
    python -m tools.fix_typing_issues --path path/to/file.py
    ```
 
-2. `tools/gradual_type_adoption.py`: Analyzes files for typing readiness
+1. `tools/gradual_type_adoption.py`: Analyzes files for typing readiness
    ```bash
    python -m tools.gradual_type_adoption --directory path/to/dir --output report.md
    ```
 
-3. `tools/run_type_checks.py`: Runs standardized type checks on specified files
+1. `tools/run_type_checks.py`: Runs standardized type checks on specified files
    ```bash
    python -m tools.run_type_checks --targets file1.py file2.py
    ```
