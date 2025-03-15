@@ -262,8 +262,6 @@ def fix_table_formatting(content: str) -> str:
         # If any row is missing leading or trailing pipes, fix all rows
         if not (has_leading_pipe and has_trailing_pipe and sep_has_leading_pipe and sep_has_trailing_pipe):
             # Extract the table content
-            table_start = match.start()
-
             # Find the end of the table by looking for lines with pipes
             lines = content[match.start() :].split("\n")
             table_end_line = 2  # We already matched header and separator rows
@@ -320,7 +318,6 @@ def fix_blanks_around_headings(content: str) -> str:
 
     # Process in reverse to avoid position shifts
     for match in reversed(matches):
-        heading = match.group(1)
         start = match.start()
         end = match.end()
 

@@ -11,7 +11,6 @@ This tool scans Python files and converts:
 import os
 import re
 import sys
-from pathlib import Path
 
 
 def fix_file(file_path):

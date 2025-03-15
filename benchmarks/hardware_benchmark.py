@@ -18,7 +18,6 @@ Tests:
 import argparse
 import importlib.util
 import json
-import logging
 import os
 import platform
 import sys

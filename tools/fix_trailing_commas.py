@@ -11,7 +11,6 @@ This tool automatically adds trailing commas (COM812) to:
 import os
 import subprocess
 import sys
-from pathlib import Path
 
 
 def fix_files_with_ruff(file_paths):
@@ -120,4 +119,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main() 
+    main()

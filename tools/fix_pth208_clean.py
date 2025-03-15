@@ -9,7 +9,6 @@ pathlib equivalent to fix PTH208 linting errors.
 import os
 import re
 import sys
-from pathlib import Path
 
 
 def fix_pth208(file_path):

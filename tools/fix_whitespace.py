@@ -11,7 +11,6 @@ import os
 import re
 import subprocess
 import sys
-from pathlib import Path
 
 
 def fix_whitespace_issues(file_path):
@@ -103,4 +102,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main() 
+    main()

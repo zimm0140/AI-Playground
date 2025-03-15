@@ -25,8 +25,7 @@ def fix_markdown_file(file_path):
 
     if len(toc_matches) > 1:
         # Keep only the first TOC section
-        toc_text = toc_matches[0].group(1)
-        # Replace content with first match and remove others
+        # Remove other TOC sections
         for match in toc_matches[1:]:
             content = content.replace(match.group(1), "")
 

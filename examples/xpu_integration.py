@@ -7,10 +7,7 @@ to automatically configure PyTorch for the appropriate backend based on the
 available hardware.
 """
 
-import argparse
 import importlib.util
-import logging
-import os
 import sys
 from pathlib import Path
 
@@ -26,7 +23,6 @@ except ImportError:
     print(f"Make sure it exists in {root_dir}")
     sys.exit(1)
 
-import torch
 
 
 def is_package_available(package_name: str) -> bool:

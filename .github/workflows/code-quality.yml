@@ -217,7 +217,6 @@ jobs:
           exit 0
 
   lint:
-    if: false
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -234,7 +233,6 @@ jobs:
           ruff check --output-format=github tests/
 
   type-check:
-    if: false
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -255,7 +253,6 @@ jobs:
           find . -name "*.py" -not -path "./.github/workflows/scripts/*" | xargs mypy --ignore-missing-imports
 
   unit-tests:
-    if: false
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -273,7 +270,6 @@ jobs:
           pytest tests/ -v
 
   pre-commit:
-    if: false
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

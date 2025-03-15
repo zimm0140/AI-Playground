@@ -79,7 +79,6 @@ def fix_blank_lines_around_lists(content):
     def add_blank_line_after_list(match):
         before = match.group(1)
         list_item = match.group(2)
-        newline = match.group(3)
         after = match.group(4)
 
         return before + list_item + "\n\n" + after

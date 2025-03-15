@@ -6,12 +6,8 @@ This example demonstrates how to use the hardware detection system with LangChai
 and Stable Diffusion to optimize performance on different Intel hardware.
 """
 
-import argparse
 import importlib.util
-import logging
 import os
-import sys
-from pathlib import Path
 
 import torch
 from compel import Compel
