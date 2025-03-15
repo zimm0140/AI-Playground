@@ -20,7 +20,7 @@ import sys
 import time
 import traceback
 from datetime import datetime
-from typing import Any, Optional, Dict, List
+from typing import Any, Optional, Dict, List, Union, Tuple, cast, Set, Sized
 
 import numpy as np
 
@@ -49,10 +49,10 @@ class ModelSimulation:
     def __init__(self, model_type: str, parameters: Optional[Dict[str, Any]] = None):
         self.model_type = model_type
         self.parameters = parameters or {}
-        self.tensor_data = None
+        self.tensor_data: Optional[Dict[str, Any]] = None
         self._create_dummy_tensors()
 
-    def _create_dummy_tensors(self):
+    def _create_dummy_tensors(self) -> None:
         """Create dummy tensor data based on model type"""
         if not TORCH_AVAILABLE:
             logger.warning("PyTorch not available - using NumPy arrays for simulation")
@@ -118,7 +118,7 @@ class ModelSimulation:
             )
             self.tensor_data = {"weights": torch.randn(1, 32, 32, 32)}
 
-    def _create_numpy_tensors(self):
+    def _create_numpy_tensors(self) -> None:
         """Create NumPy arrays when PyTorch is not available"""
         # Similar to the PyTorch version but using NumPy
         if self.model_type == "checkpoint":
@@ -143,8 +143,11 @@ class ModelSimulation:
             # Generic model simulation
             self.tensor_data = {"weights": np.random.randn(1, 32, 32, 32)}
 
-    def get_tensor(self, key: str):
+    def get_tensor(self, key: str) -> Any:
         """Retrieve a specific tensor from the model"""
+        if self.tensor_data is None:
+            return None
+            
         if key in self.tensor_data:
             return self.tensor_data[key]
 
@@ -169,9 +172,9 @@ class NodeSimulation:
         self.node_type = node_type
         self.node_id = node_id
         self.inputs = inputs or {}
-        self.outputs = {}
+        self.outputs: Dict[str, Any] = {}
 
-    def execute(self):
+    def execute(self) -> Tuple[bool, Dict[str, Any]]:
         """Simulate execution of the node, generating appropriate outputs"""
         try:
             # Route to appropriate handler based on node type
@@ -189,14 +192,14 @@ class NodeSimulation:
             )
             return False, {"error": str(e)}
 
-    def _execute_generic(self):
+    def _execute_generic(self) -> Dict[str, Any]:
         """Generic execution for unknown node types"""
         # For unknown nodes, we create outputs with appropriate shapes
         if TORCH_AVAILABLE:
             return {"output": torch.randn(1, 32, 32, 32)}
         return {"output": np.random.randn(1, 32, 32, 32)}
 
-    def _execute_checkpoint_loader(self):
+    def _execute_checkpoint_loader(self) -> Dict[str, Any]:
         """Simulate checkpoint loader node"""
         ckpt_name = self.inputs.get("ckpt_name", "stable_diffusion.ckpt")
 
@@ -217,15 +220,17 @@ class NodeSimulation:
             "vae": model_sim.get_tensor("model.first_stage_model"),
         }
 
-    def _execute_vae_loader(self):
+    def _execute_vae_loader(self) -> Dict[str, Any]:
         """Simulate VAE loader node"""
         # Variable captured for future implementation
         _ = self.inputs.get("vae_name", "vae.pt")
         model_sim = ModelSimulation("vae")
+        
+        if model_sim.tensor_data is not None:
+            return {"vae": model_sim.tensor_data}
+        return {"vae": {}}
 
-        return {"vae": model_sim.tensor_data}
-
-    def _execute_lora_loader(self):
+    def _execute_lora_loader(self) -> Dict[str, Any]:
         """Simulate LoRA loader node"""
         model = self.inputs.get("model", None)
         clip = self.inputs.get("clip", None)
@@ -240,12 +245,15 @@ class NodeSimulation:
             return {"model": model, "clip": clip}
         # If no model/clip provided, return dummy tensors
         model_sim = ModelSimulation("lora")
-        return {
-            "model": model_sim.get_tensor("lora_up"),
-            "clip": model_sim.get_tensor("lora_down"),
-        }
+        
+        if model_sim.tensor_data is not None:
+            return {
+                "model": model_sim.get_tensor("lora_up"),
+                "clip": model_sim.get_tensor("lora_down"),
+            }
+        return {"model": None, "clip": None}
 
-    def _execute_clip_text_encode(self):
+    def _execute_clip_text_encode(self) -> Dict[str, Any]:
         """Simulate CLIP text encoding"""
         text = self.inputs.get("text", "")
         # Variable captured for future implementation
@@ -259,7 +267,7 @@ class NodeSimulation:
         text_token_count = min(len(text.split()), 77) if text else 3
         return {"conditioning": np.random.randn(1, text_token_count, 64)}
 
-    def _execute_empty_latent_image(self):
+    def _execute_empty_latent_image(self) -> Dict[str, Any]:
         """Simulate empty latent image creation"""
         width = self.inputs.get("width", 512)
         height = self.inputs.get("height", 512)
@@ -273,7 +281,7 @@ class NodeSimulation:
             return {"latent": torch.zeros(batch_size, 4, latent_height, latent_width)}
         return {"latent": np.zeros((batch_size, 4, latent_height, latent_width))}
 
-    def _execute_ksampler(self):
+    def _execute_ksampler(self) -> Dict[str, Any]:
         """Simulate K-Sampler node"""
         # Variables captured for future implementation
         _ = self.inputs.get("model")
@@ -294,7 +302,7 @@ class NodeSimulation:
             return {"latent": torch.randn(1, 4, 64, 64)}
         return {"latent": np.random.randn(1, 4, 64, 64)}
 
-    def _execute_vae_decode(self):
+    def _execute_vae_decode(self) -> Dict[str, Any]:
         """Simulate VAE decoding from latent to image"""
         # Variable captured for future implementation
         _ = self.inputs.get("vae")
@@ -316,7 +324,7 @@ class NodeSimulation:
             return {"image": torch.randn(1, 3, 512, 512)}
         return {"image": np.random.randn(1, 3, 512, 512)}
 
-    def _execute_save_image(self):
+    def _execute_save_image(self) -> Dict[str, Any]:
         """Simulate saving an image"""
         images = self.inputs.get("images")
 
@@ -332,7 +340,7 @@ class NodeSimulation:
         # This node has no outputs
         return {}
 
-    def _execute_upscale_image(self):
+    def _execute_upscale_image(self) -> Dict[str, Any]:
         """Simulate image upscaling"""
         image = self.inputs.get("image")
         # Variable captured for future implementation
@@ -370,7 +378,7 @@ class ComfyWorkflowSimulator:
         self.output_dir = output_dir
         os.makedirs(output_dir, exist_ok=True)
 
-        self.results = {
+        self.results: Dict[str, Any] = {
             "summary": {
                 "time": datetime.now().isoformat(),
                 "total_workflows": 0,
@@ -382,22 +390,23 @@ class ComfyWorkflowSimulator:
 
     def find_workflow_files(self) -> List[str]:
         """Find all workflow JSON files in the specified directory"""
-        return glob.glob(os.path.join(self.workflows_dir, "*.json"))
+        result: List[str] = glob.glob(os.path.join(self.workflows_dir, "*.json"))
+        return result
 
     def topological_sort(self, workflow: Optional[Dict[str, Any]]) -> List[str]:
         """Sort nodes in topological order for execution"""
-        if "links" not in workflow:
+        if workflow is None or "links" not in workflow:
             return []
 
         # Get nodes from either workflow format
         nodes = None
-        if "nodes" in workflow and isinstance(workflow["nodes"], dict):
+        if "nodes" in workflow and isinstance(workflow.get("nodes", {}), dict):
             nodes = workflow["nodes"]
         elif (
             "comfyUiApiWorkflow" in workflow
-            and isinstance(workflow["comfyUiApiWorkflow"], dict)
+            and isinstance(workflow.get("comfyUiApiWorkflow", {}), dict)
             and "nodes" in workflow["comfyUiApiWorkflow"]
-            and isinstance(workflow["comfyUiApiWorkflow"]["nodes"], dict)
+            and isinstance(workflow["comfyUiApiWorkflow"].get("nodes", {}), dict)
         ):
             nodes = workflow["comfyUiApiWorkflow"]["nodes"]
 
@@ -426,8 +435,8 @@ class ComfyWorkflowSimulator:
                 in_degree[to_node] += 1
 
         # Find all nodes with 0 in-degree
-        queue = [node for node, degree in in_degree.items() if degree == 0]
-        result = []
+        queue: List[str] = [node for node, degree in in_degree.items() if degree == 0]
+        result: List[str] = []
 
         # Perform topological sort
         while queue:
@@ -440,7 +449,7 @@ class ComfyWorkflowSimulator:
                     queue.append(neighbor)
 
         # Check if we visited all nodes
-        if len(result) != len(nodes):
+        if nodes and isinstance(nodes, Dict) and len(result) != len(nodes):
             logger.warning("Cannot determine execution order - graph may have cycles")
             return list(nodes.keys())  # Fallback: return all nodes
 
@@ -448,7 +457,7 @@ class ComfyWorkflowSimulator:
 
     def simulate_workflow(self, file_path: str) -> Dict[str, Any]:
         """Simulate the execution of a ComfyUI workflow"""
-        result = {
+        result: Dict[str, Any] = {
             "file": file_path,
             "name": os.path.basename(file_path),
             "status": "failed",
@@ -489,7 +498,7 @@ class ComfyWorkflowSimulator:
 
             start_time = time.time()
             node_outputs: Dict[str, Any] = {}
-            failed_nodes = set()
+            failed_nodes: Set[str] = set()
 
             # Execute nodes in topological order
             for node_id in execution_order:
@@ -506,7 +515,7 @@ class ComfyWorkflowSimulator:
                     continue
 
                 # Collect inputs from connected nodes
-                node_inputs = {}
+                node_inputs: Dict[str, Any] = {}
 
                 # Add static inputs from node data
                 if "inputs" in node_data:
@@ -820,10 +829,10 @@ class ComfyWorkflowSimulator:
         self.generate_github_summary()
 
         # Return the number of failed workflows
-        return self.results["summary"]["failed_workflows"]
+        return cast(int, self.results["summary"]["failed_workflows"])
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(
         description="Simulate execution of ComfyUI workflows",
     )

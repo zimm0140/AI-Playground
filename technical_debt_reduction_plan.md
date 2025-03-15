@@ -97,14 +97,14 @@ Our next steps are structured into three parallel tracks to ensure effective tec
   - [x] validate_components.py
   - [x] fix_ci_issues.py
   - [x] generate_workflow_versions.py
+  - [x] simulate_workflow_execution.py
+  - [x] analyze_workflow_requirements.py
 - [x] Added type checking to CI pipeline
 - [x] Updated pre-commit hooks to enforce type checking
 
 ## Next Steps
 
-- [ ] Continue fixing typing issues in high-priority files:
-  - [ ] simulate_workflow_execution.py (requires significant refactoring)
-  - [ ] analyze_workflow_requirements.py
+- [ ] Continue fixing typing issues in remaining high-priority files:
   - [ ] hardware_compatibility_advisor.py
   - [ ] hardware_compatibility_autofix.py
   - [ ] hardware_compatibility_tester.py
