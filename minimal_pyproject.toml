@@ -1,0 +1,5 @@
+[tool.ruff.lint]
+select = ["C90"]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10

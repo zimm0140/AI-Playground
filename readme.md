@@ -505,3 +505,68 @@ Our ongoing effort to reduce technical debt has made significant progress:
 - Address remaining high-priority issues
 - Document code standards and best practices
 - Implement further automated testing
+
+## Development Setup
+
+### Prerequisites
+
+- Python 3.10 or higher
+- Git
+- Make (optional, for using Makefile commands)
+
+### Setting Up the Development Environment
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/AI-Playground.git
+   cd AI-Playground
+   ```
+
+2. Install development dependencies:
+   ```bash
+   pip install -r requirements-dev.txt
+   ```
+
+3. Install pre-commit hooks to automatically check code before commits:
+   ```bash
+   pre-commit install
+   ```
+   
+   Or use the Makefile:
+   ```bash
+   make install-hooks
+   ```
+
+### Common Development Tasks
+
+We provide a Makefile with common development commands:
+
+- Run linting checks:
+  ```bash
+  make lint
+  ```
+
+- Auto-fix linting issues:
+  ```bash
+  make lint-fix
+  ```
+
+- Format code:
+  ```bash
+  make format
+  ```
+
+- Run tests:
+  ```bash
+  make test
+  ```
+
+- Run all CI checks locally:
+  ```bash
+  make ci-check
+  ```
+
+- See all available commands:
+  ```bash
+  make help
+  ```

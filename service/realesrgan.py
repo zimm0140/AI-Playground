@@ -317,18 +317,28 @@ class RealESRGANer:
         Returns:
             tuple: (Enhanced image as a NumPy array, Image mode string)
         """
+        # Prepare the input image
+        img, img_mode, alpha = self._prepare_input_image(img)
+        
+        # Process the main image
+        self._process_main_image(img)
+        
+        # Handle post-processing and potential alpha channel
+        return self._finalize_output(img_mode, alpha, alpha_upsampler, outscale)
+
+    def _prepare_input_image(self, img):
+        """Prepare input image for enhancement by normalizing and detecting mode."""
         if isinstance(img, PIL.Image.Image):
             img = np.array(img)
-        h_input, w_input = img.shape[0:2]
-        # img: numpy
+        
+        # Normalize image values
         img = img.astype(np.float32)
-        if np.max(img) > 256:  # 16-bit image
-            max_range = 65535
-            print("\tInput is a 16-bit image")
-        else:
-            max_range = 255
+        max_range = 65535 if np.max(img) > 256 else 255
         img = img / max_range
-        if len(img.shape) == 2:  # gray image
+        
+        # Determine image mode and handle alpha channel if present
+        alpha = None
+        if len(img.shape) == 2:  # Grayscale image
             img_mode = "L"
             img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
         elif img.shape[2] == 4:  # RGBA image with alpha channel
@@ -336,65 +346,76 @@ class RealESRGANer:
             alpha = img[:, :, 3]
             img = img[:, :, 0:3]
             img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-            if alpha_upsampler == "realesrgan":
-                alpha = cv2.cvtColor(alpha, cv2.COLOR_GRAY2RGB)
         else:
             img_mode = "RGB"
             img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-
-        # ------------------- process image (without the alpha channel) ------------------- #
+            
+        return img, img_mode, alpha
+        
+    def _process_main_image(self, img):
+        """Process the main image content using the model."""
         self.pre_process(img)
         if self.tile_size > 0:
             self.tile_process()
         else:
             self.process()
-        output_img = self.post_process()
-        output_img = output_img.data.squeeze().float().cpu().clamp_(0, 1).numpy()
-        output_img = np.transpose(output_img[[2, 1, 0], :, :], (1, 2, 0))
-        if img_mode == "L":
-            output_img = cv2.cvtColor(output_img, cv2.COLOR_BGR2GRAY)
-
-        # ------------------- process the alpha channel if necessary ------------------- #
-        if img_mode == "RGBA":
-            if alpha_upsampler == "realesrgan":
-                self.pre_process(alpha)
-                if self.tile_size > 0:
-                    self.tile_process()
-                else:
-                    self.process()
-                output_alpha = self.post_process()
-                output_alpha = output_alpha.data.squeeze().float().cpu().clamp_(0, 1).numpy()
-                output_alpha = np.transpose(output_alpha[[2, 1, 0], :, :], (1, 2, 0))
-                output_alpha = cv2.cvtColor(output_alpha, cv2.COLOR_BGR2GRAY)
-            else:  # use the cv2 resize for alpha channel
-                h, w = alpha.shape[0:2]
-                output_alpha = cv2.resize(
-                    alpha,
-                    (w * self.scale, h * self.scale),
-                    interpolation=cv2.INTER_LINEAR,
-                )
-
-            # merge the alpha channel
-            output_img = cv2.cvtColor(output_img, cv2.COLOR_BGR2BGRA)
-            output_img[:, :, 3] = output_alpha
-
-        # ------------------------------ return ------------------------------ #
-        if max_range == 65535:  # 16-bit image
-            output = (output_img * 65535.0).round().astype(np.uint16)
+    
+    def _finalize_output(self, img_mode, alpha, alpha_upsampler, outscale):
+        """Apply post-processing and handle alpha channel if needed."""
+        # Apply output scaling if specified
+        if outscale is not None and outscale != self.scale:
+            self.output = self._rescale_output(outscale)
         else:
-            output = (output_img * 255.0).round().astype(np.uint8)
-
-        if outscale is not None and outscale != float(self.scale):
-            output = cv2.resize(
-                output,
-                (
-                    int(w_input * outscale),
-                    int(h_input * outscale),
-                ),
-                interpolation=cv2.INTER_LANCZOS4,
+            self.output = self.post_process()
+            
+        # Handle alpha channel for RGBA images
+        if img_mode == "RGBA":
+            return self._process_with_alpha(alpha, alpha_upsampler)
+        
+        # Handle grayscale images
+        if img_mode == "L":
+            return self._convert_to_grayscale()
+            
+        # Default case: return RGB image
+        return self.output, img_mode
+    
+    def _rescale_output(self, outscale):
+        """Rescale output to desired scale factor."""
+        h, w = self.output.shape[0:2]
+        new_h, new_w = int(h * outscale / self.scale), int(w * outscale / self.scale)
+        scaled_output = cv2.resize(
+            self.output, (new_w, new_h), interpolation=cv2.INTER_LANCZOS4
+        )
+        return scaled_output
+    
+    def _process_with_alpha(self, alpha, alpha_upsampler):
+        """Process image with alpha channel."""
+        h, w = self.output.shape[0:2]
+        if alpha_upsampler == "realesrgan":
+            # Use the same model to upsample alpha channel
+            self.pre_process(alpha)
+            if self.tile_size > 0:
+                self.tile_process()
+            else:
+                self.process()
+            upsampled_alpha = self.post_process()
+            upsampled_alpha = upsampled_alpha[:, :, 0]
+        else:
+            # Use simple upsampling for alpha channel
+            upsampled_alpha = cv2.resize(
+                alpha, (w, h), interpolation=cv2.INTER_LINEAR
             )
-
-        return output, img_mode
+        
+        # Merge the RGB channels with the alpha channel
+        output_with_alpha = np.concatenate(
+            (self.output, upsampled_alpha[:, :, None]), axis=2
+        )
+        return output_with_alpha, "RGBA"
+    
+    def _convert_to_grayscale(self):
+        """Convert output to grayscale for L mode images."""
+        self.output = cv2.cvtColor(self.output, cv2.COLOR_BGR2GRAY)
+        return self.output, "L"
 
     def dispose(self):
         """

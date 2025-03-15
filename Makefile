@@ -1,52 +1,70 @@
-.PHONY: setup test lint format clean check audit sync help
+.PHONY: lint format test ci-check install-hooks clean build help
 
 # Default target
-.DEFAULT_GOAL := help
+all: lint format test
 
-# Variables
-PYTHON := python
-UV := uv
-
-# Development setup
-setup: ## Set up development environment
-	$(UV) venv
-	$(UV) pip install -e ".[dev]"
+# Install dev dependencies
+setup:
+	pip install -r requirements-dev.txt
 	pre-commit install
 
-# Testing
-test: ## Run tests
-	$(UV) run pytest
+# Run linting checks
+lint:
+	ruff check .
 
-# Linting
-lint: ## Run linters
-	$(UV) run ruff check .
-	$(UV) run mypy .
+# Fix linting issues automatically
+lint-fix:
+	ruff check --fix .
 
-# Formatting
-format: ## Format code
-	$(UV) run ruff format .
+# Format code
+format:
+	ruff format .
 
-# Cleaning
-clean: ## Clean build artifacts and cache
-	rm -rf build/ dist/ *.egg-info/ .pytest_cache/ .ruff_cache/ 
-	find . -type d -name __pycache__ -exec rm -rf {} +
+# Check formatting without changing files
+format-check:
+	ruff format --check .
+
+# Run tests
+test:
+	pytest
+
+# Run all CI checks locally
+ci-check: lint format-check test
+
+# Install pre-commit hooks
+install-hooks:
+	pre-commit install
+
+# Clean up cache files
+clean:
+	find . -type d -name "__pycache__" -exec rm -rf {} +
+	find . -type d -name ".pytest_cache" -exec rm -rf {} +
+	find . -type d -name ".ruff_cache" -exec rm -rf {} +
+	find . -type f -name "*.pyc" -delete
+	find . -type f -name "*.pyo" -delete
+	find . -type f -name "*.pyd" -delete
+	find . -type f -name ".coverage" -delete
 	find . -type d -name "*.egg-info" -exec rm -rf {} +
+	find . -type d -name "*.egg" -exec rm -rf {} +
+	find . -type d -name ".eggs" -exec rm -rf {} +
+	find . -type d -name "dist" -exec rm -rf {} +
+	find . -type d -name "build" -exec rm -rf {} +
 
-# Dependency checking
-check: ## Check dependencies for updates
-	$(UV) pip check
+# Build package
+build:
+	python -m build
 
-# Security audit
-audit: ## Run security audit
-	$(UV) pip audit
-
-# Sync dependencies
-sync: ## Sync dependencies from requirements.txt
-	$(UV) pip sync requirements.txt
-
-# Help message
-help: ## Show this help message
-	@echo 'Usage: make [target]'
-	@echo ''
-	@echo 'Targets:'
-	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST) 
+# Show help
+help:
+	@echo "Available commands:"
+	@echo "  make setup         - Install development dependencies"
+	@echo "  make lint          - Run linting checks"
+	@echo "  make lint-fix      - Fix linting issues automatically"
+	@echo "  make format        - Format code"
+	@echo "  make format-check  - Check formatting without changing files"
+	@echo "  make test          - Run tests"
+	@echo "  make ci-check      - Run all CI checks locally"
+	@echo "  make install-hooks - Install pre-commit hooks"
+	@echo "  make clean         - Clean up cache files"
+	@echo "  make build         - Build package"
+	@echo "  make help          - Show this help message" 

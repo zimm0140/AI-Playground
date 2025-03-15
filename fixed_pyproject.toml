@@ -110,6 +110,10 @@ select = [
     "PTH", # flake8-use-pathlib
 ]
 
+# Configure McCabe complexity checking
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
 # Rules to ignore
 ignore = [
     # Path handling issues - temporarily disabled
@@ -210,10 +214,6 @@ ignore = [
     "W291", # trailing-whitespace
     "F821", # undefined-name
 ]
-
-# Configure McCabe complexity checking
-[tool.ruff.lint.mccabe]
-max-complexity = 10
 
 # Per-file rule exceptions
 [tool.ruff.lint.per-file-ignores]
