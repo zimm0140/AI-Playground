@@ -20,7 +20,7 @@ import sys
 import time
 import traceback
 from datetime import datetime
-from typing import Any
+from typing import Any, Optional, Dict, List
 
 import numpy as np
 
@@ -46,7 +46,7 @@ logger = logging.getLogger("ComfyWorkflowSimulator")
 class ModelSimulation:
     """Simulates models for lightweight testing"""
 
-    def __init__(self, model_type: str, parameters: dict[str, Any] = None):
+    def __init__(self, model_type: str, parameters: Optional[Dict[str, Any]] = None):
         self.model_type = model_type
         self.parameters = parameters or {}
         self.tensor_data = None
@@ -165,7 +165,7 @@ class ModelSimulation:
 class NodeSimulation:
     """Simulates execution of ComfyUI nodes"""
 
-    def __init__(self, node_type: str, node_id: str, inputs: dict[str, Any] = None):
+    def __init__(self, node_type: str, node_id: str, inputs: Optional[Dict[str, Any]] = None):
         self.node_type = node_type
         self.node_id = node_id
         self.inputs = inputs or {}
@@ -380,11 +380,11 @@ class ComfyWorkflowSimulator:
             "workflows": [],
         }
 
-    def find_workflow_files(self) -> list[str]:
+    def find_workflow_files(self) -> List[str]:
         """Find all workflow JSON files in the specified directory"""
         return glob.glob(os.path.join(self.workflows_dir, "*.json"))
 
-    def topological_sort(self, workflow: dict) -> list[str]:
+    def topological_sort(self, workflow: Optional[Dict[str, Any]]) -> List[str]:
         """Sort nodes in topological order for execution"""
         if "links" not in workflow:
             return []
@@ -405,8 +405,8 @@ class ComfyWorkflowSimulator:
             return []
 
         # Build a directed graph using adjacency list and count incoming edges
-        graph: dict[str, list[str]] = {}
-        in_degree: dict[str, int] = {}
+        graph: Dict[str, List[str]] = {}
+        in_degree: Dict[str, int] = {}
 
         # Initialize all nodes with 0 in-degree
         for node_id in nodes:
@@ -446,7 +446,7 @@ class ComfyWorkflowSimulator:
 
         return result
 
-    def simulate_workflow(self, file_path: str) -> dict[str, Any]:
+    def simulate_workflow(self, file_path: str) -> Dict[str, Any]:
         """Simulate the execution of a ComfyUI workflow"""
         result = {
             "file": file_path,
@@ -488,7 +488,7 @@ class ComfyWorkflowSimulator:
             link_map = build_link_map(workflow)
 
             start_time = time.time()
-            node_outputs: dict[str, Any] = {}
+            node_outputs: Dict[str, Any] = {}
             failed_nodes = set()
 
             # Execute nodes in topological order
@@ -597,7 +597,7 @@ class ComfyWorkflowSimulator:
         )
         return result
 
-    def simulate_all_workflows(self) -> dict[str, Any]:
+    def simulate_all_workflows(self) -> Dict[str, Any]:
         """Simulate all workflows in the directory"""
         workflow_files = self.find_workflow_files()
         self.results["summary"]["total_workflows"] = len(workflow_files)

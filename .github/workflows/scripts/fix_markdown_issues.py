@@ -7,7 +7,7 @@ This is used by the CI workflow to automatically fix simple markdown problems.
 import os
 import re
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 
 
 def github_heading_id(text: str) -> str:
@@ -253,11 +253,11 @@ def fix_table_formatting(content: str) -> str:
 
         # Check if header has leading and trailing pipes
         has_leading_pipe = header_row.startswith("|")
-        has_trailing_pipe = header_row.endswith("|")
+        has_trailing_pipe = header_row.suffix == '.|')
 
         # Check if separator has leading and trailing pipes
         sep_has_leading_pipe = separator_row.startswith("|")
-        sep_has_trailing_pipe = separator_row.endswith("|")
+        sep_has_trailing_pipe = separator_row.suffix == '.|')
 
         # If any row is missing leading or trailing pipes, fix all rows
         if not (has_leading_pipe and has_trailing_pipe and sep_has_leading_pipe and sep_has_trailing_pipe):
@@ -289,7 +289,7 @@ def fix_table_formatting(content: str) -> str:
                 clean_row = row.strip()
                 if not clean_row.startswith("|"):
                     clean_row = "|" + clean_row
-                if not clean_row.endswith("|"):
+                if not clean_row.suffix == '.|'):
                     clean_row = clean_row + "|"
 
                 # Ensure correct number of columns
@@ -326,7 +326,7 @@ def fix_blanks_around_headings(content: str) -> str:
         if start > 0:
             # Look back to find the previous non-blank line
             prev_text = content[:start].rstrip()
-            if prev_text and not prev_text.endswith("\n\n"):
+            if prev_text and not prev_text.suffix == '.\n\n'):
                 # Fix: add blank line before heading
                 content = content[:start] + "\n" + content[start:]
                 # Adjust end position
@@ -366,7 +366,7 @@ def fix_blanks_around_lists(content: str) -> str:
 
             # Check if there's a blank line before the list start
             prev_text = content[:start].rstrip()
-            if prev_text and not prev_text.endswith("\n\n") and not prev_text.endswith(":\n"):
+            if prev_text and not prev_text.suffix == '.\n\n') and not prev_text.suffix == '.:\n'):
                 # Don't add blank line if preceded by a colon (likely part of a description)
                 if not re.search(r":\s*$", content[:start].split("\n")[-1]):
                     # Fix: add blank line before list
@@ -422,9 +422,8 @@ def fix_blanks_around_fences(content: str) -> str:
     for pos, fence in positions:
         if open_fence is None:
             open_fence = (pos, fence)
-        else:
-            fence_pairs.append((open_fence, (pos, fence)))
-            open_fence = None
+        else: Optional[fence_pairs.append((open_fence, (pos, fence)))
+            open_fence] = None
 
     # Process fence pairs from the end to avoid position shifts
     adjustments = 0
@@ -437,7 +436,7 @@ def fix_blanks_around_fences(content: str) -> str:
         if start_pos > 0:
             # Look back to find the last non-blank line
             prev_text = content[:start_pos].rstrip()
-            if prev_text and not prev_text.endswith("\n\n"):
+            if prev_text and not prev_text.suffix == '.\n\n'):
                 # Add blank line before fence
                 content = content[:start_pos] + "\n" + content[start_pos:]
                 adjustments += 1

@@ -246,10 +246,12 @@ jobs:
           # Install additional dependencies needed for imports
           pip install torch jsonschema
       - name: Run mypy
-        # Skip checking the workflow scripts directory as it contains internal scripts
-        # that don't need type checking and use Python 3.10+ features
+        # We now check the workflow scripts directory since we've fixed type issues
         run: |
-          # Check all Python files except those in .github/workflows/scripts/
+          # Check all Python files with our mypy.ini configuration
+          python -m mypy --config-file mypy.ini .github/workflows/scripts/comment_on_workflow_pr.py .github/workflows/scripts/generate_workflow_docs.py .github/workflows/scripts/validate_components.py .github/workflows/scripts/fix_ci_issues.py
+
+          # Continue checking other Python files
           find . -name "*.py" -not -path "./.github/workflows/scripts/*" | xargs mypy --ignore-missing-imports
 
   unit-tests:

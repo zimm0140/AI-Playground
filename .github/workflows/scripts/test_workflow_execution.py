@@ -11,6 +11,7 @@ This script performs lightweight validation of ComfyUI workflow execution:
 This allows testing the basic correctness of workflows without running the full ComfyUI environment.
 """
 
+from typing import Optional
 import argparse
 import glob
 import json
@@ -165,8 +166,7 @@ class ComfyWorkflowTester:
         visited = set()
         path = set()
 
-        for node in graph:
-            if node not in visited and has_cycle(node, visited, path):
+        for node in graph: Optional[if node not in visited and has_cycle(node, visited, path):
                 return (
                     True,
                     f"Circular dependency detected starting from node {node}",
@@ -180,7 +180,7 @@ class ComfyWorkflowTester:
             return [], "Workflow missing links"
 
         # Get nodes from either workflow format
-        nodes = None
+        nodes] = None
         if "nodes" in workflow and isinstance(workflow["nodes"], dict):
             nodes = workflow["nodes"]
         elif (

@@ -98,7 +98,7 @@ def validate_all_workflows(workflows_dir, schema_file, output_file):
     # Find workflow files
     workflow_files = []
     for filename in Path(workflows_dir).iterdir():
-        if filename.endswith(".json"):
+        if filename.suffix == '.json'):
             workflow_files.append(os.path.join(workflows_dir, filename))
 
     if not workflow_files:

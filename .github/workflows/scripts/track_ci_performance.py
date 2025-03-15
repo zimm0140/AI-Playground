@@ -10,6 +10,7 @@ The metrics are stored in JSON files for each workflow run and can be used
 to generate reports and visualizations to identify performance trends.
 """
 
+from typing import Optional
 import argparse
 import contextlib
 import json
@@ -77,13 +78,12 @@ def collect_metrics(workflow_name, job_name, output_dir):
     try:
         metrics["cache"]["hits"] = int(cache_hits)
         metrics["cache"]["misses"] = int(cache_misses)
-    except ValueError:
-        pass
+    except ValueError: Optional[pass
 
     return metrics
 
 
-def update_metrics(metrics, step_name=None, step_duration=None, status="running"):
+def update_metrics(metrics, step_name] = None, step_duration=None, status="running"):
     """
     Update metrics with new information
 

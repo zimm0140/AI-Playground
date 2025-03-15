@@ -1,193 +1,154 @@
-# Complex Functions Refactoring Report
+# Most Complex Functions Report
 
-This report identifies functions with high cyclomatic complexity.
-These functions are primary candidates for refactoring to improve maintainability.
+This report identifies the most complex functions in the codebase based on cyclomatic complexity.
 
-## Priority Refactoring List
+## 1. generate_comment (Complexity: 41)
 
-### 1.  (Complexity: 50)
+**File:** C:\Code\ML\AI-Playground\.github\workflows\scripts\comment_on_workflow_pr.py
 
-- File: `C:\Code\ML\AI-Playground\.github\workflows\scripts\generate_workflow_dashboard.py`
-- Line: 345
-- Refactoring suggestions:
-  - Break into smaller functions
-  - Simplify conditional logic
-  - Use helper functions for repeated code
+**Line:** 304
 
-### 2.  (Complexity: 41)
+**Code Snippet:**
 
-- File: `C:\Code\ML\AI-Playground\.github\workflows\scripts\comment_on_workflow_pr.py`
-- Line: 304
-- Refactoring suggestions:
-  - Break into smaller functions
-  - Simplify conditional logic
-  - Use helper functions for repeated code
+```python
+    def generate_comment(self) -> str:
+        """Generate a PR comment for workflow changes"""
+        if not self.changed_workflows:
+            print("No workflow changes detected")
+            return "## ComfyUI Workflow Changes\n\nNo workflow files were modified in this PR."
 
-### 3.  (Complexity: 40)
+        # Load all data sources
+        self.load_validation_data()
+        self.load_requirements_data()
+        self.load_tests_data()
+```
 
-- File: `C:\Code\ML\AI-Playground\.github\workflows\scripts\generate_workflow_docs.py`
-- Line: 46
-- Refactoring suggestions:
-  - Break into smaller functions
-  - Simplify conditional logic
-  - Use helper functions for repeated code
+**Refactoring Suggestions:**
 
-### 4.  (Complexity: 37)
+1. Extract helper methods for cohesive operations
+2. Reduce nesting through early returns
+3. Simplify conditional logic
+4. Consider using a design pattern to reduce complexity
 
-- File: `C:\Code\ML\AI-Playground\.github\workflows\scripts\analyze_workflow_requirements.py`
-- Line: 132
-- Refactoring suggestions:
-  - Break into smaller functions
-  - Simplify conditional logic
-  - Use helper functions for repeated code
+---
 
-### 5.  (Complexity: 34)
+## 2. generate_workflow_doc (Complexity: 40)
 
-- File: `C:\Code\ML\AI-Playground\.github\workflows\scripts\fix_ci_issues.py`
-- Line: 14
-- Refactoring suggestions:
-  - Break into smaller functions
-  - Simplify conditional logic
-  - Use helper functions for repeated code
+**File:** C:\Code\ML\AI-Playground\.github\workflows\scripts\generate_workflow_docs.py
 
-### 6.  (Complexity: 34)
+**Line:** 48
 
-- File: `C:\Code\ML\AI-Playground\.github\workflows\scripts\validate_components.py`
-- Line: 19
-- Refactoring suggestions:
-  - Break into smaller functions
-  - Simplify conditional logic
-  - Use helper functions for repeated code
+**Code Snippet:**
 
-### 7.  (Complexity: 27)
+```python
+def generate_workflow_doc(workflow, workflow_file):
+    """Generate markdown documentation for a workflow."""
+    doc = []
 
-- File: `C:\Code\ML\AI-Playground\.github\workflows\scripts\ensure_unique_artifacts.py`
-- Line: 15
-- Refactoring suggestions:
-  - Break into smaller functions
-  - Simplify conditional logic
-  - Use helper functions for repeated code
+    # Header and basic info
+    doc.append(f"# {workflow.get('name', 'Unnamed Workflow')}")
+    doc.append("")
 
-### 8.  (Complexity: 26)
+    # Add version if available
+    if "version" in workflow:
+```
 
-- File: `C:\Code\ML\AI-Playground\.github\workflows\scripts\generate_workflow_dashboard.py`
-- Line: 151
-- Refactoring suggestions:
-  - Break into smaller functions
-  - Simplify conditional logic
-  - Use helper functions for repeated code
+**Refactoring Suggestions:**
 
-### 9.  (Complexity: 21)
+1. Extract helper methods for cohesive operations
+2. Reduce nesting through early returns
+3. Simplify conditional logic
+4. Consider using a design pattern to reduce complexity
 
-- File: `C:\Code\ML\AI-Playground\.github\workflows\scripts\check_requirements_consistency.py`
-- Line: 69
-- Refactoring suggestions:
-  - Break into smaller functions
-  - Simplify conditional logic
-  - Use helper functions for repeated code
+---
 
-### 10.  (Complexity: 21)
+## 3. get_current_stats (Complexity: 38)
 
-- File: `C:\Code\ML\AI-Playground\.github\workflows\scripts\generate_api_summary.py`
-- Line: 15
-- Refactoring suggestions:
-  - Break into smaller functions
-  - Simplify conditional logic
-  - Use helper functions for repeated code
+**File:** C:\Code\ML\AI-Playground\tools\linting\track_progress.py
 
-### 11.  (Complexity: 21)
+**Line:** 43
 
-- File: `C:\Code\ML\AI-Playground\.github\workflows\scripts\test_workflow_execution.py`
-- Line: 243
-- Refactoring suggestions:
-  - Break into smaller functions
-  - Simplify conditional logic
-  - Use helper functions for repeated code
+**Code Snippet:**
 
-### 12.  (Complexity: 21)
+```python
+def get_current_stats() -> Dict:
+    """Get current technical debt statistics using Ruff."""
+    stats = {
+        "date": datetime.datetime.now().strftime("%Y-%m-%d"),
+        "high": 0,
+        "medium": 0,
+        "low": 0,
+        "total": 0,
+        "files_with_issues": 0,
+        "total_files": 0,
+```
 
-- File: `C:\Code\ML\AI-Playground\service\aipg_utils.py`
-- Line: 303
-- Refactoring suggestions:
-  - Break into smaller functions
-  - Simplify conditional logic
-  - Use helper functions for repeated code
+**Refactoring Suggestions:**
 
-### 13.  (Complexity: 20)
+1. Extract helper methods for cohesive operations
+2. Reduce nesting through early returns
+3. Simplify conditional logic
+4. Consider using a design pattern to reduce complexity
 
-- File: `C:\Code\ML\AI-Playground\.github\workflows\scripts\analyze_workflow_requirements.py`
-- Line: 435
-- Refactoring suggestions:
-  - Break into smaller functions
-  - Simplify conditional logic
-  - Use helper functions for repeated code
+---
 
-### 14.  (Complexity: 20)
+## 4. patch_files (Complexity: 34)
 
-- File: `C:\Code\ML\AI-Playground\.github\workflows\scripts\generate_workflow_dashboard.py`
-- Line: 668
-- Refactoring suggestions:
-  - Break into smaller functions
-  - Simplify conditional logic
-  - Use helper functions for repeated code
+**File:** C:\Code\ML\AI-Playground\.github\workflows\scripts\fix_ci_issues.py
 
-### 15.  (Complexity: 19)
+**Line:** 14
 
-- File: `C:\Code\ML\AI-Playground\.github\workflows\scripts\validate_comfyui_workflows.py`
-- Line: 104
-- Refactoring suggestions:
-  - Break into smaller functions
-  - Simplify conditional logic
-  - Use helper functions for repeated code
+**Code Snippet:**
 
-### 16.  (Complexity: 18)
+```python
+def patch_files():
+    """Apply patches to make code work in CI environment"""
+    print("Applying CI compatibility patches...")
 
-- File: `C:\Code\ML\AI-Playground\hardware_detection\core.py`
-- Line: 157
-- Refactoring suggestions:
-  - Break into smaller functions
-  - Simplify conditional logic
-  - Use helper functions for repeated code
+    # Fix invalid escape sequences in paint_biz.py
+    if os.path.exists("service/paint_biz.py"):
+        print("Patching service/paint_biz.py...")
+        with open("service/paint_biz.py") as f:
+            content = f.read()
 
-### 17.  (Complexity: 17)
+```
 
-- File: `C:\Code\ML\AI-Playground\.github\workflows\scripts\fix_markdown_all.py`
-- Line: 72
-- Refactoring suggestions:
-  - Break into smaller functions
-  - Simplify conditional logic
-  - Use helper functions for repeated code
+**Refactoring Suggestions:**
 
-### 18.  (Complexity: 17)
+1. Extract helper methods for cohesive operations
+2. Reduce nesting through early returns
+3. Simplify conditional logic
+4. Consider using a design pattern to reduce complexity
 
-- File: `C:\Code\ML\AI-Playground\.github\workflows\scripts\hardware_compatibility_advisor.py`
-- Line: 117
-- Refactoring suggestions:
-  - Break into smaller functions
-  - Simplify conditional logic
-  - Use helper functions for repeated code
+---
 
-### 19.  (Complexity: 17)
+## 5. validate_component (Complexity: 34)
 
-- File: `C:\Code\ML\AI-Playground\.github\workflows\scripts\hardware_compatibility_tester.py`
-- Line: 278
-- Refactoring suggestions:
-  - Break into smaller functions
-  - Simplify conditional logic
-  - Use helper functions for repeated code
+**File:** C:\Code\ML\AI-Playground\.github\workflows\scripts\validate_components.py
 
-### 20.  (Complexity: 17)
+**Line:** 21
 
-- File: `C:\Code\ML\AI-Playground\.github\workflows\scripts\simulate_workflow_execution.py`
-- Line: 449
-- Refactoring suggestions:
-  - Break into smaller functions
-  - Simplify conditional logic
-  - Use helper functions for repeated code
+**Code Snippet:**
 
-## Next Steps
+```python
+def validate_component(component_file):
+    """
+    Validate a single component file.
 
-1. Start with the top 5 most complex functions
-2. Create unit tests before refactoring
-3. Refactor one function at a time
-4. Re-run complexity analysis after each refactoring
+    Args:
+        component_file (str): Path to the component JSON file
+
+    Returns:
+        tuple: (is_valid, list of issues)
+    """
+```
+
+**Refactoring Suggestions:**
+
+1. Extract helper methods for cohesive operations
+2. Reduce nesting through early returns
+3. Simplify conditional logic
+4. Consider using a design pattern to reduce complexity
+
+---
+

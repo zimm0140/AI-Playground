@@ -40,8 +40,183 @@ PRIORITY_LEVELS = {
 }
 
 
+def _get_total_python_files() -> int:
+"""Get the total number of Python files in the repository.
+Returns:
+    int: The result of the operation.
+"""
+    try:
+        result = subprocess.run(
+            ["git", "ls-files", "*.py"],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if result.returncode == 0:
+            return len(result.stdout.strip().split("\n"))
+    except Exception as e:
+        logger.warning(f"Error getting total Python files: {e}")
+    return 0
+
+
+def _get_priority_issue_counts() -> Dict:
+"""Get issue counts for each priority level using Ruff.
+Returns:
+    Dict: The result of the operation.
+"""
+    priority_counts = {"high": 0, "medium": 0, "low": 0}
+    
+    for priority, rules in PRIORITY_LEVELS.items():
+        rule_str = ",".join(rules)
+        cmd = [sys.executable, "-m", "ruff", "check", ".", "--select", rule_str, "--count"]
+
+        try:
+            result = subprocess.run(cmd, capture_output=True, text=True, check=False)
+
+            if result.stdout:
+                # The output should be just a number
+                count_str = result.stdout.strip()
+                if count_str.isdigit():
+                    priority_counts[priority] = int(count_str)
+                else:
+                    # Fallback to parsing more complex output
+                    for line in result.stdout.strip().split("\n"):
+                        if "Found " in line and " error" in line:
+                            count_str = line.split("Found ")[1].split(" error")[0]
+                            if count_str.isdigit():
+                                priority_counts[priority] = int(count_str)
+                                break
+        except Exception as e:
+            logger.warning(f"Error parsing Ruff output for {priority} priority: {e}")
+    
+    return priority_counts
+
+
+def _get_files_with_issues_from_statistics() -> int:
+"""Get the number of files with issues using Ruff statistics.
+Returns:
+    int: The result of the operation.
+"""
+    try:
+        cmd = [sys.executable, "-m", "ruff", "check", ".", "--statistics"]
+        result = subprocess.run(cmd, capture_output=True, text=True, check=False)
+        
+        if result.stdout:
+            for line in result.stdout.strip().split("\n"):
+                if "files scanned" in line:
+                    parts = line.split()
+                    for i, part in enumerate(parts):
+                        if part == "files" and i > 0 and parts[i - 1].isdigit():
+                            return int(parts[i - 1])
+    except Exception as e:
+        logger.warning(f"Error parsing files with issues from statistics: {e}")
+    
+    return 0
+
+
+def _get_files_with_issues_from_json() -> int:
+"""Get the number of files with issues using Ruff JSON output.
+Returns:
+    int: The result of the operation.
+"""
+    try:
+        cmd = [sys.executable, "-m", "ruff", "check", ".", "--format=json"]
+        result = subprocess.run(cmd, capture_output=True, text=True, check=False)
+        
+        if result.stdout:
+            import json
+            issues = json.loads(result.stdout)
+            unique_files = set()
+            for issue in issues:
+                if "filename" in issue:
+                    unique_files.add(issue["filename"])
+            return len(unique_files)
+    except Exception as e:
+        logger.warning(f"Error parsing JSON output: {e}")
+    
+    return 0
+
+
+def _parse_priority_line(line: str, priority_key: str) -> int:
+"""Parse a priority line from track_technical_debt output.
+
+Args:
+    line (str): The line.
+    priority_key (str): The priority key.
+
+Returns:
+    int: The result of the operation.
+"""
+    if f"{priority_key.capitalize()} Priority:" in line:
+        parts = line.split(":")
+        if len(parts) > 1:
+            count_str = parts[1].strip().split(" ")[0]
+            if count_str.isdigit():
+                return int(count_str)
+    return 0
+
+
+def _parse_files_line(line: str) -> int:
+"""Parse the files with issues line from track_technical_debt output.
+
+Args:
+    line (str): The line.
+
+Returns:
+    int: The result of the operation.
+"""
+    if "Files with issues:" in line:
+        parts = line.split(":")
+        if len(parts) > 1:
+            count_str = parts[1].strip()
+            if count_str.isdigit():
+                return int(count_str)
+    return 0
+
+
+def _get_stats_from_track_technical_debt() -> Dict:
+"""Get statistics from the track_technical_debt script.
+Returns:
+    Dict: The result of the operation.
+"""
+    stats = {"high": 0, "medium": 0, "low": 0, "files_with_issues": 0}
+    
+    try:
+        cmd = [sys.executable, "-m", "tools.linting.track_technical_debt", "--high-only"]
+        result = subprocess.run(cmd, capture_output=True, text=True, check=False)
+
+        if result.stdout:
+            # Parse the summary section
+            lines = result.stdout.strip().split("\n")
+            for line in lines:
+                # Parse priority counts
+                high_count = _parse_priority_line(line, "high")
+                if high_count > 0:
+                    stats["high"] = high_count
+                
+                medium_count = _parse_priority_line(line, "medium")
+                if medium_count > 0:
+                    stats["medium"] = medium_count
+                
+                low_count = _parse_priority_line(line, "low")
+                if low_count > 0:
+                    stats["low"] = low_count
+                
+                # Parse files with issues
+                files_count = _parse_files_line(line)
+                if files_count > 0:
+                    stats["files_with_issues"] = files_count
+    except Exception as e:
+        logger.warning(f"Error getting statistics from track_technical_debt: {e}")
+    
+    return stats
+
+
 def get_current_stats() -> Dict:
-    """Get current technical debt statistics using Ruff."""
+"""Get current technical debt statistics using Ruff.
+Returns:
+    Dict: The result of the operation.
+"""
     stats = {
         "date": datetime.datetime.now().strftime("%Y-%m-%d"),
         "high": 0,
@@ -54,117 +229,32 @@ def get_current_stats() -> Dict:
 
     try:
         # Get total Python files
-        result = subprocess.run(
-            ["git", "ls-files", "*.py"],
-            capture_output=True,
-            text=True,
-            check=False,
-        )
-        if result.returncode == 0:
-            stats["total_files"] = len(result.stdout.strip().split("\n"))
-
-        # Run Ruff to get issue counts for each priority level
-        for priority, rules in PRIORITY_LEVELS.items():
-            rule_str = ",".join(rules)
-            cmd = [sys.executable, "-m", "ruff", "check", ".", "--select", rule_str, "--count"]
-
-            result = subprocess.run(cmd, capture_output=True, text=True, check=False)
-
-            # Parse the output to get issue count
-            try:
-                if result.stdout:
-                    # The output should be just a number
-                    count_str = result.stdout.strip()
-                    if count_str.isdigit():
-                        stats[priority] = int(count_str)
-                    else:
-                        # Fallback to parsing more complex output
-                        for line in result.stdout.strip().split("\n"):
-                            if "Found " in line and " error" in line:
-                                count_str = line.split("Found ")[1].split(" error")[0]
-                                if count_str.isdigit():
-                                    stats[priority] = int(count_str)
-                                    break
-            except Exception as e:
-                logger.warning(f"Error parsing Ruff output for {priority} priority: {e}")
-
-        # Get files with issues
-        cmd = [sys.executable, "-m", "ruff", "check", ".", "--statistics"]
-        result = subprocess.run(cmd, capture_output=True, text=True, check=False)
-        if result.stdout:
-            try:
-                for line in result.stdout.strip().split("\n"):
-                    if "files scanned" in line:
-                        parts = line.split()
-                        for i, part in enumerate(parts):
-                            if part == "files" and i > 0 and parts[i - 1].isdigit():
-                                stats["files_with_issues"] = int(parts[i - 1])
-                                break
-            except Exception as e:
-                logger.warning(f"Error parsing files with issues: {e}")
-
-        # If we couldn't get files with issues, try another approach
+        stats["total_files"] = _get_total_python_files()
+        
+        # Get issue counts for each priority level
+        priority_counts = _get_priority_issue_counts()
+        stats.update(priority_counts)
+        
+        # Get files with issues using statistics
+        stats["files_with_issues"] = _get_files_with_issues_from_statistics()
+        
+        # If we couldn't get files with issues, try using JSON output
         if stats["files_with_issues"] == 0:
-            # Run a command to get a list of files with issues
-            cmd = [sys.executable, "-m", "ruff", "check", ".", "--format=json"]
-            result = subprocess.run(cmd, capture_output=True, text=True, check=False)
-            if result.stdout:
-                try:
-                    import json
-
-                    issues = json.loads(result.stdout)
-                    unique_files = set()
-                    for issue in issues:
-                        if "filename" in issue:
-                            unique_files.add(issue["filename"])
-                    stats["files_with_issues"] = len(unique_files)
-                except Exception as e:
-                    logger.warning(f"Error parsing JSON output: {e}")
-
+            stats["files_with_issues"] = _get_files_with_issues_from_json()
+        
         # Calculate total
         stats["total"] = stats["high"] + stats["medium"] + stats["low"]
-
+        
         # If we still have zero issues but we know there are issues, use the track_technical_debt script
         if stats["total"] == 0:
             logger.info("Trying to get statistics from track_technical_debt script...")
-            try:
-                cmd = [sys.executable, "-m", "tools.linting.track_technical_debt", "--high-only"]
-                result = subprocess.run(cmd, capture_output=True, text=True, check=False)
-
-                if result.stdout:
-                    # Parse the summary section
-                    lines = result.stdout.strip().split("\n")
-                    for line in lines:
-                        if "High Priority:" in line:
-                            parts = line.split(":")
-                            if len(parts) > 1:
-                                count_str = parts[1].strip().split(" ")[0]
-                                if count_str.isdigit():
-                                    stats["high"] = int(count_str)
-                        elif "Medium Priority:" in line:
-                            parts = line.split(":")
-                            if len(parts) > 1:
-                                count_str = parts[1].strip().split(" ")[0]
-                                if count_str.isdigit():
-                                    stats["medium"] = int(count_str)
-                        elif "Low Priority:" in line:
-                            parts = line.split(":")
-                            if len(parts) > 1:
-                                count_str = parts[1].strip().split(" ")[0]
-                                if count_str.isdigit():
-                                    stats["low"] = int(count_str)
-                        elif "Files with issues:" in line:
-                            parts = line.split(":")
-                            if len(parts) > 1:
-                                count_str = parts[1].strip()
-                                if count_str.isdigit():
-                                    stats["files_with_issues"] = int(count_str)
-
-                # Calculate total
-                stats["total"] = stats["high"] + stats["medium"] + stats["low"]
-            except Exception as e:
-                logger.warning(f"Error getting statistics from track_technical_debt: {e}")
-
+            
+            track_td_stats = _get_stats_from_track_technical_debt()
+            stats.update(track_td_stats)
+            
+            # Calculate total
+            stats["total"] = stats["high"] + stats["medium"] + stats["low"]
+            
             # If we still have zero issues, use hardcoded values from README
             if stats["total"] == 0:
                 logger.info("Using hardcoded values from recent technical debt report...")
@@ -181,7 +271,12 @@ def get_current_stats() -> Dict:
 
 
 def save_stats(stats: Dict, output_dir: str) -> None:
-    """Save statistics to CSV file."""
+"""Save statistics to CSV file.
+
+Args:
+    stats (Dict): The stats.
+    output_dir (str): The output dir.
+"""
     os.makedirs(output_dir, exist_ok=True)
     csv_file = os.path.join(output_dir, "technical_debt_progress.csv")
 
@@ -201,7 +296,11 @@ def save_stats(stats: Dict, output_dir: str) -> None:
 
 
 def generate_chart(output_dir: str) -> None:
-    """Generate chart from CSV data."""
+"""Generate chart from CSV data.
+
+Args:
+    output_dir (str): The output dir.
+"""
     if not HAS_MATPLOTLIB:
         logger.warning("Matplotlib not installed. Skipping chart generation.")
         return
@@ -274,7 +373,12 @@ def generate_chart(output_dir: str) -> None:
 
 
 def generate_report(stats: Dict, output_dir: str) -> None:
-    """Generate a markdown report."""
+"""Generate a markdown report.
+
+Args:
+    stats (Dict): The stats.
+    output_dir (str): The output dir.
+"""
     report_file = os.path.join(output_dir, "progress_report.md")
 
     # Read historical data

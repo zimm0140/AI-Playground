@@ -45,7 +45,7 @@ def check_environment():
             file_path = Path(mock_dir) / expected_file
             if file_path.exists():
                 debug_print(f"Found {expected_file}")
-                if expected_file.endswith(".json"):
+                if expected_file.suffix == '.json'):
                     try:
                         with open(file_path, encoding="utf-8") as f:
                             content = json.load(f)

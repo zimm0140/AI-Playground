@@ -39,7 +39,7 @@ def ensure_init_files(root_dir="."):
         dirnames[:] = [d for d in dirnames if d not in skip_dirs]
 
         # Check if directory contains Python files
-        has_py_files = any(f.endswith(".py") for f in filenames)
+        has_py_files = any(f.suffix == '.py') for f in filenames)
 
         if has_py_files:
             init_file = os.path.join(dirpath, "__init__.py")

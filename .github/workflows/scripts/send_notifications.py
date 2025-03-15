@@ -2,8 +2,7 @@
 """
 CI Notification Sender
 
-This script sends notifications about CI results to different channels:
-- Email (via SMTP)
+This script sends notifications about CI results to different channels: Optional[- Email (via SMTP)
 - Slack (via webhook)
 - Microsoft Teams (via webhook)
 
@@ -11,6 +10,7 @@ It formats the notification based on the CI results and provides links
 to view detailed reports.
 """
 
+from typing import Optional
 import argparse
 import json
 import os
@@ -23,7 +23,7 @@ import requests
 
 
 class NotificationSender:
-    def __init__(self, metrics_file=None, artifacts_dir="ci_artifacts"):
+    def __init__(self, metrics_file] = None, artifacts_dir="ci_artifacts"):
         self.artifacts_dir = artifacts_dir
         self.metrics_file = metrics_file or os.path.join(
             artifacts_dir, "metrics/ci_metrics.json",

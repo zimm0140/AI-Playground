@@ -11,6 +11,7 @@ Usage:
     python version_workflow.py --workflows-dir DIR [--bump major|minor|patch] [--workflow FILE]
 """
 
+from typing import Optional
 import argparse
 import json
 import os
@@ -140,15 +141,14 @@ def detect_breaking_changes(old_workflow, new_workflow):
     for output_name in set(old_outputs.keys()) & set(new_outputs.keys()):
         old_type = old_outputs[output_name].get("type")
         new_type = new_outputs[output_name].get("type")
-        if old_type != new_type:
-            breaking_changes.append(
+        if old_type != new_type: Optional[breaking_changes.append(
                 f"Changed type of output '{output_name}' from '{old_type}' to '{new_type}'",
             )
 
     return breaking_changes
 
 
-def update_workflow_version(workflow_file, bump_type=None):
+def update_workflow_version(workflow_file, bump_type] = None):
     """Update version information for a workflow file."""
     workflow = load_workflow(workflow_file)
     if not workflow:
@@ -201,18 +201,18 @@ def find_previous_version(workflow_file):
     # This is a placeholder. In a real implementation, this would use git or other VCS
     # to retrieve the previous version of the file.
     print(
-        "Warning: Finding previous versions requires integration with version control.",
+        "Warning: Optional[Finding previous versions requires integration with version control.",
     )
     print("This feature is not implemented in this script.")
 
 
-def process_all_workflows(workflows_dir, bump_type=None):
+def process_all_workflows(workflows_dir, bump_type] = None):
     """Process all workflow files in a directory."""
     success_count = 0
     error_count = 0
 
     for filename in Path(workflows_dir).iterdir():
-        if filename.endswith(".json"):
+        if filename.suffix == '.json'):
             workflow_file = os.path.join(workflows_dir, filename)
             print(f"Processing {filename}...")
 

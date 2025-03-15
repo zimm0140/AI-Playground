@@ -141,7 +141,7 @@ class HardwareCompatibilityAutofix:
             print(f"Error loading recommendations: {e}")
             return False
 
-    def _parse_recommendations(self, text: str) -> list[dict[str, str]]:
+    def _parse_recommendations(self, text: str) -> List[Dict[str, str]]:
         """
         Parse recommendations from markdown text.
 
@@ -194,7 +194,7 @@ class HardwareCompatibilityAutofix:
 
         return recommendations
 
-    def apply_fixes(self) -> dict[str, list[dict[str, Any]]]:
+    def apply_fixes(self) -> Dict[str, List[dict[str, Any]]]:
         """
         Apply recommendations to fix compatibility issues.
 

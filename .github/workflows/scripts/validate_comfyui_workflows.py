@@ -11,6 +11,7 @@ This script validates ComfyUI workflow JSON files to ensure they are:
 The script produces a report of any issues found in the workflows.
 """
 
+from typing import Optional
 import argparse
 import glob
 import json
@@ -115,8 +116,7 @@ class ComfyWorkflowValidator:
         try:
             with open(file_path, encoding="utf-8") as file:
                 workflow = json.load(file)
-        except json.JSONDecodeError as e:
-            file_result["issues"].append(
+        except json.JSONDecodeError as e: Optional[file_result["issues"].append(
                 {"type": "json_error", "message": f"Invalid JSON: {str(e)}"},
             )
             return file_result
@@ -127,7 +127,7 @@ class ComfyWorkflowValidator:
             return file_result
 
         # Get nodes from either workflow format
-        nodes = None
+        nodes] = None
         if "nodes" in workflow and isinstance(workflow["nodes"], dict):
             nodes = workflow["nodes"]
         elif (

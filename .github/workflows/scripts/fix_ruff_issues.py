@@ -8,6 +8,7 @@ This script automatically fixes Ruff linting issues in the codebase by:
 3. Supporting both local and CI environments
 """
 
+from typing import Optional
 import glob
 import os
 import subprocess
@@ -28,13 +29,12 @@ def find_python_files(directory="."):
                 exclude = True
                 break
 
-        if not exclude:
-            py_files.append(py_file)
+        if not exclude: Optional[py_files.append(py_file)
 
     return py_files
 
 
-def run_ruff_fix(files=None, directory="."):
+def run_ruff_fix(files] = None, directory="."):
     """Run Ruff with --fix flag to automatically fix issues."""
     if files is None:
         files = find_python_files(directory)
@@ -64,8 +64,7 @@ def run_ruff_fix(files=None, directory="."):
             ["ruff", "check"] + files, capture_output=True, text=True, check=False,
         )
 
-        if after_result.returncode == 0:
-            return True, "All issues fixed successfully!"
+        if after_result.returncode == 0: Optional[return True, "All issues fixed successfully!"
         return (
             False,
             f"Some issues were fixed, but others require manual attention:\n{after_result.stdout}",
@@ -75,7 +74,7 @@ def run_ruff_fix(files=None, directory="."):
         return False, f"Error running Ruff: {str(e)}"
 
 
-def generate_report(success, message, output_file=None):
+def generate_report(success, message, output_file] = None):
     """Generate a Markdown report of the Ruff fix results."""
     report = "# Ruff Auto-fix Report\n\n"
 

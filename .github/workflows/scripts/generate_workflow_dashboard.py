@@ -121,7 +121,7 @@ class ComfyWorkflowDashboard:
             print(f"Error loading version history: {e}")
             return False
 
-    def collect_all_workflows(self) -> set[str]:
+    def collect_all_workflows(self) -> Set[str]:
         """Collect names of all workflows from all sources"""
         workflows = set()
 
@@ -151,7 +151,7 @@ class ComfyWorkflowDashboard:
 
         return workflows
 
-    def integrate_data(self) -> dict[str, dict[str, Any]]:
+    def integrate_data(self) -> Dict[str, dict[str, Any]]:
         """Integrate data from all sources into a single dashboard"""
         # Collect all workflows
         all_workflows = self.collect_all_workflows()

@@ -482,29 +482,16 @@ SIMULATED_HARDWARE=ovino python your_script.py
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## Technical Debt Reduction Progress
+## Technical Debt Reduction
 
-Our ongoing effort to reduce technical debt has made significant progress:
+We are actively working to improve the codebase quality and reduce technical debt. Our efforts include:
 
-| Priority Level | Initial Issues | Current Issues | Reduction |
-|----------------|----------------|----------------|-----------|
-| High           | 3,838          | 288            | 92.5%     |
-| Medium         | 3,757          | 833            | 77.8%     |
-| Low            | 10,734         | 9,322          | 13.2%     |
-| **Total**      | **18,329**     | **10,443**     | **43.0%** |
+- Refactoring complex functions to improve maintainability
+- Adding comprehensive type annotations
+- Standardizing docstrings using Google style
+- Implementing automated tools for code quality improvements
 
-### Completed Refactorings:
-- Simplified complex CPU and GPU detection functions
-- Fixed syntax errors in critical modules
-- Created automated linting tools for ongoing maintenance
-- Improved error handling and logging
-- Removed unused imports and variables
-
-### Next Steps:
-- Continue refactoring complex modules
-- Address remaining high-priority issues
-- Document code standards and best practices
-- Implement further automated testing
+For details on our technical debt reduction progress and tools, see [technical_debt_reduction_summary.md](technical_debt_reduction_summary.md).
 
 ## Development Setup
 

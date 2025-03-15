@@ -46,7 +46,7 @@ def fix_hardware_guide_links(file_path):
             content = content.replace(old, new)
 
         # Ensure file ends with a single newline
-        if not content.endswith("\n"):
+        if not content.suffix == '.\n'):
             content += "\n"
 
         # Write the file back

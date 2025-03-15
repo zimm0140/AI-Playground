@@ -112,7 +112,7 @@ def find_service_python_files():
     files = []
     for root, _, filenames in os.walk("service"):
         for filename in filenames:
-            if filename.endswith(".py"):
+            if filename.suffix == '.py'):
                 files.append(os.path.join(root, filename))
 
     print(f"Found {len(files)} Python files in the service directory.")

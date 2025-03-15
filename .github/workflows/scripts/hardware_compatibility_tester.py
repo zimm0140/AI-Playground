@@ -57,7 +57,7 @@ class HardwareCompatibilityTester:
         # Create output directory
         os.makedirs(self.output_dir, exist_ok=True)
 
-    def find_hardware_requirements(self) -> dict[str, list[str]]:
+    def find_hardware_requirements(self) -> Dict[str, List[str]]:
         """Find hardware-specific requirements files."""
         hw_req_files = defaultdict(list)
 
@@ -81,7 +81,7 @@ class HardwareCompatibilityTester:
 
         return dict(hw_req_files)
 
-    def parse_requirements_file(self, file_path: str) -> dict[str, str]:
+    def parse_requirements_file(self, file_path: str) -> Dict[str, str]:
         """
         Parse a requirements file and extract package names and versions.
 
@@ -139,7 +139,7 @@ class HardwareCompatibilityTester:
 
         return requirements
 
-    def analyze_hardware_requirements(self) -> dict[str, dict[str, dict[str, str]]]:
+    def analyze_hardware_requirements(self) -> Dict[str, dict[str, dict[str, str]]]:
         """
         Analyze hardware-specific requirements and extract package versions.
 
@@ -160,7 +160,7 @@ class HardwareCompatibilityTester:
         self.hardware_requirements = hardware_requirements
         return hardware_requirements
 
-    def identify_conflicts(self) -> list[dict[str, Any]]:
+    def identify_conflicts(self) -> List[Dict[str, Any]]:
         """
         Identify conflicts between hardware-specific requirements.
 
@@ -208,7 +208,7 @@ class HardwareCompatibilityTester:
         self.conflict_data = conflicts
         return conflicts
 
-    def generate_compatibility_matrix(self) -> dict[str, dict[str, str]]:
+    def generate_compatibility_matrix(self) -> Dict[str, dict[str, str]]:
         """
         Generate a compatibility matrix between hardware platforms.
 

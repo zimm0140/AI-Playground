@@ -67,7 +67,7 @@ class HardwareCompatibilityAdvisor:
             print(f"Error loading compatibility data: {e}")
             return False
 
-    def analyze_conflicts(self) -> dict[str, Any]:
+    def analyze_conflicts(self) -> Dict[str, Any]:
         """
         Analyze conflicts and categorize them by severity and type.
 
@@ -114,7 +114,7 @@ class HardwareCompatibilityAdvisor:
             "mixed_conflicts": mixed_conflicts,
         }
 
-    def generate_version_suggestions(self, conflict: dict[str, Any]) -> dict[str, Any]:
+    def generate_version_suggestions(self, conflict: Dict[str, Any]) -> Dict[str, Any]:
         """
         Generate version standardization suggestions for a single conflict.
 
@@ -207,7 +207,7 @@ class HardwareCompatibilityAdvisor:
             "confidence": confidence,
         }
 
-    def generate_all_recommendations(self) -> dict[str, list[dict[str, Any]]]:
+    def generate_all_recommendations(self) -> Dict[str, List[dict[str, Any]]]:
         """
         Generate recommendations for all conflicts.
 
@@ -243,7 +243,7 @@ class HardwareCompatibilityAdvisor:
 
         return self.recommendations
 
-    def generate_resolution_plan(self) -> dict[str, dict[str, str]]:
+    def generate_resolution_plan(self) -> Dict[str, dict[str, str]]:
         """
         Generate a concrete resolution plan for each hardware platform.
 
@@ -305,7 +305,7 @@ class HardwareCompatibilityAdvisor:
         self.resolution_plans = resolution_plans
         return resolution_plans
 
-    def generate_optimized_requirements(self) -> dict[str, dict[str, str]]:
+    def generate_optimized_requirements(self) -> Dict[str, dict[str, str]]:
         """
         Generate optimized requirements files based on resolution plan.
 
@@ -424,7 +424,7 @@ class HardwareCompatibilityAdvisor:
 
         return report_path
 
-    def generate_patch_files(self) -> list[str]:
+    def generate_patch_files(self) -> List[str]:
         """
         Generate patch files that can be applied to resolve conflicts.
 

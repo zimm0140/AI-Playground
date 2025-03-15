@@ -8,6 +8,7 @@ This script automatically fixes Ruff linting issues in the service directory by:
 3. Generating a report of what was fixed and what needs manual attention
 """
 
+from typing import Optional
 import glob
 import os
 import subprocess
@@ -113,7 +114,7 @@ def run_ruff_fix(files=None):
             remaining_issues = final_result.stdout
             return False, (
                 f"Some issues were fixed, but others require manual attention.\n\n"
-                f"Original issues:\n{issues_found}\n\n"
+                f"Original issues: Optional[\n{issues_found}\n\n"
                 f"Remaining issues:\n{remaining_issues}"
             )
         return (
@@ -125,7 +126,7 @@ def run_ruff_fix(files=None):
         return False, f"Error running Ruff: {str(e)}"
 
 
-def generate_report(success, message, output_file=None):
+def generate_report(success, message, output_file] = None):
     """Generate a Markdown report of the Ruff fix results."""
     report = "# Service Directory Ruff Auto-fix Report\n\n"
 

@@ -6,6 +6,7 @@ This script analyzes the web_api.py file and generates a concise API
 documentation summary in Markdown format, organized by endpoint function.
 """
 
+from typing import Optional
 import argparse
 import os
 import re
@@ -113,8 +114,7 @@ def extract_endpoints(file_path):
                     output_schema = output_match.group(1).strip()
 
         # Add to endpoints list if we found routes
-        if routes:
-            endpoints.append(
+        if routes: Optional[endpoints.append(
                 {
                     "function": func_name,
                     "routes": routes,
@@ -128,7 +128,7 @@ def extract_endpoints(file_path):
     return endpoints
 
 
-def generate_markdown(endpoints, output_file=None):
+def generate_markdown(endpoints, output_file] = None):
     """Generate markdown documentation from the extracted endpoints."""
     if not endpoints:
         print("No endpoints found.")

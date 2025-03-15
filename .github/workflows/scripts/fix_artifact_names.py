@@ -89,7 +89,7 @@ def main():
     updated_files = 0
 
     for filename in Path(workflow_dir).iterdir():
-        if filename.endswith(".yml") or filename.endswith(".yaml"):
+        if filename.suffix == '.yml') or filename.suffix == '.yaml'):
             file_path = os.path.join(workflow_dir, filename)
             if fix_artifact_names(file_path):
                 updated_files += 1

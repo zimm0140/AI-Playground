@@ -75,7 +75,7 @@ def main():
         workflow_files = [
             os.path.join(args.workflows_dir, f)
             for f in Path(args.workflows_dir).iterdir()
-            if f.endswith(".json")
+            if f.suffix == '.json')
             and os.path.isfile(os.path.join(args.workflows_dir, f))
         ]
 

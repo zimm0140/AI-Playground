@@ -37,7 +37,7 @@ def lint_python_files(file_paths=None):
             if ".git" in root or "venv" in root:
                 continue
             for file in files:
-                if file.endswith(".py"):
+                if file.suffix == '.py'):
                     file_paths.append(os.path.join(root, file))
 
     error_count = 0
@@ -271,7 +271,7 @@ if __name__ == "__main__":
             workflow_scripts = [
                 os.path.join(workflows_scripts_dir, f)
                 for f in Path(workflows_scripts_dir).iterdir()
-                if f.endswith(".py")
+                if f.suffix == '.py')
             ]
             if workflow_scripts:
                 print("\nChecking CI script files:")

@@ -1,5 +1,3 @@
-from pathlib import Path
-
 #!/usr/bin/env python3
 """
 Component Validator
@@ -16,29 +14,32 @@ import json
 import os
 import sys
 from datetime import datetime
+from pathlib import Path
+from typing import Dict, List, Optional, Union, Any, Set, Tuple, cast
 
 
-def validate_component(component_file):
-    """
-    Validate a single component file.
-
+def _load_component(component_file: str) -> Tuple[Optional[Dict[str, Any]], List[str]]:
+    """Load a component from a JSON file.
+    
     Args:
-        component_file (str): Path to the component JSON file
-
+        component_file: Path to the component JSON file
+    
     Returns:
-        tuple: (is_valid, list of issues)
+        A tuple containing the component data (or None if loading failed) and a list of issues
     """
-    issues = []
-
     try:
         with open(component_file, encoding="utf-8") as f:
-            component = json.load(f)
+            return json.load(f), []
     except json.JSONDecodeError as e:
-        return False, [f"Invalid JSON: {str(e)}"]
+        return None, [f"Invalid JSON: {str(e)}"]
     except Exception as e:
-        return False, [f"Error reading file: {str(e)}"]
+        return None, [f"Error reading file: {str(e)}"]
 
-    # Check required fields
+
+def _validate_required_fields(component: Dict[str, Any]) -> List[str]:
+    """Validate that the component has all required fields."""
+    issues: List[str] = []
+    
     required_fields = [
         "name",
         "description",
@@ -48,11 +49,18 @@ def validate_component(component_file):
         "outputs",
         "nodes",
     ]
+    
     for field in required_fields:
         if field not in component:
             issues.append(f"Missing required field: {field}")
+            
+    return issues
 
-    # Check version format (semver)
+
+def _validate_version_format(component: Dict[str, Any]) -> List[str]:
+    """Validate that the version follows semantic versioning."""
+    issues: List[str] = []
+    
     if "version" in component:
         version = component["version"]
         parts = version.split(".")
@@ -60,117 +68,176 @@ def validate_component(component_file):
             issues.append(
                 f"Invalid version format: {version}. Should be semver (e.g., 1.0.0)",
             )
-
-    # Check inputs
-    if "inputs" in component and isinstance(component["inputs"], list):
-        for i, input_item in enumerate(component["inputs"]):
-            if not isinstance(input_item, dict):
-                issues.append(f"Input {i} is not an object")
-                continue
-
-            # Check required input fields
-            input_required_fields = ["name", "type", "description"]
-            for field in input_required_fields:
-                if field not in input_item:
-                    issues.append(
-                        f"Input {i} ({input_item.get('name', 'unnamed')}) missing required field: {field}",
-                    )
-
-    # Check outputs
-    if "outputs" in component and isinstance(component["outputs"], list):
-        for i, output_item in enumerate(component["outputs"]):
-            if not isinstance(output_item, dict):
-                issues.append(f"Output {i} is not an object")
-                continue
-
-            # Check required output fields
-            output_required_fields = ["name", "type", "description"]
-            for field in output_required_fields:
-                if field not in output_item:
-                    issues.append(
-                        f"Output {i} ({output_item.get('name', 'unnamed')}) missing required field: {field}",
-                    )
-
-    # Check nodes
-    if "nodes" in component and isinstance(component["nodes"], dict):
-        for node_id, node in component["nodes"].items():
-            if not isinstance(node, dict):
-                issues.append(f"Node {node_id} is not an object")
-                continue
-
-            # Check required node fields
-            if "class_type" not in node:
-                issues.append(f"Node {node_id} missing required field: class_type")
-
-            if "inputs" not in node:
-                issues.append(f"Node {node_id} missing required field: inputs")
-
-    # Check input mappings
-    if "inputMappings" in component:
-        if not isinstance(component["inputMappings"], dict):
-            issues.append("inputMappings is not an object")
-        else:
-            for input_name, mapping in component["inputMappings"].items():
-                if not isinstance(mapping, dict):
-                    issues.append(f"Input mapping for {input_name} is not an object")
-                    continue
-
-                if "nodeId" not in mapping:
-                    issues.append(
-                        f"Input mapping for {input_name} missing required field: nodeId",
-                    )
-
-                if "inputName" not in mapping:
-                    issues.append(
-                        f"Input mapping for {input_name} missing required field: inputName",
-                    )
-
-    # Check output mappings
-    if "outputMappings" in component:
-        if not isinstance(component["outputMappings"], dict):
-            issues.append("outputMappings is not an object")
-        else:
-            for output_name, mapping in component["outputMappings"].items():
-                if not isinstance(mapping, dict):
-                    issues.append(f"Output mapping for {output_name} is not an object")
-                    continue
-
-                if "nodeId" not in mapping:
-                    issues.append(
-                        f"Output mapping for {output_name} missing required field: nodeId",
-                    )
-
-                if "outputIndex" not in mapping:
-                    issues.append(
-                        f"Output mapping for {output_name} missing required field: outputIndex",
-                    )
-
-    return len(issues) == 0, issues
+            
+    return issues
 
 
-def validate_all_components(components_dir, output_dir):
-    """
-    Validate all component files in a directory.
+def _validate_inputs(component: Dict[str, Any]) -> List[str]:
+    """Validate the inputs of a component."""
+    issues: List[str] = []
+    
+    if "inputs" not in component or not isinstance(component["inputs"], list):
+        return issues
+    for i, input_item in enumerate(component["inputs"]):
+        if not isinstance(input_item, dict):
+            issues.append(f"Input {i} is not an object")
+            continue
 
+        # Check required input fields
+        input_required_fields = ["name", "type", "description"]
+        for field in input_required_fields:
+            if field not in input_item:
+                issues.append(
+                    f"Input {i} ({input_item.get('name', 'unnamed')}) missing required field: {field}",
+                )
+                
+    return issues
+
+
+def _validate_outputs(component: Dict[str, Any]) -> List[str]:
+    """Validate the outputs of a component."""
+    issues: List[str] = []
+    
+    if "outputs" not in component or not isinstance(component["outputs"], list):
+        return issues
+    for i, output_item in enumerate(component["outputs"]):
+        if not isinstance(output_item, dict):
+            issues.append(f"Output {i} is not an object")
+            continue
+
+        # Check required output fields
+        output_required_fields = ["name", "type", "description"]
+        for field in output_required_fields:
+            if field not in output_item:
+                issues.append(
+                    f"Output {i} ({output_item.get('name', 'unnamed')}) missing required field: {field}",
+                )
+                
+    return issues
+
+
+def _validate_nodes(component: Dict[str, Any]) -> List[str]:
+    """Validate the nodes of a component."""
+    issues: List[str] = []
+    
+    if "nodes" not in component or not isinstance(component["nodes"], dict):
+        return issues
+    for node_id, node in component["nodes"].items():
+        if not isinstance(node, dict):
+            issues.append(f"Node {node_id} is not an object")
+            continue
+
+        # Check required node fields
+        if "class_type" not in node:
+            issues.append(f"Node {node_id} missing required field: class_type")
+
+        if "inputs" not in node:
+            issues.append(f"Node {node_id} missing required field: inputs")
+            
+    return issues
+
+
+def _validate_input_mappings(component: Dict[str, Any]) -> List[str]:
+    """Validate the input mappings of a component."""
+    issues: List[str] = []
+    
+    if "inputMappings" not in component:
+        return issues
+    if not isinstance(component["inputMappings"], dict):
+        issues.append("inputMappings is not an object")
+        return issues
+    for input_name, mapping in component["inputMappings"].items():
+        if not isinstance(mapping, dict):
+            issues.append(f"Input mapping for {input_name} is not an object")
+            continue
+
+        if "nodeId" not in mapping:
+            issues.append(
+                f"Input mapping for {input_name} missing required field: nodeId",
+            )
+
+        if "inputName" not in mapping:
+            issues.append(
+                f"Input mapping for {input_name} missing required field: inputName",
+            )
+            
+    return issues
+
+
+def _validate_output_mappings(component: Dict[str, Any]) -> List[str]:
+    """Validate the output mappings of a component."""
+    issues: List[str] = []
+    
+    if "outputMappings" not in component:
+        return issues
+    if not isinstance(component["outputMappings"], dict):
+        issues.append("outputMappings is not an object")
+        return issues
+    for output_name, mapping in component["outputMappings"].items():
+        if not isinstance(mapping, dict):
+            issues.append(f"Output mapping for {output_name} is not an object")
+            continue
+
+        if "nodeId" not in mapping:
+            issues.append(
+                f"Output mapping for {output_name} missing required field: nodeId",
+            )
+
+        if "outputIndex" not in mapping:
+            issues.append(
+                f"Output mapping for {output_name} missing required field: outputIndex",
+            )
+            
+    return issues
+
+
+def validate_component(component_file: str) -> Tuple[bool, List[str]]:
+    """Validate a single component file.
+    
     Args:
-        components_dir (str): Directory containing component JSON files
-        output_dir (str): Directory to write validation reports
+        component_file: The path to the component file.
+        
+    Returns:
+        A tuple containing a boolean indicating whether the component is valid and a list of issues.
     """
+    component, load_issues = _load_component(component_file)
+    
+    if component is None:
+        return False, load_issues
+    
+    # Validate using different checks
+    all_issues: List[str] = []
+    
+    # Add issues from each validation step
+    all_issues.extend(_validate_required_fields(component))
+    all_issues.extend(_validate_version_format(component))
+    all_issues.extend(_validate_inputs(component))
+    all_issues.extend(_validate_outputs(component))
+    all_issues.extend(_validate_nodes(component))
+    all_issues.extend(_validate_input_mappings(component))
+    all_issues.extend(_validate_output_mappings(component))
+    
+    return len(all_issues) == 0, all_issues
+
+
+def validate_all_components(components_dir: str, output_dir: str) -> bool:
+    """Validate all component files in a directory."""
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
     # Find all component files
-    component_files = []
-    for filename in Path(components_dir).iterdir():
-        if filename.endswith(".json") and filename != "schema.json":
-            component_files.append(os.path.join(components_dir, filename))
+    component_files: List[str] = []
+    for filename_path in Path(components_dir).iterdir():
+        if str(filename_path).endswith(".json") and str(filename_path) != "schema.json":
+            component_path = os.path.join(components_dir, str(filename_path))
+            component_files.append(component_path)
 
     if not component_files:
         print(f"No component files found in {components_dir}")
         return True
-
+        
     # Validate each component
-    results = {
+    results: Dict[str, Any] = {
         "timestamp": datetime.now().isoformat(),
         "components_directory": components_dir,
         "summary": {
@@ -185,7 +252,7 @@ def validate_all_components(components_dir, output_dir):
         filename = os.path.basename(component_file)
         is_valid, issues = validate_component(component_file)
 
-        component_result = {
+        component_result: Dict[str, Any] = {
             "filename": filename,
             "path": component_file,
             "is_valid": is_valid,
@@ -220,10 +287,12 @@ def validate_all_components(components_dir, output_dir):
     print(f"Invalid components: {results['summary']['invalid_components']}")
     print(f"\nDetailed results written to: {output_file}")
 
-    return results["summary"]["invalid_components"] == 0
+    # Cast to bool to satisfy mypy
+    return bool(results["summary"]["invalid_components"] == 0)
 
 
 def main():
+    """Main function."""
     parser = argparse.ArgumentParser(description="Validate component JSON files")
     parser.add_argument(
         "--components-dir",

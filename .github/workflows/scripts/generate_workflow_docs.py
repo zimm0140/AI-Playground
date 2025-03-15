@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Dict, List, Optional, Union, Any, Set, cast
 
 #!/usr/bin/env python3
 """
@@ -22,8 +23,6 @@ from datetime import datetime
 def sanitize_filename(name):
     """Convert a string to a valid filename."""
     return re.sub(r"[^\w\-\.]", "_", name)
-
-
 def load_workflow(workflow_file):
     """Load a workflow from a JSON file."""
     try:
@@ -32,8 +31,6 @@ def load_workflow(workflow_file):
     except Exception as e:
         print(f"Error loading workflow file: {str(e)}")
         return None
-
-
 def format_model_link(model):
     """Format a model name as a link if it looks like a Hugging Face path."""
     model_path = model.get("model", "")
@@ -43,34 +40,42 @@ def format_model_link(model):
         if len(parts) >= 2:
             return f"[{model_path}](https://huggingface.co/{parts[0]}/{parts[1]})"
     return model_path
-
-
-def generate_workflow_doc(workflow, workflow_file):
-    """Generate markdown documentation for a workflow."""
+def _generate_header_section(workflow):
+    """Generate the header section of the workflow documentation."""
     doc = []
-
+    
     # Header and basic info
     doc.append(f"# {workflow.get('name', 'Unnamed Workflow')}")
     doc.append("")
-
+    
     # Add version if available
     if "version" in workflow:
         doc.append(f"**Version:** {workflow['version']}")
         doc.append("")
-
+    
     # Tags
     if "tags" in workflow and workflow["tags"]:
         doc.append("**Tags:** " + ", ".join([f"`{tag}`" for tag in workflow["tags"]]))
         doc.append("")
-
+    
+    return doc
+def _generate_description_section(workflow):
+    """Generate the description section of the workflow documentation."""
+    doc = []
+    
     # Description
     if "description" in workflow and workflow["description"]:
         doc.append("## Description")
         doc.append("")
         doc.append(workflow["description"])
         doc.append("")
-
-    # Examples (new section)
+    
+    return doc
+def _generate_examples_section(workflow):
+    """Generate the examples section of the workflow documentation."""
+    doc = []
+    
+    # Examples 
     if "examples" in workflow and workflow["examples"]:
         doc.append("## Examples")
         doc.append("")
@@ -115,8 +120,13 @@ def generate_workflow_doc(workflow, workflow_file):
                 doc.append(json.dumps(example["inputSettings"], indent=2))
                 doc.append("```")
                 doc.append("")
-
-    # Resource Estimation (new section)
+    
+    return doc
+def _generate_resource_requirements_section(workflow):
+    """Generate the resource requirements section of the workflow documentation."""
+    doc = []
+    
+    # Resource Estimation
     if "resourceEstimation" in workflow:
         doc.append("## Resource Requirements")
         doc.append("")
@@ -138,8 +148,13 @@ def generate_workflow_doc(workflow, workflow_file):
             doc.append(f"| CPU Usage | {resources['cpuUsage'].capitalize()} |")
 
         doc.append("")
-
-    # Components (new section)
+    
+    return doc
+def _generate_components_section(workflow):
+    """Generate the components section of the workflow documentation."""
+    doc = []
+    
+    # Components
     if "components" in workflow and workflow["components"]:
         doc.append("## Components")
         doc.append("")
@@ -154,7 +169,12 @@ def generate_workflow_doc(workflow, workflow_file):
             doc.append(f"- **{component_id}** ({component_type}): {description}")
 
         doc.append("")
-
+    
+    return doc
+def _generate_system_requirements_section(workflow):
+    """Generate the system requirements section of the workflow documentation."""
+    doc = []
+    
     # System Requirements
     if "requirements" in workflow and workflow["requirements"]:
         doc.append("## System Requirements")
@@ -162,7 +182,12 @@ def generate_workflow_doc(workflow, workflow_file):
         for req in workflow["requirements"]:
             doc.append(f"- {req}")
         doc.append("")
-
+    
+    return doc
+def _generate_technical_requirements_section(workflow):
+    """Generate the technical requirements section of the workflow documentation."""
+    doc = []
+    
     # Models and Technical Requirements
     if "comfyUIRequirements" in workflow:
         reqs = workflow["comfyUIRequirements"]
@@ -211,7 +236,12 @@ def generate_workflow_doc(workflow, workflow_file):
             for package in reqs["pythonPackages"]:
                 doc.append(f"- `{package}`")
             doc.append("")
-
+    
+    return doc
+def _generate_default_settings_section(workflow):
+    """Generate the default settings section of the workflow documentation."""
+    doc = []
+    
     # Default Settings
     if "defaultSettings" in workflow and workflow["defaultSettings"]:
         doc.append("## Default Settings")
@@ -222,7 +252,12 @@ def generate_workflow_doc(workflow, workflow_file):
         for key, value in workflow["defaultSettings"].items():
             doc.append(f"| {key} | `{value}` |")
         doc.append("")
-
+    
+    return doc
+def _generate_inputs_section(workflow):
+    """Generate the inputs section of the workflow documentation."""
+    doc = []
+    
     # Inputs
     if "inputs" in workflow and workflow["inputs"]:
         doc.append("## User Inputs")
@@ -244,12 +279,17 @@ def generate_workflow_doc(workflow, workflow_file):
                 and default_value.startswith("data:image")
             ):
                 default_value = "(embedded image)"
-            elif isinstance(default_value, dict | list):
+            elif isinstance(default_value, (dict, list)):
                 default_value = json.dumps(default_value)[:20] + "..."
 
             doc.append(f"| {label} | {input_type} | `{default_value}` |")
         doc.append("")
-
+    
+    return doc
+def _generate_outputs_section(workflow):
+    """Generate the outputs section of the workflow documentation."""
+    doc = []
+    
     # Outputs
     if "outputs" in workflow and workflow["outputs"]:
         doc.append("## Outputs")
@@ -262,7 +302,12 @@ def generate_workflow_doc(workflow, workflow_file):
             output_type = output.get("type", "")
             doc.append(f"| {name} | {output_type} |")
         doc.append("")
-
+    
+    return doc
+def _generate_change_log_section(workflow):
+    """Generate the change log section of the workflow documentation."""
+    doc = []
+    
     # Change Log
     if "changeLog" in workflow and workflow["changeLog"]:
         doc.append("## Change Log")
@@ -277,14 +322,36 @@ def generate_workflow_doc(workflow, workflow_file):
             for change in entry.get("changes", []):
                 doc.append(f"- {change}")
             doc.append("")
-
+    
+    return doc
+def _generate_footer_section():
+    """Generate the footer section of the workflow documentation."""
+    doc = []
+    
     # Add footer with generation info
     doc.append("---")
     doc.append(f"*Documentation generated on {datetime.now().strftime('%Y-%m-%d')}*")
-
-    return "\n".join(doc)
-
-
+    
+    return doc
+def generate_workflow_doc(workflow, workflow_file):
+    """Generate markdown documentation for a workflow."""
+    sections = []
+    
+    # Add each section of the documentation
+    sections.extend(_generate_header_section(workflow))
+    sections.extend(_generate_description_section(workflow))
+    sections.extend(_generate_examples_section(workflow))
+    sections.extend(_generate_resource_requirements_section(workflow))
+    sections.extend(_generate_components_section(workflow))
+    sections.extend(_generate_system_requirements_section(workflow))
+    sections.extend(_generate_technical_requirements_section(workflow))
+    sections.extend(_generate_default_settings_section(workflow))
+    sections.extend(_generate_inputs_section(workflow))
+    sections.extend(_generate_outputs_section(workflow))
+    sections.extend(_generate_change_log_section(workflow))
+    sections.extend(_generate_footer_section())
+    
+    return "\n".join(sections)
 def generate_gallery(workflows_dir, output_dir):
     """Generate a visual gallery of workflow examples."""
     gallery = [
@@ -298,7 +365,7 @@ def generate_gallery(workflows_dir, output_dir):
     workflows_with_examples = []
 
     for filename in Path(workflows_dir).iterdir():
-        if filename.endswith(".json"):
+        if str(filename).endswith(".json"):
             workflow_file = os.path.join(workflows_dir, filename)
             workflow = load_workflow(workflow_file)
 
@@ -441,8 +508,6 @@ def generate_gallery(workflows_dir, output_dir):
 
     print(f"Generated gallery: {gallery_path}")
     return True
-
-
 def generate_index(workflows_dir, output_dir):
     """Generate an index page with links to all workflow documentation."""
     index = [
@@ -455,7 +520,7 @@ def generate_index(workflows_dir, output_dir):
     # Collect workflow information
     workflows = []
     for filename in Path(workflows_dir).iterdir():
-        if filename.endswith(".json"):
+        if str(filename).endswith(".json"):
             workflow_file = os.path.join(workflows_dir, filename)
             workflow = load_workflow(workflow_file)
             if workflow:
@@ -505,8 +570,6 @@ def generate_index(workflows_dir, output_dir):
 
     print(f"Generated index: {index_path}")
     return True
-
-
 def generate_all_docs(
     workflows_dir, output_dir, create_index=False, create_gallery=False,
 ):
@@ -518,7 +581,7 @@ def generate_all_docs(
     error_count = 0
 
     for filename in Path(workflows_dir).iterdir():
-        if filename.endswith(".json"):
+        if str(filename).endswith(".json"):
             workflow_file = os.path.join(workflows_dir, filename)
             workflow = load_workflow(workflow_file)
 
@@ -552,8 +615,6 @@ def generate_all_docs(
     print(f"Errors: {error_count}")
 
     return error_count == 0
-
-
 def main():
     parser = argparse.ArgumentParser(
         description="Generate documentation for ComfyUI workflow files",

@@ -7,6 +7,7 @@ and ensures that all artifact names are unique to prevent conflicts.
 It adds job-specific prefixes to artifact names to make them unique.
 """
 
+from typing import Optional
 import glob
 import os
 import re
@@ -40,14 +41,14 @@ def ensure_unique_artifacts():
 
         # Extract workflow name
         workflow_name_match = re.search(r"name:\s*([^\n]+)", content)
-        _ = (  # noqa: F841 (was workflow_id)
+        _ = (  # noqa: Optional[F841 (was workflow_id)
             workflow_name_match.group(1).strip()
             if workflow_name_match
             else os.path.basename(file_path)
         )
 
         # Extract jobs and their names
-        current_job = None
+        current_job] = None
         current_job_match = None
         lines = content.split("\n")
 

@@ -1,6 +1,6 @@
+#!/usr/bin/env python
 from pathlib import Path
 
-#!/usr/bin/env python
 """
 Generate Workflow Versions
 
@@ -17,7 +17,7 @@ import logging
 import os
 import sys
 from datetime import datetime
-from typing import Any
+from typing import Any, Dict, List, Optional, Tuple, Union, cast
 
 # Configure logging
 logging.basicConfig(
@@ -29,12 +29,12 @@ logger = logging.getLogger("workflow-versions")
 class WorkflowVersion:
     """Represents a version entry in a workflow's version history."""
 
-    def __init__(self, version: str, date: str, changes: list[str]):
+    def __init__(self, version: str, date: str, changes: List[str]):
         self.version = version
         self.date = date
         self.changes = changes
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary representation."""
         return {
             "version": self.version,
@@ -43,7 +43,7 @@ class WorkflowVersion:
         }
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> 'WorkflowVersion':
+    def from_dict(cls, data: Dict[str, Any]) -> 'WorkflowVersion':
         """Create a WorkflowVersion from a dictionary."""
         return cls(
             version=data.get("version", ""),
@@ -54,7 +54,7 @@ class WorkflowVersion:
 class WorkflowHistory:
     """Manages the version history of a workflow."""
 
-    def __init__(self, workflow_id: str, versions: list[WorkflowVersion] = None):
+    def __init__(self, workflow_id: str, versions: Optional[List[WorkflowVersion]] = None) -> None:
         self.workflow_id = workflow_id
         self.versions = versions or []
 
@@ -62,13 +62,13 @@ class WorkflowHistory:
         """Add a new version to the history."""
         self.versions.append(version)
 
-    def get_latest_version(self) -> WorkflowVersion | None:
+    def get_latest_version(self) -> Optional[WorkflowVersion]:
         """Get the most recent version."""
         if not self.versions:
             return None
         return sorted(self.versions, key=lambda v: v.version, reverse=True)[0]
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary representation."""
         return {
             "workflow_id": self.workflow_id,
@@ -76,7 +76,7 @@ class WorkflowHistory:
         }
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> 'WorkflowHistory':
+    def from_dict(cls, data: Dict[str, Any]) -> 'WorkflowHistory':
         """Create a WorkflowHistory from a dictionary."""
         versions = [WorkflowVersion.from_dict(v) for v in data.get("versions", [])]
         return cls(
@@ -84,19 +84,19 @@ class WorkflowHistory:
             versions=versions,
         )
 
-def load_workflow(file_path: str) -> dict[str, Any]:
+def load_workflow(file_path: str) -> Dict[str, Any]:
     """Load a workflow file and return its contents as a dictionary."""
     try:
         with open(file_path, encoding="utf-8") as f:
-            return json.load(f)
+            return cast(Dict[str, Any], json.load(f))
     except json.JSONDecodeError:
         logger.error(f"Failed to parse JSON in {file_path}")
-        return {}
+        return cast(Dict[str, Any], {})
     except Exception as e:
         logger.error(f"Error loading workflow {file_path}: {e}")
-        return {}
+        return cast(Dict[str, Any], {})
 
-def extract_version_info(workflow: dict[str, Any]) -> tuple[str, list[dict[str, Any]]]:
+def extract_version_info(workflow: Dict[str, Any]) -> Tuple[str, List[Dict[str, Any]]]:
     """Extract version information from a workflow."""
     version = workflow.get("version", "0.0.0")
     changelog = workflow.get("changeLog", [])
@@ -107,14 +107,14 @@ def generate_version_report(workflows_dir: str, output_dir: str) -> None:
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    report = {
+    report: Dict[str, Any] = {
         "generated_at": datetime.now().isoformat(),
         "workflows": [],
     }
 
     # Process all workflow files
     for filename in Path(workflows_dir).iterdir():
-        if not filename.endswith(".json"):
+        if not filename.suffix == '.json':
             continue
 
         file_path = os.path.join(workflows_dir, filename)
@@ -143,7 +143,7 @@ def generate_version_report(workflows_dir: str, output_dir: str) -> None:
 
     logger.info(f"Generated version report for {len(report['workflows'])} workflows")
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(description="Generate workflow version information")
     parser.add_argument("--workflows-dir", required=True, help="Directory containing workflow files")
     parser.add_argument("--output-dir", required=True, help="Directory to write output files")
