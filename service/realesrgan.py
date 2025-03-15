@@ -319,10 +319,10 @@ class RealESRGANer:
         """
         # Prepare the input image
         img, img_mode, alpha = self._prepare_input_image(img)
-        
+
         # Process the main image
         self._process_main_image(img)
-        
+
         # Handle post-processing and potential alpha channel
         return self._finalize_output(img_mode, alpha, alpha_upsampler, outscale)
 
@@ -330,12 +330,12 @@ class RealESRGANer:
         """Prepare input image for enhancement by normalizing and detecting mode."""
         if isinstance(img, PIL.Image.Image):
             img = np.array(img)
-        
+
         # Normalize image values
         img = img.astype(np.float32)
         max_range = 65535 if np.max(img) > 256 else 255
         img = img / max_range
-        
+
         # Determine image mode and handle alpha channel if present
         alpha = None
         if len(img.shape) == 2:  # Grayscale image
@@ -349,9 +349,9 @@ class RealESRGANer:
         else:
             img_mode = "RGB"
             img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-            
+
         return img, img_mode, alpha
-        
+
     def _process_main_image(self, img):
         """Process the main image content using the model."""
         self.pre_process(img)
@@ -359,7 +359,7 @@ class RealESRGANer:
             self.tile_process()
         else:
             self.process()
-    
+
     def _finalize_output(self, img_mode, alpha, alpha_upsampler, outscale):
         """Apply post-processing and handle alpha channel if needed."""
         # Apply output scaling if specified
@@ -367,27 +367,27 @@ class RealESRGANer:
             self.output = self._rescale_output(outscale)
         else:
             self.output = self.post_process()
-            
+
         # Handle alpha channel for RGBA images
         if img_mode == "RGBA":
             return self._process_with_alpha(alpha, alpha_upsampler)
-        
+
         # Handle grayscale images
         if img_mode == "L":
             return self._convert_to_grayscale()
-            
+
         # Default case: return RGB image
         return self.output, img_mode
-    
+
     def _rescale_output(self, outscale):
         """Rescale output to desired scale factor."""
         h, w = self.output.shape[0:2]
         new_h, new_w = int(h * outscale / self.scale), int(w * outscale / self.scale)
         scaled_output = cv2.resize(
-            self.output, (new_w, new_h), interpolation=cv2.INTER_LANCZOS4
+            self.output, (new_w, new_h), interpolation=cv2.INTER_LANCZOS4,
         )
         return scaled_output
-    
+
     def _process_with_alpha(self, alpha, alpha_upsampler):
         """Process image with alpha channel."""
         h, w = self.output.shape[0:2]
@@ -403,15 +403,15 @@ class RealESRGANer:
         else:
             # Use simple upsampling for alpha channel
             upsampled_alpha = cv2.resize(
-                alpha, (w, h), interpolation=cv2.INTER_LINEAR
+                alpha, (w, h), interpolation=cv2.INTER_LINEAR,
             )
-        
+
         # Merge the RGB channels with the alpha channel
         output_with_alpha = np.concatenate(
-            (self.output, upsampled_alpha[:, :, None]), axis=2
+            (self.output, upsampled_alpha[:, :, None]), axis=2,
         )
         return output_with_alpha, "RGBA"
-    
+
     def _convert_to_grayscale(self):
         """Convert output to grayscale for L mode images."""
         self.output = cv2.cvtColor(self.output, cv2.COLOR_BGR2GRAY)
